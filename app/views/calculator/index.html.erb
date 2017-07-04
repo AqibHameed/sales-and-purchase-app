@@ -1,0 +1,423 @@
+ <link href="/assets/style_calc.css" media="screen" rel="stylesheet" type="text/css" />
+
+			<%
+ if current_customer
+          tenders = current_customer.tenders
+        else
+          tenders = Tender.all
+        end
+%>
+<div class="calculatorOuter">
+	<span class="left handle"></span><span class="right handle"></span>
+	<h2>Calculator</h2>
+	<div class="calculatorInner">
+		<div class="selectionbox">
+			<div class="filterCnt">
+				<p>
+					Tender Name
+				</p>
+				<%= select_tag "tender[name]",options_for_select(tenders.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
+			</div>
+			<div class="filterCnt">
+				<p>
+					Parcel
+				</p>
+				<div id="parcel_list" >
+				<%= render :partial => "parcel", :object => [@tender = tenders.first] %>
+				</div>
+			</div>
+			<div class="filterCnt">
+				<p>
+					Polish Size
+				</p>
+				<%= text_field_tag "tender[carat]","", :class => 'select type_select',:value => '', :placeholder => "between 0.01 to 10.99", :onkeypress => "return isNumber(event)" %>
+			</div>
+			<div class="filterCnt no-margin">
+				<p>
+					Shape
+				</p>
+				<div class="onoffswitch">
+					<input type="checkbox" checked="" id="myonoffswitch" class="onoffswitch-checkbox" name="Round">
+					<label  for="myonoffswitch" class="onoffswitch-label"> <span class="onoffswitch-inner"></span> <span class="onoffswitch-switch"></span> </label>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="tableCnt">
+			
+			<%#= render :partial => "table"%>
+
+		</div>
+
+		<div class="calculator-blackbox" style="display:none;" >
+			<div class="priceCnt">
+				<ul>
+					<li>
+						<div class="col sr-no">
+							<div class="half-col">
+								<h4>Option</h4>
+							</div>
+							<div class="half-col no-margin">
+								<h4>Parcel</h4>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<div class="col">
+							<h4>Polish Size</h4>
+						</div>
+						<div class="col">
+							<h4>Calculation</h4>
+						</div>
+						<div class="col">
+							<h4>Price (avg)</h4>
+						</div>
+						<div class="clear"></div>
+					</li>
+			
+
+				</ul>
+			</div>
+			<!--
+			<div class="uploadCnt">
+				<a href="javascript:void(0)">+ ADD Option</a>
+				<div class="picCnt">
+					<img src="images/dimond.jpg">
+				</div>
+				<div class="upload-button" style="display:none" >
+					<span>Upload Image</span>
+					<input type="file">
+				</div>
+			</div>
+			-->
+			<div class="clear"></div>
+		</div>
+
+	</div>
+	<div class="clear"></div>
+</div>
+<script>
+
+	var globalPrice = <%= $price.to_json.html_safe %>;
+	
+	$('#tender_name').change(function() {
+		$.ajax("/calculator/get_parcels?id=" + $(this).val())
+	})
+
+	$('#tender_carat, #myonoffswitch, #tender_name, #tender_parcel').change(function() {
+		if (!($('#tender_carat').val() == '' || $('#tender_parcel').val() == '')) {
+			$.ajax("/calculator/get_prices?carat=" + $('#tender_carat').val() + '&shape=' + getSwitchValue())
+		}
+	})
+
+	$('#tender_dicsount').change(function() {
+		calculate();
+	})
+	
+	function getSwitchValue(){
+	
+		if($('#myonoffswitch').prop('checked')){
+			return 'Pear'
+		}else{
+			return 'Round'
+		}
+		
+	}
+	
+	function calculate(el) {
+		
+	
+		
+		var color = el.data('color').toLowerCase();
+		var purity = el.data('purity');
+		var price = el.data('price');
+		
+		var size = $('#tender_carat').val();
+		var discount = 10;
+		if (discount == '') {
+			discount = 0;
+			$('#tender_dicsount').val(0)
+		}
+		var parcel = $('#tender_parcel').val();
+
+		var calculated_discount = (parseInt(discount) == 0 ? 1 : (discount / 100) )
+
+		if (calculated_discount == 1) {
+			var total = (price * size)
+		} else {
+			var total = (price * size) - (price * size * calculated_discount)
+		}
+		var avg = total / parcel
+
+		$('#tender_total').val(total.toFixed(2))   
+		$('#tender_avg').val(avg.toFixed(2))
+		$('#tender_final').val(total.toFixed(2))
+		
+		$('.calculator-blackbox').show()
+		var count = $('.priceCnt ul div.parent').length + 1;
+	
+		if(count >= 4 ){
+			
+			alert('You can not add more than 3 options. Please edit existing options.')
+			
+		} else {
+		
+		var query = color  + ' ' + purity  + ' -10'
+		var data = '<div class="parent"><div class="border"></div><div class="children"></div><li onclick="selectedColumn(\'li_' + count + '\');" class="li_' + count + ' parentnode"  ><div class="col sr-no"><div class="half-col srno"><p class="grey ">' + count + '</p></div><div class="half-col"><p class="grey parcel">' + $('#tender_parcel').val() + '</p></div><div class="clear"></div></div><div class="col"><input type="text" onkeyup="updateCalculation(this)" class="carat" value="' +   $('#tender_carat').val() + '" /></div><div class="col"><input class="query" onkeyup="updateCalculation(this)" type="text" value="' + query + '" ></div><div class="col"><p rel=' + total.toFixed(2) + '  class="price">' + total.toFixed(2) + ' (' + avg.toFixed(2)  +  ')</p></div><div class="col1"><a class="addcaratbtn"  href="javascript:void(0)" onclick="addCarat(this)" ><img  src="/assets/plus.png"/></a></div><div class="clear"></div></li><div class="border"></div></div>'
+		$('.priceCnt ul').append(data)
+		
+		
+		}
+		
+			console.log('------------')
+			console.log(getCarat(size))
+			console.log(color)
+			console.log(purity)
+			console.log('------------')
+	
+
+	}
+	
+	
+	
+	function addCarat(el){
+		
+		 var html = $(el).parent().parent().html();
+		
+		 
+		 $(el).attr('onclick','')
+		 $(el).click(function(){
+		 	$(this).parent().parent().remove();
+		 });
+		$(el).parent().parent().parent().parent().find('.children').append('<li class="child" >' + html + '</li>');
+		
+		 if($(el).parent().parent().hasClass('parentnode')){
+		 	$(el).parent().parent().find('.parcel').attr('disabled','disabled')
+		 	$(el).parent().parent().find('.carat').attr('disabled','disabled')
+		 	$(el).parent().parent().find('.query').attr('disabled','disabled')
+		 	$(el).remove();
+		 }else{
+		 	$(el).find('img').attr('src','/assets/minus.png')	
+		 }
+		
+		
+	}
+	
+	
+	function selectedColumn(cls){
+	//	$('.priceCnt ul li').removeClass('selected');
+		
+	//	$('.' + cls).addClass('selected')
+	}
+	
+	function updateCalculation(element){
+		
+		var text = $(element).parent().parent().find('.query').val()
+		var color = text.split(' ')[0];
+		var purity = text.split(' ')[1];
+		var discount = text.split(' ')[2];
+		
+		console.log(color)
+		console.log(purity)
+		console.log(discount)
+		
+		var size_val = $(element).parent().parent().find('.carat').val();
+		var size = getCarat(size_val) 
+		var parcel = parseFloat($(element).parent().parent().find('.parcel').html());
+		
+		
+		console.log(size)
+		console.log(parcel)
+		
+		
+		if((typeof color != 'undefined') && (typeof purity != 'undefined') && (typeof discount != 'undefined')  ) {
+			$(element).css({'color': 'black'})
+			
+			if($('#myonoffswitch').prop('checked')){
+				var shape = 'pear'
+			}else{
+				var shape = 'round'
+			}
+			
+			
+			console.log('------------')
+			console.log(shape)
+			console.log(size_val)
+			console.log(color)
+			console.log(purity)
+			console.log('------------')
+			
+			
+			var price = globalPrice[shape][size][color][purity];
+			
+			console.log(price)
+			
+			var calculated_discount = (Math.abs(parseInt(discount)) == 0 ? 0 : (Math.abs(parseInt(discount)) / 100) )
+			console.log(calculated_discount)
+			
+			var total = (price * parseInt(size_val)) - (price * parseInt(size_val) * calculated_discount)
+			console.log(total)
+			
+			var avg = total / parcel
+			console.log(avg)
+			
+			
+			if(!(isNaN(total))){
+				$(element).parent().parent().find('.price').html(total.toFixed(2) + ' (' + avg.toFixed(2)  +  ')');
+				$(element).parent().parent().find('.price').attr('rel',total.toFixed(2));
+			}else{
+				$(element).parent().parent().find('.price').html('<i>please enter correct values</i>')
+			}
+					
+			// calculation end
+		}else{
+			
+			$('.' + element + ' .query').css({'border': 'red'})
+		}
+		
+		// child record calculation type 2
+		
+		if($(element).parent().parent().hasClass('child')){
+			
+			var parent = $(element).parent().parent().parent().parent().find('.parentnode:first')
+			var parcel = $(parent).find('.parcel').html()
+			console.log("================")
+			console.log(parcel)
+			
+			var total = 0.0
+			var length = $(parent).parent().find('.children').find('li.child').length
+			console.log("========" + length + "========")
+			if(length == 1){
+				
+				total = $(parent).parent().find('.children').find('li.child').find('.price').attr('rel')
+				
+			}else{
+			
+				$(parent).parent().find('.children').find('li.child').each(function(el){
+					total = total + parseFloat($(this).find('.price').attr('rel'))
+				})
+			}
+				
+			
+			console.log(total)
+			
+			var avg = total / parcel
+			
+			$(parent).find('.price').html(parseFloat(total).toFixed(2) + ' ('  + parseFloat(avg).toFixed(2)  + ')')
+			$(parent).find('.price').attr('rel', parseFloat(total).toFixed(2))
+			
+			
+						
+			
+		}
+		
+	}
+	
+	
+	 function getCarat(val){
+	 	
+	 	var carat = parseFloat(val)
+		
+		if (carat >= 0.0 && carat <= 0.03){
+      return '0.01-0.03'
+    } else if(carat >= 0.04 && carat <= 0.07){
+      return '0.04-0.07'
+    } else if(carat >= 0.08 && carat <= 0.14){
+      return '0.08-0.14'
+    } else if (carat >= 0.15 && carat <= 0.17){
+      return '0.15-0.17'
+    } else if(carat >= 0.18 && carat <= 0.22){
+      return '0.18-0.22'
+    } else if(carat >= 0.23 && carat <= 0.29){
+      return '0.23-0.29'
+    } else if (carat >= 0.30 && carat <= 0.39){
+      return '0.3-0.39'
+    } else if (carat >= 0.40 && carat <= 0.49){
+      return '0.4-0.49'
+    } else if (carat >= 0.50 && carat <= 0.69){
+      return '0.5-0.69'
+    } else if (carat >= 0.70 && carat <= 0.89){
+      return '0.7-0.89'
+    } else if (carat >= 0.90 && carat <= 0.99){
+      return '0.9-0.99'
+    } else if (carat >= 1.0 && carat <= 1.49){
+      return '1.0-1.49'
+    } else if (carat >= 1.50 && carat <= 1.99){
+      return '1.5-1.99'
+    } else if (carat >= 2.00 && carat <= 2.99){
+      return '2.0-2.99'
+    } else if (carat >= 3.00 && carat <= 3.99){
+      return '3.0-3.99'
+    } else if (carat >= 4.00 && carat <= 4.99){
+      return '4.0-4.99'
+    } else if (carat >= 5.0 && carat <= 5.99){
+      return '5.0-5.99'
+    } else {
+      return '10.00-10.99'
+    }
+		
+	} 
+
+
+	$(document).ready(function() {
+		// var table = $('#example').DataTable({
+			// scrollY : "500px",
+			// scrollX : true,
+			// scrollCollapse : true,
+			// paging : false
+// 
+		// });
+
+		
+
+		/* $(".tableCnt #example td").hover(function(){
+		 var classname=$(this).attr("class");
+		 $('td.'+classname).css("background","#ed5a48");
+		 $(this).closest("tr").css("background","#ed5a48");
+		 $("th."+classname).addClass('active');
+		 },
+		 function(){
+		 var classname=$(this).attr("class");
+		 $('td.'+classname).css("background","none");
+		 $(this).closest("tr").css("background","none");
+		 $("th."+classname).removeClass('active');
+		 }
+		 );*/
+
+		$(".mobile-menu-icon").click(function() {
+			var pos = parseInt($('.mobilemenu').css('left'));
+			if (pos > 0) {
+				$('.mobilemenu').animate({
+					'left' : 0
+				}, 'slow');
+			} else {
+				$('.mobilemenu').animate({
+					'left' : '100%'
+				}, 'slow');
+			}
+		});
+	});
+
+</script>
+
+<style>
+	table.dataTable {
+		margin: 0
+	}
+	table.dataTable td {
+		padding: 5px !important;
+	}
+	table.dataTable thead th {
+		padding: 0;
+	}
+	
+	.parent .border{
+		border:0px;
+		margin:5px 0 5px 0;
+	}
+	
+	.parent{
+		border: 1px solid #DD5E4B;
+		border-top:0px;
+	}
+	
+</style>

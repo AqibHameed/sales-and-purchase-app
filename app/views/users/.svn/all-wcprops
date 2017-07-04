@@ -1,0 +1,11 @@
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/dialuck/!svn/ver/56/trunk/app/views/users
+END
+refresh_captcha.js.erb
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/dialuck/!svn/ver/56/trunk/app/views/users/refresh_captcha.js.erb
+END

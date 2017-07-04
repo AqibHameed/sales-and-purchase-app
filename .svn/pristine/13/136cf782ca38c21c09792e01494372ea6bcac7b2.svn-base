@@ -1,0 +1,25 @@
+<h3>Tenders</h3>
+<div class="clear10"></div>
+<div class="table">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <th>Tender Name</th>
+      <th>Bids</th>
+      <th>Total Bid Amount</th>
+      <th>Open Date</th>
+      <th>Close Date</th>
+      <th>Status</th>
+    </tr>
+    <% @tenders.each do |tender| %>
+    <tr>
+      <td><%= link_to tender.name, tender %></td>
+      <td><%= tender.bids.count %></td>
+      <td><%= tender.total_bid_amount %></td>
+      <td><%= tender.open_date.try(:strftime, '%b %e, %l:%M %p') %>
+      <td><%= tender.close_date.try(:strftime, '%b %e, %l:%M %p') %>
+      <td><%= tender.open? ? 'Open' : 'Closed' %></td>
+    </tr>
+    <% end %>
+  </table>
+</div>
+

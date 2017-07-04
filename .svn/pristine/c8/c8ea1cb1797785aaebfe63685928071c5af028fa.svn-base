@@ -1,0 +1,8 @@
+<div>
+  <%# if  !form.object.close_date.nil? and form.object.close_date < Date.today %>
+    <%= form.file_field :winner_list %>
+  <%# else %>
+    <!-- <p>Winner list can not be uploaded as Tender is still open.</p>-->
+  <%# end %>
+</div>
+

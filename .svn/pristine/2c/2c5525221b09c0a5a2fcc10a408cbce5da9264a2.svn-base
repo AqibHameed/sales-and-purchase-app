@@ -1,0 +1,23 @@
+<h3>Tender Database</h3>
+<div class="clear10"></div>
+<div class="table">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<th>Tender Name</th>
+			<th>Tender Close date</th>
+			<th>Stone Description</th>
+			<th>Type</th>
+			<th>Weight</th>
+			<th>Selling Price</th>
+		</tr>
+		<% @tenders.each do |tender| %>
+		<tr>
+			<td><%= tender.tender_name %></td>
+			<td><%= tender.date.strftime('%e %b %Y') %></td>
+			<td><%= tender.description %></td>
+			<td><%= tender.stone_type %></td>
+			<td><%= tender.weight %> </td><td><%= tender.selling_price %></td>
+		</tr>
+		<% end %>
+	</table>
+</div>

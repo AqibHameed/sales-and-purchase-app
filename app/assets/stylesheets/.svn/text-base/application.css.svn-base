@@ -1,0 +1,110 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require fancybox
+ *= require style.css
+ *= require jquery.dataTables.css
+ *= require jquery.fancybox-1.3.4
+ */
+
+.validation-error{
+    color: red;
+}
+
+tr.winner {
+	background: #00D812;
+}
+
+
+/* tender filters */
+
+a.add{background:url(../assets/add.png) no-repeat;padding:5px 12px 9px;text-indent:-9999px;margin-left:5px;}
+a.remove{background:url(../assets/remove.png) no-repeat;padding:5px 12px 9px;text-indent:-9999px;margin-left:5px;}
+
+.filter input,.filter select {
+	width:110px;
+	border: 1px solid #B8B8B8;
+}
+
+.input1.error {
+	
+	border: 1px solid #FF0000;
+}
+
+
+.btn-00 {
+    background: none repeat scroll 0 0 #ED5A48;
+    border: 0 none;
+    border-radius: 3px 3px 3px 3px;
+    color: #FFFFFF;
+    font-size: 14px;
+    margin-right: 4px;
+    padding: 4px 7px;
+    text-decoration: none;
+    cursor:pointer;
+}
+
+.search-filter{
+  border: 1px solid #B8B8B8;
+  width: 150px;    
+}
+
+.bid_form{
+	z-index:9999;
+	position:fixed;
+	left:10%;
+	top:10%;
+	box-shadow: 0px 0px 10px #000;
+}
+
+.close_bid {
+	position:absolute;
+	right:-32px;
+	top:-16px;
+}
+
+#screenMask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    opacity: 0.6;
+    background:#000;
+    width:100%;
+    height:100%;    
+}
+
+div.title1 {
+	padding:0 0 10px;
+	font-weight:bold;
+	clear:both;
+	cursor:pointer;
+	color:#ED5A48;
+}
+
+.border {
+	border:1px solid #999;
+}
+
+.low {
+	background-color:#A0D9FF;
+}
+
+.mid {
+	background-color: #7CB5EC;
+}
+
+.high {
+	background-color:#71AAE1;
+}
+
+.vhigh {
+	background-color: #4D86BD;
+}

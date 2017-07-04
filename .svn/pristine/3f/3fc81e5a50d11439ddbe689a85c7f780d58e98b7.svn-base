@@ -1,0 +1,75 @@
+<div class="tender-detail">
+	<h3> <%= @tender.name %></h3>
+	<div class="clear10"></div>
+	<%= raw(@tender.description)  %>
+	<div class="clear10"></div>
+	<form>
+		<div class="form-wrapper tend-detail">
+			<div class="form-row">
+				<div class="label">
+					Open Date
+				</div>
+				<div class="field">
+					<div>
+						<%= @tender.open_date.strftime('%b %e, %l:%M %p') %>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="form-row">
+				<div class="label">
+					Close Date
+				</div>
+				<div class="field">
+					<div>
+						<%= @tender.close_date.strftime('%b %e, %l:%M %p') %>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="form-row">
+				<div class="label">
+					Status
+				</div>
+				<div class="field">
+					<span class="stat-open">Open</span>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</form>
+	<div class="clear"></div>
+
+	<div class="table">
+		<h2>Bid Info</h2>
+		<div class="form-wrapper bid-info">
+			<div class="form-row">
+				<div class="label">
+					Total Bids
+				</div>
+				<div class="field">
+					40
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="form-row">
+				<div class="label">
+					Highest Bid
+				</div>
+				<div class="field">
+					100
+				</div>
+				<div class="clear"></div>
+			</div>
+
+			<% if @tender.open? %>
+			<%= render 'bids/form' %>
+			<% else %>
+			<%= render 'bids/details' %>
+			<% end %>
+
+		</div>
+	</div>
+</div>
+<div class="clear"></div>
+

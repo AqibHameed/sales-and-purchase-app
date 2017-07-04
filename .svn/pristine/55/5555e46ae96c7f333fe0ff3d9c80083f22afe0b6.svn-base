@@ -1,0 +1,9 @@
+Hello <%= @customer.email %>,
+<br><br>
+You have been assigned a new tender.
+<br><br>
+To view the tender details, <%= link_to 'Click here.', tender_url(@tender) %>
+<br><br>
+Thanks & Regards,<br>
+Dialuck Team.
+

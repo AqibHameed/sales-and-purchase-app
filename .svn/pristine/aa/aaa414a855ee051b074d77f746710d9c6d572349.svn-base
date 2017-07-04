@@ -1,0 +1,9 @@
+<div>
+  <% if form.object.stones.blank? %>
+    <%= form.file_field :document %>
+    <%= link_to 'Click here', '/files/sample.xls' %> to download sample xls file.
+  <% else %>
+    <p>File cannot be uploaded as stone details are already added.</p>
+  <% end %>
+</div>
+

@@ -1,0 +1,30 @@
+class TendersController < ApplicationController
+
+  before_filter :authenticate_customer!
+
+  def index
+    @tenders = current_customer.tenders.open_tenders(DateTime.now).limit(10)
+    @news = News.first(10)
+  end
+
+  def history
+    @tenders = current_customer.tenders.closed_tenders(DateTime.now).limit(10)
+    @news = News.first(10)
+  end
+
+  def calender
+  end
+
+  def calender_data
+    start_date = Time.at(params[:start].to_i)
+    end_date = Time.at(params[:end].to_i)
+
+    @data = Tender.tenders_for_calender(start_date, end_date)
+
+    render :json => @data.to_json
+
+  end
+
+
+end
+

@@ -1,0 +1,74 @@
+<h3>Detailed Bidder List : <%= @tender.name %> by <%= @bids.first.customer.name rescue "" %></h3>
+<br/>
+<div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable">
+        <tr>
+            <th>
+                No
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Company
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Carat
+            </th>
+			<th>
+                Avg
+            </th>
+            <th>
+                Total
+            </th>
+        </tr>
+        <% total = 0
+		carat_total = 0 %>
+        <% @bids.each_with_index do |bid, i| %>
+        <tr>
+            <td>
+                <%= i + 1 %>
+            </td>
+            <td>
+                <%= bid.customer.name %>
+            </td>
+            <td>
+                <%= bid.customer.company %>
+            </td>
+			<td>
+				<%= bid.stone.description %>
+			</td>	
+            <td>
+            	<% carat_total = carat_total + bid.stone.weight %>
+				<%= bid.stone.weight %>
+			</td>	
+			<td>
+                <%= number_to_currency(bid.price_per_carat) %>
+            </td>
+            <td>
+                <% total = total + bid.total %>
+                <%= number_to_currency(bid.total) %>
+            </td>
+        </tr>
+        <% end %>
+        <tr>
+            <td colspan="4">
+            </td>
+			 <td>
+                <strong><%= carat_total %></strong>
+            </td>
+			<td>
+			</td>	
+            <td>
+                <strong><%= number_to_currency(total) %></strong>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="clear20">
+</div>
+<%= link_to "Bidder List",customer_bid_list_tender_path, :class => "btn-01" %>
+<%= link_to "Winner List","/winners/list", :class => "btn-01" %>

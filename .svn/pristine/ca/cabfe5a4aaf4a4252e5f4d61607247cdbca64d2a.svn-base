@@ -1,0 +1,17 @@
+<div class="table">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <th>Tender Name</th>
+      <th>Bids</th>
+      <th></th>
+    </tr>
+    <% @tenders.each do |tender| %>
+    <tr>
+      <td><%= tender.name %></td>
+      <td><%= tender.bid_count(current_customer) %></td>
+      <td><%= link_to 'Select', new_winner_path(:tender_id => tender.id) %></td>
+    </tr>
+    <% end %>
+  </table>
+</div>
+

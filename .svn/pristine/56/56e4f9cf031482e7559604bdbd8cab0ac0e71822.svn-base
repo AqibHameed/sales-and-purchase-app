@@ -1,0 +1,300 @@
+class TendersController < ApplicationController
+
+  protect_from_forgery :except => [:filter, :temp_filter, :add_rating]
+
+  before_filter :authenticate_logged_in_user!, :only => [:index, :history, :show, :filter, :view_past_result]
+  before_filter :authenticate_customer!, :except => [:index, :history, :delete_stones,:delete_winner_details, :show, :filter, :view_past_result, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc ]
+  before_filter :authenticate_admin!, :only => [:delete_stones,:delete_winner_details, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc]
+  
+  layout :false, :only => [:admin_details, :admin_winner_details]
+  
+  
+  def admin_details
+    
+    @tender = Tender.find(params[:id])
+    @past_details = @tender.past_details
+    @past_winners = @tender.past_winners
+    @stones = @tender.stones
+    
+  end
+  
+   def admin_winner_details
+    
+    @tender = Tender.find(params[:id])
+    @past_details = @tender.past_details
+    @past_winners = @tender.past_winners
+    @winners = @tender.tender_winners
+    
+  end
+  
+  
+  def index
+    if current_customer
+      @tenders = current_customer.tenders.open_tenders(DateTime.now)
+    elsif
+    @tenders = Tender.open_tender
+    end
+    @news = News.first(10)
+  end
+
+  def show
+    if current_customer
+      @tender = current_customer.tenders.find(params[:id], :include => :stones)
+      @notes = current_customer.notes.find_all_by_tender_id(@tender.id).collect(&:key)
+      flags = Rating.find_all_by_tender_id_and_customer_id(@tender.id, current_customer.id)
+      @important = []
+      @read = []
+      flags.each do |f|
+        @important << f.key if f.flag_type == 'Imp'
+        @read << f.key if f.flag_type == 'Read'
+      end
+
+    else
+      @tender = Tender.find(params[:id], :include => :stones)
+    end
+    @stones = @tender.stones
+
+  # render :text => @tender_winners
+
+  end
+
+  def add_note
+    @tender = current_customer.tenders.find(params[:id])
+    @key = params[:key]
+    @note = Note.find_by_tender_id_and_key_and_customer_id(@tender.id,@key,current_customer.id)
+
+    render :partial => 'add_note'
+
+  end
+
+  def save_note
+    @tender = current_customer.tenders.find(params[:id])
+    @note = Note.find_or_initialize_by_tender_id_and_key_and_customer_id(@tender.id,params[:key],current_customer.id)
+    @note.note = params[:note]
+    @note.save
+
+    respond_to do |format|
+      format.js
+    end
+
+  end
+
+  def add_rating
+
+    r = Rating.find_or_initialize_by_tender_id_and_customer_id_and_key_and_flag_type(params[:id],current_customer.id, params[:key],'Imp')
+
+    if r.id.nil?
+      r.save
+      op =  "reloadRaty('#{params[:id_key]}','on')"
+    else
+      r.destroy
+      op = "reloadRaty('#{params[:id_key]}','off')"
+    end
+
+    render :js => op
+
+  end
+
+  def add_read
+
+    r = Rating.find_or_initialize_by_tender_id_and_customer_id_and_key_and_flag_type(params[:id],current_customer.id, params[:key],'Read')
+
+    if r.id.nil?
+    r.save
+    score = 1
+    else
+    r.destroy
+    score = 0
+    end
+
+    render :js => "$('##{params[:id_key]}').prop('checked', this.checked);$('##{params[:id_key]}').next().html('#{score}');$('#myTable').trigger('update');"
+
+  end
+
+  def bid
+    @tender = current_customer.tenders.find(params[:id], :include => :stones)
+    @stones = @tender.stones
+    @bid = Bid.find_or_initialize_by_customer_id_and_tender_id(current_customer.id, @tender.id)
+  end
+
+  def filter
+
+    query = []
+    if params[:filter]
+      params[:filter].each do |f|
+        case f['type']
+        when 'DEEC No'
+          query << "(deec_no >=  #{f['from']} and deec_no <= #{f['to']})" if (f['from'] != "" && f['to'] != "")
+        when 'Lot No'
+          query << "(lot_no >=  #{f['from']} and lot_no <= #{f['to']})" if (f['from'] != "" && f['to'] != "")
+        when 'Carat'
+          #query << "(carat between '#{f['from'].to_f}' and '#{f['to'].to_f}')"
+          query << "(weight >= '#{f['from'].to_f}' and  weight <= '#{f['to'].to_f}')" if (f['from'] != "" && f['to'] != "")
+        else
+        end
+
+      end
+
+    end
+
+    q = query.join(' or ')
+
+    q = q + " #{query.length == 0 ? '' : 'and' } description like '%#{params[:search]}%'" unless params[:search].strip.blank?
+
+    if current_customer
+
+    @tender = current_customer.tenders.find(params[:id])
+    @notes = current_customer.notes.find_all_by_tender_id(@tender.id).collect(&:key)
+    
+    @bid = Bid.find_or_initialize_by_customer_id_and_tender_id(current_customer.id, @tender.id)
+
+    flags = Rating.find_all_by_tender_id_and_customer_id(@tender.id, current_customer.id)
+    @important = []
+    @read = []
+    flags.each do |f|
+      @important << f.key if f.flag_type == 'Imp'
+      @read << f.key if f.flag_type == 'Read'
+    end
+    else
+      @tender = Tender.find(params[:id])
+    end
+    @stones = @tender.stones.find(:all, :conditions =>  q)
+
+    render 'show'
+
+  end
+
+  def temp_filter
+
+    query = []
+    if params[:filter]
+      params[:filter].each do |f|
+        case f['type']
+        when 'Lot No'
+          query << "(lot_no >=  #{f['from']} and lot_no <= #{f['to']})" if (f['from'] != "" && f['to'] != "")
+        when 'Carat'
+          #query << "(carat between '#{f['from'].to_f}' and '#{f['to'].to_f}')"
+          query << "(carat >= '#{f['from'].to_f}' and  carat <= '#{f['to'].to_f}')" if (f['from'] != "" && f['to'] != "")
+        else
+        end
+
+      end
+
+    end
+
+    q = query.join(' or ')
+
+    q = q + " #{query.length == 0 ? '' : 'and' } description like '%#{params[:search]}%'" unless params[:search].strip.blank?
+
+    @tender = current_customer.tenders.find(params[:id])
+    @stones = @tender.temp_stones.find(:all, :conditions =>  q)
+    @notes = current_customer.notes.find_all_by_tender_id(@tender.id).collect(&:key)
+
+    flags = Rating.find_all_by_tender_id_and_customer_id(@tender.id, current_customer.id)
+    @important = []
+    @read = []
+    flags.each do |f|
+      @important << f.key if f.flag_type == 'Imp'
+      @read << f.key if f.flag_type == 'Read'
+    end
+
+    render 'show'
+
+  end
+
+  def history
+    if current_customer
+      @customer = current_customer
+    elsif current_admin && !params[:search].blank? && !params[:search][:customer_id].blank?
+      @customer = Customer.find(params[:search][:customer_id])
+    end
+    @stones = Tender.search_results(params[:search], @customer, true)
+    @selling_price = {}
+
+    winners = TenderWinner.find_all_by_lot_no(@stones.collect(&:deec_no))
+
+    winners.each do |w|
+      @selling_price[w.lot_no] = w.selling_price
+    end
+
+    respond_to do |format|
+      format.html
+      format.js {render 'history.js.erb'}
+    end
+  end
+
+  def calendar
+  end
+
+  def calendar_data
+    start_date = Time.at(params[:start].to_i)
+    end_date = Time.at(params[:end].to_i)
+
+    @data = current_customer.tenders.tenders_for_calender(start_date, end_date)
+
+    render :json => @data.to_json
+  end
+
+  def delete_stones
+    @tender = Tender.find(params[:id])
+    @tender.stones.destroy_all
+    flash[:success] = 'Stones deleted successfully.'
+    render :js => "window.location.href = '/admins/tender/#{params[:id]}/edit'"
+  end
+  
+  def delete_winner_details
+    @tender = Tender.find(params[:id])
+    @tender.tender_winners.destroy_all
+    flash[:success] = 'Winner details deleted successfully.'
+    render :js => "window.location.href = '/admins/tender/#{params[:id]}/edit'"
+  end
+
+  def confirm_bids
+    @customer_tender = CustomersTender.find_by_tender_id_and_customer_id(params[:id], current_customer.id)
+    @customer_tender.update_attribute(:confirmed, true)
+    redirect_to tenders_path
+  end
+
+  def undo_confirmation
+    @customer_tender = CustomersTender.find_by_tender_id_and_customer_id(params[:id], current_customer.id)
+    @customer_tender.update_attribute(:confirmed, false)
+    redirect_to tenders_path
+  end
+
+  def view_past_result
+
+    # get last 3 tender details
+    @tender = current_customer.tenders.find(params[:id]) rescue Tender.find(params[:id]) 
+    @desc = params[:key]
+
+    tenders = Tender.find(:all, :conditions => ["id != ? and company_id = ? and created_at < ?",@tender.id, @tender.company_id, @tender.created_at], :order => "close_date DESC",:limit => 5, :include => :tender_winners)
+
+    @winners = TenderWinner.find(:all, :conditions => ["tender_id in (?) and description = ?",tenders.collect(&:id),@desc], :include => :tender)
+
+    render :partial => 'view_past_result'
+
+  end
+  
+  def update_stone_desc
+    stone = Stone.find(params[:pk])
+    stone.description = params[:value]
+    stone.save
+    
+    render :text => ""
+  end
+  
+  def update_winner_desc
+    winner = TenderWinner.find(params[:pk])
+    winner.description = params[:value]
+    winner.save
+    
+    render :text => ""
+  end
+
+  private
+
+  def get_value(data)
+    return ((data.class == Fixnum or data.class == Float)  ? data : (data.class == String ? data : data.nil? ? nil : data.value))
+  end
+
+end

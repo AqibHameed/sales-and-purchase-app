@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/dialuck/!svn/ver/101/trunk/app/models
+END
+tender.rb
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/dialuck/!svn/ver/101/trunk/app/models/tender.rb
+END
+contact_person.rb
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/dialuck/!svn/ver/78/trunk/app/models/contact_person.rb
+END
+rating.rb
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/dialuck/!svn/ver/60/trunk/app/models/rating.rb
+END
+customers_tender.rb
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/dialuck/!svn/ver/88/trunk/app/models/customers_tender.rb
+END
+stone.rb
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/dialuck/!svn/ver/63/trunk/app/models/stone.rb
+END
+admin.rb
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/dialuck/!svn/ver/60/trunk/app/models/admin.rb
+END
+price_list.rb
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/dialuck/!svn/ver/54/trunk/app/models/price_list.rb
+END
+ability.rb
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/dialuck/!svn/ver/58/trunk/app/models/ability.rb
+END
+bid.rb
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/dialuck/!svn/ver/60/trunk/app/models/bid.rb
+END
+customer.rb
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/dialuck/!svn/ver/101/trunk/app/models/customer.rb
+END
+winner.rb
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/dialuck/!svn/ver/101/trunk/app/models/winner.rb
+END
+tender_winner.rb
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/dialuck/!svn/ver/60/trunk/app/models/tender_winner.rb
+END
+note.rb
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/dialuck/!svn/ver/63/trunk/app/models/note.rb
+END
+company.rb
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/dialuck/!svn/ver/84/trunk/app/models/company.rb
+END
+news.rb
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/dialuck/!svn/ver/60/trunk/app/models/news.rb
+END
+temp_stone.rb
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/dialuck/!svn/ver/47/trunk/app/models/temp_stone.rb
+END

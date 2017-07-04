@@ -1,0 +1,62 @@
+<div class="table">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="table table-condensed table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Sr.</th>
+				<th>Lot No</th>
+				<th>DEEC No</th>
+				<th>Description</th>
+				<th>No of Stones</th>
+				<th>Carat</th>
+				<th>Matching parcels
+				<br/>
+				in past 3 Tenders</th>
+				<th>Matching winners
+				<br/>
+				in past 3 Tenders</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @stones.each_with_index  do |s,i| %>
+			<tr>
+				<td><%= i+1 %></td>
+				<td><%= s.lot_no.to_i %></td>
+				<td><%= s.deec_no.to_i %></td>
+				<td><a href="#" class="edit" data-type="text" data-pk="<%= s.id %>" data-url="/tenders/<%= @tender.id%>/update_stone_desc" data-title="Edit Description"><%= s.description %></a></td>
+				<td><%= s.no_of_stones.nil? ? '' : (s.no_of_stones.to_i rescue "") %></td>
+				<td><%= s.weight.round(2) unless s.weight.nil? %></td>
+				<td><%= @past_details[s.description] || '-' %></td>
+				<td><%= @past_winners[s.description] || '-' %></td>
+			</tr>
+			<% end %>
+		</tbody>
+		<tr>
+			<td style="text-align:right" colspan="5"><strong>Total :</strong></td>
+			<td><strong><%= get_sum(@stones) %></strong></td>
+			<td></td>
+		</tr>
+	</table>
+	superuser</a>
+</div>
+<style>
+	body.rails_admin .modal {
+		/* new custom width */
+		width: 80% !important;
+		/* must be half of the width, minus scrollbar on the left (30px) */
+		margin-left: -40% !important;
+	}
+	.edit {
+		border-bottom: 0px !important;
+	}
+</style>
+<script>
+	$(document).ready(function() {
+		$('.edit').editable({
+			validate : function(value) {
+				if ($.trim(value) == '') {
+					return 'This field is required';
+				}
+			}
+		});
+	});
+</script>

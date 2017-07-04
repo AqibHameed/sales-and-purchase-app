@@ -1,0 +1,9 @@
+Hello <%= @customer.name %>,
+<br><br>
+A new Tender, <strong><%= @tender.name %></strong> opens today.
+<br><br>
+To view the details of the tender <%= link_to 'Click Here', tender_url(@tender) %>.
+<br><br>
+Thanks & Regards,<br>
+Dialuck Team
+

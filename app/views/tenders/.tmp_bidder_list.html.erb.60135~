@@ -1,0 +1,74 @@
+<h3>Detailed Winner List - <%= @tender.name %></h3>
+<br/>
+<div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable">
+        <tr>
+            <th>
+                Lot No
+            </th>
+            <th>
+                Carat
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Bids
+            </th>
+            <th>
+                Total Bid amount
+            </th>
+            <th>
+                1 st
+            </th>
+            <th>
+                2 nd
+            </th>
+            <th>
+                3 rd
+            </th>
+        </tr>
+		<% total = 0 %>
+        <% @tender.stones.each_with_index do |stone| %>
+        <tr>
+            <td>
+                <%= stone.lot_no %>
+            </td>
+            <td>
+                <%= stone.weight %>
+            </td>
+            <td>
+                <%= link_to stone.description, bidder_list_tender_path(@tender, :stone_id => stone.id) %>
+            </td>
+            <td>
+                <%= stone.bids.length %>
+            </td>
+            <td>
+            	<% total = total + stone.bids.sum(:total) %>
+                <%= number_to_currency(stone.bids.sum(:total)) %>
+            </td>
+            <td>
+                <%= number_to_currency(stone.top_3_bids[0].total) rescue '-' %>
+            </td>
+            <td>
+                <%= number_to_currency(stone.top_3_bids[1].total) rescue '-' %>
+            </td>
+            <td>
+                <%= number_to_currency(stone.top_3_bids[2].total) rescue '-' %>
+            </td>
+        </tr>
+        <% end %>
+		<tr>
+            <td colspan="4">
+             
+            </td>
+            <td>
+               <strong> <%=  number_to_currency(total) %> </strong>
+            </td>
+            <td colspan="3">
+              
+            </td>
+            
+        </tr>
+    </table>
+</div>

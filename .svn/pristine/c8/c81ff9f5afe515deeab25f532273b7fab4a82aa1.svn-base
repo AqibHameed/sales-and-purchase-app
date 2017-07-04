@@ -1,0 +1,14 @@
+class TempStone < ActiveRecord::Base
+  attr_accessible :carat, :description, :lot_no, :no_of_stones, :tender_id
+  
+  
+  validates_presence_of :lot_no, :tender_id
+
+  validates_numericality_of :no_of_stones,:carat, :allow_blank => true
+  
+  
+  def key
+    self.description + '#' + self.carat.to_s
+  end
+  
+end

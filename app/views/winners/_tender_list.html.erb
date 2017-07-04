@@ -1,0 +1,36 @@
+<div class="table">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" >
+		<tr>
+			<th>Tender Name</th>
+			<th>Bids</th>
+			<th>Actions</th>
+		</tr>
+		<% @tenders.each do |tender| %>
+		<tr id="<%=tender.id%>">
+			<td><%= link_to tender.name, "#", :class=> "tender_result" %></td>
+			<td><%= tender.bids.count %></td>
+			<td><%= link_to 'Approved Client List', approved_list_winners_path(:tender_id => tender.id) %> |
+			<%= link_to 'Bidder List', bidders_winners_path(:tender_id => tender.id) %> |
+			<%= link_to 'Winner List', winner_winners_path(:tender_id => tender.id) %> |
+			<%= link_to 'Download Excel', download_excel_winners_path(:tender_id => tender.id) %> |
+			<%= link_to 'Detailed System winner list', winner_list_tender_path(tender) %>|
+			<%= link_to 'Bidder list by Name', customer_bid_list_tender_path(tender) %></td>
+		</tr>
+		<% end %>
+	</table>
+</div>
+<script>
+	$(document).on('click', '.tender_result', function(e) {
+		e.preventDefault()
+		var tender_id= $(this).closest('tr').attr('id');
+		$.ajax({
+			url : '<%= results_winners_path %>',
+			type : 'GET',
+			data : {tender: tender_id},
+			success : function(response) {			
+				 $.fancybox(response);
+			}
+		})
+	});
+</script>
+

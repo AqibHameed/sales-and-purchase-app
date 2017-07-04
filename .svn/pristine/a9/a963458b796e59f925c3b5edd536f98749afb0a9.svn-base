@@ -1,0 +1,5 @@
+$('tr').removeClass('current_bid');
+$('.bid_form').html('').hide();
+removeMask();
+$('#<%= params[:key].gsub('#','').gsub(' ','') %>').html('<%= image_tag('icon-notes.png') %>')
+alert(0)

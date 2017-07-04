@@ -1,0 +1,18 @@
+module TendersHelper
+
+  def time_remaining(close_date)
+    if close_date < Date.today
+      'Closed'
+    elsif close_date == Date.today
+      'Closing today'
+    else
+      "#{(close_date - Date.today).to_i} days left"
+    end
+  end
+
+  def delete_stones_tender_path(id)
+    "/tenders/#{id}/delete_stones"
+  end
+
+end
+

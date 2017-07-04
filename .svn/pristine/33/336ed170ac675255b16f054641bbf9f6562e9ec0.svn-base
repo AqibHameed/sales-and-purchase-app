@@ -1,0 +1,37 @@
+<%= form_tag('/winners/save', :method => :put) do %>
+  <%= hidden_field_tag 'tender_id', @tender.id %>
+  <div class="form-wrapper">
+
+    <% @tender.stones.each_with_index do |stone, i| %>
+    <div class="form-row">
+      <div class="label"><%= stone.deec_no %></div>
+      <div class="field">
+        <% if stone.bids.blank? %>
+          There are no bids for this stone
+        <% else %>
+          <% stone.top_three_bids.each do |bid| %>
+            <%= hidden_field_tag "winner[#{i}][tender_id]", @tender.id %>
+            <%= hidden_field_tag "winner[#{i}][stone_id]", stone.id %>
+            <%= hidden_field_tag "winner[#{i}][customer_id]", bid.customer.id %>
+            <%= radio_button_tag "winner[#{i}][bid_id]", bid.id %> <%= bid.customer.name %>
+            <%= " (#{bid.total}) " %>
+            <div class='clear10'></div>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <% end %>
+
+    <div class='form-row'>
+      <div class='label'>
+        &nbsp
+      </div>
+      <div class='field'>
+        <%= submit_tag 'Save', :class => 'btn-01' %>
+      </div>
+    </div>
+
+  </div>
+<% end %>
+

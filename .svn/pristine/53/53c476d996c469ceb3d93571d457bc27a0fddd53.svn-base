@@ -1,0 +1,17 @@
+class CustomersTender < ActiveRecord::Base
+
+  puts 'loaded'
+
+  belongs_to :customer
+  belongs_to :tender
+
+  after_create :send_new_tender_mail
+
+  def send_new_tender_mail
+
+    puts 'called'
+    TenderMailer.new_tender_mail(self.tender, self.customer).deliver
+  end
+
+end
+

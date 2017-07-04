@@ -1,0 +1,75 @@
+<%#= link_to raw("<span class='xls'></span>Export Bidder List"), "/winners/bidders.xls?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
+<%#= link_to "View Winner List", "/winners/winner?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
+<div class="table" id="total_bids">
+	<%#= form_tag('/winners/save', :method => :put) do %>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+		<thead>
+		  <tr>
+		   <td class="right_text bold_text" colspan="5"><%=@tender.name%></td>
+		   <td class="bold_text"><%=@tenders.try(:first).try(:name)%></td>
+		   <td class="bold_text" ><%=@tenders.try(:last).try(:name)%></td>
+		  </tr>
+			<tr>
+			  <th>Deec No</th>
+				<th>Description</th>				
+				<th>Carats</th>			
+				<th>Total</th>
+				<th class="tender_sorter">Average</th>
+				<th>Average</th>
+				<th>Average</th>				
+			</tr>
+		</thead>
+		<%= hidden_field_tag 'tender_id', @tender.id %>
+		<tbody>			
+		<% if @winners.any? %>
+		  <% @winners.each_with_index do |winner, i| %>
+				<tr id="<%= winner ? winner.id : 0 %>" class="main_winners">
+					<td><%= winner.lot_no.to_i %></td>
+					<td><%=  winner.description %></td>				
+					<td><%= @stones[winner.id] %></td>					
+					<td><%= winner.selling_price ? winner.selling_price : '-' %></td>
+					<td class= "<%= @stones[winner.lot_no]%> "><%= winner.avg_selling_price ? winner.avg_selling_price : '-' %></td>
+					<td class= "<%= @stones1[winner.lot_no]%>"><%= @stones1[winner.id] ? @stones1[winner.id] : "-" %></td>
+					<td class= "<%= @stones2[winner.lot_no] %>"><%= @stones2[winner.id] ? @stones2[winner.id] : "-" %></td>
+				</tr>		
+			<% end %>
+			<tr>
+				<td class="right_text bold_text" colspan="2">Total:</td>
+				<% total_weight= @tender_stones.map(&:weight).inject{|sum,x| sum.to_f + x.to_f }%>
+				<td><%= total_weight ? total_weight.round(2) : "" %></td>	
+				<% total_selling_price = @winners.map(&:selling_price).inject{|sum,x| sum.to_f + x.to_f } %>			
+				<td><%= total_selling_price ? total_selling_price.round(2) : ""  %></td>
+				<% total_avg_selling_price = @winners.map(&:avg_selling_price).inject{|sum,x| sum.to_f + x.to_f } %>
+				<td><%= total_avg_selling_price ? total_avg_selling_price.round(2) : "" %></td>			
+				<td colspan="2"></td>				
+			</tr>	
+		<% else %>
+		<tr>
+			<td colspan='6' style="text-align:center">No Bid details found. </td>
+		</tr>		
+		<% end %>
+	</table>
+</div>
+<div class="clear20"></div>
+<script>
+	$(document).ready(function() {
+		$("#myTable").tablesorter();
+
+	});
+	$(".tender_sorter").on('click', function(e) {
+		e.preventDefault();
+		var tender_id = $("#tender_id").val();		
+		  $.ajax({
+        type: "Get",
+        url: "<%= results_winners_path %>",
+        data: {tender: tender_id, sort_by_average: 'true'},
+        success: function(data) {
+        	var html = $('tbody', data).html();
+					$("#fancybox-content table tbody").html(html);
+        }
+    });
+	});
+
+</script>
+
+

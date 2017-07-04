@@ -1,0 +1,57 @@
+<h3>Detailed Bidder List : <%= @stone.description %> (<%= @tender.name %>)</h3>
+<br/>
+<div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable">
+        <tr>
+            <th>
+                No
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Company
+            </th>
+
+            <th>
+                Avg
+            </th>
+            <th>
+                Total
+            </th>
+           
+        </tr>
+		<% total = 0 %>
+        <% @bids.each_with_index do |bid, i| %>
+        <tr>
+            <td>
+                <%= i + 1 %>
+            </td>
+            <td>
+                <%= bid.customer.name %>
+            </td>
+            <td>
+                <%= bid.customer.company %>
+            </td>
+ 
+            <td>
+                <%= number_to_currency(bid.price_per_carat) %>
+            </td>
+            <td>
+            	<% total = total + bid.total %>
+            	<%= number_to_currency(bid.total) %>
+            </td>
+        </tr>
+        <% end %>
+		<tr>
+            <td colspan="4">
+             
+            </td>
+            <td>
+               <strong> <%=  number_to_currency(total) %> </strong>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="clear20"></div>
+<%= link_to "Bidder List",winner_list_tender_path(@tender), :class => "btn-01" %>

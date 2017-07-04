@@ -1,0 +1,16 @@
+class Winner < ActiveRecord::Base
+  attr_accessible :stone_id, :customer_id, :bid_id, :tender_id
+
+  belongs_to :stone
+  belongs_to :bid
+  belongs_to :customer
+  belongs_to :tender
+
+  after_create :send_winning_mail
+
+  def send_winning_mail
+    TenderMailer.winning_mail(self.customer, self.stone).deliver
+  end
+
+end
+

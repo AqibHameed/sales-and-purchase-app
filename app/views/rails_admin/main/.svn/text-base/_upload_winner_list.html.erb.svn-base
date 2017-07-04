@@ -1,0 +1,31 @@
+<div>
+  <%# if  !form.object.close_date.nil? and form.object.close_date < Date.today %>
+    <%= form.file_field :winner_list %>
+  <%# else %>
+    <!-- <p>Winner list can not be uploaded as Tender is still open.</p>-->
+  <%# end %>
+</div>
+<div>
+	<div class="column">
+		Lot No Column : <%= form.text_field :winner_lot_no_field, :value => 'A'%>
+	</div>
+	<div class="column">
+		Description Column : <%= form.text_field :winner_desc_field, :value => 'B' %>
+	</div>
+	<div class="column">
+		No of Stones Column : <%= form.text_field :winner_no_of_stones_field, :value => 'C' %>
+	</div>
+	<div class="column">
+		Weight Column : <%= form.text_field :winner_weight_field, :value => 'D' %>
+	</div>
+	<div class="column">
+		Selling Price Column : <%= form.text_field :winner_selling_price_field, :value => 'E' %>
+	</div>
+	<div class="column">
+		Per Carat Selling Price Column : <%= form.text_field :winner_carat_selling_price_field, :value => 'F' %>
+	</div>
+	<div class="column">
+		Sheet Number : <%= form.select :winner_sheet_no, (1..20).to_a %>
+	</div>
+
+</div>

@@ -1,0 +1,91 @@
+<%
+ models =  ActiveRecord::Base.subclasses.map(&:name)
+check ={}
+
+ models.each do |m|
+  check[m] = ""
+ end
+ check['all'] = ""
+
+ roles = field.value || ""
+ roles.split('|').each do |r|
+    model = r.split(':')[0]
+    check[model] = r.split(':')[1]
+  end
+
+%>
+
+<table class="table table-hover table-bordered table-condensed" style="width:60%;" >
+	<tr>
+		<th> Module </th>
+		<th>Manage</th>
+		<th>Read</th>
+		<th>write</th>
+		<th>Delete</th>
+		<th>History</th>
+		<th>Export</th>
+	<tr>
+	<tr>
+		<th>All </th>
+		<th><%= check_box_tag "admin[roles][all][]","manage", check['all'].include?('manage') ,:class => "manage", :id => "all-manage" %></th>
+		<th><%= check_box_tag "admin[roles][all][]","read", check['all'].include?('read')  ,:class => "read", :id => "all-read" %></th>
+		<th><%= check_box_tag "admin[roles][all][]","write", check['all'].include?('write') ,:class => "write", :id => "all-write" %></th>
+		<th><%= check_box_tag "admin[roles][all][]","delete", check['all'].include?('delete') ,:class => "delete", :id => "all-delete" %></th>
+		<th><%= check_box_tag "admin[roles][all][]","history", check['all'].include?('history') ,:class => "delete", :id => "all-history" %></th>
+		<th><%= check_box_tag "admin[roles][all][]","export", check['all'].include?('export')  ,:class => "delete", :id => "all-export" %></th>
+	<tr>
+		<% models.each do |m| %>
+		<% unless m == 'RailsAdmin::History' %>
+	<tr class="<%= cycle('even', 'odd')   %>"  >
+		<td> <%= m %> </td>
+		<td><%= check_box_tag "admin[roles][#{m}][]","manage", check[m].include?('manage') ,:class => "m" %></td>
+		<td><%= check_box_tag "admin[roles][#{m}][]","read", check[m].include?('read') ,:class => "r" %></td>
+		<td><%= check_box_tag "admin[roles][#{m}][]","write", check[m].include?('write'),:class => "w" %></td>
+		<td><%= check_box_tag "admin[roles][#{m}][]","delete", check[m].include?('delete') ,:class => "d" %></td>
+		<td><%= check_box_tag "admin[roles][#{m}][]","history", check[m].include?('history') ,:class => "h" %></td>
+		<td><%= check_box_tag "admin[roles][#{m}][]","export", check[m].include?('export') ,:class => "e" %></td>
+	<tr>
+		<% end %>
+		<% end %>
+</table>
+
+<script>
+	$('#admine').change(function() {
+		var value = $(this).val();
+
+		if (value == 'Sub-Admin') {
+			$('#admin_role_s_field').show();
+		} else {
+			$('#admin_role_s_field').hide();
+		}
+	})
+
+	$('#all-manage').click(function() {
+		$('input:checkbox').prop('checked', this.checked);
+	});
+	$('#all-read').click(function() {
+		$('.r').prop('checked', this.checked);
+	});
+	$('#all-write').click(function() {
+		$('.w').prop('checked', this.checked);
+	});
+	$('#all-delete').click(function() {
+		$('.d').prop('checked', this.checked);
+	});
+	$('#all-history').click(function() {
+		$('.h').prop('checked', this.checked);
+	});
+	$('#all-export').click(function() {
+		$('.e').prop('checked', this.checked);
+	});
+
+	$('tr .m').click(function() {
+		$(this).parent().parent().find('input:checkbox').prop('checked', this.checked);
+	})
+
+	$('.r, .w, .d, .h, .e').click(function() {
+		$(this).parent().parent().find('.m').prop('checked', this.checked ? true : false);
+	})
+
+</script>
+

@@ -1,0 +1,5 @@
+$('#pcb_<%= @stone.id %>').html('<%= number_to_currency @bid.price_per_carat %>');
+$('#tb_<%= @stone.id %>').html('<%= number_to_currency @bid.total %>');
+$('tr').removeClass('current_bid');
+$('.bid_form').html('').hide();
+removeMask();

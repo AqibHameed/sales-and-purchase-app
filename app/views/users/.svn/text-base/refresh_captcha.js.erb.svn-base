@@ -1,0 +1,1 @@
+$('#registration_captcha').html("<%= escape_javascript(render :partial => "/layouts/captcha") %>");

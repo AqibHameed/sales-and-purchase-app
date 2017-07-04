@@ -1,0 +1,13 @@
+Hello <%= @customer.name %>,
+<br><br>
+Your account has been created on <strong><%= link_to 'Dialuck', root_url %></strong>.
+<br><br>
+Username : <%= @customer.email %>
+<br>
+Password : <%= @customer.password %>
+<br><br>
+To login, <%= link_to 'Click here', root_url %>
+<br><br>
+Thanks & Regards,<br>
+Dialuck Team.
+

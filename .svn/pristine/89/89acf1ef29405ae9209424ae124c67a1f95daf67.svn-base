@@ -1,0 +1,21 @@
+class Stone < ActiveRecord::Base
+
+  attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size#, :tender_id
+
+  belongs_to :tender
+
+  rails_admin do
+    edit do
+      field :stone_type, :enum do
+        enum do
+          ['Stone', 'Parcel']
+        end
+      end
+      [:no_of_stones, :size, :weight, :carat, :purity, :color, :polished].each do |field_name|
+        field field_name
+      end
+    end
+  end
+
+end
+

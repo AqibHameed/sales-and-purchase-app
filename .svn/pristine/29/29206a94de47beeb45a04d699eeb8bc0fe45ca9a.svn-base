@@ -1,0 +1,107 @@
+class TendersController < ApplicationController
+
+  protect_from_forgery :except => :filter
+
+  before_filter :authenticate_logged_in_user!, :only => [:index, :history]
+  before_filter :authenticate_customer!, :except => [:index, :history, :delete_stones]
+  before_filter :authenticate_admin!, :only => [:delete_stones]
+  def index
+    if current_customer
+      @tenders = current_customer.tenders.open_tenders(DateTime.now).limit(10)
+    elsif
+    @tenders = Tender.first(10)
+    end
+    @news = News.first(10)
+  end
+
+  def show
+    @tender = Tender.find(params[:id], :include => :stones)
+    @stones = @tender.stones
+    @bid = Bid.find_or_initialize_by_customer_id_and_tender_id(current_customer.id, @tender.id)
+  end
+
+  def filter
+
+    query = []
+    if params[:filter]
+      params[:filter].each do |f|
+        case f['type']
+        when 'DEEC No'
+          query << "(deec_no >=  #{f['from']} and deec_no <= #{f['to']})"
+        when 'Lot No'
+          query << "(lot_no >=  #{f['from']} and lot_no <= #{f['to']})"
+        when 'Carat'
+          #query << "(carat between '#{f['from'].to_f}' and '#{f['to'].to_f}')"
+          query << "(weight >= '#{f['from'].to_f}' and  weight <= '#{f['to'].to_f}')"
+        else
+        end
+
+      end
+
+    end
+
+    q = query.join(' or ')
+
+    @tender = Tender.find(params[:id])
+    @stones = @tender.stones.find(:all, :conditions =>  q)
+    @bid = Bid.find_or_initialize_by_customer_id_and_tender_id(current_customer.id, @tender.id)
+
+    render 'show'
+
+  end
+
+  def history
+    if current_customer
+      @customer = current_customer
+    elsif current_admin && !params[:search].blank? && !params[:search][:customer_id].blank?
+      @customer = Customer.find(params[:search][:customer_id])
+    end
+    @stones = Tender.search_results(params[:search], @customer, true)
+    @selling_price = {}
+    
+    winners = TenderWinner.find_all_by_lot_no(@stones.collect(&:deec_no))
+    
+    winners.each do |w|
+      @selling_price[w.lot_no] = w.selling_price
+    end
+    
+
+    respond_to do |format|
+      format.html
+      format.js {render 'history.js.erb'}
+    end
+  end
+
+  def calender
+  end
+
+  def calender_data
+    start_date = Time.at(params[:start].to_i)
+    end_date = Time.at(params[:end].to_i)
+
+    @data = Tender.tenders_for_calender(start_date, end_date)
+
+    render :json => @data.to_json
+  end
+
+  def delete_stones
+    @tender = Tender.find(params[:id])
+    @tender.stones.destroy_all
+    flash[:success] = 'Stones deleted successfully.'
+    render :js => "window.location.href = '/admins/tender/#{params[:id]}/edit'"
+  end
+
+  def confirm_bids
+    @customer_tender = CustomersTender.find_by_tender_id_and_customer_id(params[:id], current_customer.id)
+    @customer_tender.update_attribute(:confirmed, true)
+    redirect_to tenders_path
+  end
+
+  def undo_confirmation
+    @customer_tender = CustomersTender.find_by_tender_id_and_customer_id(params[:id], current_customer.id)
+    @customer_tender.update_attribute(:confirmed, false)
+    redirect_to tenders_path
+  end
+
+end
+

@@ -1,0 +1,269 @@
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/dialuck/!svn/ver/59/trunk/db/migrate
+END
+20140416133217_devise_invitable_add_to_customers.rb
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/dialuck/!svn/ver/54/trunk/db/migrate/20140416133217_devise_invitable_add_to_customers.rb
+END
+20131127060048_add_winner_list_fields_to_tender.rb
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/dialuck/!svn/ver/48/trunk/db/migrate/20131127060048_add_winner_list_fields_to_tender.rb
+END
+20131028112406_add_fields_to_tender_winner.rb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/dialuck/!svn/ver/46/trunk/db/migrate/20131028112406_add_fields_to_tender_winner.rb
+END
+20140425090444_create_versions.rb
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/dialuck/!svn/ver/55/trunk/db/migrate/20140425090444_create_versions.rb
+END
+20131029091523_add_type_to_rating.rb
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/dialuck/!svn/ver/46/trunk/db/migrate/20131029091523_add_type_to_rating.rb
+END
+20130926081431_change_carat.rb
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/dialuck/!svn/ver/45/trunk/db/migrate/20130926081431_change_carat.rb
+END
+20130611095343_add_fields_to_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/dialuck/!svn/ver/14/trunk/db/migrate/20130611095343_add_fields_to_tenders.rb
+END
+20130619064337_create_stones.rb
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/dialuck/!svn/ver/18/trunk/db/migrate/20130619064337_create_stones.rb
+END
+20130607113349_create_bids.rb
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/dialuck/!svn/ver/11/trunk/db/migrate/20130607113349_create_bids.rb
+END
+20130813090612_add_winners_attachment_to_tender.rb
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/dialuck/!svn/ver/42/trunk/db/migrate/20130813090612_add_winners_attachment_to_tender.rb
+END
+20130620064322_change_date_type_of_open_date_close_date_in_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/dialuck/!svn/ver/19/trunk/db/migrate/20130620064322_change_date_type_of_open_date_close_date_in_tenders.rb
+END
+20130529120030_add_fields_to_customers.rb
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/dialuck/!svn/ver/6/trunk/db/migrate/20130529120030_add_fields_to_customers.rb
+END
+20130529095812_create_rails_admin_histories_table.rb
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/dialuck/!svn/ver/2/trunk/db/migrate/20130529095812_create_rails_admin_histories_table.rb
+END
+20130821064755_add_indexes_via_suggest_db_indices.rb
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/dialuck/!svn/ver/42/trunk/db/migrate/20130821064755_add_indexes_via_suggest_db_indices.rb
+END
+20130531085711_create_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/dialuck/!svn/ver/3/trunk/db/migrate/20130531085711_create_tenders.rb
+END
+20130531100755_create_news.rb
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/dialuck/!svn/ver/3/trunk/db/migrate/20130531100755_create_news.rb
+END
+20150409060817_add_name_to_admins.rb
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/dialuck/!svn/ver/59/trunk/db/migrate/20150409060817_add_name_to_admins.rb
+END
+20130719050520_add_time_to_open_close_date_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/dialuck/!svn/ver/36/trunk/db/migrate/20130719050520_add_time_to_open_close_date_tenders.rb
+END
+20130531090512_create_customers_tenders_table.rb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/dialuck/!svn/ver/6/trunk/db/migrate/20130531090512_create_customers_tenders_table.rb
+END
+20131022065245_create_companies.rb
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/dialuck/!svn/ver/46/trunk/db/migrate/20131022065245_create_companies.rb
+END
+20130605092314_add_confirmable_to_customers.rb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/dialuck/!svn/ver/6/trunk/db/migrate/20130605092314_add_confirmable_to_customers.rb
+END
+20130619070120_remove_columns_from_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/dialuck/!svn/ver/18/trunk/db/migrate/20130619070120_remove_columns_from_tenders.rb
+END
+20130923101656_add_new_fields_to_customers.rb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/dialuck/!svn/ver/45/trunk/db/migrate/20130923101656_add_new_fields_to_customers.rb
+END
+20130531093111_add_attachments_columns_to_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/dialuck/!svn/ver/3/trunk/db/migrate/20130531093111_add_attachments_columns_to_tenders.rb
+END
+20140425090445_add_object_changes_to_versions.rb
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/dialuck/!svn/ver/55/trunk/db/migrate/20140425090445_add_object_changes_to_versions.rb
+END
+20130722102903_add_confirmed_to_customers_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/dialuck/!svn/ver/38/trunk/db/migrate/20130722102903_add_confirmed_to_customers_tenders.rb
+END
+20130710053201_add_fields_to_bids.rb
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/dialuck/!svn/ver/26/trunk/db/migrate/20130710053201_add_fields_to_bids.rb
+END
+20130529095811_devise_create_admins.rb
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/dialuck/!svn/ver/2/trunk/db/migrate/20130529095811_devise_create_admins.rb
+END
+20131016073224_create_notes.rb
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/dialuck/!svn/ver/46/trunk/db/migrate/20131016073224_create_notes.rb
+END
+20130604085817_add_send_confirmation_to_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/dialuck/!svn/ver/3/trunk/db/migrate/20130604085817_add_send_confirmation_to_tenders.rb
+END
+20130617101509_create_vestal_versions.rb
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/dialuck/!svn/ver/14/trunk/db/migrate/20130617101509_create_vestal_versions.rb
+END
+20131022065214_create_temp_stones.rb
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/dialuck/!svn/ver/46/trunk/db/migrate/20131022065214_create_temp_stones.rb
+END
+20150408144536_add_roles_to_admin.rb
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/dialuck/!svn/ver/61/trunk/db/migrate/20150408144536_add_roles_to_admin.rb
+END
+20131016053707_add_temp_document_to_tender.rb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/dialuck/!svn/ver/46/trunk/db/migrate/20131016053707_add_temp_document_to_tender.rb
+END
+20131022065309_add_company_to_tender.rb
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/dialuck/!svn/ver/46/trunk/db/migrate/20131022065309_add_company_to_tender.rb
+END
+20130529095902_devise_create_customers.rb
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/dialuck/!svn/ver/6/trunk/db/migrate/20130529095902_devise_create_customers.rb
+END
+20130620092811_add_no_of_parcels_to_bids.rb
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/dialuck/!svn/ver/20/trunk/db/migrate/20130620092811_add_no_of_parcels_to_bids.rb
+END
+20130709055035_add_stone_id_to_bids.rb
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/dialuck/!svn/ver/25/trunk/db/migrate/20130709055035_add_stone_id_to_bids.rb
+END
+20130716053847_create_winners.rb
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/dialuck/!svn/ver/29/trunk/db/migrate/20130716053847_create_winners.rb
+END
+20130816073529_create_tender_winners.rb
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/dialuck/!svn/ver/42/trunk/db/migrate/20130816073529_create_tender_winners.rb
+END
+20130708082735_add_fields_to_stones.rb
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/dialuck/!svn/ver/25/trunk/db/migrate/20130708082735_add_fields_to_stones.rb
+END
+20130617115508_rename_type_in_tenders.rb
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/dialuck/!svn/ver/14/trunk/db/migrate/20130617115508_rename_type_in_tenders.rb
+END
+20131118064553_add_tender_field_fields.rb
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/dialuck/!svn/ver/48/trunk/db/migrate/20131118064553_add_tender_field_fields.rb
+END
+20131022120955_create_ratings.rb
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/dialuck/!svn/ver/46/trunk/db/migrate/20131022120955_create_ratings.rb
+END

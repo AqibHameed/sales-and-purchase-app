@@ -1,0 +1,11 @@
+<% provide(:title, t('.title').to_s) %>
+
+<h1>Welcome home</h1>
+
+<h2>Admin Section</h2>
+<%= link_to 'sign_up' ,new_admin_registration_path %>
+<%= link_to 'sign_in' ,new_admin_session_path %>
+
+<h2>User Section</h2>
+<%= link_to 'sign_up' ,new_user_registration_path %>
+<%= link_to 'sign_in' ,new_user_session_path %>

@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/dialuck/!svn/ver/58/trunk/app/views/rails_admin/main
+END
+_delete_winner_list.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/dialuck/!svn/ver/51/trunk/app/views/rails_admin/main/_delete_winner_list.html.erb
+END
+_upload_winner_list.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/dialuck/!svn/ver/49/trunk/app/views/rails_admin/main/_upload_winner_list.html.erb
+END
+_upload_document.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/dialuck/!svn/ver/49/trunk/app/views/rails_admin/main/_upload_document.html.erb
+END
+_roles.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/dialuck/!svn/ver/58/trunk/app/views/rails_admin/main/_roles.html.erb
+END
+_blank.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/dialuck/!svn/ver/48/trunk/app/views/rails_admin/main/_blank.html.erb
+END
+_upload_temp_document.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/dialuck/!svn/ver/46/trunk/app/views/rails_admin/main/_upload_temp_document.html.erb
+END
+_total_carat_value.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/dialuck/!svn/ver/50/trunk/app/views/rails_admin/main/_total_carat_value.html.erb
+END
+_delete_stones.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/dialuck/!svn/ver/25/trunk/app/views/rails_admin/main/_delete_stones.html.erb
+END

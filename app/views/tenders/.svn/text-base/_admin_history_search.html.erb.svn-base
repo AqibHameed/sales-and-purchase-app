@@ -1,0 +1,9 @@
+<div class="">
+  <h3>Filter</h3>
+
+  <div class="clear10"></div>
+  <%= render :partial => 'search/form', :locals => {:post_url => '/tenders/history', :search_method => :get} %>
+
+</div>
+<div class="clear"></div>
+

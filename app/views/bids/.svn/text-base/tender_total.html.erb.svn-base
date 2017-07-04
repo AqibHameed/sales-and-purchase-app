@@ -1,0 +1,47 @@
+<div class="">
+	<h3>Total Bids List for <%= @tender.name %><span class='fright'></h3>
+
+	<div class="clear10"></div>
+  <div class="bid_filter_div">
+      <span><%= text_field_tag "search_deec_no", nil, :placeholder => 'Enter Deec NO', :class=> "bid_filter" %></span>
+      <span><%= text_field_tag "search_lot_no", nil, :placeholder => 'Enter Lot NO', :class=> "bid_filter"%></span>
+    	<span><%= text_field_tag "search_client_name", nil, :placeholder => 'Enter Client Name', :class=> "bid_filter"%></span>     	
+     	<span><%= text_field_tag "search_description", nil, :placeholder => 'Enter Description', :class=> "bid_filter"%></span>
+     	<div class="actions">
+	     	<input type="submit" value="Filter" name="commit" class="fright btn-00" id="search_bids" >
+				<input type="button" value="Reset" class="fright btn-00" onclick="window.location.href='<%= tender_total_bids_path(:tender_id => @tender.id) %>'" >
+			</div>
+  	</div>
+  	<div id= "total_bids_list">
+	<%= render :partial => 'total_bids_list' %>
+	</div>
+
+</div>
+<div class="clear"></div>
+
+<div class="tenders_list"></div>
+<script>
+	$(document).ready(function() {
+		$("#myTable").tablesorter();
+
+		$("#search_bids").click(function(){		
+			var deec_no =$('#search_deec_no').val();
+			var lot_no =$('#search_lot_no').val();
+			var client_name =$('#search_client_name').val();
+			var description =$('#search_description').val();
+			var tender_id =$('#tender_id').val();			
+			$.ajax({
+				type: "GET",
+				url: "/bids/tender_total?tender_id="+tender_id,
+				// dataType:'json',
+				data: {tender_id: tender_id, deec_no: deec_no, lot_no: lot_no, client_name: client_name, description: description},
+				success: function (data) {
+					var html = $('#total_bids_list', data).html();
+					$("#total_bids_list").html(html);
+				}
+			});
+	});
+
+
+	}); 
+</script>

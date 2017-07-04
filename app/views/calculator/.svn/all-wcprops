@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/dialuck/!svn/ver/57/trunk/app/views/calculator
+END
+get_parcels.js.erb
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/dialuck/!svn/ver/54/trunk/app/views/calculator/get_parcels.js.erb
+END
+_parcel.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/dialuck/!svn/ver/54/trunk/app/views/calculator/_parcel.html.erb
+END
+_table.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/dialuck/!svn/ver/56/trunk/app/views/calculator/_table.html.erb
+END
+index.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/dialuck/!svn/ver/57/trunk/app/views/calculator/index.html.erb
+END
+_table2.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/dialuck/!svn/ver/56/trunk/app/views/calculator/_table2.html.erb
+END
+index1.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/dialuck/!svn/ver/56/trunk/app/views/calculator/index1.html.erb
+END
+get_prices.js.erb
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/dialuck/!svn/ver/56/trunk/app/views/calculator/get_prices.js.erb
+END

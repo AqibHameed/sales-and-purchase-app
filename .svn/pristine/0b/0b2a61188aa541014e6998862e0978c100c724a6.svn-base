@@ -1,0 +1,86 @@
+<div class="table">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+		<thead>
+			<tr>
+				<th>Imp</th>
+				<th>Read</th>
+				<th>Lot No</th>
+				<th>Description</th>
+				<th>No of Stones</th>
+				<th>Carat</th>
+				<th>Past Results</th>
+				<th>Note</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<% @stones.each_with_index  do |s,i| %>
+			<tr>
+				<td><div id_key="<%= s.id %>" key="<%= s.key %>" score='<%= @important.include?(s.key) ? 1 : 0%>' id="star_<%= s.id %>" class="star" ></div><span class="score"><%= @important.include?(s.key) ? 1 : 0%></span></td>
+				<td><%= check_box_tag "read",1,@read.include?(s.key) ,{:id => "read_" + s.id.to_s, :class => "read", :key => s.key} %><span class="score"><%= @read.include?(s.key) ? 1 : 0%></span></td>
+				<td><%= s.lot_no.to_i %></td>
+				<td><%= s.description %></td>
+				<td><%= s.no_of_stones.nil? ? '' : (s.no_of_stones.to_i rescue "") %></td>
+				<td><%= s.carat.round(2) %></td>
+				<td><%= link_to "View Past Results", view_past_result_tender_path(@tender.id,:key => s.description), :class => "past_result_link" %></td>
+				<td> <%= link_to 'Note', add_note_tender_path(@tender.id,:key => s.key, :index => i), :class => 'add_note' %>
+				&nbsp;&nbsp;  <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(s.key) %></span> </td>
+			</tr>
+			<% end %>
+		</tbody>
+		<tr>
+			<td style="text-align:right" colspan="5"><strong>Total :</strong></td>
+			<td><strong><%= get_sum(@stones) %></strong></td>
+			<td colspan="2" ></td>
+			
+		</tr>	
+	</table>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		addStarRatings('<%= @tender.id %>')
+		addRead('<%= @tender.id %>')
+
+		$(document).on('click', '.add_note', function(e) {
+			e.preventDefault()
+			var _this = $(this);
+			var top = $(this).position()['top'] - 300;
+			var url = $(this).attr('href')
+			$.ajax({
+				url : url,
+				type : 'GET',
+				success : function(response) {
+					$('.bid_form').html(response).show()
+					// $('.bid_form').css('margin-top', top + 'px' )
+					$('tr').removeClass('current_bid');
+					$(_this).parents('tr').addClass('current_bid');
+				}
+			})
+		})
+	})
+
+	$(document).on('click', '.past_result_link', function(e) {
+		e.preventDefault()
+		var _this = $(this);
+		var top = $(this).position()['top'] - 300;
+		var url = $(this).attr('href')
+		$.ajax({
+			url : url,
+			type : 'GET',
+			success : function(response) {
+				$('.bid_form').html(response).show()
+				// $('.bid_form').css('margin-top', top + 'px' )
+				$('tr').removeClass('current_bid');
+				$(_this).parents('tr').addClass('current_bid');
+			}
+		})
+	})
+
+</script>
+
+<style>
+	.current_bid {
+		background-color: #E4E4E4 !important;
+	}
+</style>

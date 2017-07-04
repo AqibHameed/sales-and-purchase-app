@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/dialuck/!svn/ver/88/trunk/app/helpers
+END
+bids_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/dialuck/!svn/ver/25/trunk/app/helpers/bids_helper.rb
+END
+application_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/dialuck/!svn/ver/55/trunk/app/helpers/application_helper.rb
+END
+customers_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/dialuck/!svn/ver/13/trunk/app/helpers/customers_helper.rb
+END
+tenders_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/dialuck/!svn/ver/88/trunk/app/helpers/tenders_helper.rb
+END
+search_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/dialuck/!svn/ver/13/trunk/app/helpers/search_helper.rb
+END
+winners_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/dialuck/!svn/ver/29/trunk/app/helpers/winners_helper.rb
+END
+sessions_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/dialuck/!svn/ver/3/trunk/app/helpers/sessions_helper.rb
+END
+home_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/dialuck/!svn/ver/2/trunk/app/helpers/home_helper.rb
+END
+calculator_helper.rb
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/dialuck/!svn/ver/54/trunk/app/helpers/calculator_helper.rb
+END

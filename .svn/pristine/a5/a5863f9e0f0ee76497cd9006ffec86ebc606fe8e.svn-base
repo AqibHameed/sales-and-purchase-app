@@ -1,0 +1,36 @@
+<div class="title1" title = "Click to open / close" onclick ="$('.table').slideToggle()" ><%= @shape.capitalize %>&nbsp;(<%= @carat %>) CT</div>
+<%#= $price[@shape][@carat]  %>
+<div class="table">
+	<table cellspacing="0"  cellpadding="0">
+		<tr>
+			<th></th>
+			<% PURITY.each do |p| %>
+			<th> <%= p %> </th>
+			<% end %>
+		<tr>
+			<% COLOR.each do |c| %>
+			<% unless $price[@shape][@carat][c.downcase].nil? %>
+		<tr>
+			<th> <%= c %> </th>
+			<% PURITY.each do |p| %>
+			<td><a href="javascript:void(0)" class="addPrice" data-color="<%= c %>" data-purity="<%= p %>" data-price="<%= $price[@shape][@carat][c.downcase][p] rescue '0' %>" > <%= ($price[@shape][@carat][c.downcase][p] / 100.0).round(1) rescue '0' %> </a></td>
+			<% end %>
+		</tr>
+		<% end %>
+		<% end %>
+	</table>
+</div>
+
+<script>
+	$(document).ready(function() {
+
+		$('.addPrice').click(function() {
+			$('.table').slideUp()
+			$('#tender_color').val($(this).data('color'))
+			$('#tender_purity').val($(this).data('purity'))
+			$('#tender_price').val($(this).data('price'))
+			calculate()
+
+		})
+	})
+</script>

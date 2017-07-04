@@ -1,0 +1,90 @@
+<h3>Approved customer List - <%= @tender.name %></h3>
+<br/>
+<h2>Non Bidders</h2>
+<div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable">
+        <tr>
+            <th>
+                Serial No
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Contact No
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Company Name
+            </th>
+        </tr>
+        <% @customers.each_with_index do |c,i| %>
+		<% unless @bidders.include?(c.id) %>
+        <tr>
+            <td>
+                <%= i+1 %>
+            </td>
+            <td>
+                <%= c.name %>
+            </td>
+            <td>
+                <%= c.phone %>
+            </td>
+            <td>
+                <%= c.email %>
+            </td>
+            <td>
+                <%= c.company %>
+            </td>
+        </tr>
+		 <% end %>
+        <% end %>
+    </table>
+</div>
+<br/>
+<h2>Bidders</h2>
+<div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable">
+        <tr>
+            <th>
+                Serial No
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Contact No
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Company Name
+            </th>
+        </tr>
+        <% @customers.each_with_index do |c,i| %>
+		<% if @bidders.include?(c.id) %>
+        <tr>
+            <td>
+                <%= i+1 %>
+            </td>
+            <td>
+                <%= c.name %>
+            </td>
+            <td>
+                <%= c.phone %>
+            </td>
+            <td>
+                <%= c.email %>
+            </td>
+            <td>
+                <%= c.company %>
+            </td>
+        </tr>
+		 <% end %>
+        <% end %>
+    </table>
+</div>
+

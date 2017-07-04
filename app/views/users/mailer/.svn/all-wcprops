@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/dialuck/!svn/ver/2/trunk/app/views/users/mailer
+END
+reset_password_instructions.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/dialuck/!svn/ver/2/trunk/app/views/users/mailer/reset_password_instructions.html.erb
+END
+confirmation_instructions.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/dialuck/!svn/ver/2/trunk/app/views/users/mailer/confirmation_instructions.html.erb
+END
+unlock_instructions.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/dialuck/!svn/ver/2/trunk/app/views/users/mailer/unlock_instructions.html.erb
+END

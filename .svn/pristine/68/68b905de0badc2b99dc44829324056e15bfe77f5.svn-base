@@ -1,0 +1,70 @@
+<div class="tender-detail">
+	<h3> <%= @tender.name %></h3>
+	<div class="clear10"></div>
+	<%= raw(@tender.description)  %>
+	<div class="clear10"></div>
+	<form>
+		<div class="form-wrapper tend-detail">
+			<div class="form-row">
+				<div class="label">
+					Open Date
+				</div>
+				<div class="field">
+					<div>
+						<%= @tender.open_date.strftime('%b %e, %l:%M %p') %>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="form-row">
+				<div class="label">
+					Close Date
+				</div>
+				<div class="field">
+					<div>
+						<%= @tender.close_date.strftime('%b %e, %l:%M %p') %>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="form-row">
+				<div class="label">
+					Status
+				</div>
+				<div class="field">
+				  <% if @tender.open? %>
+					  <span class="stat-open">Open</span>
+				  <% else %>
+				    <span class="stat-close">Closed</span>
+				  <% end %>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</form>
+	<div class="clear"></div>
+
+	<div class="table">
+		<h2>Place your Bid.</h2>
+		<div class="form-wrapper bid-info">
+
+      <div class='stone_list'>
+		    <%= render 'stone_bids' %>
+	    </div>
+
+			<%# if @tender.open? %>
+			<%#= render 'bids/form' %>
+			<%# else %>
+			<%#= render 'bids/details' %>
+			<%# end %>
+
+		</div>
+
+		<div class="bid-info bid_form" style="width:40%!important; margin-left:20px; display:none">
+
+		</div>
+
+	</div>
+</div>
+<div class="clear"></div>
+

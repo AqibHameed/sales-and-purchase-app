@@ -1,0 +1,50 @@
+<%= stylesheet_link_tag "application" %>
+<%= javascript_include_tag 'application' %>
+
+<div class="wrapper">
+	 <h6>Welcome to Tender Program</h6>
+     <div class="sub-heading">
+     	<p>By</p>
+     	<p>Dialuck Trading Pvt. Ltd.</p>
+     </div>
+     <div class="clear20"></div>
+     <div class="clear20"></div>
+     <div class="heading">Login</div>
+     <div class="clear20"></div>
+     <div class="login-box">
+      <% user = User.new %>
+      <%= form_for(user, :url => session_path(user)) do |f| %>
+     	<div class="label">Username</div>
+        <div class="field">
+          <%= f.text_field :email %>
+          <%= hidden_field_tag 'admin[email]' %>
+        </div>
+        <div class="clear10"></div>
+        <div class="label">Password</div>
+        <div class="field">
+          <%= f.password_field :password %>
+          <%= hidden_field_tag 'admin[password]' %>
+        </div>
+        <div class="clear20"></div>
+        <div>
+          <%= f.submit 'Login', :class => 'btn-02 login_submit' %>
+          <!-- <a href="tender-dashboard.html" class="btn-02">Login</a> -->
+        </div>
+        <% end %>
+     </div>
+</div>
+
+
+<script type='text/javascript'>
+
+  $(document).ready(function(){
+
+    $(document).on('click', '.login_submit', function(){
+      $('#admin_email').val($('#user_email').val())
+      $('#admin_password').val($('#user_password').val())
+    })
+
+  })
+
+</script>
+

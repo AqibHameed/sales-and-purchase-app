@@ -1,0 +1,50 @@
+<div>
+	<%= form.file_field :document %>
+	<%= link_to 'Click here', '/files/sample.xls' %> to download sample xls file.
+</div>
+<div>
+	<div class="column">
+		DEEC No Column : <%= form.text_field :deec_no_field, :value => 'A'%>
+	</div>
+	<div class="column">
+		Lot No Column : <%= form.text_field :lot_no_field, :value => 'B'%>
+	</div>
+	<div class="column">
+		DEscription Column : <%= form.text_field :desc_field, :value => 'C' %>
+	</div>
+	<div class="column">
+		No of Stones Column : <%= form.text_field :no_of_stones_field, :value => 'D' %>
+	</div>
+	<div class="column">
+		Weight Column : <%= form.text_field :weight_field, :value => 'E' %>
+	</div>
+	<div class="column">
+		Sheet Number : <%= form.select :sheet_no, (1..20).to_a %>
+	</div>
+
+</div>
+<style>
+	.column {
+		float: left;
+		width: 30%;
+		clear: both;
+		margin-top: 10px;
+	}
+
+	.column input {
+		width: 30px !important;
+		float: right;
+	}
+
+	.column select {
+
+		width: 45px !important;
+		float: right;
+	}
+
+	#tender_deec_no_field_field, #tender_lot_no_field_field, #tender_desc_field_field, #tender_weight_field_field, #tender_no_of_stones_field_field, #tender_sheet_no_field {
+		display: none;
+	}
+
+</style>
+

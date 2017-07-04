@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  tender_id: 1
+  lot_no: 1
+  sellimg_price: MyString
+
+two:
+  tender_id: 1
+  lot_no: 1
+  sellimg_price: MyString

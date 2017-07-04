@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/dialuck/!svn/ver/53/trunk/app/views/customers
+END
+profile.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/dialuck/!svn/ver/45/trunk/app/views/customers/profile.html.erb
+END
+change_password.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/dialuck/!svn/ver/45/trunk/app/views/customers/change_password.html.erb
+END

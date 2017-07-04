@@ -1,0 +1,20 @@
+Dialuck::Application.routes.draw do
+
+  match '/login', :to => 'home#login'
+
+  devise_for :admins, :controllers => {:sessions => 'sessions'}
+  mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
+  devise_for :users, :controllers => {:sessions => 'sessions'}
+
+  resources :tenders do
+    collection do
+      get :history
+      get :calender
+      get :calender_data
+    end
+  end
+
+  root :to => 'tenders#index'
+
+end
+

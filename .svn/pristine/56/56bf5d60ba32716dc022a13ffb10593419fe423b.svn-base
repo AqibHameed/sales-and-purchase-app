@@ -1,0 +1,1 @@
+<%= select_tag "tender[parcel]",options_for_select(@tender.stones.collect{|c| [c.weight,c.weight] }), :class => 'select type_select' %>

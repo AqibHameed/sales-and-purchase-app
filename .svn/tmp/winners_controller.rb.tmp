@@ -1,0 +1,46 @@
+class WinnersController < ApplicationController
+
+  before_filter :authenticate_admin!
+  def list
+    @tenders = Tender.all
+  end
+
+  def bidders
+    @tender = Tender.find(params[:tender_id])
+    @stones = @tender.stones
+<<<<<<< .mine
+  end
+
+  def winner
+
+    @tender = Tender.find(params[:tender_id])
+    @stones = @tender.stones
+
+    winners = TenderWinner.find_all_by_tender_id(@tender.id)
+
+    @winner_list = {}
+    winners.each do |w|
+      @winner_list[w.lot_no] = w.selling_price
+    end
+=======
+#    if @tender.winners.blank?
+#      render 'new'
+#    else
+#      render 'winners_list'
+#    end
+>>>>>>> .r41
+
+  end
+
+  def save
+    @winner_attr = params['winner']
+    @winner_attr.each do |k, winner_attr|
+      unless winner_attr['bid_id'].blank?
+        Winner.create(winner_attr)
+      end
+    end
+    redirect_to winner_winners_path(:tender_id => params[:tender_id])
+  end
+
+end
+

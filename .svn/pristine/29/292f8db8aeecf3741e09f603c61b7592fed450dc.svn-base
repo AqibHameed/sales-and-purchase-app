@@ -1,0 +1,78 @@
+<div class="">
+  <h3>Profile</h3>
+
+  <div class="clear10"></div>
+  <%= form_for @customer, :url => update_profile_customers_path do |f| %>
+    <div class="form-wrapper">
+
+      <div class="form-row">
+        <div class="label">First Name</div>
+        <div class="field">
+          <%= f.text_field :first_name, :class => 'input' %>
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Last Name</div>
+        <div class="field">
+          <%= f.text_field :last_name, :class => 'input' %>
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Email</div>
+        <div class="field">
+          <%= f.text_field :email, :class => 'input', :readonly => true %>
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Phone</div>
+        <div class="field">
+          <%= f.text_field :phone, :class => 'input' %>
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">City</div>
+        <div class="field">
+          <%= f.text_field :city, :class => 'input' %>
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Address</div>
+        <div class="field">
+          <%= f.text_field :address, :class => 'input' %>
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Postal Code</div>
+        <div class="field">
+          <%= f.text_field :postal_code, :class => 'input' %>
+        </div>
+        <div class="clear"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">&nbsp;</div>
+        <div class="field">
+          <%= submit_tag 'Update', :class => 'btn-01' %>
+          <!-- <a href="#" class="btn-01">Search</a> -->
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  <% end %>
+
+
+</div>
+<div class="clear"></div>
+

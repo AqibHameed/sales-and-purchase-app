@@ -1,0 +1,28 @@
+<% provide(:title, t('.title').to_s) %>
+<div class="wrapper">
+   <h6>Welcome to Tender Program</h6>
+     <div class="sub-heading">
+     	<p>By</p>
+     	<p>Dialuck Trading Pvt. Ltd.</p>
+     </div>
+     <div class="clear20"></div>
+     <div class="clear20"></div>
+     <div class="heading">Sign up</div>
+     <div class="clear20"></div>
+     <div class="login-box">
+     <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+  <div class="label"><%= f.label :email%></div>
+  <div class="field"><%= f.email_field :email, :autofocus => true%></div>
+  <div class="clear10"></div>
+  <div class="label"><%= f.label :password %></div>
+  <div class="field"><%= f.password_field :password %></div>
+  <div class="clear10"></div>
+  <% if devise_mapping.rememberable? -%>
+    <div class="label"><%= f.check_box :remember_me %><%= f.label :remember_me %></div>
+  <% end -%>
+        <div class="clear20"></div>
+  <div><%= f.submit "Login", :class=> "btn-02"%></div>
+<% end %>
+        <div><%= render "admins/shared/links" %></div>
+     </div>
+</div>

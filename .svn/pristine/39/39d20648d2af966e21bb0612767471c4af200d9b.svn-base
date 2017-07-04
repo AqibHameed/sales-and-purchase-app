@@ -1,0 +1,7 @@
+<div>
+
+    <%= form.file_field :temp_document %>
+    <%= link_to 'Click here', '/files/sample_temp.xls' %> to download sample xls file.
+
+</div>
+

@@ -1,0 +1,93 @@
+<strong>Add Filter :</strong><div class="clear10"></div>
+<form action="/tenders/<%= @tender.id%>/filter" method="post">
+	<div class='filters'>
+
+		<% if params[:filter] %>
+		<% params[:filter].each do |f| %>
+		<div class='filter'>
+			<%= select_tag "filter[][type]", options_for_select(['Lot No','DEEC No','Carat'], f['type'])  %>&nbsp;&nbsp;&nbsp;&nbsp;
+			From : &nbsp;<%= text_field_tag "filter[][from]", f['from'], :class => "input1" %>&nbsp;&nbsp;To :&nbsp;&nbsp;<%= text_field_tag "filter[][to]", f['to'], :class => "input1" %>
+			<a href="javascript:void(0)" class="remove" onclick ="removeMe(this)"  ></a>
+			<div class="clear10"></div>
+		</div>
+
+		<% end %>
+		<script>
+			$('.filter:last').find('a').removeClass('remove');
+			$('.filter:last').find('a').addClass('add');
+			$('.filter:last').find('a').attr('onclick', 'addFilter()');
+		</script>
+		<% else %>
+
+		<div class='filter'>
+			<%= select_tag "filter[][type]", options_for_select(['Lot No','DEEC No','Carat'])  %>&nbsp;&nbsp;&nbsp;&nbsp;
+			From : &nbsp;<%= text_field_tag "filter[][from]", "", :class => "input1" %>&nbsp;&nbsp;To :&nbsp;&nbsp;<%= text_field_tag "filter[][to]", "", :class => "input1" %>
+			<a href="javascript:void(0)" class="add" onclick ="addFilter()"  ></a>
+			<div class="clear10"></div>
+		</div>
+		<% end %>
+	</div>
+
+	
+	<input type="submit" value="Filter" name="commit" class="fright btn-00" onclick="return validateForm()" >
+	<input type="button" value="Reset" class="fright btn-00" onclick="window.location.href='/tenders/<%= @tender.id%>'" >
+	<div class="clear10"></div>
+	<div class="clear20" style="border-top:1px solid #999;" ></div>
+</form>
+<script>
+	function addFilter() {
+		var html = $('.filter:first').html();
+		$('.filter:last').find('a').removeClass('add');
+		$('.filter:last').find('a').addClass('remove');
+		$('.filter:last').find('a').attr('onclick', 'removeMe(this)');
+		$('.filters').append("<div class='filter'>" + html + '</div>')
+		$('.filter:last').find('a').removeClass('remove');
+		$('.filter:last').find('a').addClass('add');
+		$('.filter:last').find('a').attr('onclick', 'addFilter()');
+		$('.filter:last').find('.input1').removeClass('error').val('');
+		validate();
+
+	}
+
+	function removeMe(me) {
+		$(me).parent().remove();
+	}
+
+	function validate() {
+
+		$(document).on('keydown', '.input1', function(e) {
+			$(e).removeClass('error');
+			if (validateKey(e.keyCode)) {
+
+			} else {
+				e.preventDefault()
+			}
+		});
+	}
+
+	function validateKey(key) {
+		if (key == 8 || key == 190 || key == 110 || (key <= 105 && key >= 96) || (key <= 57 && key >= 48)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function validateForm() {
+		var status = true;
+		$('.input1').each(function(e) {
+
+			if ($(this).val() == "") {
+				$(this).addClass('error');
+				status = false;
+			} else {
+				$(this).removeClass('error');
+			}
+		})
+
+		return status;
+
+	}
+
+	validate(); 
+</script>

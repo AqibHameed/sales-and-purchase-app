@@ -1,0 +1,16 @@
+<div class="dashboard">
+	<h2 style="margin-top:10px">
+		Winners List - <%= @tender.name %>
+		<%= link_to raw("<span class='print'></span>"), "javascript:void(0)", :onclick => "window.print();", :style => "float:right"   %>
+	</h1>
+	<div class="clear10"></div>
+	<div class='tenders_list'>
+		<%= render 'winner_list' %>
+	</div>
+	<br/>
+	<br/>
+</div>
+<script>
+$('.btn-01, .clear10, .header').remove();
+ window.print();
+</script>

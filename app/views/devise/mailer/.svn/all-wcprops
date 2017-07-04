@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/dialuck/!svn/ver/54/trunk/app/views/devise/mailer
+END
+unlock_instructions.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/dialuck/!svn/ver/44/trunk/app/views/devise/mailer/unlock_instructions.html.erb
+END
+invitation_instructions.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/dialuck/!svn/ver/54/trunk/app/views/devise/mailer/invitation_instructions.html.erb
+END
+reset_password_instructions.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/dialuck/!svn/ver/44/trunk/app/views/devise/mailer/reset_password_instructions.html.erb
+END
+confirmation_instructions.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/dialuck/!svn/ver/45/trunk/app/views/devise/mailer/confirmation_instructions.html.erb
+END

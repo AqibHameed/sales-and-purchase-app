@@ -1,0 +1,13 @@
+<div class="dashboard">
+	<h3>Winners List - <%= @tender.name %></h3>
+	<div class="clear10"></div>
+	<div class='tenders_list'>
+		<%= render 'winner_list' %>
+	</div>
+</div>
+<script>
+	$(document).ready(function() {
+		$("#myTable").tablesorter();
+	});
+
+</script>

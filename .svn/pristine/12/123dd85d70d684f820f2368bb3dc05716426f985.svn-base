@@ -1,0 +1,47 @@
+<table>
+  <thead>
+    <tr>
+      <th>Parcel DEEC No</th>
+      <th>Lot No</th>
+      <th>Description</th>
+      <th>Carat</th>
+      <th>Price per carat</th>
+      <th>Total Bid</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tender.stones.each do |stone| %>
+      <tr>
+        <td><%= stone.deec_no %></td>
+        <td><%= stone.lot_no %></td>
+        <td><%= stone.description %></td>
+        <td><%= stone.weight %></td>
+        <td><%= stone.per_carat_bid(current_customer) %></td>
+        <td><%= stone.total_bid(current_customer) %></td>
+        <td><%= link_to 'Bid', place_new_stone_bids_path(stone.id), :class => 'place_bid' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+    $(document).on('click', '.place_bid', function(e){
+      e.preventDefault()
+      var url = $(this).attr('href')
+      $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(response){
+          $('.bid_form').html(response).show()
+        }
+      })
+    })
+
+  })
+
+</script>
+

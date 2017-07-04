@@ -1,0 +1,11 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/dialuck/!svn/ver/3/trunk/app/views/sessions
+END
+login.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/dialuck/!svn/ver/3/trunk/app/views/sessions/login.html.erb
+END

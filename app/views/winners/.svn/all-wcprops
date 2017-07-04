@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/dialuck/!svn/ver/100/trunk/app/views/winners
+END
+bidders.xls.erb
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/dialuck/!svn/ver/45/trunk/app/views/winners/bidders.xls.erb
+END
+winners_list.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/dialuck/!svn/ver/29/trunk/app/views/winners/winners_list.html.erb
+END
+results.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/dialuck/!svn/ver/100/trunk/app/views/winners/results.html.erb
+END
+winner.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/dialuck/!svn/ver/46/trunk/app/views/winners/winner.html.erb
+END
+_winner_form.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/dialuck/!svn/ver/52/trunk/app/views/winners/_winner_form.html.erb
+END
+winner.xls.erb
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/dialuck/!svn/ver/45/trunk/app/views/winners/winner.xls.erb
+END
+new.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/dialuck/!svn/ver/29/trunk/app/views/winners/new.html.erb
+END
+_tender_list.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/dialuck/!svn/ver/84/trunk/app/views/winners/_tender_list.html.erb
+END
+list.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/dialuck/!svn/ver/42/trunk/app/views/winners/list.html.erb
+END
+_winner_list.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/dialuck/!svn/ver/52/trunk/app/views/winners/_winner_list.html.erb
+END
+bidders.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/dialuck/!svn/ver/42/trunk/app/views/winners/bidders.html.erb
+END
+print.html.erb
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/dialuck/!svn/ver/56/trunk/app/views/winners/print.html.erb
+END

@@ -1,0 +1,4 @@
+$('.stone_list').html("<%= escape_javascript(render 'tenders/stone_bids') %>");
+$('tr').removeClass('current_bid');
+$('.bid_form').html('').hide();
+

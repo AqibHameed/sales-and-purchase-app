@@ -1,0 +1,38 @@
+.date{
+	border-top:2px solid #7E7E7E;
+
+}
+
+p.center {
+	font-size:28px;
+	text-align:center;
+}
+
+table tr td {
+	font-size:16px;
+	text-align:justify;
+	color:#2E2F89;
+	clear:both;
+}
+
+
+
+
+p.header{
+	float:left;
+} 
+
+body {
+	background:#fff;
+}
+
+
+
+#footer p {
+	font-size:14px;
+	font-weight:bold;
+	color:#2E2F89;
+	text-align:center;
+	bottom:0;
+	position:fixed;
+}

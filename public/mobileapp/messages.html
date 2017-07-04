@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Single page template</title>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css" />
+		<link rel="stylesheet" href="style.css" />
+		<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+	</head>
+
+	<body>
+
+		<div data-role="page">
+			<img src="images/logo.jpg"  width="100%"  height="110px" >
+			<div id="date" class="date" >
+				<p class="center">
+					Date
+				</p>
+			</div>
+
+			<ul data-role="listview" data-inset="true">
+				<li data-role="list-divider">
+					Friday, October 8, 2010 <span class="ui-li-count">2</span>
+				</li>
+				<li>
+					<a href="index.html"> <h2>Stephen Weber</h2>
+					<p>
+						<strong>You've been invited to a meeting at Filament Group in Boston, MA</strong>
+					</p>
+					<p>
+						Hey Stephen, if you're available at 10am tomorrow, we've got a meeting with the jQuery team.
+					</p>
+					<p class="ui-li-aside">
+						<strong>6:24</strong>PM
+					</p> </a>
+				</li>
+				<li>
+					<a > <h2>jQuery Team</h2>
+					<p>
+						<strong>Boston Conference Planning</strong>
+					</p>
+					<p>
+						In preparation for the upcoming conference in Boston, we need to start gathering a list of sponsors and speakers.
+					</p>
+					<p class="ui-li-aside">
+						<strong>9:18</strong>AM
+					</p> </a>
+				</li>
+				<li data-role="list-divider">
+					Thursday, October 7, 2010 <span class="ui-li-count">1</span>
+				</li>
+				<li>
+					<a href="index.html"> <h2>Avery Walker</h2>
+					<p>
+						<strong>Re: Dinner Tonight</strong>
+					</p>
+					<p>
+						Sure, let's plan on meeting at Highland Kitchen at 8:00 tonight. Can't wait!
+					</p>
+					<p class="ui-li-aside">
+						<strong>4:48</strong>PM
+					</p> </a>
+				</li>
+			</ul>
+			<div id="footer">
+				<p>
+					Help Line : 98200 03989
+					<br/>
+					www.chandrakantandco.com
+				</p>
+			</div>
+		</div><!-- /page -->
+
+	</body>
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			var m_names = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+			var d = new Date();
+			var curr_date = d.getDate();
+			var curr_month = d.getMonth();
+			$('#date p.center').html(curr_date + 'th ' + m_names[curr_month])
+		})
+	</script>
+
+</html>

@@ -1,0 +1,72 @@
+Dialuck::Application.routes.draw do
+
+  match '/login', :to => 'home#login'
+
+  devise_for :admins, :controllers => {:sessions => 'sessions'}
+  mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
+  devise_for :customers, :controllers => {:sessions => 'sessions'}
+
+  resources :tenders do
+    collection do
+      get :history
+      
+      get :calendar
+      get :calendar_data
+      
+    end
+    member do
+      delete :delete_stones
+      delete :delete_winner_details
+      put :confirm_bids
+      put :undo_confirmation
+      get :bid
+      post :filter
+      post :temp_filter
+      get :add_note
+      post :save_note
+      post :add_rating
+      post :add_read
+      get :view_past_result
+      get :admin_details
+      get :admin_winner_details
+      post :update_stone_desc
+      post :update_winner_desc
+    end
+  end
+
+  resources :winners do
+    collection do
+      get :list
+      get :winner
+      get :bidders
+      put :save
+    end
+  end
+
+  resources :search do
+    collection do
+      put :results
+    end
+  end
+
+  resources :customers do
+    collection do
+      get :profile
+      put :update_profile
+      get :change_password
+      put :update_password
+    end
+  end
+
+  resources :stones do
+    resources :bids do
+      collection do
+        get :place_new
+      end
+    end
+  end
+
+  root :to => 'tenders#index'
+
+end
+

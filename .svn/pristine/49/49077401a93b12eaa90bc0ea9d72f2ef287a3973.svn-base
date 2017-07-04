@@ -1,0 +1,26 @@
+class Bid < ActiveRecord::Base
+
+  attr_accessible :total, :message, :bid_date, :customer_id, :tender_id, :no_of_parcels, :price_per_carat
+
+  belongs_to :tender
+  belongs_to :customer
+  belongs_to :stone
+
+  validates_presence_of :total, :customer_id
+
+  before_save :set_bid_date
+
+  before_save{|s|
+  puts "before save #{s.price_per_carat}"
+  }
+
+  before_validation{|s|
+  puts "before save #{s.price_per_carat}"
+  }
+
+  def set_bid_date
+    self.bid_date = DateTime.now
+  end
+
+end
+
