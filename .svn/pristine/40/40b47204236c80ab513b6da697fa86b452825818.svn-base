@@ -1,9 +1,0 @@
-Hello <%= @customer.email %>,
-<br><br>
-Congratulations!!
-<br><br>
-You have won the tender for the bid placed for stone <b><%= @stone.description %></b>
-<br><br>
-Thanks & Regards,<br>
-Dialuck Team
-

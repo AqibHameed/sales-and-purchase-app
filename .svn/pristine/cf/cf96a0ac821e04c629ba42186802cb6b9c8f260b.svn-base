@@ -1,3 +1,0 @@
-$('tr').removeClass('current_bid');
-$('.bid_form').html('').hide();
-removeMask();

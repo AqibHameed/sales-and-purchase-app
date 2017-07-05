@@ -1,8 +1,8 @@
 class WinnersController < ApplicationController
 
-  before_filter :authenticate_admin!, :except => [:winner, :print]
-  before_filter :authenticate_logged_in_user!, :only => [:winner, :print]
-  
+  before_action :authenticate_admin!, :except => [:winner, :print]
+  before_action :authenticate_logged_in_user!, :only => [:winner, :print]
+
   def approved_list
     @tender = Tender.find(params[:tender_id])
     @customers = @tender.customers.order('first_name ASC, last_name ASC')

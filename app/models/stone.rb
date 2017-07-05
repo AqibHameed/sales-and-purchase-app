@@ -1,48 +1,48 @@
-class Stone < ActiveRecord::Base
-  
+class Stone < ApplicationRecord
+
   attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
                   :deec_no, :lot_no, :description, :tender_id
-  
+
   has_many :bids
   has_one :winner
   has_one :note
-  
+
   validates_presence_of :lot_no, :tender_id, :description
-  
+
   validates_numericality_of :no_of_stones, :weight, :carat, :allow_blank => true
-  
+
   belongs_to :tender
-  
+
   before_save{|stone|
     stone.no_of_stones = 1 if stone.no_of_stones.blank?
   }
-  
+
   def per_carat_bid(customer)
     bid = self.bids.find_by_customer_id(customer.id)
     bid.blank? ? '' : bid.price_per_carat
   end
-  
+
   def total_bid(customer)
     bid = self.bids.find_by_customer_id(customer.id)
     bid.blank? ? '' : bid.total
   end
-  
+
   def customer_bid_amount(customer)
     self.bids.find_by_customer_id(customer.id).total
   end
-  
+
   def winning_bid
     Bid.where(:id => self.id).order('total DESC').first
   end
-  
+
   def winning_customer
     winning_bid.blank? ? '' : winning_bid.customer.name
   end
-  
+
   def name
     self.lot_no.blank? ? "stone #{self.id}" : self.lot_no
   end
-  
+
   def top_bid
     stone_id = self.id
     Bid.find_by_sql("
@@ -56,7 +56,7 @@ class Stone < ActiveRecord::Base
     ")
     #    self.bids.order('total DESC, id ASC').limit(1)
   end
-  
+
   def top_3_bids
     stone_id = self.id
     Bid.find_by_sql("
@@ -70,8 +70,8 @@ class Stone < ActiveRecord::Base
     ")
     #    self.bids.order('total DESC, id ASC').limit(1)
   end
-  
-  
+
+
   def top_two_bids
     stone_id = self.id
     Bid.find_by_sql("
@@ -85,11 +85,11 @@ class Stone < ActiveRecord::Base
       LIMIT 2
     ")
   end
-  
+
   def key
     "#{self.description}##{ self.weight.to_s}"
   end
-  
+
   rails_admin do
     label "List"
     list do
@@ -109,5 +109,5 @@ class Stone < ActiveRecord::Base
       end
     end
   end
-  
+
 end

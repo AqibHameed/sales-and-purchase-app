@@ -1,5 +1,5 @@
-class CustomersTender < ActiveRecord::Base
-  
+class CustomersTender < ApplicationRecord
+
   belongs_to :customer
   belongs_to :tender
 
@@ -12,9 +12,9 @@ class CustomersTender < ActiveRecord::Base
   def self.send_confirmation_mail(tender, customer, bid)
      #if self.confirmed_changed?
       TenderMailer.confirmation_mail(tender, customer, bid).deliver
-     #end  
+     #end
   end
-    
+
   rails_admin do
   	list do
   		[:customer, :tender, :confirmed].each do |field_name|
@@ -24,6 +24,6 @@ class CustomersTender < ActiveRecord::Base
   	     strftime_format "%Y-%m-%d"
       end
     end
-  end  
+  end
 end
 

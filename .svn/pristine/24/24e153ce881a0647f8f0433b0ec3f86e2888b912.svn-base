@@ -1,2 +1,0 @@
-<%= link_to 'Delete', delete_stones_tender_path(form.object.id), :confirm => 'Are you sure?', :remote => true, :method => :delete %>
-

@@ -1,4 +1,4 @@
-class News < ActiveRecord::Base
+class News < ApplicationRecord
 
   attr_accessible :title, :url, :date, :category, :description, :status
 
@@ -9,7 +9,7 @@ class News < ActiveRecord::Base
       end
       field :date do
          strftime_format "%Y-%m-%d"
-      end  
+      end
       field :status, :toggle
     end
     edit do
@@ -24,9 +24,8 @@ class News < ActiveRecord::Base
           ['News', 'Event']
         end
       end
-      field :description do
-        bootstrap_wysihtml5 true
-      end
+      field :description, :wysihtml5
+
       field :status do
         default_value true
       end

@@ -2,10 +2,10 @@ class TendersController < ApplicationController
 
   protect_from_forgery :except => [:filter, :temp_filter, :add_rating]
 
-  before_filter :authenticate_logged_in_user!, :only => [:index, :history, :show, :filter, :view_past_result]
-  before_filter :authenticate_customer!, :except => [:index, :history, :delete_stones,:delete_winner_details, :show, :filter, :view_past_result, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail ]
-  before_filter :authenticate_admin!, :only => [:delete_stones,:delete_winner_details, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail]
-  
+  before_action :authenticate_logged_in_user!, :only => [:index, :history, :show, :filter, :view_past_result]
+  before_action :authenticate_customer!, :except => [:index, :history, :delete_stones,:delete_winner_details, :show, :filter, :view_past_result, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail ]
+  before_action :authenticate_admin!, :only => [:delete_stones,:delete_winner_details, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail]
+
   layout :false, :only => [:admin_details, :admin_winner_details]
   
   def customer_bid_detail

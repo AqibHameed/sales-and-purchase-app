@@ -18,6 +18,7 @@
 //= require jquery.tablesorter.min.js
 //= require highcharts
 //= require jquery.fancybox-1.3.4
+//= require turbolinks
 
 
 //Admin Login

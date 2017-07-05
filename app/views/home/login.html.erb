@@ -24,16 +24,16 @@
            <%= hidden_field_tag 'customer[email]', @c_user.try(:email) %>
            <%= hidden_field_tag 'admin[email]', @c_user.try(:email) %>
           </div>
-          <div class="clear10"></div>        
+          <div class="clear10"></div>
           <div class="field">
             <%= f.password_field :password, :autocomplete => :off, :placeholder => "Password" %>
             <%= hidden_field_tag 'admin[password]' %>
-          </div>     	
+          </div>
         <% else %>
           <div class="label">Username</div>
           <div class="field">
             <%= f.text_field :email %>
-             <%= hidden_field_tag 'admin[email]' %>         
+             <%= hidden_field_tag 'admin[email]' %>
           </div>
           <div class="clear10"></div>
           <div class="label">Password</div>
@@ -41,11 +41,11 @@
             <%= f.password_field :password, :autocomplete => :off %>
             <%= hidden_field_tag 'admin[password]' %>
           </div>
-        <% end %>        
+        <% end %>
         <div class="clear20"></div>
         <div>
           <%= link_to "Forgot Password ?", "customers/password/new", :class=> "forgot_password" %>
-          <%= link_to "Login as different User", login_path(:key => "d_user"), :class=> "diff_user" if cookies[:c_user] %> 
+          <%= link_to "Login as different User", login_path(:key => "d_user"), :class=> "diff_user" if cookies[:c_user] %>
           <!-- <a href="tender-dashboard.html" class="btn-02">Login</a> -->
         </div>
         <div class="clear10"></div>

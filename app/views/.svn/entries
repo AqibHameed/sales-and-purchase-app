@@ -1,73 +1,0 @@
-10
-
-dir
-101
-https://172.20.3.16:81/dialuck/trunk/app/views
-https://172.20.3.16:81/dialuck
-
-
-
-2015-05-14T10:15:29.935695Z
-100
-suvarna.chavare
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-892892a0-ca7c-4efe-8b11-2f9ec742f81e
-
-bids
-dir
-
-rails_admin
-dir
-
-customers
-dir
-
-winners
-dir
-
-home
-dir
-
-calculator
-dir
-
-layouts
-dir
-
-users
-dir
-
-tenders
-dir
-
-search
-dir
-
-shared
-dir
-
-sessions
-dir
-
-tender_mailer
-dir
-
-admins
-dir
-
-devise
-dir
-

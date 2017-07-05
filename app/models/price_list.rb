@@ -44,8 +44,8 @@ class PriceList
     puts "=============================="
     puts price
     puts "=============================="
-    
-    $price = price 
+
+    $price = price
 
   end
 

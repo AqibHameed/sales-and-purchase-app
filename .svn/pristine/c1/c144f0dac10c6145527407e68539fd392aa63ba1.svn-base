@@ -1,9 +1,0 @@
-class TenderWinner < ActiveRecord::Base
-  attr_accessible :lot_no, :selling_price, :tender_id
-  
-  validates_presence_of :lot_no, :selling_price, :tender_id
-  validates_numericality_of :selling_price, :lot_no
-  
-  belongs_to :tender
-  
-end

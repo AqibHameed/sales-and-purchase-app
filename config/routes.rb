@@ -1,10 +1,8 @@
-Dialuck::Application.routes.draw do
+Rails.application.routes.draw do
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  get '/login', :to => 'home#login'
 
-  
-
-  match '/login', :to => 'home#login'
-  
-  match '/calculator', :to => 'calculator#index', :ad => 'calculator'
+  get '/calculator', :to => 'calculator#index', :ad => 'calculator'
   get "calculator/index1"
   get "calculator/get_parcels"
   get "calculator/get_prices"
@@ -16,10 +14,10 @@ Dialuck::Application.routes.draw do
   resources :tenders do
     collection do
       get :history
-      
+
       get :calendar
       get :calendar_data
-      
+
     end
     member do
       delete :delete_stones
@@ -39,13 +37,13 @@ Dialuck::Application.routes.draw do
       get :admin_winner_details
       post :update_stone_desc
       post :update_winner_desc
-      
+
       #reports
       get :winner_list
       get :bidder_list
       get :customer_bid_list
       get :customer_bid_detail
-      
+
     end
   end
 
@@ -57,7 +55,7 @@ Dialuck::Application.routes.draw do
       get :print
       get :download_excel
       put :save
-      get :results      
+      get :results
       get :approved_list
     end
   end
@@ -67,10 +65,10 @@ Dialuck::Application.routes.draw do
       get :list
       get :tender_total
       get :tender_success
-      get :tender_unsuccess 
+      get :tender_unsuccess
       get :parcel_report
     end
-  end    
+  end
 
   resources :search do
     collection do
@@ -96,6 +94,4 @@ Dialuck::Application.routes.draw do
   end
 
   root :to => 'tenders#index'
-
 end
-

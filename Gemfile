@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.13'
+# gem 'rails', '3.2.13'
+gem 'rails', '5.1.0'
 
 
-# gem "mysql2"#, "~> 0.3.11"
-gem 'pg'
-gem "devise", "~> 2.2.4"
+gem "mysql2"
+gem "devise"
 gem 'rails_admin_example_theme', :git => 'git://github.com/bbenezech/rails_admin_example_theme.git'
-gem "rails_admin", "~> 0.4.8"
+gem "rails_admin"
 gem "paperclip"
 gem 'bootstrap-wysihtml5-rails'
 gem 'rails_admin_toggleable'
@@ -17,17 +17,20 @@ gem 'fancybox-rails'
 gem 'suggest-db-indices'
 gem 'httparty'
 gem "cancan"
-gem 'paper_trail', '~> 3.0.1'
+gem 'paper_trail'
 
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
+  gem 'sass-rails'
+  gem 'coffee-rails'
   gem 'therubyracer', :platforms => :ruby
-  gem "uglifier", "~> 2.1.1"
+  gem "uglifier"
 end
 
 group :development do
-  gem "thin", "~> 1.5.1"
+  gem "thin"
+  gem 'listen', '>= 3.0.5', '< 3.2'
 end
 gem "whenever"
-gem 'activerecord-mysql2-adapter'
+gem 'protected_attributes_continued'
+gem 'turbolinks', '~> 5.0.0'
+gem 'rubocop', require: false

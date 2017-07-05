@@ -1,4 +1,4 @@
-class Customer < ActiveRecord::Base
+class Customer < ApplicationRecord
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -21,19 +21,19 @@ class Customer < ActiveRecord::Base
 
   # attr_accessible :title, :body
   validates :phone,
-            :format => {:with => /^\d{10}$/},
+            :format => {:with => /^\d{10}$/, multiline: true},
             :unless => proc{|obj| obj.phone.blank?} , :reduce => true
 
   validates :phone_2,
-            :format => {:with => /^\d{10}$/},
+            :format => {:with => /^\d{10}$/, multiline: true},
             :unless => proc{|obj| obj.phone_2.blank?} , :reduce => true
 
   validates :mobile_no,
-            :format => {:with => /^\d{10}$/},
+            :format => {:with => /^\d{10}$/, multiline: true},
             :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
 
   validates :email,
-            :format => {:with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i },
+            :format => {:with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, multiline: true },
             :presence => true, :reduce => true ,
             :on => :create
 
@@ -42,7 +42,7 @@ class Customer < ActiveRecord::Base
 
   after_create :send_account_creation_mail
   default_scope { order("first_name asc, last_name asc") }
-  
+
   def name
     "#{first_name} #{last_name}"
   end
@@ -50,13 +50,11 @@ class Customer < ActiveRecord::Base
   def tender_history
     self.tenders.where(:id => self.bids.map(&:tender_id))
   end
-  
+
   def send_account_creation_mail
-    
     TenderMailer.account_creation_mail(self).deliver  rescue logger.info "Error sending email"
-    
   end
-  
+
 
   rails_admin do
     list do

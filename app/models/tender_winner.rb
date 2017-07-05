@@ -1,5 +1,5 @@
-class TenderWinner < ActiveRecord::Base
-  
+class TenderWinner < ApplicationRecord
+
   attr_accessible :lot_no,:description, :selling_price,:avg_selling_price, :tender_id
 
   validates_presence_of :lot_no, :selling_price, :tender_id

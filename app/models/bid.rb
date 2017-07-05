@@ -1,4 +1,4 @@
-class Bid < ActiveRecord::Base
+class Bid < ApplicationRecord
 
   attr_accessible :total, :bid_date, :customer_id, :tender_id, :no_of_parcels, :price_per_carat
 
@@ -9,7 +9,7 @@ class Bid < ActiveRecord::Base
   belongs_to :stone
 
   validates_presence_of :total, :customer_id
-  
+
   validates_uniqueness_of :stone_id, :scope => :customer_id
 
   before_save :set_bid_date_and_lot_no, :set_tender_id
@@ -53,7 +53,7 @@ class Bid < ActiveRecord::Base
       end
       field :stone_description do
         label "Description"
-      end  
+      end
     end
   end
 

@@ -1,9 +1,0 @@
-Hello,
-<br><br>
-A Tender, <strong><%= @tender.name %></strong> closes today.
-<br><br>
-To view the details of the tender <%= link_to 'Click Here', tender_url(@tender) %>.
-<br><br>
-Thanks & Regards,<br>
-Dialuck Team
-

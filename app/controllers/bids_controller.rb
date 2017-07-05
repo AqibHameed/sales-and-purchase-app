@@ -1,7 +1,7 @@
 class BidsController < ApplicationController
 
-  before_filter :authenticate_admin!, :only => [:list, :tender_total, :tender_success, :tender_unsuccess]
-  before_filter :authenticate_logged_in_user!
+  before_action :authenticate_admin!, :only => [:list, :tender_total, :tender_success, :tender_unsuccess]
+  before_action :authenticate_logged_in_user!
 
   def create
     @stone = Stone.find(params[:stone_id])
@@ -39,11 +39,11 @@ class BidsController < ApplicationController
       col_str += (col_str.blank?) ? "stones.description LIKE '%#{params[:description]}%'" : " AND stones.description LIKE '%#{params[:description]}%'" unless params[:description].blank?
       col_str += (col_str.blank?) ? "(customers.first_name LIKE '%#{params[:client_name]}%' OR customers.last_name LIKE '%#{params[:client_name]}%')" : " AND (customers.first_name LIKE '%#{params[:client_name]}%' OR customers.last_name LIKE '%#{params[:client_name]}%')" unless params[:client_name].blank?
       @bids = @tender.bids.includes(:stone, :customer).where(col_str)
-    else  
-      @bids = @tender.bids.includes(:customer, :stone).order(:customer_id)     
-    end 
+    else
+      @bids = @tender.bids.includes(:customer, :stone).order(:customer_id)
+    end
 
-    respond_to do |format|     
+    respond_to do |format|
       format.html
       format.js { render :json => @bids }
     end
@@ -57,7 +57,7 @@ class BidsController < ApplicationController
     respond_to do |format|
       format.html
     end
-  end  
+  end
 
   def tender_unsuccess
     @tender = Tender.find(params[:tender_id])
@@ -65,7 +65,7 @@ class BidsController < ApplicationController
     @past_tenders = past_tenders ? past_tenders.collect(&:id) : []
     success_bids = @tender.tender_successful_bids
     @bids = @tender.bids - success_bids
-    respond_to do |format|     
+    respond_to do |format|
       format.html
     end
   end
@@ -76,14 +76,14 @@ class BidsController < ApplicationController
     @past_tenders = past_tenders ? past_tenders.collect(&:id) : []
     @bid = Bid.find_by_id(params[:bid])
     # bids = Bid.where(:stone_id => @bid.stone.id, :tender_id => @bid.tender.id).order('total desc')
-   
+
     #################### Graph Data #################
     @history = TenderWinner.find(:all, :conditions => ["tender_id in (?) and description = ?", past_tenders.collect(&:id),@bid.stone.description], :order => "tender_id")
-    
+
     @stones = Stone.find(:all, :conditions => ["description = ? and tender_id in (?)", @bid.stone.description,past_tenders.collect(&:id)])
     @bid_history = Bid.find(:all, :conditions => ["tender_id in (?) and stone_id in (?) and customer_id is NOT NULL",past_tenders.collect(&:id), @stones.collect(&:id)], :order => "total desc")
-   
-    if @bid_history.any?      
+
+    if @bid_history.any?
       @bids =  @bid_history
       my_list = {}
       @bid_history.each do |b|
@@ -99,7 +99,7 @@ class BidsController < ApplicationController
     @highest_bid = @top_client_bids.any? ? @top_client_bids.first.total : 0
 
     @past_winner = @history.last
-    respond_to do |format|      
+    respond_to do |format|
       format.html { render :layout => false}
     end
   end
@@ -126,9 +126,9 @@ class BidsController < ApplicationController
     @stone = Stone.find(params[:stone_id])
     tender = @stone.tender
     past_tenders = Tender.find(:all, :conditions => ["id != ? and company_id = ? and date(open_date) < ?",tender.id, tender.company_id, tender.open_date.to_date], :limit => 5, :order => "open_date DESC")
-    past_tender = past_tenders.first 
+    past_tender = past_tenders.first
     @history = TenderWinner.find(:all, :conditions => ["tender_id in (?) and description = ?",past_tenders.collect(&:id),@stone.description], :order => "tender_id")
-    
+
     stones = Stone.find(:all, :conditions => ["description = ? and tender_id in (?)",@stone.description,past_tenders.collect(&:id)])
     bid_history = Bid.find(:all, :conditions => ["tender_id in (?) and customer_id = ? and stone_id in (?)",past_tenders.collect(&:id),current_customer.id,stones.collect(&:id)], :order => "tender_id")
     my_list = {}
@@ -137,18 +137,18 @@ class BidsController < ApplicationController
     end
     @my_bid_list = []
     @history.each do |h|
-      @my_bid_list << (my_list[h.tender_id].nil? ? 0 : my_list[h.tender_id])  
+      @my_bid_list << (my_list[h.tender_id].nil? ? 0 : my_list[h.tender_id])
     end
-    
-    
-    
+
+
+
     @past_winner = @history.last
-    
-     
+
+
     logger.info "---------------------------------"
     logger.info @my_bid_list
     logger.info "---------------------------------"
-     
+
     @bid = Bid.find_or_initialize_by_stone_id_and_customer_id(params[:stone_id], current_customer.id)
     render :partial => 'place_new'
   end

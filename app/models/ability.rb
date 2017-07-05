@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
   def initialize(user)
 
-    if user.email == 'admin@dialuck.net'   
+    if user.try(:email) == 'admin@dialuck.net'
       can :access, :rails_admin
       can :dashboard
       can :manage, :all

@@ -1,5 +1,5 @@
-class Winner < ActiveRecord::Base
-  
+class Winner < ApplicationRecord
+
   attr_accessible :stone_id, :customer_id, :bid_id, :tender_id
 
   validates_uniqueness_of :bid_id, :scope => [:stone_id,:customer_id]
@@ -14,18 +14,16 @@ class Winner < ActiveRecord::Base
   end
 
   rails_admin do
-    
-      label "System Winner"
-      label_plural "System Winners"
+    label "System Winner"
+    label_plural "System Winners"
     list do
       [:tender, :customer, :bid, :stone].each do |field_name|
         field field_name
       end
       field :created_at do
-         strftime_format "%Y-%m-%d"
+        strftime_format "%Y-%m-%d"
       end
     end
-  end  
-
+  end
 end
 

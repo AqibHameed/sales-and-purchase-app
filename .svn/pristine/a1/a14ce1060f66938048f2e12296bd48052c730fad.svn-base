@@ -1,4 +1,0 @@
-$('.stone_list').html("<%= escape_javascript(render 'tenders/stone_bids') %>");
-
-$('.bid_form').html('').hide();
-

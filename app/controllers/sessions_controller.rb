@@ -19,7 +19,11 @@ class SessionsController <  Devise::SessionsController
     else
       session[:show_popup] = false
     end
-    render :text => after_sign_in_path_for(resource)
+    respond_to do |format|
+      format.html { redirect_to after_sign_in_path_for(resource) }
+      format.js { redirect_to after_sign_in_path_for(resource), turbolinks: false }
+    end
+
   end
 
 end

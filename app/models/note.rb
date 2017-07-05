@@ -1,7 +1,7 @@
-class Note < ActiveRecord::Base
-  
+class Note < ApplicationRecord
+
   attr_accessible :customer_id, :key, :note, :tender_id, :stone_id, :deec_no
-  
+
   belongs_to :customer
   belongs_to :tender
   belongs_to :stone
@@ -11,7 +11,7 @@ class Note < ActiveRecord::Base
   def update_deec_no
     stone = Stone.find_by_id(self.stone_id)
     self.deec_no = stone.try(:deec_no)
-  end  
+  end
 
   rails_admin do
   	list do
@@ -38,6 +38,6 @@ class Note < ActiveRecord::Base
       [:customer, :tender, :key, :note, :stone].each do |field_name|
         field field_name
       end
-    end   
-  end 
+    end
+  end
 end
