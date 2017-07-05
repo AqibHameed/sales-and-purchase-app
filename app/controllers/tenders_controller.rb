@@ -7,19 +7,17 @@ class TendersController < ApplicationController
   before_action :authenticate_admin!, :only => [:delete_stones,:delete_winner_details, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail]
 
   layout :false, :only => [:admin_details, :admin_winner_details]
-  
+
   def customer_bid_detail
     @tender = Tender.find(params[:id])
     @bids = Bid.where(["tender_id = ? and customer_id = ?",@tender.id, params[:customer_id]]).includes(:customer, :stone)
-    
   end
-  
+
   def customer_bid_list
     @tender = Tender.find(params[:id])
     @bids = Bid.where(["tender_id = ?",@tender.id]).order("customer_id, total desc").includes(:customer, :stone)
-    
   end
-  
+
   def winner_list
     @tender = Tender.find(params[:id])
   end
@@ -30,44 +28,39 @@ class TendersController < ApplicationController
     @bids = Bid.where(["tender_id = ? and stone_id = ?",@tender.id,params[:stone_id]]).order("total desc").includes(:customer, :stone)
   end
 
-  
   def admin_details
-
     @tender = Tender.find(params[:id])
     @past_details = @tender.past_details
     @past_winners = @tender.past_winners
     @stones = @tender.stones
-
   end
 
   def admin_winner_details
-
     @tender = Tender.find(params[:id])
     @past_details = @tender.past_details
     @past_winners = @tender.past_winners
     @winners = @tender.tender_winners
-
   end
 
   def index
     col_str = ""
-    if params[:comapany] || params[:tender] || params[:status]      
+    if params[:comapany] || params[:tender] || params[:status]
       col_str =  "tenders.name LIKE '%#{params[:tender]}%'"  unless params[:tender].blank?
       col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:company]}" : " AND tenders.company_id = #{params[:company]}" unless params[:company].blank?
       col_str += (col_str.blank?) ? ((params[:status] == '0') ? ("tenders.close_date < DATE(NOW())") : ("close_date > DATE(NOW())")) : ((params[:status] == '0') ? (" AND tenders.close_date < DATE(NOW())") : (" AND close_date > DATE(NOW())")) unless params[:status].blank?
-    end  
+    end
     if current_customer
       @tenders = current_customer.tenders.where(col_str).order("created_at desc")
       @tenders = @tenders.page params[:page]
     else
       @tenders = Tender.where(col_str).order("created_at desc").page params[:page]
-    end    
+    end
     @news = News.first(10)
   end
 
   def show
     if current_customer
-      @tender = current_customer.tenders.find(params[:id], :include => :stones)
+      @tender = current_customer.tenders.includes(:stones).find(params[:id])
       @notes = current_customer.notes.find_all_by_tender_id(@tender.id).collect(&:key)
       flags = Rating.find_all_by_tender_id_and_customer_id(@tender.id, current_customer.id)
       @important = []
@@ -119,10 +112,9 @@ class TendersController < ApplicationController
 
       end
     else
-      @tender = Tender.find(params[:id], :include => :stones)
+      @tender = Tender.includes(:stones).find(params[:id])
     end
     @stones = @tender.stones
-
   end
 
   def add_note
@@ -187,7 +179,6 @@ class TendersController < ApplicationController
   end
 
   def filter
-
     query = []
     if params[:filter]
       params[:filter].each do |f|
@@ -227,7 +218,7 @@ class TendersController < ApplicationController
     else
       @tender = Tender.find(params[:id])
     end
-    @stones = @tender.stones.find(:all, :conditions =>  q)
+    @stones = @tender.stones.where(q)
 
     render 'show'
 
@@ -280,7 +271,7 @@ class TendersController < ApplicationController
     @stones = Tender.search_results(params[:search], @customer, true)
     @selling_price = {}
 
-    winners = TenderWinner.find(:all, :conditions => ["lot_no in (?) or tender_id in (?) ", @stones.collect(&:deec_no), @stones.collect(&:tender_id)])
+    winners = TenderWinner.where("lot_no in (?) or tender_id in (?)", @stones.collect(&:deec_no), @stones.collect(&:tender_id))
 
     winners.each do |w|
       @selling_price[w.lot_no.to_s + '_' + w.tender_id.to_s ] = w.selling_price
@@ -327,16 +318,16 @@ class TendersController < ApplicationController
     @bids = @tender.bids.where(:customer_id => current_customer.id).includes(:stone)
     stones = @bids.map(&:stone)
     @last_avg = {}
-    stones.each_with_index do |s, index|     
+    stones.each_with_index do |s, index|
         winners = TenderWinner.where("tender_id =? and description = ?", past_tender.id, s.description)
         if winners
           past_last_avg = (@bids[index].price_per_carat / winners.first.try(:avg_selling_price)) if winners.first
           past_last_avg = past_last_avg.round(2) if past_last_avg
-          @last_avg[s.id] = past_last_avg   if past_last_avg     
+          @last_avg[s.id] = past_last_avg   if past_last_avg
         end
     end
-    puts @last_avg 
-    respond_to do |format|      
+    puts @last_avg
+    respond_to do |format|
       format.html # { render :layout => false}
     end
   end
@@ -347,22 +338,22 @@ class TendersController < ApplicationController
       @customer_tender.update_attribute(:confirmed, true)
       @bid = Bid.find_all_by_tender_id_and_customer_id(@customer_tender.tender_id, current_customer.id)
       TenderMailer.confirmation_mail(@customer_tender.tender, current_customer, @bid).deliver
-      @message = "success"   
-    else     
+      @message = "success"
+    else
       @bid = Bid.find_or_initialize_by_id_and_customer_id(params[:bid_id], current_customer.id)
       @tender = @bid.tender
       @bid.total = params[:bid_total]
       @bid.price_per_carat = params[:bid_carat]
       if @bid.save
-        @message = "success"     
+        @message = "success"
       else
-        @message = "error"      
+        @message = "error"
       end
-    end 
-    respond_to do |format|      
+    end
+    respond_to do |format|
       format.html { render :json => {:bid => @bid, :message => @message }}
-    end 
-  end  
+    end
+  end
 
   def undo_confirmation
     @customer_tender = CustomersTender.find_by_tender_id_and_customer_id(params[:id], current_customer.id)
@@ -371,17 +362,12 @@ class TendersController < ApplicationController
   end
 
   def view_past_result
-
     # get last 3 tender details
     @tender = current_customer.tenders.find(params[:id]) rescue Tender.find(params[:id])
     @desc = params[:key]
-
-    tenders = Tender.find(:all, :conditions => ["id != ? and company_id = ? and created_at < ?",@tender.id, @tender.company_id, @tender.created_at], :order => "close_date DESC",:limit => 5, :include => :tender_winners)
-
-    @winners = TenderWinner.find(:all, :conditions => ["tender_id in (?) and tender_winners.description = ?",tenders.collect(&:id),@desc], :include => :tender)
-
+    tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and created_at < ?", @tender.id, @tender.company_id, @tender.created_at).order("close_date DESC").limit(5)
+    @winners = TenderWinner.includes(:tender).where("tender_id in (?) and tender_winners.description = ?", tenders.collect(&:id), @desc)
     render :partial => 'view_past_result'
-
   end
 
   def update_stone_desc

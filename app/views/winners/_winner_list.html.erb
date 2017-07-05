@@ -1,6 +1,6 @@
 <div class="clear10"></div>
 <%= link_to raw("<span class='xls'></span>Export Winner List"), "/winners/winner.xls?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
-<%= link_to "View Bidder List", "/winners/bidders?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
+<%= link_to "View Bidder List", "/winners/bidders?tender_id=" + @tender.id.to_s, :class => "btn-01", data: { turbolinks: false } %>
 <div class="clear20"></div>
 <div class="table">
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
@@ -16,11 +16,11 @@
 			</tr>
 		</thead>
 		<tbody>
-			<% 
+			<%
 			bid_sum = 0
-			sum = 0 
+			sum = 0
 			%>
-					
+
 			<% @stones.each_with_index do |stone,i| %>
 			<tr id="row_<%= i %>" >
 				<td><%= stone.deec_no %></td>
@@ -50,14 +50,14 @@
 			<% end %>
 			<tr>
 				<td colspan="5" style="text-align:right;"  >
-					Total : 
+					Total :
 				</td>
 				<td>
 					<%= number_to_currency(bid_sum) %>
 				</td>
 				<td>
 					<%= number_to_currency(sum) %>
-				</td>	
+				</td>
 			</tr>
 
 		</tbody>
@@ -65,4 +65,4 @@
 </div>
 <div class="clear20"></div>
 <%= link_to raw("<span class='xls'></span>Export Winner List"), "/winners/winner.xls?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
-<%= link_to "View Bidder List", "/winners/bidders?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
+<%= link_to "View Bidder List", "/winners/bidders?tender_id=" + @tender.id.to_s, :class => "btn-01", data: { turbolinks: false } %>

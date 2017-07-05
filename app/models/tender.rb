@@ -297,7 +297,7 @@ class Tender < ApplicationRecord
   end
 
   def last_winner(stone_desc, past_tender_id)
-    history = TenderWinner.find(:all, :conditions => ["tender_id in (?) and description = ?",past_tender_id,stone_desc], :order => "tender_id")
+    history = TenderWinner.where("tender_id in (?) and description = ?", past_tender_id, stone_desc).order("tender_id")
     history.any? ? history.last.avg_selling_price : 0
   end
 

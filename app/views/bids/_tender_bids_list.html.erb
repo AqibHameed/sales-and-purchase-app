@@ -9,9 +9,9 @@
 		<% @tenders.each do |tender| %>
 		<tr>
 			<td><%= tender.name %></td>
-			<td><%= tender.bids.any? ? (link_to tender.total_bids_amount, tender_total_bids_path(:tender_id => tender.id)) : "0" %></td>
-			<td><%= tender.tender_successful_bids.any? ? (link_to tender.successful_bids_amount, tender_success_bids_path(:tender_id => tender.id)) : "0" %></td>
-			<td><%= tender.bids.any? ? (link_to tender.unsuccessful_bids_amount, tender_unsuccess_bids_path(:tender_id => tender.id)) : "0" %></td>
+			<td><%= tender.bids.any? ? (link_to tender.total_bids_amount, tender_total_bids_path(:tender_id => tender.id), data: { turbolinks: false }) : "0" %></td>
+			<td><%= tender.tender_successful_bids.any? ? (link_to tender.successful_bids_amount, tender_success_bids_path(:tender_id => tender.id), data: { turbolinks: false }) : "0" %></td>
+			<td><%= tender.bids.any? ? (link_to tender.unsuccessful_bids_amount, tender_unsuccess_bids_path(:tender_id => tender.id), data: { turbolinks: false }) : "0" %></td>
 		</tr>
 		<% end %>
 	</table>

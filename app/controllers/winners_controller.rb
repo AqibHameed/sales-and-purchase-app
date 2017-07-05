@@ -6,9 +6,9 @@ class WinnersController < ApplicationController
   def approved_list
     @tender = Tender.find(params[:tender_id])
     @customers = @tender.customers.order('first_name ASC, last_name ASC')
-    @bidders = Bid.find_all_by_tender_id(@tender.id).collect(&:customer_id).uniq
+    @bidders = Bid.where(tender_id: @tender.id).collect(&:customer_id).uniq
   end
-  
+
   def download_excel
     @tender = Tender.find(params[:tender_id], :include => {:stones => [:bids, :winner]})
 
@@ -182,16 +182,14 @@ class WinnersController < ApplicationController
   end
 
   def winner
-
     if current_admin
       @tender = Tender.find(params[:tender_id])
     elsif current_customer
       @tender = current_customer.tenders.find(params[:tender_id])
     end
-
     @stones = @tender.stones
 
-    winners = TenderWinner.find_all_by_tender_id(@tender.id)
+    winners = TenderWinner.where(tender_id: @tender.id)
 
     @winner_list = {}
     winners.each do |w|
@@ -199,38 +197,32 @@ class WinnersController < ApplicationController
     end
 
     respond_to do |format|
-
       format.xls{
-
         filename = "Winners List - #{@tender.name} #{@tender.open_date.strftime('%B')} #{@tender.open_date.year}.xls"
         headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
-
       }
-
       format.html
-
     end
-
   end
 
   def results
     @tender = Tender.find_by_id(params[:tender])
     company = @tender.company
-    @tenders = company.tenders.where("created_at < ?", @tender.created_at).order("created_at desc").limit(2)    
+    @tenders = company.tenders.where("created_at < ?", @tender.created_at).order("created_at desc").limit(2)
     twinner1 = @tenders.last.tender_winners if @tenders.any?
     twinner2 = @tenders.first.tender_winners if @tenders.any?
     @tender_stones = @tender.stones
     if params[:sort_by_average]
-      @winners = @tender.sort_by_avg(@tender, @tenders.first) 
+      @winners = @tender.sort_by_avg(@tender, @tenders.first)
     else
       @winners = @tender.tender_winners
-    end   
+    end
     @stones1 = {}
     @stones2 = {}
     @stones = {}
     if @winners.any?
     @winners.try(:each_with_index) do |w, i|
-      stone = Stone.where(:description => w.description, :tender_id => @tender.id )      
+      stone = Stone.where(:description => w.description, :tender_id => @tender.id )
       if stone.count == 1
         @stones[w.id] =  stone.try(:first).try(:weight)
         if (@tenders && @tenders.any?)
@@ -240,17 +232,17 @@ class WinnersController < ApplicationController
           @stones2[w.id] = ts2.first.try(:avg_selling_price) if ts2 && ts2.any?
           @stones2[w.lot_no] = "red_text"  if (@stones1[w.id] && @stones2[w.id] && (@stones1[w.id].to_f.between?(@stones2[w.id].to_f, w.avg_selling_price.to_f)))
           @stones1[w.lot_no] = "red_text"  if (@stones1[w.id] && @stones2[w.id] && @stones1[w.id] < @stones2[w.id].to_f)
-          @stones[w.lot_no] = "main_red_text"  if (@stones1[w.id] && w.avg_selling_price &&  (w.avg_selling_price.to_f < @stones1[w.id].to_f) ) 
-        end  
+          @stones[w.lot_no] = "main_red_text"  if (@stones1[w.id] && w.avg_selling_price &&  (w.avg_selling_price.to_f < @stones1[w.id].to_f) )
+        end
       else
         stone_dec = stone.try(:first).try(:description)
         stone_dec = stone_dec.gsub!(/\W+/, '') if stone_dec
-        if instance_variable_defined?("@stone_dec") 
+        if instance_variable_defined?("@stone_dec")
           instance_variable_set("@total#{stone_dec}",  stone.count)
-          completed = instance_variable_defined?("@completed#{stone_dec}")  ?  instance_variable_get("@completed#{stone_dec}")  : 1  
+          completed = instance_variable_defined?("@completed#{stone_dec}")  ?  instance_variable_get("@completed#{stone_dec}")  : 1
           instance_variable_set("@completed#{stone_dec}", completed)
-          if instance_variable_get("@total#{stone_dec}") != instance_variable_get("@completed#{stone_dec}") 
-            deec_no = stone[instance_variable_get("@completed#{stone_dec}")].try(:deec_no)  
+          if instance_variable_get("@total#{stone_dec}") != instance_variable_get("@completed#{stone_dec}")
+            deec_no = stone[instance_variable_get("@completed#{stone_dec}")].try(:deec_no)
             new_stone = Stone.where(:description => w.description, :tender_id => @tender.id, :deec_no => deec_no)
             @stones[w.id] = new_stone.try(:first).try(:weight) if new_stone
             if @tenders
@@ -259,31 +251,30 @@ class WinnersController < ApplicationController
 
               ts2 = TenderWinner.where(:description => w.description, :tender_id => @tenders.last.id ) if @tenders.count == 2 && @tenders.try(:last)
               @stones2[w.id] = ts2.first.try(:avg_selling_price) if ts2
-            end 
-           
+            end
+
             remaining =  (instance_variable_get("@total#{stone_dec}") - (instance_variable_get("@completed#{stone_dec}") + 1))
-            instance_variable_set("@remaining#{stone_dec}", remaining)            
-            completed = instance_variable_get("@total#{stone_dec}") - instance_variable_get("@remaining#{stone_dec}")            
-            instance_variable_set("@completed#{stone_dec}", completed)                        
+            instance_variable_set("@remaining#{stone_dec}", remaining)
+            completed = instance_variable_get("@total#{stone_dec}") - instance_variable_get("@remaining#{stone_dec}")
+            instance_variable_set("@completed#{stone_dec}", completed)
           end
         else
-          instance_variable_set("@stone_dec",  stone_dec) 
+          instance_variable_set("@stone_dec",  stone_dec)
           @stones[w.id] =  stone.try(:first).try(:weight)
           ts1 = TenderWinner.where(:description => w.description, :tender_id => @tenders.try(:first).try(:id) ) if @tenders.try(:first)
           @stones1[w.id] = ts1.first.try(:avg_selling_price) if ts1
           ts2 = TenderWinner.where(:description => w.description, :tender_id => @tenders.try(:last).try(:id) ) if @tenders.count == 2 && @tenders.try(:last)
           @stones2[w.id] = ts2.first.try(:avg_selling_price) if ts2
-        end        
+        end
       end
-     end 
-    end  
-    respond_to do |format|      
+     end
+    end
+    respond_to do |format|
       format.html { render :layout => false}
     end
-  end  
+  end
 
   def print
-
     if current_admin
       @tender = Tender.find(params[:tender_id])
     elsif current_customer
@@ -292,7 +283,7 @@ class WinnersController < ApplicationController
 
     @stones = @tender.stones
 
-    winners = TenderWinner.find_all_by_tender_id(@tender.id)
+    winners = TenderWinner.where(tender_id: @tender.id)
 
     @winner_list = {}
     winners.each do |w|
@@ -300,16 +291,11 @@ class WinnersController < ApplicationController
     end
 
     respond_to do |format|
-
       format.xls{
-
         filename = "Winners List - #{@tender.name} #{@tender.open_date.strftime('%B')} #{@tender.open_date.year}.xls"
         headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
-
       }
-
       format.html
-
     end
 
   end
