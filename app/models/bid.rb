@@ -4,9 +4,9 @@ class Bid < ApplicationRecord
 
   has_one :winner
 
-  belongs_to :tender
-  belongs_to :customer
-  belongs_to :stone
+  belongs_to :tender, optional: true
+  belongs_to :customer, required: true
+  belongs_to :stone, optional: true
 
   validates_presence_of :total, :customer_id
 
@@ -21,6 +21,10 @@ class Bid < ApplicationRecord
 
   def set_tender_id
     self.tender_id = self.stone.tender_id
+  end
+
+  def stone_description
+    stone.try(:description)
   end
 
   rails_admin do
@@ -50,12 +54,13 @@ class Bid < ApplicationRecord
       end
       field :stone do
         label "Lot No / List"
+        read_only true
       end
       field :stone_description do
         label "Description"
+        read_only true
       end
     end
   end
-
 end
 

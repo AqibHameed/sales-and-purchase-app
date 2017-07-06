@@ -1,2 +1,5 @@
-<%= link_to 'Delete', delete_stones_tender_path(form.object.id), :confirm => 'Are you sure?', :remote => true, :method => :delete %>
-
+<% if form.object.id.nil? %>
+  <%= link_to 'Delete', main_app.delete_stones_tender_path(0), :confirm => 'Are you sure?', :remote => true, :method => :delete %>
+<% else %>
+  <%= link_to 'Delete', main_app.delete_stones_tender_path(form.object.id), :confirm => 'Are you sure?', :remote => true, :method => :delete %>
+<% end %>
