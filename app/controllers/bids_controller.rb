@@ -5,7 +5,7 @@ class BidsController < ApplicationController
 
   def create
     @stone = Stone.find(params[:stone_id])
-    @bid = Bid.find_or_initialize_by_stone_id_and_customer_id(params[:stone_id], current_customer.id)
+    @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
     @tender = @stone.tender
     @bid.total = params[:bid][:total]
     @bid.price_per_carat = params[:bid][:price_per_carat]
@@ -149,7 +149,7 @@ class BidsController < ApplicationController
     logger.info @my_bid_list
     logger.info "---------------------------------"
 
-    @bid = Bid.find_or_initialize_by_stone_id_and_customer_id(params[:stone_id], current_customer.id)
+    @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
     render :partial => 'place_new'
   end
 

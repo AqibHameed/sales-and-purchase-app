@@ -56,7 +56,7 @@ class Tender < ApplicationRecord
 
 
   def past_details
-    tenders = Tender.find(:all, :conditions => ["id != ? and company_id = ? and created_at < ?",self.id, self.company_id, self.created_at], :order => "close_date DESC",:limit => 5, :include => :stones)
+    tenders = Tender.includes(:stones).where("id != ? and company_id = ? and created_at < ?", self.id, self.company_id, self.created_at).order("close_date DESC").limit(5)
 
     past_count = {}
 
@@ -72,7 +72,7 @@ class Tender < ApplicationRecord
   end
 
   def past_winners
-    tenders = Tender.find(:all, :conditions => ["id != ? and company_id = ? and created_at < ?",self.id, self.company_id, self.created_at], :order => "close_date DESC",:limit => 5, :include => :tender_winners)
+    tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and created_at < ?", self.id, self.company_id, self.created_at).order("close_date DESC").limit(5)
 
     past_count = {}
 
@@ -139,7 +139,7 @@ class Tender < ApplicationRecord
         worksheet.each_with_index do |data_row, i|
           unless i == 0
             unless data_row[('A'..'AZ').to_a.index(self.lot_no_field)].nil?
-              stone = self.stones.find_or_initialize_by_lot_no(Tender.get_value(data_row[Tender.get_index(self.lot_no_field)]))
+              stone = self.stones.find_or_initialize_by(lot_no: Tender.get_value(data_row[Tender.get_index(self.lot_no_field)]))
               stone.deec_no = Tender.get_value(data_row[Tender.get_index(self.deec_no_field)]) unless self.deec_no_field.blank?
               stone.description = Tender.get_value(data_row[Tender.get_index(self.desc_field)]) unless self.desc_field.blank?
               stone.no_of_stones = Tender.get_value(data_row[Tender.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
@@ -204,7 +204,7 @@ class Tender < ApplicationRecord
           worksheet.each_with_index do |data_row, i|
             unless data_row[Tender.get_index(self.winner_lot_no_field)].nil?
               lot_no = Tender.get_value(data_row[Tender.get_index(self.winner_lot_no_field)])
-              win = self.tender_winners.find_or_initialize_by_lot_no(lot_no)
+              win = self.tender_winners.find_or_initialize_by(lot_no: lot_no)
               win.description = data_row[Tender.get_index(self.winner_desc_field)]
               win.selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
               win.avg_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_carat_selling_price_field)])
@@ -402,7 +402,7 @@ class Tender < ApplicationRecord
       tender.stones.each do |stone|
         unless stone.bids.blank?
           winning_bid = stone.top_bid.first
-          winner = Winner.find_or_initialize_by_tender_id_and_stone_id(tender.id, stone.id)
+          winner = Winner.find_or_initialize_by(tender_id: tender.id, stone_id: stone.id)
           winner.bid_id = winning_bid.id
           winner.customer_id = winning_bid.customer.id
           winner.save

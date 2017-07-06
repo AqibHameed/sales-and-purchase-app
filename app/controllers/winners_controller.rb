@@ -41,10 +41,10 @@ class WinnersController < ApplicationController
     stones = @tender.stones
     stone_length = stones.length
 
-    past_tenders = Tender.find(:all, :conditions => ["id != ? and company_id = ? and date(open_date) < ?",@tender.id, @tender.company_id, @tender.open_date.to_date], :limit => 5, :order => "open_date DESC")
+    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
     past_tender = past_tenders.first
 
-    winners = TenderWinner.find_all_by_tender_id(past_tender.id) rescue []
+    winners = TenderWinner.where(tender_id: past_tender.id) rescue []
     @winner_list = {}
     winners.each do |w|
       @winner_list[w.lot_no] = w.selling_price
@@ -92,7 +92,7 @@ class WinnersController < ApplicationController
     end
 
     #adding customers
-    customers =  Customer.find(:all,:conditions => ["id in (?)",bids.pluck(:customer_id).uniq])
+    customers =  Customer.where("id in (?)", bids.pluck(:customer_id).uniq)
 
     cs = 9
 
@@ -306,7 +306,7 @@ class WinnersController < ApplicationController
       @winner_attr.each do |k, winner_attr|
         unless winner_attr['bid_id'].blank?
 
-          winner = Winner.find_or_initialize_by_tender_id_and_stone_id(winner_attr['tender_id'],winner_attr['stone_id'])
+          winner = Winner.find_or_initialize_by(tender_id: winner_attr['tender_id'], stone_id: winner_attr['stone_id'])
           winner.customer_id = winner_attr['customer_id']
           winner.bid_id = winner_attr['bid_id']
           winner.save

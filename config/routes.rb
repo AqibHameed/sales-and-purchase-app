@@ -79,9 +79,9 @@ Rails.application.routes.draw do
   resources :customers do
     collection do
       get :profile
-      put :update_profile
+      patch :update_profile
       get :change_password
-      put :update_password
+      patch :update_password
     end
   end
 

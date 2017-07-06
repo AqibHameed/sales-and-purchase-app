@@ -61,8 +61,8 @@ class TendersController < ApplicationController
   def show
     if current_customer
       @tender = current_customer.tenders.includes(:stones).find(params[:id])
-      @notes = current_customer.notes.find_all_by_tender_id(@tender.id).collect(&:key)
-      flags = Rating.find_all_by_tender_id_and_customer_id(@tender.id, current_customer.id)
+      @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
+      flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)
       @important = []
       @read = []
       flags.each do |f|
@@ -71,11 +71,11 @@ class TendersController < ApplicationController
       end
 
       # past tender
-      past_tenders = Tender.find(:all, :conditions => ["id != ? and company_id = ?",@tender.id, @tender.company_id],:order => "open_date DESC", :limit => 5)
+      past_tenders = Tender.where("id != ? and company_id = ?", @tender.id, @tender.company_id).order("open_date DESC").limit(5)
       @last_tender = past_tender = past_tenders.first
 
       # my past tendet bids
-      mpb = Bid.find(:all, :conditions => ["tender_id = ? and customer_id = ?",past_tender.id,current_customer.id]) if past_tender
+      mpb = Bid.where("tender_id = ? and customer_id = ?", past_tender.id,current_customer.id) if past_tender
       my_past_bids = {}
       unless past_tender.nil?
         stones = {}
@@ -88,7 +88,7 @@ class TendersController < ApplicationController
         end
 
         # system past tendet winners
-        pws = TenderWinner.find(:all, :conditions => ["tender_id = ?",past_tender.id])
+        pws = TenderWinner.where(tender_id: past_tender.id)
         past_winners = {}
 
         pws.each do |pw|
@@ -120,7 +120,7 @@ class TendersController < ApplicationController
   def add_note
     @tender = current_customer.tenders.find(params[:id])
     @key = params[:key]
-    @note = Note.find_by_tender_id_and_key_and_customer_id(@tender.id,@key,current_customer.id)
+    @note = Note.where(tender_id: @tender.id, key: @key, customer_id: current_customer.id)
 
     render :partial => 'add_note'
 
@@ -128,7 +128,7 @@ class TendersController < ApplicationController
 
   def save_note
     @tender = current_customer.tenders.find(params[:id])
-    @note = Note.find_or_initialize_by_tender_id_and_key_and_customer_id(@tender.id,params[:key],current_customer.id)
+    @note = Note.find_or_initialize_by(tender_id: @tender.id, key: params[:key], customer_id: current_customer.id)
     @note.note = params[:note]
     @note.stone_id = params[:stone_id]
     @note.deec_no = params[:deec_no]
@@ -142,7 +142,7 @@ class TendersController < ApplicationController
 
   def add_rating
 
-    r = Rating.find_or_initialize_by_tender_id_and_customer_id_and_key_and_flag_type(params[:id],current_customer.id, params[:key],'Imp')
+    r = Rating.find_or_initialize_by(tender_id: params[:id], customer_id: current_customer.id, key: params[:key], flag_type: 'Imp')
 
     if r.id.nil?
       r.save
@@ -157,8 +157,7 @@ class TendersController < ApplicationController
   end
 
   def add_read
-
-    r = Rating.find_or_initialize_by_tender_id_and_customer_id_and_key_and_flag_type(params[:id],current_customer.id, params[:key],'Read')
+    r = Rating.find_or_initialize_by(tender_id: params[:id], customer_id: current_customer.id, key: params[:key], flag_type: 'Read')
 
     if r.id.nil?
     r.save
@@ -173,9 +172,9 @@ class TendersController < ApplicationController
   end
 
   def bid
-    @tender = current_customer.tenders.find(params[:id], :include => :stones)
+    @tender = current_customer.tenders.includes(:stones).find(params[:id])
     @stones = @tender.stones
-    @bid = Bid.find_or_initialize_by_customer_id_and_tender_id(current_customer.id, @tender.id)
+    @bid = Bid.find_or_initialize_by(customer_id: current_customer.id, tender_id: @tender.id)
   end
 
   def filter
@@ -204,11 +203,11 @@ class TendersController < ApplicationController
     if current_customer
 
       @tender = current_customer.tenders.find(params[:id])
-      @notes = current_customer.notes.find_all_by_tender_id(@tender.id).collect(&:key)
+      @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
 
-      @bid = Bid.find_or_initialize_by_customer_id_and_tender_id(current_customer.id, @tender.id)
+      @bid = Bid.find_or_initialize_by(customer_id: current_customer.id, tender_id: @tender.id)
 
-      flags = Rating.find_all_by_tender_id_and_customer_id(@tender.id, current_customer.id)
+      flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)
       @important = []
       @read = []
       flags.each do |f|
@@ -247,10 +246,10 @@ class TendersController < ApplicationController
     q = q + " #{query.length == 0 ? '' : 'and' } description like '%#{params[:search]}%'" unless params[:search].strip.blank?
 
     @tender = current_customer.tenders.find(params[:id])
-    @stones = @tender.temp_stones.find(:all, :conditions =>  q)
-    @notes = current_customer.notes.find_all_by_tender_id(@tender.id).collect(&:key)
+    @stones = @tender.temp_stones.where(q)
+    @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
 
-    flags = Rating.find_all_by_tender_id_and_customer_id(@tender.id, current_customer.id)
+    flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)
     @important = []
     @read = []
     flags.each do |f|
@@ -334,13 +333,13 @@ class TendersController < ApplicationController
 
   def send_confirmation
     if params[:tender_id]
-      @customer_tender = CustomersTender.find_by_tender_id_and_customer_id(params[:tender_id], current_customer.id)
+      @customer_tender = CustomersTender.where(tender_id: params[:tender_id], customer_id: current_customer.id)
       @customer_tender.update_attribute(:confirmed, true)
-      @bid = Bid.find_all_by_tender_id_and_customer_id(@customer_tender.tender_id, current_customer.id)
+      @bid = Bid.where(tender_id: @customer_tender.tender_id, customer_id: current_customer.id)
       TenderMailer.confirmation_mail(@customer_tender.tender, current_customer, @bid).deliver
       @message = "success"
     else
-      @bid = Bid.find_or_initialize_by_id_and_customer_id(params[:bid_id], current_customer.id)
+      @bid = Bid.find_or_initialize_by(id: params[:bid_id], customer_id: current_customer.id)
       @tender = @bid.tender
       @bid.total = params[:bid_total]
       @bid.price_per_carat = params[:bid_carat]
@@ -356,7 +355,7 @@ class TendersController < ApplicationController
   end
 
   def undo_confirmation
-    @customer_tender = CustomersTender.find_by_tender_id_and_customer_id(params[:id], current_customer.id)
+    @customer_tender = CustomersTender.where(tender_id: params[:id], customer_id: current_customer.id)
     @customer_tender.update_attribute(:confirmed, false)
     redirect_to tenders_path
   end

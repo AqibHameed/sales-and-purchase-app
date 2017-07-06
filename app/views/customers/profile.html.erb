@@ -1,9 +1,9 @@
 <div class="">
 	<span style="font-size:14px;" class="fright"><%= link_to 'Change Password', change_password_customers_path   %> </span>
 	<h3>Profile </h3>
-	
+
 	<div class="clear10"></div>
-	<%= form_for @customer, :url => update_profile_customers_path do |f| %>
+	<%= form_for(@customer, url: update_profile_customers_path) do |f| %>
 	<div class="form-wrapper">
 
 		<div class="form-row">
@@ -74,7 +74,7 @@
 			</div>
 			<div class="clear"></div>
 		</div>
-	
+
 		<div class="form-row">
 			<div class="label">
 				Mobile No
@@ -84,7 +84,7 @@
 			</div>
 			<div class="clear"></div>
 		</div>
-	
+
 		<div class="form-row">
 			<div class="label">
 				Company
@@ -94,8 +94,7 @@
 			</div>
 			<div class="clear"></div>
 		</div>
-		
-		
+
 		<div class="form-row">
 			<div class="label">
 				Company Address
@@ -105,8 +104,6 @@
 			</div>
 			<div class="clear"></div>
 		</div>
-	
-	
 
 		<div class="form-row">
 			<div class="label">

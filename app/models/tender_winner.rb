@@ -1,6 +1,6 @@
 class TenderWinner < ApplicationRecord
 
-  attr_accessible :lot_no,:description, :selling_price,:avg_selling_price, :tender_id
+  attr_accessible :lot_no, :description, :selling_price, :avg_selling_price, :tender_id
 
   validates_presence_of :lot_no, :selling_price, :tender_id
   validates_numericality_of :selling_price, :lot_no, :avg_selling_price
@@ -9,7 +9,7 @@ class TenderWinner < ApplicationRecord
   def self.search_results(filters, current_customer, history_page = false)
     query = []
     unless filters.blank?
-      query << "tenders.id in (#{filters[:name].join(',')})" unless filters[:name].blank?
+      query << "tenders.id in (#{filters[:name]})" unless filters[:name].blank?
       query << "tenders.open_date >= '#{filters[:start_date].to_datetime.beginning_of_day}'" unless filters[:start_date].blank?
       query << "tenders.close_date <= '#{filters[:end_date].to_datetime.end_of_day}'" unless filters[:end_date].blank?
       query << "(tenders.open_date <= '#{filters[:specific_date].to_datetime.end_of_day}' AND tenders.open_date >= '#{filters[:specific_date].to_datetime.beginning_of_day}') OR (close_date <= '#{filters[:specific_date].to_datetime.end_of_day}' AND close_date >= '#{filters[:specific_date].to_datetime.beginning_of_day}')" unless filters[:specific_date].blank?

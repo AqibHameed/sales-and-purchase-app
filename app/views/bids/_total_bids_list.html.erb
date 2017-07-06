@@ -1,92 +1,92 @@
 <%#= link_to raw("<span class='xls'></span>Export Bidder List"), "/winners/bidders.xls?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
 <%#= link_to "View Winner List", "/winners/winner?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
 <div class="table" id="total_bids">
-	<%#= form_tag('/winners/save', :method => :put) do %>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
-		<thead>
-			<tr>
-			  <th>Client Name</th>
-				<th>Deec No</th>
-				<th>Lot No</th>
-				<th>Description</th>				
-				<th>Carats</th>
-				<th>Average</th>
-				<th>Total</th>
-				<th>Last</th>
-				<th>%</th>
-				<th>Graph</th>			
-			</tr>
-		</thead>
-		<%= hidden_field_tag 'tender_id', @tender.id %>
-		<tbody>			
-		<% if @bids.any? %>
-		  <% @bids.group_by { |d| d[:customer_id] }.each_with_index do |bids, i| %>
-			<% bids[1].each do |bid|%>			
-			<tr id="<%= bid ? bid.id : 0 %>">
-				<td><%= bid.customer.name if bid.customer %></td>		 
-				<td><%= bid.stone.deec_no if bid.stone %></td>
-				<td><%= bid.stone.lot_no if bid.stone %></td>
-				<td><%= bid.stone.description if bid.stone %></td>				
-				<td><%= bid.stone.weight if bid.stone %></td>
-				<td><%= bid.price_per_carat %></td>
-				<td><%= bid.total %></td>
-				<td><%=  (@past_tenders.any? && bid.stone) ? @tender.last_winner(bid.stone.description, @past_tenders) : "-" %></td>		
-				<td><%= (@past_tenders.any? && bid.stone) ? @tender.Average_last_winner(bid.price_per_carat, @tender.last_winner(bid.stone.description, @past_tenders)) : "-" %></td>
-				<td id="<%= bid.stone ? bid.stone.id : 0 %>">
-				<% if bid.stone%>
-				 <%= link_to "view", "#", :class=> "parcel_report" %>
-				<% else %>
+  <%#= form_tag('/winners/save', :method => :put) do %>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <thead>
+      <tr>
+        <th>Client Name</th>
+        <th>Deec No</th>
+        <th>Lot No</th>
+        <th>Description</th>
+        <th>Carats</th>
+        <th>Average</th>
+        <th>Total</th>
+        <th>Last</th>
+        <th>%</th>
+        <th>Graph</th>
+      </tr>
+    </thead>
+    <%= hidden_field_tag 'tender_id', @tender.id %>
+    <tbody>
+    <% if @bids.any? %>
+      <% @bids.group_by { |d| d[:customer_id] }.each_with_index do |bids, i| %>
+      <% bids[1].each do |bid|%>
+      <tr id="<%= bid ? bid.id : 0 %>">
+        <td><%= bid.customer.name if bid.customer %></td>
+        <td><%= bid.stone.deec_no if bid.stone %></td>
+        <td><%= bid.stone.lot_no if bid.stone %></td>
+        <td><%= bid.stone.description if bid.stone %></td>
+        <td><%= bid.stone.weight if bid.stone %></td>
+        <td><%= bid.price_per_carat %></td>
+        <td><%= bid.total %></td>
+        <td><%=  (@past_tenders.any? && bid.stone) ? @tender.last_winner(bid.stone.description, @past_tenders) : "-" %></td>
+        <td><%= (@past_tenders.any? && bid.stone) ? @tender.Average_last_winner(bid.price_per_carat, @tender.last_winner(bid.stone.description, @past_tenders)) : "-" %></td>
+        <td id="<%= bid.stone ? bid.stone.id : 0 %>">
+        <% if bid.stone%>
+         <%= link_to "view", "#", :class=> "parcel_report" %>
+        <% else %>
          <%= "-" %>
-        <% end %> 
-				</td>				
-		</tr>	
-		<% end %>
-		<tr>
-			<td class="right_text bold_text" colspan="4">Total:</td>
-			<% total = bids[1].map(&:stone).compact.collect{|a| a.weight}.inject{|sum,x| sum+x}%>
-			<td><%= total ? total.round(2) : 0 %></td>
-			<td></td>
-			<td><%= bids[1].collect{|a| a.total}.inject{|sum,x| sum + x }.round(2) %></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>	
-		<% end %>
-		<tr>
-			<td class="right_text bold_text" colspan="4"> Grand Total:</td>
-			<% grand_total = @bids.map(&:stone).compact.collect{|a| a.weight}.inject{|sum,x| sum+x}%>
-			<td><%= grand_total ? grand_total.round(2) : 0 %></td>
-			<td></td>
-			<td><%= @bids.collect{|a| a.total}.inject{|sum,x| sum + x }.round(2) %></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<% else %>
-		<tr>
-			<td colspan='10' style="text-align:center">No Bid details found. </td>
-		</tr>		
-		<% end %>
-	</table>
+        <% end %>
+        </td>
+    </tr>
+    <% end %>
+    <tr>
+      <td class="right_text bold_text" colspan="4">Total:</td>
+      <% total = bids[1].map(&:stone).compact.collect{|a| a.weight}.inject{|sum,x| sum+x}%>
+      <td><%= total ? total.round(2) : 0 %></td>
+      <td></td>
+      <td><%= bids[1].collect{|a| a.total}.inject{|sum,x| sum + x }.round(2) %></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <% end %>
+    <tr>
+      <td class="right_text bold_text" colspan="4"> Grand Total:</td>
+      <% grand_total = @bids.map(&:stone).compact.collect{|a| a.weight}.inject{|sum,x| sum+x}%>
+      <td><%= grand_total ? grand_total.round(2) : 0 %></td>
+      <td></td>
+      <td><%= @bids.collect{|a| a.total}.inject{|sum,x| sum + x }.round(2) %></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <% else %>
+    <tr>
+      <td colspan='10' style="text-align:center">No Bid details found. </td>
+    </tr>
+    <% end %>
+  </table>
 </div>
 <div class="clear20"></div>
 <%#= link_to raw("<span class='xls'></span>Export Bidder List"), "/winners/bidders.xls?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
 <%#= link_to "View Winner List", "/winners/winner?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>
 <div class="clear20"></div>
 <script>
-	$(document).on('click', '.parcel_report', function(e) {
-		e.preventDefault()
-		var _this = $(this);		
-		var stone_id = $(this).closest('td').attr('id');
-		var tender_id = $("#tender_id").val();
-		var bid_id = $(this).closest('tr').attr('id');	
-		$.ajax({
-			url : '<%= parcel_report_bids_path %>',
-			type : 'GET',
-			data : {stone: stone_id, tender: tender_id, bid: bid_id},
-			success : function(response) {			
-				 $.fancybox(response);
-			}
-		})
-	});
+  $(document).on('click', '.parcel_report', function(e) {
+    e.preventDefault()
+    var _this = $(this);
+    var stone_id = $(this).closest('td').attr('id');
+    var tender_id = $("#tender_id").val();
+    var bid_id = $(this).closest('tr').attr('id');
+    $.ajax({
+      url : '<%= parcel_report_bids_path %>',
+      type : 'GET',
+      data : {stone: stone_id, tender: tender_id, bid: bid_id},
+      success : function(response) {
+         $.fancybox(response);
+      }
+    })
+  });
 </script>
