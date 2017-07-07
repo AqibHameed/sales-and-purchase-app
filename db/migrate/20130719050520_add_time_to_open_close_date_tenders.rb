@@ -1,4 +1,4 @@
-class AddTimeToOpenCloseDateTenders < ActiveRecord::Migration
+class AddTimeToOpenCloseDateTenders < ActiveRecord::Migration[5.1]
   def up
     change_column :tenders, :open_date, :datetime
     change_column :tenders, :close_date, :datetime

@@ -1,4 +1,4 @@
-class CreateWinners < ActiveRecord::Migration
+class CreateWinners < ActiveRecord::Migration[5.1]
   def change
     create_table :winners do |t|
       t.references :tender

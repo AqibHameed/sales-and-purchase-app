@@ -1,4 +1,4 @@
-class AddConfirmableToCustomers < ActiveRecord::Migration
+class AddConfirmableToCustomers < ActiveRecord::Migration[5.1]
   def up
     change_table :customers do |t|
       ## Confirmable

@@ -1,4 +1,4 @@
-class CreateTenders < ActiveRecord::Migration
+class CreateTenders < ActiveRecord::Migration[5.1]
   def change
     create_table :tenders do |t|
       t.string :name

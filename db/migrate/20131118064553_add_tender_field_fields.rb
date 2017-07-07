@@ -1,4 +1,4 @@
-class AddTenderFieldFields < ActiveRecord::Migration
+class AddTenderFieldFields < ActiveRecord::Migration[5.1]
   def up
     add_column :tenders,:deec_no_field,:string
     add_column :tenders, :lot_no_field, :string

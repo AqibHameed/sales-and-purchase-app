@@ -1,4 +1,4 @@
-class CreateVersions < ActiveRecord::Migration
+class CreateVersions < ActiveRecord::Migration[5.1]
   def change
     if !table_exists?("versions")
       create_table :versions do |t|
@@ -10,6 +10,6 @@ class CreateVersions < ActiveRecord::Migration
         t.datetime :created_at
       end
       add_index :versions, [:item_type, :item_id]
-    end  
+    end
   end
 end

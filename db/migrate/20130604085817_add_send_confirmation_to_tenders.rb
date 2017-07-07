@@ -1,4 +1,4 @@
-class AddSendConfirmationToTenders < ActiveRecord::Migration
+class AddSendConfirmationToTenders < ActiveRecord::Migration[5.1]
   def up
     add_column :tenders, :send_confirmation, :boolean
   end

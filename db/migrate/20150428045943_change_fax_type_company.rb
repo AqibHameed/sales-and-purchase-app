@@ -1,4 +1,4 @@
-class ChangeFaxTypeCompany < ActiveRecord::Migration
+class ChangeFaxTypeCompany < ActiveRecord::Migration[5.1]
   def up
   		change_column :companies, :fax, :string if column_exists?(:companies, :fax, :integer)
   	  change_column :companies, :telephone, :string if column_exists?(:companies, :telephone, :integer)

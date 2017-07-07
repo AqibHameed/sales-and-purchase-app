@@ -1,4 +1,4 @@
-class AddWinnersAttachmentToTender < ActiveRecord::Migration
+class AddWinnersAttachmentToTender < ActiveRecord::Migration[5.1]
   def up
     add_attachment :tenders, :winner_list
   end

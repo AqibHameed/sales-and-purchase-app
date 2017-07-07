@@ -1,4 +1,4 @@
-class AddNameToAdmins < ActiveRecord::Migration
+class AddNameToAdmins < ActiveRecord::Migration[5.1]
   def change
   	add_column :admins, :name, :string unless column_exists?(:admins, :name)
   end

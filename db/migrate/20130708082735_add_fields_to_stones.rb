@@ -1,4 +1,4 @@
-class AddFieldsToStones < ActiveRecord::Migration
+class AddFieldsToStones < ActiveRecord::Migration[5.1]
   def change
     add_column :stones, :deec_no, :integer
     add_column :stones, :lot_no, :integer

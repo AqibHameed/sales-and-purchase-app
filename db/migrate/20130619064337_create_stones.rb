@@ -1,4 +1,4 @@
-class CreateStones < ActiveRecord::Migration
+class CreateStones < ActiveRecord::Migration[5.1]
   def change
     create_table :stones do |t|
       t.string :stone_type

@@ -1,4 +1,4 @@
-class AddFieldsToTenders < ActiveRecord::Migration
+class AddFieldsToTenders < ActiveRecord::Migration[5.1]
   def up
     add_column :tenders, :no_of_stones, :integer
     add_column :tenders, :weight, :float

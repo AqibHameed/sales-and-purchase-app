@@ -1,4 +1,4 @@
-class CreateTempStones < ActiveRecord::Migration
+class CreateTempStones < ActiveRecord::Migration[5.1]
   def change
     create_table :temp_stones do |t|
       t.integer :tender_id

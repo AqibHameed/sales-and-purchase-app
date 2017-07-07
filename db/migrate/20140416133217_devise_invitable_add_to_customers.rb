@@ -1,4 +1,4 @@
-class DeviseInvitableAddToCustomers < ActiveRecord::Migration
+class DeviseInvitableAddToCustomers < ActiveRecord::Migration[5.1]
   def up
     change_table :customers do |t|
       t.string     :invitation_token, :limit => 60

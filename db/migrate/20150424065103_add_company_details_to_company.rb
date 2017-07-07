@@ -1,4 +1,4 @@
-class AddCompanyDetailsToCompany < ActiveRecord::Migration
+class AddCompanyDetailsToCompany < ActiveRecord::Migration[5.1]
   def change
   	add_column :companies, :address, :string unless column_exists?(:companies, :address)
   	add_column :companies, :country, :string unless column_exists?(:companies, :country)

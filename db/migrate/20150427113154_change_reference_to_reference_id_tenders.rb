@@ -1,4 +1,4 @@
-class ChangeReferenceToReferenceIdTenders < ActiveRecord::Migration
+class ChangeReferenceToReferenceIdTenders < ActiveRecord::Migration[5.1]
   def up
   	rename_column :tenders, :reference, :reference_id if column_exists?(:tenders, :reference)
   end

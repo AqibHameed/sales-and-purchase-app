@@ -1,4 +1,4 @@
-class AddIndexesViaSuggestDbIndices < ActiveRecord::Migration
+class AddIndexesViaSuggestDbIndices < ActiveRecord::Migration[5.1]
   def change
     add_index :bids, :tender_id #foreign key
     add_index :bids, :customer_id #foreign key

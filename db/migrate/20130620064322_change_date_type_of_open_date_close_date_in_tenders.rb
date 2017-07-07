@@ -1,4 +1,4 @@
-class ChangeDateTypeOfOpenDateCloseDateInTenders < ActiveRecord::Migration
+class ChangeDateTypeOfOpenDateCloseDateInTenders < ActiveRecord::Migration[5.1]
   def up
     change_column :tenders, :open_date, :date
     change_column :tenders, :close_date, :date

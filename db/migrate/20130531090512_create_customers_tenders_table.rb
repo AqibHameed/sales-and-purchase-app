@@ -1,4 +1,4 @@
-class CreateCustomersTendersTable < ActiveRecord::Migration
+class CreateCustomersTendersTable < ActiveRecord::Migration[5.1]
   def up
     create_table :customers_tenders do |t|
       t.references :tender

@@ -1,4 +1,4 @@
-class CreateTenderWinners < ActiveRecord::Migration
+class CreateTenderWinners < ActiveRecord::Migration[5.1]
   def change
     create_table :tender_winners do |t|
       t.integer :tender_id

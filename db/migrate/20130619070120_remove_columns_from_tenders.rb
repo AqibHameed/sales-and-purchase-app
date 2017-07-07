@@ -1,4 +1,4 @@
-class RemoveColumnsFromTenders < ActiveRecord::Migration
+class RemoveColumnsFromTenders < ActiveRecord::Migration[5.1]
   def up
     [:no_of_stones, :weight, :carat, :color, :purity, :polished, :tender_type, :size].each do |column_name|
       remove_column :tenders, column_name

@@ -1,4 +1,4 @@
-class AddAttachmentsColumnsToTenders < ActiveRecord::Migration
+class AddAttachmentsColumnsToTenders < ActiveRecord::Migration[5.1]
   def up
     add_attachment :tenders, :document
   end
