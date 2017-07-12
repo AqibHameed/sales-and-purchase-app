@@ -27,8 +27,11 @@ class Tender < ApplicationRecord
   validates_presence_of :name, :open_date, :close_date, :company_id
 
   has_attached_file :temp_document
+  do_not_validate_attachment_file_type :temp_document
   has_attached_file :document
+  do_not_validate_attachment_file_type :document
   has_attached_file :winner_list
+  do_not_validate_attachment_file_type :winner_list
 
   after_save :create_stones_from_uploaded_file
   # after_save :create_temp_stones_from_uploaded_file #==> remove on Nov 15 2013

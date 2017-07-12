@@ -6,7 +6,7 @@ gem 'rails', '5.1.0'
 
 gem "mysql2"
 gem "devise"
-gem 'rails_admin_example_theme', :git => 'git://github.com/bbenezech/rails_admin_example_theme.git'
+# gem 'rails_admin_example_theme', :git => 'git://github.com/bbenezech/rails_admin_example_theme.git'
 gem "rails_admin"
 gem "paperclip"
 gem 'bootstrap-wysihtml5-rails'
