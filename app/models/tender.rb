@@ -466,8 +466,6 @@ class Tender < ApplicationRecord
       end
     end
 
-
-
     list do
 
       [:name].each do |field_name|

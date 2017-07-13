@@ -120,7 +120,7 @@ class TendersController < ApplicationController
   def add_note
     @tender = current_customer.tenders.find(params[:id])
     @key = params[:key]
-    @note = Note.where(tender_id: @tender.id, key: @key, customer_id: current_customer.id)
+    @note = Note.where(tender_id: @tender.id, key: @key, customer_id: current_customer.id).first
 
     render :partial => 'add_note'
 
