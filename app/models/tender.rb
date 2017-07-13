@@ -20,7 +20,7 @@ class Tender < ApplicationRecord
   has_many :tender_winners
   belongs_to :company
   has_many :reference, :class_name => "Tender", :foreign_key => "reference_id"
-  belongs_to :parent_reference, :class_name => "Tender", :foreign_key => "reference_id"
+  belongs_to :parent_reference, :class_name => "Tender", :foreign_key => "reference_id", optional: true
 
   accepts_nested_attributes_for :stones
 
