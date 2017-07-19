@@ -4,7 +4,8 @@ class Tender < ApplicationRecord
   attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
                   :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
                   :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
-                  :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id
+                  :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id,
+                  :country, :city
 
   attr_accessor :delete_stones, :delete_winner_list, :total_carat_value
 
@@ -443,8 +444,6 @@ class Tender < ApplicationRecord
   end
 
   rails_admin do
-
-
     configure :id do
       pretty_value do
         util = bindings[:object]
@@ -453,7 +452,6 @@ class Tender < ApplicationRecord
         %{<a data-toggle="modal" onclick="$(this).modal('hide')" href="/tenders/#{self.value}/admin_details"  data-target="#modal_#{self.value.to_i}" >#{Tender.total_carat_value(self.value)}</a><div class="modal fade" id="modal_#{self.value.to_i}" role="dialog" aria-labelledby="Tender Details" aria-hidden="true" >#{head}<div class="modal-body"></div>#{foot}</div>}.html_safe
       end
     end
-
 
     configure :winner_details do
       pretty_value do
@@ -465,7 +463,6 @@ class Tender < ApplicationRecord
     end
 
     list do
-
       [:name].each do |field_name|
         field field_name
       end
@@ -484,9 +481,12 @@ class Tender < ApplicationRecord
       field :tender_open, :toggle
     end
     edit do
-
       field :company
       field :name
+      field :country do
+        partial :country_list
+      end
+      field :city
       #      field :description, :text do
       #        bootstrap_wysihtml5 true
       #      end
