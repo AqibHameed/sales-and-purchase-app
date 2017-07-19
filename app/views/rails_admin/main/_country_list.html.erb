@@ -1,3 +1,1 @@
-<%#= select_tag "tender_country", options_for_select([ "VISA", "MasterCard" ], "MasterCard"), class: 'form-control' %>
-
 <%= country_select("tender", "country", { include_blank: 'Select a country', selected: form.object.country }, { class: 'form-control' }) %>
