@@ -230,12 +230,10 @@ class Tender < ApplicationRecord
 
 
   def Tender.send_winner_list_uploaded_mail(id)
-
     tender = Tender.find(id)
     tender.customers.each do |c|
-      TenderMailer.send_winner_list_uploaded_mail(tender, c).deliver
+      TenderMailer.send_winner_list_uploaded_mail(tender, c).deliver rescue logger.info "Error sending email"
     end
-
   end
 
   def customer_bid_amount(customer)

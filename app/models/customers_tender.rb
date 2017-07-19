@@ -6,12 +6,12 @@ class CustomersTender < ApplicationRecord
 #  after_create :send_new_tender_mail
 
   def send_new_tender_mail
-    TenderMailer.new_tender_mail(self.tender, self.customer).deliver
+    TenderMailer.new_tender_mail(self.tender, self.customer).deliver rescue logger.info "Error sending email"
   end
 
   def self.send_confirmation_mail(tender, customer, bid)
      #if self.confirmed_changed?
-      TenderMailer.confirmation_mail(tender, customer, bid).deliver
+      TenderMailer.confirmation_mail(tender, customer, bid).deliver rescue logger.info "Error sending email"
      #end
   end
 
