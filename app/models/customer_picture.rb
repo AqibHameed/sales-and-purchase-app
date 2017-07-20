@@ -1,6 +1,7 @@
 class CustomerPicture < ApplicationRecord
   belongs_to :customer
   belongs_to :tender
+  belongs_to :stone
 
   validates :picture, presence: true
   has_attached_file :picture
@@ -8,7 +9,7 @@ class CustomerPicture < ApplicationRecord
 
   rails_admin do
     list do
-      [:customer, :tender, :picture, :created_at].each do |field_name|
+      [:customer, :tender, :stone, :picture, :created_at].each do |field_name|
         field field_name
       end
     end
@@ -24,6 +25,9 @@ class CustomerPicture < ApplicationRecord
         enum do
           Customer.all.map { |c| [ c.name, c.id ] }
         end
+      end
+      field :stone_id do
+        label "Parcel"
       end
       field :picture
     end

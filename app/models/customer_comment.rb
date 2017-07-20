@@ -1,12 +1,13 @@
 class CustomerComment < ApplicationRecord
   belongs_to :customer
   belongs_to :tender
+  belongs_to :stone
 
   validates :description, presence: true
 
   rails_admin do
     list do
-      [:customer, :tender, :description, :created_at].each do |field_name|
+      [:customer, :tender, :stone, :description, :created_at].each do |field_name|
         field field_name
       end
     end
@@ -22,6 +23,9 @@ class CustomerComment < ApplicationRecord
         enum do
           Customer.all.map { |c| [ c.name, c.id ] }
         end
+      end
+      field :stone_id do
+        label "Parcel"
       end
       field :description
     end
