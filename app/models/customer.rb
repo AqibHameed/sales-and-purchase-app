@@ -11,34 +11,38 @@ class Customer < ApplicationRecord
   has_many :bids
   has_many :winners
   has_many :notes
+  has_many :companies
+  has_one :block_user 
+
+  # accepts_nested_attributes_for :companies
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me,
-                  :first_name, :last_name,
-                  :city, :address ,:postal_code,
-                  :phone, :status, :tender_ids,
-                  :phone_2,:mobile_no, :company,:company_address
+  # attr_accessible :email, :password, :password_confirmation, :remember_me,
+  #                 :first_name, :last_name,
+  #                 :city, :address ,:postal_code,
+  #                 :phone, :status, :tender_ids,
+  #                 :phone_2,:mobile_no, :company,:company_address
 
   # attr_accessible :title, :body
-  validates :phone,
-            :format => {:with => /^\d{10}$/, multiline: true},
-            :unless => proc{|obj| obj.phone.blank?} , :reduce => true
+  # validates :phone,
+  #           :format => {:with => /^\d{10}$/, multiline: true},
+  #           :unless => proc{|obj| obj.phone.blank?} , :reduce => true
 
-  validates :phone_2,
-            :format => {:with => /^\d{10}$/, multiline: true},
-            :unless => proc{|obj| obj.phone_2.blank?} , :reduce => true
+  # validates :phone_2,
+  #           :format => {:with => /^\d{10}$/, multiline: true},
+  #           :unless => proc{|obj| obj.phone_2.blank?} , :reduce => true
 
-  validates :mobile_no,
-            :format => {:with => /^\d{10}$/, multiline: true},
-            :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
+  # validates :mobile_no,
+  #           :format => {:with => /^\d{10}$/, multiline: true},
+  #           :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
 
-  validates :email,
-            :format => {:with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, multiline: true },
-            :presence => true, :reduce => true ,
-            :on => :create
+  # validates :email,
+  #           :format => {:with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, multiline: true },
+  #           :presence => true, :reduce => true ,
+  #           :on => :create
 
-  validates :city,:company,:company_address , :first_name, :last_name,
-            :presence => true , :reduce => true
+  # validates :city,:company,:company_address , :first_name, :last_name,
+  #           :presence => true , :reduce => true
 
   after_create :send_account_creation_mail
   default_scope { order("first_name asc, last_name asc") }

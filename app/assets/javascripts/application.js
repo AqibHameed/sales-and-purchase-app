@@ -11,6 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery_nested_form
 //= require jquery_ujs
 //= require fancybox
 //= require jquery.dataTables.min.js
@@ -18,11 +19,14 @@
 //= require jquery.tablesorter.min.js
 //= require highcharts
 //= require jquery.fancybox-1.3.4
-//= require turbolinks
 
 
 //Admin Login
 $(document).ready(function() {
+  $('.tender-house4').on('click',function () {
+  	debugger
+    $(".tender-house4").is(':checked') ? $('.tender-house3').attr('disabled', true).prop('checked', false) : $('.tender-house3').prop('checked', false).attr('disabled', false)   
+  })
 	$(".footer-inner .c6").click(function() {
 		$('#sidebar-share').fadeOut();
 		$('#sidebar-features').slideToggle(500);

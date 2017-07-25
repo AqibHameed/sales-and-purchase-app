@@ -1,0 +1,30 @@
+<div class="clear20"></div>
+<div class="clear20"></div>
+<div class="heading">Add Company</div>
+<div class="clear20"></div>
+<div class="login-box">
+  <p style="color:red; font-size:13px;" class='error_msg'></p>
+  <p class=clear10></p>
+	<%= nested_form_for(@company, url: create_sub_company_customer_path(@customer) )do |f| %>
+  	<div class="field">
+	    <%= f.fields_for :sub_companies do |company_form| %>
+	      <%= f.label :name %>
+	      <%= company_form.text_field :name %><br><br>
+	      <%= f.label :email %><br />
+	      <%= company_form.text_field :email %><br><br>
+	      <%= f.label :status %><br />
+	      <span class="check-titles">DTC Sight Holder</span><%= company_form.check_box :status ,class: "tender-house3"%><br>
+	      <span class="check-titles">AlrosaContract</span><%= company_form.check_box :status ,class: "tender-house3"%><br>  
+	      <span class="check-titles">Dominion</span><%= company_form.check_box :status ,class: "tender-house3"%><br>
+	      <span class="check-titles">Tender House</span><%= company_form.check_box :status ,class: "tender-house4"%><br>
+	      <%= company_form.link_to_remove "Remove this company" %>
+	  <% end %>
+	    <p><%= f.link_to_add "Add a company", :sub_companies %></p>
+  </div>
+ 
+ 
+		<div class="btns-groups">
+		<%= link_to('Skip', root_path, :class => 'btn-02 login-btn registration_submit')  %>
+		<%= f.submit "Submit", class: "btn-02 login-btn" %>
+	</div>
+<% end %>

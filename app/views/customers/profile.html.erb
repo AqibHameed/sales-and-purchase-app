@@ -1,6 +1,7 @@
 <div class="">
-	<span style="font-size:14px;" class="fright"><%= link_to 'Change Password', change_password_customers_path   %> </span>
+	<span style="font-size:14px;" class="fright"><%= link_to 'Change Password', change_password_customers_path   %> <%= link_to 'Customer list', customers_path %></span>
 	<h3>Profile </h3>
+
 
 	<div class="clear10"></div>
 	<%= form_for(@customer, url: update_profile_customers_path) do |f| %>

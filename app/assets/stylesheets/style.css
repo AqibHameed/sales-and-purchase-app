@@ -73,6 +73,15 @@ a {color:#ED5A48;}
 .login-box .field {margin-top:10px;}
 .login-box .field input{border:1px solid #bebebe; padding:7px; width: 330px; -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; font-size:14px;}
 
+.login-box .field input[type="checkbox"] {
+  width: auto;
+  margin: 5px 10px;
+}
+.check-titles {
+  display: inline-block;
+  min-width: 100px;
+}
+
 .grid-menu{margin:0px; display:block; padding:0px;}
 .grid-menu li{float:left; margin-right:10px;  -moz-border-radius:3px; -webkit-border-radius:3px; border-radius:3px; border:solid 1px #e8e8e8; background:#f7f7f7; padding: 5px 13px;}
 .grid-menu li:hover, .grid-menu li.active{background:#ffffff;}
@@ -113,6 +122,16 @@ p.welcome {
 	font-size:14px;
 }
 
+
+.btns-groups {
+  margin: 15px auto 0;
+  text-align: center;
+}
+.btn-02.login-btn  {
+  margin-left: 0;
+  border: 0;
+  margin-right: 10px;
+}
 
 /* Tabs */
 

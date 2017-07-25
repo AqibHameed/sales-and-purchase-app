@@ -49,8 +49,9 @@
           <!-- <a href="tender-dashboard.html" class="btn-02">Login</a> -->
         </div>
         <div class="clear10"></div>
-        <div>
-          <%= f.submit 'Login', :class => 'btn-02 login_submit' %>
+        <div class="btns-groups">
+          <%= f.submit 'Login', :class => 'btn-02 login-btn login_submit' %>
+          <%= link_to('Register', new_customer_registration_path, :class => 'btn-02 login-btn registration_submit')  %>
         </div>
         <% end %>
      </div>
@@ -86,4 +87,5 @@
   })
 
 </script>
+
 

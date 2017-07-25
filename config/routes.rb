@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   get '/login', :to => 'home#login'
+  get '/signup', :to => 'home#registration'
 
   get '/calculator', :to => 'calculator#index', :ad => 'calculator'
   get "calculator/index1"
@@ -9,12 +10,11 @@ Rails.application.routes.draw do
 
   devise_for :admins, :controllers => {:sessions => 'sessions'}
   mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
-  devise_for :customers, :controllers => {:sessions => 'sessions'}
+  devise_for :customers, :controllers => {:sessions => 'sessions',:registrations => "registrations"}
 
   resources :tenders do
     collection do
       get :history
-
       get :calendar
       get :calendar_data
 
@@ -83,6 +83,11 @@ Rails.application.routes.draw do
       get :change_password
       patch :update_password
     end
+    member do 
+      get :add_company
+      get :block_unblock_user
+      post :create_sub_company
+    end
   end
 
   resources :stones do
@@ -90,6 +95,14 @@ Rails.application.routes.draw do
       collection do
         get :place_new
       end
+    end
+  end
+
+  namespace :api do
+    namespace :v1 do
+     devise_scope :customer do
+       post 'signup' => 'registrations#create'
+     end
     end
   end
 

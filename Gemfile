@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 # gem 'rails', '3.2.13'
 gem 'rails', '5.1.0'
 
-
+gem 'byebug'
 gem "mysql2"
 gem "devise"
 # gem 'rails_admin_example_theme', :git => 'git://github.com/bbenezech/rails_admin_example_theme.git'
@@ -18,6 +18,7 @@ gem 'suggest-db-indices'
 gem 'httparty'
 gem "cancan"
 gem 'paper_trail'
+gem "nested_form"
 
 group :assets do
   gem 'sass-rails'
@@ -27,6 +28,7 @@ group :assets do
 end
 
 group :development do
+  gem 'pry'
   gem "thin"
   gem 'listen', '>= 3.0.5', '< 3.2'
 end
