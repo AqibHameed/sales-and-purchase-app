@@ -1,5 +1,5 @@
 class Api::V1::SessionsController < Devise::SessionsController
-  before_action :ensure_params_exist
+  before_action :ensure_params_exist, except: [:destroy]
   skip_before_action :verify_authenticity_token
 
   def create
@@ -19,7 +19,7 @@ class Api::V1::SessionsController < Devise::SessionsController
   
   def destroy
     auth_token = request.headers['Authorization']
-    customer = Customer.find_for_database_authentication(:email => params[:customer][:email], authentication_token: auth_token)
+    customer = Customer.where(authentication_token: auth_token).first
     return invalid_attempt unless customer
     customer.authentication_token = nil
     if customer.save
