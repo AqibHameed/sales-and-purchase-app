@@ -37,3 +37,4 @@ gem 'protected_attributes_continued'
 gem 'turbolinks', '~> 5.0.0'
 gem 'rubocop', require: false
 gem 'puma',  '3.6.2'
+gem 'country_select'
