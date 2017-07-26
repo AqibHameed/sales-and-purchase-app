@@ -19,6 +19,7 @@ gem 'httparty'
 gem "cancan"
 gem 'paper_trail'
 gem "nested_form"
+gem 'active_model_serializers'
 
 group :assets do
   gem 'sass-rails'

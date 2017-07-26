@@ -101,7 +101,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
      devise_scope :customer do
-       post 'signup' => 'registrations#create'
+      post :log_in, to: 'sessions#create'
+      delete :log_out, to: 'sessions#destroy'
+      post 'signup' => 'registrations#create'
      end
     end
   end
