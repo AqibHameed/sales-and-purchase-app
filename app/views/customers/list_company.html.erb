@@ -1,0 +1,32 @@
+<% @company.each do |f|%>
+  <table>
+    <tr>
+	    <td width='100px'>
+	    	<p><%= f.name%></p>
+	    </td>
+	    <td width='100px'>
+	    	<p>Set Credit Limit</p>
+	    </td>
+	    <td width='100px'>
+	    	<p>Set Market Limit</p>
+	    </td>
+    </tr>
+  </table>
+<% end %>
+<%= link_to 'Back', root_path %>
+====================================================
+<%= form_for(@company, url: company_limits_companies_path) do |f| %>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :country_id %><br />
+    <%= f.collection_select :country_id, Country.order(:name), :id, :name, include_blank: true %>
+  </div>
+  <div class="field">
+    <%= f.label :state_id, "State or Province" %><br />
+    <%= f.collection_select :state_id, State.order(:name), :id, :name, include_blank: true %>
+  </div>
+ <%= submit_tag 'Update', :class => 'btn-01' %>
+<% end %>

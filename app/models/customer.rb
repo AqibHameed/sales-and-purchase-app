@@ -6,6 +6,9 @@ class Customer < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  # validates :auth_token, uniqueness: true
+  # before_create :generate_authentication_token!
+
   has_many :customers_tenders
   has_many :tenders, :through => :customers_tenders
   has_many :bids
@@ -53,6 +56,12 @@ class Customer < ApplicationRecord
   after_create :send_account_creation_mail
   default_scope { order("first_name asc, last_name asc") }
 
+  # def generate_authentication_token! customer
+  #   begin
+  #     customer.auth_token = Devise.friendly_token
+  #   end #while self.class.exists?(auth_token: auth_token)
+  # end
+
   def name
     "#{first_name} #{last_name}"
   end
@@ -67,8 +76,10 @@ class Customer < ApplicationRecord
 
 
   def generate_authentication_token
+    debugger
     loop do
       token = Devise.friendly_token
+      debugger
       break token unless self.class.where(authentication_token: token).first
     end
   end

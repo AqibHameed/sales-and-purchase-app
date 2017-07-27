@@ -81,12 +81,20 @@ Rails.application.routes.draw do
       get :profile
       patch :update_profile
       get :change_password
+      get :list_company
       patch :update_password
     end
     member do 
       get :add_company
       get :block_unblock_user
       post :create_sub_company
+    end
+  end
+
+  resources :companies do
+    collection do
+      get :list_company
+      post :company_limits
     end
   end
 
@@ -104,6 +112,7 @@ Rails.application.routes.draw do
       post :log_in, to: 'sessions#create'
       delete :log_out, to: 'sessions#destroy'
       post 'signup' => 'registrations#create'
+      post :company_limits, to: 'companies#list_company'
      end
     end
   end

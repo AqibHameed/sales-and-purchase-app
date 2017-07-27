@@ -1,5 +1,4 @@
 class Api::V1::RegistrationsController < ActionController::Base
-
   def create
     customer = Customer.new(customer_params)
     if customer.save
