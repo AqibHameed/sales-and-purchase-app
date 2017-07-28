@@ -1,4 +1,4 @@
-<% @customer.where('id NOT IN (?)', current_user.id).each do |f|%>
+<% @customer.where('id NOT IN (?)', current_customer.id).each do |f|%>
   <table>
     <tr>
 	    <td width='100px'>
@@ -14,7 +14,8 @@
     </tr>
   </table>
 <% end %>
-<%= link_to 'Back', root_path %>
+<%= link_to 'Back', root_path ,:class => 'btn-01'%>
+<%= link_to 'Set Credit limit', list_company_companies_path ,:class => 'btn-01'%>
 <script type="text/javascript">
   $(document).ready(function(){
   	$(".image_right").click(function(){

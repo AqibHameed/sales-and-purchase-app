@@ -35,7 +35,7 @@ class CustomersController < ApplicationController
       status = params[:company][:sub_companies_attributes][p][:status]
       @customer.companies.last.sub_companies.create(name: name, email: email,status: status,customer_id: @customer.id)
     end
-    redirect_to root_path
+    redirect_to customers_path
   end
 
 

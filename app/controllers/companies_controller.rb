@@ -1,7 +1,12 @@
 class CompaniesController < ApplicationController
 
 	def list_company
-    @company = Company.all
+    if params[:name].present?
+      @companies = Company.where('name LIKE ?', "%#{params[:name]}%")
+    # else
+    #   @companies = Company.all
+    end
+
   end
 
   def company_limits
@@ -17,4 +22,5 @@ class CompaniesController < ApplicationController
   def index
   	@company = Company.all
   end
+
 end

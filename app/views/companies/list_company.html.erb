@@ -1,4 +1,10 @@
- <% current_customer.companies.each do |company|%>
+<%= form_tag(list_company_companies_path, :method => "get", id: "search-form") do %>
+    <%= text_field_tag :name, params[:search], placeholder: "Search Companeis" %>
+    <%= submit_tag "Search", :name => nil %>
+<% end %>
+
+<% if @companies.present? %>
+<% @companies.each do |company|%>
   <table>
     <tr>
 	    <td width='100px'>
@@ -6,8 +12,9 @@
 	    </td>
 	    <td>
 	    <%if company.credit_limit.present? && company.market_limit.present? %>
-	       <%= company.credit_limit%>
-	       <%= company.market_limit%>
+	       <p> Credit Limit   <%= company.credit_limit  %> </p>
+	       <p> Market Limit   <%= company.market_limit %> </p>
+	       
 	    <% else %>
 	    	<%= form_for(Company.new, url: company_limits_companies_path) do |f|%>
 				 <%= f.label :credit_limit %>
@@ -21,6 +28,7 @@
 	    </td>
     </tr>
   </table>
+<% end %>
 <% end %>
 
 <%= link_to 'Back', root_path %>

@@ -13,24 +13,22 @@
 	      <%= f.label :email %><br />
 	      <%= company_form.text_field :email %><br><br>
 	      <%= f.label :status %><br />
-	      <span class="check-titles">DTC Sight Holder</span><%= company_form.check_box :status ,class: "tender-house3"%><br>
-	      <span class="check-titles">AlrosaContract</span><%= company_form.check_box :status ,class: "tender-house3"%><br>  
-	      <span class="check-titles">Dominion</span><%= company_form.check_box :status ,class: "tender-house3"%><br>
-	      <span class="check-titles">Tender House</span><%= company_form.check_box :status ,class: "tender-house4"%><br>
+	      <span class="check-titles">DTC Sight Holder</span><%= company_form.check_box :status ,class: "tender-house7"%><br>
+	      <span class="check-titles">AlrosaContract</span><%= company_form.check_box :status ,class: "tender-house7"%><br>  
+	      <span class="check-titles">Dominion</span><%= company_form.check_box :status ,class: "tender-house7"%><br>
+	      <span class="check-titles">Tender House</span><%= company_form.check_box :status ,class: "tender-house0"%><br>
 	      <%= company_form.link_to_remove "Remove this company" %>
-	  <% end %>
+	    <% end %>
 	    <p><%= f.link_to_add "Add a company", :sub_companies %></p>
-  </div>
- 
- 
-		<div class="btns-groups">
+    </div>
+ 		<div class="btns-groups">
 			<%= link_to('Skip', root_path, :class => 'btn-02 login-btn registration_submit')  %>
 			<%= f.submit "Submit", class: "btn-02 login-btn" %>
 		</div>
 	<% end %>
 
 <script type="text/javascript">
-  $('.tender-house4').on('click',function () {
-    $(".tender-house4").is(':checked') ? $('.tender-house3').attr('disabled', true).prop('checked', false) : $('.tender-house3').prop('checked', false).attr('disabled', false)   
+  $('.tender-house0').on('click',function () {
+    $(".tender-house0").is(':checked') ? $('.tender-house7').attr('disabled', true).prop('checked', false) : $('.tender-house7').prop('checked', false).attr('disabled', false)   
   })
 </script>
