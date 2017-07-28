@@ -75,10 +75,13 @@
         url: $('.login_form').attr('action'), //sumbits it to the given url of the form
         data: valuesToSubmit,
         type: 'post',
-        success: function(response){ window.location.href = response },
-        error: function(response){
+        complete: function(response){ 
+        if(response.status==200){
+          window.location.href = response.responseText
+        }else{
           $('.error_msg').html(response.responseText)
         }
+      }
       });
 
 

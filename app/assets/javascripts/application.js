@@ -24,7 +24,6 @@
 //Admin Login
 $(document).ready(function() {
   $('.tender-house4').on('click',function () {
-  	debugger
     $(".tender-house4").is(':checked') ? $('.tender-house3').attr('disabled', true).prop('checked', false) : $('.tender-house3').prop('checked', false).attr('disabled', false)   
   })
 	$(".footer-inner .c6").click(function() {

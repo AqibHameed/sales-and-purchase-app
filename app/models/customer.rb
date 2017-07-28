@@ -76,10 +76,8 @@ class Customer < ApplicationRecord
 
 
   def generate_authentication_token
-    debugger
     loop do
       token = Devise.friendly_token
-      debugger
       break token unless self.class.where(authentication_token: token).first
     end
   end

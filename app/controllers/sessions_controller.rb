@@ -12,18 +12,30 @@ class SessionsController <  Devise::SessionsController
   end
 
   def create
-    scope = get_resource
-    resource = warden.authenticate!(:scope => scope )
-    if resource.sign_in_count == 1
-      session[:show_popup] = true
+    if params[:customer][:email].present? 
+      resource = warden.authenticate!(auth_options)
+      sign_in(resource_name, resource)
+      if resource.sign_in_count == 1
+        path = 'login'
+      else
+        path = '/'
+      end
+      respond_to do |format|
+        format.js{ render json: path }
+      end
     else
-      session[:show_popup] = false
+      scope = get_resource
+      resource = warden.authenticate!(:scope => scope )
+      if resource.sign_in_count == 1
+      session[:show_popup] = true
+      else
+        session[:show_popup] = false
+      end
+      respond_to do |format|
+        format.html { redirect_to after_sign_in_path_for(resource) }  
+        format.js { redirect_to after_sign_in_path_for(resource), turbolinks: false }
+      end
     end
-    respond_to do |format|
-      format.html { redirect_to after_sign_in_path_for(resource) }
-      format.js { redirect_to after_sign_in_path_for(resource), turbolinks: false }
-    end
-
   end
 
 end

@@ -24,7 +24,13 @@
  
  
 		<div class="btns-groups">
-		<%= link_to('Skip', root_path, :class => 'btn-02 login-btn registration_submit')  %>
-		<%= f.submit "Submit", class: "btn-02 login-btn" %>
-	</div>
-<% end %>
+			<%= link_to('Skip', root_path, :class => 'btn-02 login-btn registration_submit')  %>
+			<%= f.submit "Submit", class: "btn-02 login-btn" %>
+		</div>
+	<% end %>
+
+<script type="text/javascript">
+  $('.tender-house4').on('click',function () {
+    $(".tender-house4").is(':checked') ? $('.tender-house3').attr('disabled', true).prop('checked', false) : $('.tender-house3').prop('checked', false).attr('disabled', false)   
+  })
+</script>
