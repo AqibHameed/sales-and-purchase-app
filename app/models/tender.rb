@@ -197,9 +197,7 @@ class Tender < ApplicationRecord
   end
 
   def update_winner_list_from_uploaded_file
-
     if self.winner_list_updated_at_changed?
-
       puts "==============file==============="
       unless self.winner_list.nil?
         data_file = Spreadsheet.open(self.winner_list.path)
@@ -212,21 +210,15 @@ class Tender < ApplicationRecord
               win.description = data_row[Tender.get_index(self.winner_desc_field)]
               win.selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
               win.avg_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_carat_selling_price_field)])
-              #   win.save
-              #   puts data_row
+              win.save
             end
           end
           Tender.send_winner_list_uploaded_mail(self.id)
         end
-
       end
-
     else
-
       puts "==============no file==============="
-
     end
-
   end
 
 
