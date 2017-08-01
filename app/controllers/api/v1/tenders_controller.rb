@@ -4,10 +4,10 @@ module Api
       # before_action :current_customer
       def index
         col_str = ""
-        if params[:location] || params[:month] || params[:status]
+        if params[:location] || params[:month] || params[:supplier]
           col_str =  "(tenders.city LIKE '%#{params[:location]}%' OR tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
-          col_str += (col_str.blank?) ? ((params[:status] == '0') ? ("tenders.close_date < DATE(NOW())") : ("close_date > DATE(NOW())")) : ((params[:status] == '0') ? (" AND tenders.close_date < DATE(NOW())") : (" AND close_date > DATE(NOW())")) unless params[:status].blank?
+          col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
           tenders = current_customer.tenders.where(col_str).order("created_at desc")
