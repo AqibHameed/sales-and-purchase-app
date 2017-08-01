@@ -84,7 +84,7 @@ Rails.application.routes.draw do
       get :list_company
       patch :update_password
     end
-    member do 
+    member do
       get :add_company
       get :block_unblock_user
       post :create_sub_company
@@ -108,12 +108,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-     devise_scope :customer do
-      post :log_in, to: 'sessions#create'
-      delete :log_out, to: 'sessions#destroy'
-      post 'signup' => 'registrations#create'
-      post :company_limits, to: 'companies#list_company'
-     end
+      devise_scope :customer do
+        post :log_in, to: 'sessions#create'
+        delete :log_out, to: 'sessions#destroy'
+        post :signup, to: 'registrations#create'
+        post :company_limits, to: 'companies#list_company'
+        post :forgot_password, to: "passwords#create"
+      end
     end
   end
 
