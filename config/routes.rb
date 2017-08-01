@@ -115,6 +115,15 @@ Rails.application.routes.draw do
         post :company_limits, to: 'companies#list_company'
         post :forgot_password, to: "passwords#create"
       end
+
+      resources :tenders do
+        collection do
+          get :upcoming
+        end
+      end
+
+      get '/supplier_list', to: 'api#supplier_list'
+      get '/tender_by_months', to: 'api#tender_by_months'
     end
   end
 
