@@ -2,6 +2,7 @@ module Api
   module V1
     class TendersController <ApiController
       # before_action :current_customer
+
       def index
         col_str = ""
         if params[:location] || params[:month] || params[:supplier]

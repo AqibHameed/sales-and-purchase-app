@@ -122,8 +122,8 @@ Rails.application.routes.draw do
         end
       end
 
-      get '/supplier_list', to: 'api#supplier_list'
-      get '/tender_by_months', to: 'api#tender_by_months'
+      get '/filter_data', to: 'api#filter_data'
+      post '/device_token', to: 'api#device_token'
     end
   end
 

@@ -2,7 +2,7 @@ class Company < ApplicationRecord
   # attr_accessible :name, :address, :country, :email, :registration_vat_no, :registration_no, :fax, :telephone, :mobile, :contact_person_ids
   has_many :sub_companies, :class_name => 'Company', :foreign_key => :parent_id
   belongs_to :parent, :class_name => 'Company', :foreign_key => :parent_id, optional: true
-  
+
   has_many :contact_people
   has_many :tenders
   belongs_to :customer
