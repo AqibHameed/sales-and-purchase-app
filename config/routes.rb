@@ -116,11 +116,13 @@ Rails.application.routes.draw do
         post :forgot_password, to: "passwords#create"
       end
 
+      get '/tender_parcel', to: 'tenders#tender_parcel'
       resources :tenders do
         collection do
           get :upcoming
         end
       end
+      resources :tender_notifications
 
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'

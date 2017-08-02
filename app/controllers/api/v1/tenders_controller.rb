@@ -28,21 +28,44 @@ module Api
         render json: { success: true, tenders: tender_data(tenders) }
       end
 
+      def tender_parcel
+        stones = Stone.where(tender_id: params[:tender_id])
+        render json: { success: true, tender_parcels: stones.as_json(except: [:tender_id, :created_at, :updated_at]) }
+      end
+
       def tender_data(tenders)
         @data = []
-        tenders.each do |tender|
-          @data << {
-            id: tender.id,
-            name: tender.name,
-            start_date: tender.open_date,
-            end_date: tender.close_date,
-            company_name: tender.company.name,
-            company_logo: nil,
-            city: tender.city,
-            country: tender.country
-          }
+        if current_customer
+          tenders.each do |tender|
+            @data << {
+              id: tender.id,
+              name: tender.name,
+              start_date: tender.open_date,
+              end_date: tender.close_date,
+              company_name: tender.company.name,
+              company_logo: nil,
+              city: tender.city,
+              country: tender.country,
+              notification: tender.check_notification(current_customer)
+            }
+          end
+          @data
+        else
+          tenders.each do |tender|
+            @data << {
+              id: tender.id,
+              name: tender.name,
+              start_date: tender.open_date,
+              end_date: tender.close_date,
+              company_name: tender.company.name,
+              company_logo: nil,
+              city: tender.city,
+              country: tender.country,
+              notification: false
+            }
+          end
+          @data
         end
-        @data
       end
     end
   end

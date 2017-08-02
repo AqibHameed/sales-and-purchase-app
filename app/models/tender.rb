@@ -19,6 +19,7 @@ class Tender < ApplicationRecord
   has_many :temp_stones, -> { order(:lot_no) }, :dependent => :destroy
   has_many :winners
   has_many :tender_winners
+  has_many :tender_notifications
   belongs_to :company
   has_many :reference, :class_name => "Tender", :foreign_key => "reference_id"
   belongs_to :parent_reference, :class_name => "Tender", :foreign_key => "reference_id", optional: true
@@ -433,6 +434,15 @@ class Tender < ApplicationRecord
       sum = sum + s.weight.round(2) rescue 0.0
     end
     return sum.round(2)
+  end
+
+  def check_notification(customer)
+    tender = TenderNotification.where(customer_id: customer.id, tender_id: self.id, notify: true).first
+    if tender.nil?
+      false
+    else
+      true
+    end
   end
 
   rails_admin do
