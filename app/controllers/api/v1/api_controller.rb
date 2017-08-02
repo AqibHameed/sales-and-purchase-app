@@ -6,8 +6,6 @@ class Api::V1::ApiController < ApplicationController
     token = request.headers['Authorization'].presence
     if token
       @current_customer ||= Customer.find_by_authentication_token(token)
-    else
-      render json: { errors: "Not authenticated"}, status: :unauthorized
     end
   end
 
@@ -36,16 +34,20 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def device_token
-    if params[:customer][:token].present?
-      device = Device.new(device_params)
-      device.customer_id = current_customer.id
-      if device.save
-        render json: {success: true, device_token: device.token }, status: 200
+    if current_customer
+      if params[:customer][:token].present?
+        device = Device.new(device_params)
+        device.customer_id = current_customer.id
+        if device.save
+          render json: {success: true, device_token: device.token }, status: 200
+        else
+          render json: {success: false, message: device.errors.full_messages}
+        end
       else
-        render json: {success: false, message: device.errors.full_messages}
+        render json: {success: false, message: 'Please use correct parameter'}
       end
     else
-      render json: {success: false, message: 'Please use correct parameter'}
+      render json: { errors: "Not authenticated"}, status: :unauthorized
     end
   end
 
