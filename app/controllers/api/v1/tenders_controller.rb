@@ -30,7 +30,7 @@ module Api
 
       def tender_parcel
         stones = Stone.where(tender_id: params[:tender_id])
-        render json: { success: true, tender_parcels: stones.as_json(except: [:tender_id, :created_at, :updated_at]) }
+        render json: { success: true, tender_parcels: stone_data(stones) }
       end
 
       def tender_data(tenders)
@@ -66,6 +66,28 @@ module Api
           end
           @data
         end
+      end
+
+      def stone_data(stones)
+        @stones = []
+        stones.each do |stone|
+          @stones << {
+            id: stone.id,
+            stone_type: stone.stone_type,
+            no_of_stones: stone.no_of_stones,
+            :size => stone.size,
+            :weight => stone.weight,
+            :carat => stone.carat,
+            :purity => stone.purity,
+            :color => stone.color,
+            :polished => stone.polished,
+            :deec_no => stone.deec_no,
+            :lot_no => stone.lot_no,
+            :description => stone.description,
+            :tender => stone.tender
+          }
+        end
+        @stones
       end
     end
   end
