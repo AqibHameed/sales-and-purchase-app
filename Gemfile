@@ -38,4 +38,4 @@ gem 'protected_attributes_continued'
 gem 'turbolinks', '~> 5.0.0'
 gem 'rubocop', require: false
 gem 'puma',  '3.6.2'
-gem 'country_select'
+gem 'country_select', git: 'https://github.com/alibabajan/country_select.git'

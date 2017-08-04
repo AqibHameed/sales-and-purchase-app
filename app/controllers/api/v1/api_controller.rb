@@ -26,11 +26,18 @@ class Api::V1::ApiController < ApplicationController
   def filter_data
     suppliers = Company.all.map { |e| { id: e.id, name: e.name}  }
     months = Tender.group("month(open_date)").count
+    countries = Tender.group("country").count
     data = []
+    data_countries = []
+    countries.each do |country|
+      unless country[0].nil? || country[0].blank?
+        data_countries << { name: country[0], tender_count: country[1] }
+      end
+    end
     months.each do |month|
       data << { month: month[0], tender_count: month[1] }
     end
-    render json: { suppliers: suppliers, months: data }
+    render json: { suppliers: suppliers, months: data, location: data_countries  }
   end
 
   def device_token
