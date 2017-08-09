@@ -7,6 +7,7 @@ class Bid < ApplicationRecord
   belongs_to :tender, optional: true
   belongs_to :customer, required: true
   belongs_to :stone, optional: true
+  belongs_to :auction_round, optional: true
 
   validates_presence_of :total, :customer_id
 
