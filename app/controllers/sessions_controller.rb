@@ -25,6 +25,7 @@ class SessionsController <  Devise::SessionsController
       respond_to do |format|
         format.js{ render json: path }
       end
+
     elsif !admin.blank? 
       scope = get_resource
       resource = warden.authenticate!(:scope => scope )

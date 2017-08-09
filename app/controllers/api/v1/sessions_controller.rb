@@ -16,7 +16,7 @@ class Api::V1::SessionsController < Devise::SessionsController
     end
     invalid_login_attempt
   end
-  
+
   def destroy
     auth_token = request.headers['Authorization']
     customer = Customer.where(authentication_token: auth_token).first
@@ -26,23 +26,23 @@ class Api::V1::SessionsController < Devise::SessionsController
       render :json => {:success => true}
     else
       render :json => {:errors => customer.errors.full_messages}
-    end  
-  end  
+    end
+  end
 
   protected
   def ensure_params_exist
     return unless params[:customer].blank?
-    render :json => {:title => "Unprocessable Entity", :message => "Missing user login parameter"}, :status => 422
+    render :json => {:success => false, :message => "Missing user login parameter"}, :status => 422
   end
 
   def invalid_login_attempt
-    render :json => {:title => "Unauthorized", :message => "Error with your login or password."}, :status => 401
+    render :json => {:success => false, :message => "Error with your login or password."}, :status => 401
   end
 
   def invalid_attempt
     render :json => {:success => false, :message => "Invalid attempt."}, :status => 401
   end
-end 
+end
 
 
- 
+

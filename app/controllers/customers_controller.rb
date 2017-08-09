@@ -6,7 +6,7 @@ class CustomersController < ApplicationController
   end
 
   def index
-     @customer = Customer.all
+    @customer = Customer.all
   end
 
   def update_profile
@@ -38,19 +38,18 @@ class CustomersController < ApplicationController
     redirect_to customers_path
   end
 
-
   def block_unblock_user
-   if params[:status] == 'block'
-    user = Customer.find(params[:id])
-    result = BlockUser.block_user user,params[:block_user_id]
-   else
-    current_customer.block_user.block_user_ids.delete(params[:block_user_id])
-    block_user = current_customer.block_user.update_attributes(block_user_ids: current_customer.block_user.block_user_ids)
-    result = block_user.present? 
-   end
-   respond_to do |format|
-     format.json {render json: {status: params[:status], result: result}}
-   end
+    if params[:status] == 'block'
+      user = Customer.find(params[:id])
+      result = BlockUser.block_user user,params[:block_user_id]
+    else
+      current_customer.block_user.block_user_ids.delete(params[:block_user_id])
+      block_user = current_customer.block_user.update_attributes(block_user_ids: current_customer.block_user.block_user_ids)
+      result = block_user.present?
+    end
+    respond_to do |format|
+      format.json {render json: {status: params[:status], result: result}}
+    end
   end
 
   def update_password

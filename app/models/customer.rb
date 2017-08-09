@@ -14,9 +14,9 @@ class Customer < ApplicationRecord
   has_many :bids
   has_many :winners
   has_many :notes
-
+  has_many :devices
   has_many :companies
-  has_one :block_user 
+  has_one :block_user
 
   # accepts_nested_attributes_for :companies
 
@@ -87,7 +87,7 @@ class Customer < ApplicationRecord
       self.authentication_token = generate_authentication_token
     end
   end
-  
+
   rails_admin do
     list do
       [:email, :first_name, :last_name, :city, :company, :company_address].each do |field_name|
