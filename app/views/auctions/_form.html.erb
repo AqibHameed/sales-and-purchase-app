@@ -1,0 +1,32 @@
+<%= form_with(model: auction, local: true) do |form| %>
+  <% if auction.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(auction.errors.count, "error") %> prohibited this auction from being saved:</h2>
+
+      <ul>
+      <% auction.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :time %>
+    <%= form.datetime_select :time %>
+  </div>
+
+  <div class="field">
+    <%= form.label :min_bid %>
+    <%= form.text_field :min_bid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :tender_id %>
+    <%= form.select :tender_id, options_for_select(Tender.all.map{|t| [t.name,t.id] }) %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

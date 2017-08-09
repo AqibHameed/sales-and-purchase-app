@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Time:</strong>
+  <%= @auction.time %>
+</p>
+
+<p>
+  <strong>Min bid:</strong>
+  <%= @auction.min_bid %>
+</p>
+
+<p>
+  <strong>Tender:</strong>
+  <%= @auction.tender_id %>
+</p>
+
+<%= link_to 'Edit', edit_auction_path(@auction) %> |
+<%= link_to 'Back', auctions_path %>
