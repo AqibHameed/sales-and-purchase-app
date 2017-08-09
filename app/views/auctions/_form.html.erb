@@ -22,6 +22,11 @@
   </div>
 
   <div class="field">
+    <%= form.label :round_time_in_seconds %>
+    <%= form.number_field :round_time %>
+  </div>
+
+  <div class="field">
     <%= form.label :tender_id %>
     <%= form.select :tender_id, options_for_select(Tender.all.map{|t| [t.name,t.id] }) %>
   </div>

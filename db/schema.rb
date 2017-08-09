@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20170809125703) do
     t.datetime "time"
     t.float "min_bid", limit: 24
     t.integer "tender_id"
+    t.integer "round_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

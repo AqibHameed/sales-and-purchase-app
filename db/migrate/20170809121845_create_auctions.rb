@@ -4,6 +4,7 @@ class CreateAuctions < ActiveRecord::Migration[5.1]
       t.datetime :time
       t.float :min_bid
       t.integer :tender_id
+      t.integer :round_time
 
       t.timestamps
     end
