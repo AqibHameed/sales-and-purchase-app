@@ -12,6 +12,7 @@
  *= require style.css
  *= require jquery.dataTables.css
  *= require jquery.fancybox-1.3.4
+ *= require bootstrap-datetimepicker
  */
 
 .validation-error{

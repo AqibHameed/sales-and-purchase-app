@@ -3,7 +3,14 @@ class BidsController < ApplicationController
   before_action :authenticate_admin!, :only => [:list, :tender_total, :tender_success, :tender_unsuccess]
   before_action :authenticate_logged_in_user!
 
+  def start_bid
+    @bid = Bid.new
+    @tenders = Tender.all
+    @stones = Stone.all
+  end
+
   def create
+    debugger
     @stone = Stone.find(params[:stone_id])
     @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
     @tender = @stone.tender
@@ -22,7 +29,6 @@ class BidsController < ApplicationController
         format.html {redirect_to @bid.stone.tender}
       end
     end
-
   end
 
   def list

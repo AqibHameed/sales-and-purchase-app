@@ -1,7 +1,7 @@
 class Stone < ApplicationRecord
 
-  attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
-                  :deec_no, :lot_no, :description, :tender_id
+  # attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
+  #                 :deec_no, :lot_no, :description, :tender_id
 
   has_many :bids
   has_one :winner

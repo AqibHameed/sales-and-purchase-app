@@ -1,0 +1,69 @@
+<div class="table">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+		<div id="counter">1:00</div>
+		<tr>
+			<td><label>Buyer Name  : </label></td>
+			<td><%= @stone.tender.company.customer.name %></td>
+		</tr>
+		<tr>
+			<td><label>Tender : </label></td>
+			<td><%= @stone.tender_id %></td>
+		</tr>
+		<tr>
+			<td><%= @stone.stone_type %></td>
+			<td><%= @stone.id %></td>
+		</tr>
+		<tr>
+			<td><label> Parcel Description : </label></td>
+			<td><%= @stone.description %></td>
+		</tr>
+		<tr>
+			<td><label> Bid : </label></td>
+			<td><%=  @bids.first.try(:total) %></td>
+		</tr>
+		<tr>
+			<td><label> Higest : </label></td>
+			<td><%= @highest_bid.try(:total) %></td>
+		</tr>
+		<tr>
+			<td><label> Valuation : </label></td>
+			<td><%#= @highest_bid.try(:total) + 200 %></td>
+		</tr>
+		<tr>
+			<td><label> Next Round : </label></td>
+			<td><%= @bids.count %>/<%= @bids.count %></td>
+		</tr>
+		<tr>
+			<td><label> Last Month : </label></td>
+			<td><%=  %></td>
+		</tr>
+		
+	</table>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+    function countdown() {
+		    var seconds = 60;
+		    function tick() {
+		        var counter = document.getElementById("counter");
+		        seconds--;
+		        counter.innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(seconds);
+		         if( seconds > 0 ) {
+			            setTimeout(tick, 1000);
+			        } else {
+			           window.location.reload(true);
+			        }
+		    }
+		    tick();
+		}
+		countdown();
+	});  
+</script>
+
+<style type="text/css">
+	#counter{
+		border: 2px solid #808080;
+		float: right;
+		font-size: 18px;
+	}
+</style>

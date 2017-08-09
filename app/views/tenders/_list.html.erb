@@ -16,7 +16,7 @@
       <td><%= link_to tender.name, tender %></td>
       <td><%= tender.bid_count(current_customer) %></td>
       <td><%= tender.total_bid_amount(current_customer) %></td>
-      <td><%= time_remaining(tender.close_date) %></td>
+      <td><%#= time_remaining(tender.close_date) %></td>
       <% if current_customer %>
       <td><%= bid_confirmation_link(tender, current_customer)  %></td>
       <% else %>

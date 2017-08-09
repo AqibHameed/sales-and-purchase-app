@@ -12,7 +12,7 @@
 				</div>
 				<div class="field">
 					<div>
-						<%= @tender.open_date.strftime('%b %e, %l:%M %p') %>
+						<%= @tender.open_date.strftime('%b %e, %l:%M %p') rescue "" %>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -23,7 +23,7 @@
 				</div>
 				<div class="field">
 					<div>
-						<%= @tender.close_date.strftime('%b %e, %l:%M %p') %>
+						<%= @tender.close_date.strftime('%b %e, %l:%M %p') rescue "" %>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -48,6 +48,8 @@
 	
 	<div class="table">
 		<h2>Stone details :</h2>
+		<p>Round: <%= @round+1%> Ends in </p>
+		<p id="timer"></p>
 		<div class="form-wrapper bid-info">
 
  			<div class='stone_filter'>
@@ -87,4 +89,30 @@
 		$("#myTable").tablesorter();
 	});
 
+ function countdown() {
+    var seconds = 30;
+    function tick() {
+        var counter = document.getElementById("timer");
+        seconds--;
+        counter.innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(seconds);
+        if( seconds > 0 ) {
+            setTimeout(tick, 1000);
+        } else {
+          $.ajax({
+          	url: "/tenders/<%= @tender.id%>/next_round?round=<%= @round %>"
+          })
+          window.location.reload(true);
+        }
+    }
+    tick();
+}
+
+countdown();
 </script>
+<style type="text/css">
+	#timer{
+		border: 2px solid #808080;
+		float: right;
+		font-size: 18px;
+	}
+</style>

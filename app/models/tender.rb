@@ -25,7 +25,7 @@ class Tender < ApplicationRecord
 
   accepts_nested_attributes_for :stones
 
-  validates_presence_of :name, :open_date, :close_date, :company_id
+  # validates_presence_of :name, :open_date, :close_date, :company_id
 
   has_attached_file :temp_document
   do_not_validate_attachment_file_type :temp_document
@@ -193,7 +193,7 @@ class Tender < ApplicationRecord
 
   #Determines if tender is open or not
   def open?
-    self.close_date > DateTime.now
+    self.close_date > DateTime.now rescue false
   end
 
   def update_winner_list_from_uploaded_file

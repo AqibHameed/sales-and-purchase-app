@@ -64,10 +64,10 @@
       <div class="field">
       <%= label_tag :status %><br />
       <div>
-        <span class="check-titles">DTC Sight Holder</span><%= check_box_tag :status ,"","",:class=> "tender-house1"%><br>
-        <span class="check-titles">AlrosaContract</span><%= check_box_tag :status,"","",:class=> "tender-house1"%><br>  
-        <span class="check-titles">Dominion</span><%= check_box_tag :status ,"","",:class=> "tender-house1"%><br>
-        <span class="check-titles">Tender House</span><%= check_box_tag :status ,"","",:class=> "tender-house"%> <br> 
+        <span class="check-titles">DTC Sight Holder</span><%= check_box_tag :status ,"","",:class=> "tender-house7" %><br>
+        <span class="check-titles">AlrosaContract</span><%= check_box_tag :status,"","",:class=> "tender-house7"%><br>  
+        <span class="check-titles">Dominion</span><%= check_box_tag :status ,"","",:class=> "tender-house7"%><br>
+        <span class="check-titles">Tender House</span><%= check_box_tag :status ,"","",:class=> "tender-house0"%> <br> 
       </div>
     </div>
 
@@ -91,7 +91,10 @@
 </style>
 
 <script type="text/javascript">
-  $('.tender-house').on('click',function () {
-    $(".tender-house").is(':checked') ? $('.tender-house1').attr('disabled', true).prop('checked', false) : $('.tender-house1').prop('checked', false).attr('disabled', false)   
+  $(document).ready(function(){
+    $(".tender-house7, .tender-house0").prop("checked", false);
+  })
+  $('.tender-house0').on('click',function () {
+    $(".tender-house0").is(':checked') ? $('.tender-house7').attr('disabled', true).prop('checked', false) : $('.tender-house7').prop('checked', false).attr('disabled', false)   
   })
 </script>

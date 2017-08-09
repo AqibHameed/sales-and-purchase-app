@@ -1,0 +1,175 @@
+<div class="clear20"></div>
+<div class="clear20"></div>
+<div class="heading">Add New Tender</div>
+<div class="clear20"></div>
+<div class="login-box">
+  <p style="color:red; font-size:13px;" class='error_msg'></p>
+  <%= form_for @tender do |f| %>
+   
+    <div class="form-group">
+       <label class="col-md-4 control-label">Company</label> 
+       <div class="col-md-4">
+        <%= select_tag "search_company",  options_from_collection_for_select(Company.all, "id", "name"), :selected => params[:search_company], :prompt => 'Select Company' ,:class => 'input'%>
+       </div>
+    </div> 
+    
+    <div class="form-group">
+      <%= f.label :name, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :name,:class => 'input' %>
+      </div>
+    </div>  
+
+    <div class="form-group">
+      <%= f.label :type, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :tender_type,:class => 'input' %>
+      </div>
+    </div>  
+
+    <div class="form-group">
+      <%= f.label :discription, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :description ,:class => 'input'%>
+      </div>
+    </div>  
+
+    <div class="form-group">
+      <%= f.label :Open_date, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :open_date, :class => 'datetimepicker input' %>
+      </div>
+    </div>  
+
+    <div class="form-group">
+      <%= f.label :Close_date, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :close_date, :class => 'datetimepicker input' %>
+      </div>
+    </div>  
+
+    <div class="form-group">
+      <%= f.label :Tender_Open, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+      <%= f.check_box :tender_open,:class => 'input' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :Document, class: "col-md-4 control-label" %>
+      <%= f.file_field :document ,:class => 'input'%>
+    </div>
+    <div class="form-group">
+      <%= f.label :winner_list, class: "col-md-4 control-label" %>
+        <%= f.file_field :winner_list,:class => 'input' %>
+    </div>
+    <div class="form-group">
+      <%= f.label :temp_document, class: "col-md-4 control-label"%>
+        <%= f.file_field :temp_document,:class => 'input' %>
+    </div>
+    <div class="form-group">
+      <%= f.label :deec_no_field, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+       <%= f.text_field :deec_no_field ,:class => 'input'%>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :Add_refrence, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :reference_id,:class => 'input' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :desc_field, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :desc_field,:class => 'input' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :no_of_stone_field , class: "col-md-4 control-label"%>
+      <div class="col-md-4">
+        <%= f.text_field :no_of_stones_field ,:class => 'input'%>
+      </div>
+    </div>  
+    <div class="form-group">
+      <%= f.label :weight_field , class: "col-md-4 control-label"%>
+      <div class="col-md-4">
+        <%= f.text_field :weight_field,:class => 'input' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :sheet_no, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :sheet_no ,:class => 'input'%>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :winner_lot_no_field, class: "col-md-4 control-label" %>
+      <div class="col-md-4">
+        <%= f.text_field :winner_lot_no_field,:class => 'input' %>
+      </div>
+    </div>
+      <%= label_tag :lot_permission %>
+      <%= radio_button_tag(:lot_permission, "Yes") %> Yes
+      <%= radio_button_tag(:lot_permission, "No") %> No
+      <% @tender = Tender.new %>
+      <%= nested_form_for(@tender, url: tenders_path )do |f| %>
+        <div class="field">
+          <%= f.fields_for :stones do |stone| %>
+
+            <%= label_tag :stones %>
+            <%= select_tag(:stone_type, options_for_select(['parcel', 'stone']) )%><br><br>
+            
+            <%= label_tag :no_of_stones %>
+            <%= text_field_tag :no_of_stones %><br><br>
+
+            <%= label_tag :size %>
+            <%= text_field_tag :size %><br><br>
+
+            <%= label_tag :weight %>
+            <%= text_field_tag :weight %><br><br>
+
+            <%= label_tag :carat %>
+            <%= text_field_tag :carat %><br><br>
+
+            <%= label_tag :deec_no %>
+            <%= text_field_tag :deec_no %><br><br>
+
+            <%= label_tag :lot_no %>
+            <%= text_field_tag :lot_no %><br><br>
+
+            <%= label_tag :description %>
+            <%= text_field_tag :description %><br><br>
+
+            <%= label_tag :system_price %>
+            <%= text_field_tag :system_price %><br><br>
+          
+            <%= stone.link_to_remove "Remove this stone" %>
+          <% end %>
+          <p><%= f.link_to_add "Add a stone", :stones %></p>
+        </div>
+        <div class="btns-groups">
+          <%= f.submit "Submit", class: "btn-02 login-btn" %>
+        </div>
+      <% end %>
+  
+    <!-- <div><%= f.submit "Login", :class=> "btn-02"%></div> -->
+  <% end %>
+</div>
+
+<script type="text/javascript">
+    $('.datetimepicker').datetimepicker({});
+</script>
+
+<style type="text/css">
+  .form-group {
+    margin-bottom: 15px;
+    overflow-y: auto;
+  }
+  .col-md-4 {
+    width: 33.33%;
+    float: left;
+  }
+  .control-label {
+    font-size: 14px;
+  }  
+</style>

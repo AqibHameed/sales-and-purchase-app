@@ -19,6 +19,8 @@
 //= require jquery.tablesorter.min.js
 //= require highcharts
 //= require jquery.fancybox-1.3.4
+//= require moment
+//= require bootstrap-datetimepicker
 
 
 //Admin Login
