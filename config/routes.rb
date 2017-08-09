@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       get :admin_winner_details
       post :update_stone_desc
       post :update_winner_desc
+      get :show_stone
 
       #reports
       get :winner_list
@@ -67,6 +68,7 @@ Rails.application.routes.draw do
       get :tender_success
       get :tender_unsuccess
       get :parcel_report
+      get :start_bid
     end
   end
 

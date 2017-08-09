@@ -10,7 +10,6 @@ class BidsController < ApplicationController
   end
 
   def create
-    debugger
     @stone = Stone.find(params[:stone_id])
     @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
     @tender = @stone.tender
