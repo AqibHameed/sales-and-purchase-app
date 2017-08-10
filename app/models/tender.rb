@@ -26,7 +26,7 @@ class Tender < ApplicationRecord
 
   accepts_nested_attributes_for :stones
 
-  # validates_presence_of :name, :open_date, :close_date, :company_id
+  validates_presence_of :name, :open_date, :close_date, :company_id, :country
 
   has_attached_file :temp_document
   do_not_validate_attachment_file_type :temp_document
