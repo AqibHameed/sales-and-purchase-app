@@ -16,6 +16,7 @@ class BidsController < ApplicationController
     @bid.total = params[:bid][:total]
     @bid.price_per_carat = params[:bid][:price_per_carat]
     @bid.stone_id = @stone.id
+    @bid.round = 1
     if @bid.save
       respond_to do |format|
         format.js { render 'tenders/refresh_data.js.erb'}
@@ -114,6 +115,7 @@ class BidsController < ApplicationController
     @bid = Bid.find(params[:id])
     @stone = @bid.stone
     @tender = @bid.stone.tender
+    @round = @bid.round
     if @bid.update_attributes(params[:bid])
       respond_to do |format|
         format.js { render 'tenders/refresh_data.js.erb'}
