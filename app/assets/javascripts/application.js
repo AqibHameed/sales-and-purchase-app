@@ -21,7 +21,7 @@
 //= require jquery.fancybox-1.3.4
 //= require moment
 //= require bootstrap-datetimepicker
-
+//= require jquery-countdown
 
 //Admin Login
 $(document).ready(function() {

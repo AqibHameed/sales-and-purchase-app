@@ -18,6 +18,8 @@
 <%= link_to 'Edit', edit_auction_path(@auction) %> |
 <%= link_to 'Back', auctions_path %>
 
+<div id="getting-started"></div>
+
 <table>
   <tr>
     <th>Index</th>
@@ -41,7 +43,13 @@
         <td><%= stone.weight %></td>
         <td><%= stone.description %></td>
         <td><%= number_field_tag :bid_amount %></td>
-        <td><%= button_tag 'Place your Bid', class: 'place-bid' %></td>
+        <td>
+          <% if can_user_place_bid?(stone) %>
+            <%= button_tag 'Place your Bid', class: 'place-bid' %>
+          <% else %>
+            <p>You have placed lowest bid in last round</p>
+          <% end %>
+        </td>
         <td class="response" id="response-<%= stone.id %>"></td>
       </tr>
     <% end %>
@@ -67,5 +75,16 @@
         }
       }
     })
+  });
+
+  <% watch_time = @auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time %>
+
+  $('#getting-started').countdown("<%= watch_time %>", function(event) {
+    var auction_time = new Date("<%= watch_time %>");
+    var current_time = new Date();
+    $(this).html(event.strftime('%w weeks %d days %H:%M:%S'));
+    if (auction_time < current_time){
+      window.location = "<%= auction_path(@auction) %>"
+    }
   });
 </script>

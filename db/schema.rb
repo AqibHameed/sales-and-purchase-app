@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170810062745) do
+ActiveRecord::Schema.define(version: 20170810124053) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20170810062745) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "completed", default: false
+    t.datetime "started_at"
   end
 
   create_table "auctions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -48,6 +49,9 @@ ActiveRecord::Schema.define(version: 20170810062745) do
     t.integer "round_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_started", default: false
+    t.boolean "started", default: false
+    t.boolean "completed", default: false
   end
 
   create_table "bid_calculations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -257,6 +261,15 @@ ActiveRecord::Schema.define(version: 20170810062745) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flag_type", default: "Imp"
+  end
+
+  create_table "round_loosers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "stone_id"
+    t.integer "customer_id"
+    t.integer "bid_id"
+    t.integer "auction_round_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "stones", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

@@ -1,8 +1,14 @@
 class AuctionRound < ApplicationRecord
 
   has_many :bids
+  has_many :round_loosers
+  belongs_to :auction
 
   after_create :add_round_no
+
+  def add_round_looser bid
+    self.round_loosers.create(stone_id: bid.stone_id, customer_id: bid.customer_id, bid_id: bid.id)
+  end
 
   def add_round_no
     self.update(round_no: self.auction.auction_rounds.count)    
