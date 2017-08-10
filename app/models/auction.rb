@@ -4,6 +4,6 @@ class Auction < ApplicationRecord
   belongs_to :tender
 
   def current_auction_round
-    self.auction_rounds.where(completed: false).last
+    self.auction_rounds.where(completed: false).first_or_initialize
   end
 end

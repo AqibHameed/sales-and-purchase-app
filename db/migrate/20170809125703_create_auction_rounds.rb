@@ -5,6 +5,8 @@ class CreateAuctionRounds < ActiveRecord::Migration[5.1]
       t.float :min_bid
       t.float :max_bid
       t.integer :auction_id
+      t.datetime :started_at
+      t.boolean :completed, default: false
 
       t.timestamps
     end

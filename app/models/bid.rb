@@ -1,7 +1,5 @@
 class Bid < ApplicationRecord
 
-  # attr_accessible :total, :bid_date, :customer_id, :tender_id, :no_of_parcels, :price_per_carat, :stone_id
-
   has_one :winner
 
   belongs_to :tender, optional: true
@@ -21,7 +19,7 @@ class Bid < ApplicationRecord
   end
 
   def set_tender_id
-    self.tender_id = self.stone.tender_id
+    # self.tender_id = self.stone.tender_id
   end
 
   def stone_description
