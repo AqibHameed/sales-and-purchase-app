@@ -12,10 +12,60 @@
 
 <p>
   <strong>Tender:</strong>
-  <%= @auction.tender_id %>
+  <%= @auction.tender.name %>
 </p>
 
 <%= link_to 'Edit', edit_auction_path(@auction) %> |
 <%= link_to 'Back', auctions_path %>
 
-<% binding.pry %>
+<table>
+  <tr>
+    <th>Index</th>
+    <th>Stone Type</th>
+    <th>No. of stones</th>
+    <th>Size</th>
+    <th>Weight</th>
+    <th>Description</th>
+    <th>Your bid</th>
+    <th></th>
+  </tr>
+  <tbody>
+    <%= hidden_field_tag :auction_id, @auction.id %>
+    <% @auction.tender.stones.each_with_index do |stone,index| %>
+      <tr class="stone-detail">
+        <%= hidden_field_tag :stone_id, stone.id %>
+        <td><%= index+1 %></td>
+        <td><%= stone.stone_type %></td>
+        <td><%= stone.no_of_stones %></td>
+        <td><%= stone.size %></td>
+        <td><%= stone.weight %></td>
+        <td><%= stone.description %></td>
+        <td><%= number_field_tag :bid_amount %></td>
+        <td><%= button_tag 'Place your Bid', class: 'place-bid' %></td>
+        <td class="response" id="response-<%= stone.id %>"></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<script>
+  $(document).on('click','.place-bid',function(){
+    var stone_id = $(this).parents('.stone-detail').find('#stone_id').val();
+    var amount = $(this).parents('.stone-detail').find('#bid_amount').val();
+    $.ajax({
+      type: 'POST',
+      url: "<%= place_bid_auction_path(@auction) %>",
+      data: { stone_id: stone_id, bid_amount: amount },
+      success: function(response){
+        $('.response').html('');
+        $('#response-'+stone_id).html(response.msg)
+        if (response.success){
+          $('#response-'+stone_id).attr('style','color:green;');
+        }
+        else{
+          $('#response-'+stone_id).attr('style','color:red;');
+        }
+      }
+    })
+  });
+</script>
