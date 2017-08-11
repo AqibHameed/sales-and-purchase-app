@@ -78,7 +78,13 @@
         }
       })
     });
-    
+  </script>
+<% elsif @auction.started? && @auction.completed %>
+  Auction completed
+<% end %>
+
+<script>
+  <% unless @auction.completed? %>
     <% watch_time = @auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time %>
 
     $('#getting-started').countdown("<%= watch_time %>", function(event) {
@@ -86,9 +92,12 @@
       var current_time = new Date();
       $(this).html(event.strftime('%w weeks %d days %H:%M:%S'));
       if (auction_time < current_time){
-        window.location = "<%= round_completed_auction_path(@auction) %>"
+        <% if @auction.started %>
+          window.location = "<%= round_completed_auction_path(@auction) %>"
+        <% else %>
+          window.location = "<%= auction_path(@auction) %>"
+        <% end %>
       }
     });
-  </script>
-
-<% end %>
+  <% end %>
+</script>
