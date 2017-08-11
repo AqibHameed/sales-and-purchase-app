@@ -1,27 +1,26 @@
+<div class="table">
+<div id="getting-started"></div><br>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <tr>
+      <td> Time  : </td>
+      <td><%= @auction.time %></td>
+    </tr>
+    <tr>
+      <td> Minimum bid  : </td>
+      <td><%= @auction.min_bid %></td>
+    </tr>
+    <tr>
+      <td> Tender :</td>
+      <td><%= @auction.tender.name %></td>
+    </tr>
+  </table>
+</div>
 <p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Time:</strong>
-  <%= @auction.time %>
-</p>
-
-<p>
-  <strong>Min bid:</strong>
-  <%= @auction.min_bid %>
-</p>
-
-<p>
-  <strong>Tender:</strong>
-  <%= @auction.tender.name %>
-</p>
-
-<%= link_to 'Edit', edit_auction_path(@auction) %> |
-<%= link_to 'Back', auctions_path %>
-
-<div id="getting-started"></div>
+<%= link_to 'Edit', edit_auction_path(@auction),class: "btn-02 login-btn" %>
+<%= link_to 'Back', auctions_path, class: "btn-02 login-btn" %>
+<br>
 
 <% if @auction.started? && !@auction.completed %>
-
   <table>
     <tr>
       <th>Index</th>

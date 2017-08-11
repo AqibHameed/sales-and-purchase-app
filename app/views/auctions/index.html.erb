@@ -1,8 +1,8 @@
+<div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable">
 <p id="notice"><%= notice %></p>
 
-<h1>Auctions</h1>
-
-<table>
+<h2>Auctions</h2>
   <thead>
     <tr>
       <th>Time</th>
@@ -18,14 +18,21 @@
         <td><%= auction.time %></td>
         <td><%= auction.min_bid %></td>
         <td><%= auction.tender.name %></td>
+        <% if current_admin %>
         <td><%= link_to 'Show', auction %></td>
         <td><%= link_to 'Edit', edit_auction_path(auction) %></td>
+        <% end %>
         <td><%= link_to 'Destroy', auction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Auction', new_auction_path %>
+<div class="form-row">
+  <div class="label">
+    &nbsp;
+  </div>
+  <div class="field">
+    <%= link_to 'New Auction', new_auction_path , class: "btn-02 login-btn" %>
+  </div>
+  <div class="clear"></div>
+</div>

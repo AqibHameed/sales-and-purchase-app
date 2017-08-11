@@ -18,10 +18,10 @@ class Ability
 
           model = r.split(':')[0]
           unless model == 'all'
-            access = r.split(':')[1].split(',')
-            access.each do |a|
-              eval("can :#{a}, #{model}")
-            end
+            # access = r.split(':')[1].split(',')
+            # access.each do |a|
+            #   eval("can :#{a}, #{model}")
+            # end
           end
 
         end
