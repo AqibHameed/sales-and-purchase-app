@@ -1,6 +1,8 @@
 class Auction < ApplicationRecord
 
   has_many :auction_rounds
+  has_many :round_loosers
+  has_many :round_winners
   belongs_to :tender
 
   def current_auction_round

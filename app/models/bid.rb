@@ -11,7 +11,7 @@ class Bid < ApplicationRecord
 
   validates_presence_of :total, :customer_id
 
-  validates_uniqueness_of :stone_id, :scope => :customer_id
+  # validates_uniqueness_of :stone_id, :scope => :customer_id
 
   before_save :set_bid_date_and_lot_no, :set_tender_id
 
