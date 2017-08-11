@@ -8,11 +8,11 @@ class AuctionRound < ApplicationRecord
   after_create :add_round_no
 
   def add_round_looser bid
-    self.round_loosers.create(stone_id: bid.stone_id, customer_id: bid.customer_id, bid_id: bid.id)
+    self.round_loosers.create(stone_id: bid.stone_id, customer_id: bid.customer_id, bid_id: bid.id, auction_id: self.auction.id)
   end
 
   def add_round_winner bid
-    self.round_winners.create(stone_id: bid.stone_id, customer_id: bid.customer_id, bid_id: bid.id).save
+    self.round_winners.create(stone_id: bid.stone_id, customer_id: bid.customer_id, bid_id: bid.id, auction_id: self.auction.id).save
   end
 
   def add_round_no

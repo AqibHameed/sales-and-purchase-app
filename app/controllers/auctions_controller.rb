@@ -63,7 +63,7 @@ class AuctionsController < ApplicationController
   end
 
   def auction_completed?
-    @last_round.bids.group_by(&:stone_id).keys.count == @last_round.round_winners.count    
+    @last_round.bids.group_by(&:stone_id).keys.count == @last_round.round_winners.pluck(:stone_id).uniq.count
   end
 
   def highest_bid bids
@@ -85,10 +85,10 @@ class AuctionsController < ApplicationController
 
   def remove_lowest_bidder_for_the_last_round
     @last_round.bids.group_by(&:stone_id).map do |stone_id, bids|
-
       lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
 
       @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
+      binding.pry
     end
 
     @last_round.update(completed: true)
