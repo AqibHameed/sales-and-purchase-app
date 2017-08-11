@@ -8,7 +8,7 @@ class Auction < ApplicationRecord
   end
 
   def make_it_completed
-    self.update(complete: true)
+    self.update(completed: true)
   end
 
   def make_it_started

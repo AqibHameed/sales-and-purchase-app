@@ -1,26 +1,26 @@
 class AuctionsController < ApplicationController
-  before_action :set_auction, only: [:show, :edit, :update, :destroy, :place_bid, :start_round]
+  before_action :set_auction, only: [:show, :edit, :update, :destroy, :place_bid, :start_round, :round_completed]
 
   def index
     @auctions = Auction.all
   end
 
   def show
-    if @auction.started
-      @last_round = @auction.current_auction_round
-    elsif @auction.time <= Time.now
+    if @auction.started and !@auction.completed
+      @last_round = @auction.auction_rounds.where(completed: true).sort_by(&:created_at).last
+      @next_round = @auction.current_auction_round
+    elsif (!@auction.started && @auction.time <= Time.now)
       @auction.make_it_started
       move_to_next_round
     end
   end
 
   def round_completed
-    binding.pry
     unless @evaluating_round
       @evaluating_round = true
       @last_round = @auction.current_auction_round
       remove_lowest_bidder_for_the_last_round
-      move_to_next_round
+      move_to_next_round unless @auction.completed?
       @evaluating_round = false
     end
     redirect_to auction_path(@auction)

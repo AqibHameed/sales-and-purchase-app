@@ -135,7 +135,7 @@ Rails.application.routes.draw do
   resources :auctions do
     member do
       post :place_bid
-      post :round_completed
+      get :round_completed
     end
   end
 
