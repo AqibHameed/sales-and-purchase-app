@@ -20,71 +20,75 @@
 
 <div id="getting-started"></div>
 
-<table>
-  <tr>
-    <th>Index</th>
-    <th>Stone Type</th>
-    <th>No. of stones</th>
-    <th>Size</th>
-    <th>Weight</th>
-    <th>Description</th>
-    <th>Your bid</th>
-    <th></th>
-  </tr>
-  <tbody>
-    <%= hidden_field_tag :auction_id, @auction.id %>
-    <% @auction.tender.stones.each_with_index do |stone,index| %>
-      <tr class="stone-detail">
-        <%= hidden_field_tag :stone_id, stone.id %>
-        <td><%= index+1 %></td>
-        <td><%= stone.stone_type %></td>
-        <td><%= stone.no_of_stones %></td>
-        <td><%= stone.size %></td>
-        <td><%= stone.weight %></td>
-        <td><%= stone.description %></td>
-        <td><%= number_field_tag :bid_amount %></td>
-        <td>
-          <% if can_user_place_bid?(stone) %>
-            <%= button_tag 'Place your Bid', class: 'place-bid' %>
-          <% else %>
-            <p>You have placed lowest bid in last round</p>
-          <% end %>
-        </td>
-        <td class="response" id="response-<%= stone.id %>"></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<% if @auction.started? && !@auction.completed %>
 
-<script>
-  $(document).on('click','.place-bid',function(){
-    var stone_id = $(this).parents('.stone-detail').find('#stone_id').val();
-    var amount = $(this).parents('.stone-detail').find('#bid_amount').val();
-    $.ajax({
-      type: 'POST',
-      url: "<%= place_bid_auction_path(@auction) %>",
-      data: { stone_id: stone_id, bid_amount: amount },
-      success: function(response){
-        $('.response').html('');
-        $('#response-'+stone_id).html(response.msg)
-        if (response.success){
-          $('#response-'+stone_id).attr('style','color:green;');
+  <table>
+    <tr>
+      <th>Index</th>
+      <th>Stone Type</th>
+      <th>No. of stones</th>
+      <th>Size</th>
+      <th>Weight</th>
+      <th>Description</th>
+      <th>Your bid</th>
+      <th></th>
+    </tr>
+    <tbody>
+      <%= hidden_field_tag :auction_id, @auction.id %>
+      <% @auction.tender.stones.each_with_index do |stone,index| %>
+        <tr class="stone-detail">
+          <%= hidden_field_tag :stone_id, stone.id %>
+          <td><%= index+1 %></td>
+          <td><%= stone.stone_type %></td>
+          <td><%= stone.no_of_stones %></td>
+          <td><%= stone.size %></td>
+          <td><%= stone.weight %></td>
+          <td><%= stone.description %></td>
+          <td><%= number_field_tag :bid_amount %></td>
+          <td>
+            <% if can_user_place_bid?(stone) %>
+              <%= button_tag 'Place your Bid', class: 'place-bid' %>
+            <% else %>
+              <p>You have placed lowest bid in last round</p>
+            <% end %>
+          </td>
+          <td class="response" id="response-<%= stone.id %>"></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <script>
+    $(document).on('click','.place-bid',function(){
+      var stone_id = $(this).parents('.stone-detail').find('#stone_id').val();
+      var amount = $(this).parents('.stone-detail').find('#bid_amount').val();
+      $.ajax({
+        type: 'POST',
+        url: "<%= place_bid_auction_path(@auction) %>",
+        data: { stone_id: stone_id, bid_amount: amount },
+        success: function(response){
+          $('.response').html('');
+          $('#response-'+stone_id).html(response.msg)
+          if (response.success){
+            $('#response-'+stone_id).attr('style','color:green;');
+          }
+          else{
+            $('#response-'+stone_id).attr('style','color:red;');
+          }
         }
-        else{
-          $('#response-'+stone_id).attr('style','color:red;');
-        }
+      })
+    });
+    
+    <% watch_time = @auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time %>
+
+    $('#getting-started').countdown("<%= watch_time %>", function(event) {
+      var auction_time = new Date("<%= watch_time %>");
+      var current_time = new Date();
+      $(this).html(event.strftime('%w weeks %d days %H:%M:%S'));
+      if (auction_time < current_time){
+        window.location = "<%= round_completed_auction_path(@auction) %>"
       }
-    })
-  });
+    });
+  </script>
 
-  <% watch_time = @auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time %>
-
-  $('#getting-started').countdown("<%= watch_time %>", function(event) {
-    var auction_time = new Date("<%= watch_time %>");
-    var current_time = new Date();
-    $(this).html(event.strftime('%w weeks %d days %H:%M:%S'));
-    if (auction_time < current_time){
-      window.location = "<%= auction_path(@auction) %>"
-    }
-  });
-</script>
+<% end %>

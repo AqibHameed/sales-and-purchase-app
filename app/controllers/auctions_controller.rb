@@ -7,31 +7,23 @@ class AuctionsController < ApplicationController
 
   def show
     if @auction.started
+      @last_round = @auction.current_auction_round
+    elsif @auction.time <= Time.now
+      @auction.make_it_started
+      move_to_next_round
+    end
+  end
+
+  def round_completed
+    binding.pry
+    unless @evaluating_round
+      @evaluating_round = true
+      @last_round = @auction.current_auction_round
       remove_lowest_bidder_for_the_last_round
       move_to_next_round
-    elsif @auction.time <= Time.now
-      @auction.update(started: true)
-      move_to_next_round
+      @evaluating_round = false
     end
-  end
-
-  def remove_lowest_bidder_for_the_last_round
-    @last_round = @auction.current_auction_round
-    @last_round.update(completed: true)
-
-    @last_round.bids.group_by(&:stone_id).map do |stone_id, bids|
-      lowest_bids = bids.group_by(&:total).sort.to_h.first[1]
-      lowest_bids.each{ |bid| @last_round.add_round_looser(bid) }
-      round_winners if (bids.pluck(:customer_id) - @last_round.round_loosers.pluck(:customer_id).uniq).length.eql?(1)
-    end
-
-    (@last_round.bids.pluck(:customer_id).uniq - @last_round.round_loosers.pluck(:customer_id)).length
-
-  end
-
-  def move_to_next_round
-    @next_round = @auction.current_auction_round
-    @next_round.update(started_at: Time.now) if @next_round.started_at.blank?
+    redirect_to auction_path(@auction)
   end
 
   def new
@@ -68,6 +60,40 @@ class AuctionsController < ApplicationController
     user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
     user_bid.total = params[:bid_amount]
     render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
+  end
+
+  def auction_completed?
+    @last_round.bids.group_by(&:stone_id).keys.count == @last_round.round_winners.count    
+  end
+
+  def highest_bid bids
+    bids.group_by(&:total).sort.reverse.to_h.first[1].sort_by(&:created_at).first
+  end
+
+  def lowest_bids bids
+    bids.group_by(&:total).sort.to_h.first[1]
+  end
+
+  def move_to_next_round
+    @next_round = @auction.current_auction_round
+    @next_round.update(started_at: Time.now) if @next_round.started_at.blank?
+  end
+
+  def only_single_customer_left_for_the_stone? bids, stone_id
+    (bids.pluck(:customer_id) - @last_round.round_loosers.where(stone_id: stone_id).pluck(:customer_id)).length.eql?(1)
+  end
+
+  def remove_lowest_bidder_for_the_last_round
+    @last_round.bids.group_by(&:stone_id).map do |stone_id, bids|
+
+      lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
+
+      @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
+    end
+
+    @last_round.update(completed: true)
+
+    @auction.make_it_completed if auction_completed?
   end
 
   private
