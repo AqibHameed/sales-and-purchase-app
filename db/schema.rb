@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170811072920) do
+ActiveRecord::Schema.define(version: 20170814114600) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 20170811072920) do
     t.boolean "started", default: false
     t.boolean "completed", default: false
     t.integer "loosers_per_round"
+    t.integer "evaluating_round_id"
   end
 
   create_table "bid_calculations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

@@ -16,12 +16,11 @@ class AuctionsController < ApplicationController
   end
 
   def round_completed
-    unless @evaluating_round
-      @evaluating_round = true
+    if @auction.evaluating_round_id != params[:round].to_i
+      @auction.update(evaluating_round_id: params[:round])
       @last_round = @auction.current_auction_round
       remove_lowest_bidder_for_the_last_round
       move_to_next_round unless @auction.completed?
-      @evaluating_round = false
     end
     redirect_to auction_path(@auction)
   end
@@ -88,7 +87,6 @@ class AuctionsController < ApplicationController
       lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
 
       @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
-      binding.pry
     end
 
     @last_round.update(completed: true)
