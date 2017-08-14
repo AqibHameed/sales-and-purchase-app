@@ -92,7 +92,7 @@
       $(this).html(event.strftime('%w weeks %d days %H:%M:%S'));
       if (auction_time < current_time){
         <% if @auction.started %>
-          window.location = "<%= round_completed_auction_path(@auction) %>"
+          window.location = "<%= round_completed_auction_path(@auction) %>?round=<%= @next_round.id %>"
         <% else %>
           window.location = "<%= auction_path(@auction) %>"
         <% end %>
