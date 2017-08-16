@@ -54,6 +54,10 @@ class Tender < ApplicationRecord
   scope :opening_today, -> { where("open_date <= ? AND open_date >= ?", DateTime.now.in_time_zone.end_of_day, DateTime.now.in_time_zone.beginning_of_day)}
 
   scope :closing_today, -> { where("close_date <= ? AND close_date >= ?", DateTime.now.in_time_zone.end_of_day, DateTime.now.in_time_zone.beginning_of_day)}
+
+  scope :active, -> { where("open_date <= ? AND close_date >= ?", DateTime.now.in_time_zone.beginning_of_day, DateTime.now.in_time_zone.end_of_day) }
+
+
   #  validates_attachment_content_type :document, :content_type => ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/excel"], :message => 'Only *.xls files allowed'
   def self.tenders_with_bid
     where(:id => Bid.all.map(&:tender_id).uniq)
