@@ -376,8 +376,10 @@ class TendersController < ApplicationController
 
   def send_confirmation
     if params[:tender_id]
-      @customer_tender = CustomersTender.where(tender_id: params[:tender_id], customer_id: current_customer.id)
-      @customer_tender.update_attribute(:confirmed, true)
+
+      @customer_tender = CustomersTender.where(tender_id: params[:tender_id], customer_id: current_customer.id).first
+      @customer_tender.confirmed = true
+      @customer_tender.save!
       @bid = Bid.where(tender_id: @customer_tender.tender_id, customer_id: current_customer.id)
       TenderMailer.confirmation_mail(@customer_tender.tender, current_customer, @bid).deliver rescue logger.info "Error sending email"
       @message = "success"

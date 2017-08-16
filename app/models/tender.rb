@@ -214,6 +214,8 @@ class Tender < ApplicationRecord
               win = self.tender_winners.find_or_initialize_by(lot_no: lot_no)
               win.description = data_row[Tender.get_index(self.winner_desc_field)]
               win.selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
+              actual_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
+              check_selling_price(actual_selling_price)
               win.avg_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_carat_selling_price_field)])
               win.save
             end
@@ -221,11 +223,19 @@ class Tender < ApplicationRecord
           Tender.send_winner_list_uploaded_mail(self.id)
         end
       end
+
     else
       puts "==============no file==============="
     end
   end
 
+  def check_selling_price(actual_selling_price)
+    @stones = self.stones
+    @stones.each do |stone|
+      selling_price = stone.winner.bid.total 
+      TenderMailer.send_notify_winning_buyers_mail(self, stone.winner.bid.customer).deliver rescue logger.info "Error sending email" if actual_selling_price == selling_price
+    end 
+  end  
 
   def Tender.send_winner_list_uploaded_mail(id)
     tender = Tender.find(id)

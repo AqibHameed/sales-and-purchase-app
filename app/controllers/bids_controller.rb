@@ -85,8 +85,7 @@ class BidsController < ApplicationController
     # bids = Bid.where(:stone_id => @bid.stone.id, :tender_id => @bid.tender.id).order('total desc')
 
     #################### Graph Data #################
-    @history = TenderWinner.where("tender_id in (?) and description = ?", past_tenders.collect(&:id), @bid.stone.description).order("tender_id")
-
+    @history = TenderWinner.where("tender_id in (?)", past_tenders.collect(&:id)).order("tender_id")
     @stones = Stone.where("description = ? and tender_id in (?)", @bid.stone.description, past_tenders.collect(&:id))
     @bid_history = Bid.where("tender_id in (?) and stone_id in (?) and customer_id is NOT NULL", past_tenders.collect(&:id), @stones.collect(&:id)).order("total desc")
 
@@ -135,8 +134,7 @@ class BidsController < ApplicationController
     tender = @stone.tender
     past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
     past_tender = past_tenders.first
-    @history = TenderWinner.where("tender_id in (?) and description = ?", past_tenders.collect(&:id), @stone.description).order("tender_id")
-
+    @history = TenderWinner.where("tender_id in (?)", past_tenders.collect(&:id)).order("tender_id")
     stones = Stone.where("description = ? and tender_id in (?)", @stone.description, past_tenders.collect(&:id))
     bid_history = Bid.where("tender_id in (?) and customer_id = ? and stone_id in (?)", past_tenders.collect(&:id), current_customer.id, stones.collect(&:id)).order("tender_id")
     my_list = {}

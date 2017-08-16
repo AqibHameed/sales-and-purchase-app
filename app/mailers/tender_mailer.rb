@@ -27,6 +27,11 @@ class TenderMailer < ApplicationMailer
     mail(:to => @customer.email, :subject => "[Dialuck] Winner list updated for #{@tender.name} Tender")
   end
 
+  def send_notify_winning_buyers_mail(tender, customer)
+    @tender, @customer = tender, customer
+    mail(:to => @customer.email, :subject => "[Dialuck] Notify Winning buyers #{@tender.name} Tender")
+  end  
+
   def send_tender_close_notification(tender, admin)
     @tender, @admin = tender, admin
     mail(:to => @admin.email, :subject => "[Dialuck] Tender #{@tender.name} closing today")
