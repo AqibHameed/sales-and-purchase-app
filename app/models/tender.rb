@@ -232,8 +232,9 @@ class Tender < ApplicationRecord
   def check_selling_price(actual_selling_price)
     @stones = self.stones
     @stones.each do |stone|
-      selling_price = stone.winner.bid.total 
-      TenderMailer.send_notify_winning_buyers_mail(self, stone.winner.bid.customer).deliver rescue logger.info "Error sending email" if actual_selling_price == selling_price
+      selling_price = stone.winner.try(:bid).try(:total) 
+      customer = stone.winner.try(:bid).try(:customer)
+      TenderMailer.send_notify_winning_buyers_mail(self, customer).deliver rescue logger.info "Error sending email" if (actual_selling_price == selling_price && customer)
     end 
   end  
 

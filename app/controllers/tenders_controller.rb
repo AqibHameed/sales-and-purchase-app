@@ -93,7 +93,11 @@ class TendersController < ApplicationController
   def show
     if current_customer
       companies = current_customer.companies
-      @tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
+      if companies.blank?
+        @tender = Tender.find(params[:id])
+      else  
+        @tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
+      end  
       if @tender.open_date < Time.now && Time.now < @tender.close_date
         @round = 1
         # if params[:round].present?
