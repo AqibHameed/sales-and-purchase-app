@@ -18,8 +18,10 @@
 <p id="notice"><%= notice %></p>
 <%= link_to 'Edit', edit_auction_path(@auction),class: "btn-02 login-btn" %>
 <%= link_to 'Back', auctions_path, class: "btn-02 login-btn" %>
-<br>
-
+<br><br>
+<div class="table">
+<div id="getting-started"></div><br>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
 <%# if @auction.started? && !@auction.completed %>
   <table>
     <tr>
@@ -45,6 +47,7 @@
           <td><%= stone.description %></td>
           <td><%= number_field_tag :bid_amount %></td>
           <td>
+          <% if @auction.started? %>
             <% if user_win_last_round_for_stone?(stone) %>
               <p>You are the winner</p>
             <% elsif can_user_place_bid?(stone) %>
@@ -52,8 +55,11 @@
             <% else %>
               <p>You have placed lowest bid in last round</p>
             <% end %>
+          <% else %>  
+              <p>Bid not started</p>
+          <% end %>  
           </td>
-          <td class="response" id="response-<%= stone.id %>"></td>
+          <p class="response" id="response-<%= stone.id %>"></p>
         </tr>
       <% end %>
     </tbody>
@@ -84,7 +90,7 @@
 
 <script>
   <% unless @auction.completed? %>
-    <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) rescue binding.pry %>
+    <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) %>
 
     $('#getting-started').countdown("<%= watch_time %>", function(event) {
       var auction_time = new Date("<%= watch_time %>");
@@ -100,3 +106,5 @@
     });
   <% end %>
 </script>
+</table>
+</div>
