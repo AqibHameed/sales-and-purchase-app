@@ -19,8 +19,8 @@
         <td><%= auction.min_bid %></td>
         <td><%= auction.tender.name %></td>
         <td><%= link_to 'Show', auction %></td>
-        <td><%= link_to 'Edit', edit_auction_path(auction) %></td>
         <% if current_admin %>
+        <td><%= link_to 'Edit', edit_auction_path(auction) %></td>
         <td><%= link_to 'Destroy', auction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         <% end %>
       </tr>

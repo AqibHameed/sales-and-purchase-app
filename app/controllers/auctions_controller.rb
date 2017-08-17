@@ -86,8 +86,8 @@ class AuctionsController < ApplicationController
     @last_round.bids.group_by(&:stone_id).map do |stone_id, bids|
       lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
 
-      @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
-    end
+    @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
+  end
 
     @last_round.update(completed: true)
 
