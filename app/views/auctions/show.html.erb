@@ -1,5 +1,4 @@
 <div class="table">
-<div id="getting-started"></div><br>
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
     <tr>
       <td> Time  : </td>
@@ -15,15 +14,16 @@
     </tr>
   </table>
 </div>
-<p id="notice"><%= notice %></p>
+<br>
+
 <%= link_to 'Edit', edit_auction_path(@auction),class: "btn-02 login-btn" %>
 <%= link_to 'Back', auctions_path, class: "btn-02 login-btn" %>
-<br><br>
-<div class="table">
+<br><br><br>
+
 <div id="getting-started"></div><br>
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
-<%# if @auction.started? && !@auction.completed %>
-  <table>
+
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">  
     <tr>
       <th>Index</th>
       <th>Stone Type</th>
@@ -47,48 +47,46 @@
           <td><%= stone.description %></td>
           <td><%= number_field_tag :bid_amount %></td>
           <td>
-          <% if @auction.started? %>
-            <% if user_win_last_round_for_stone?(stone) %>
+            <% if !@auction.started? %>
+              <p>Auction not started yet</p>
+            <% elsif user_win_auction_for_stone?(stone) %>
               <p>You are the winner</p>
             <% elsif can_user_place_bid?(stone) %>
               <%= button_tag 'Place your Bid', class: 'place-bid' %>
-            <% else %>
+            <% elsif user_loose_auction_for_stone?(stone) %>
               <p>You have placed lowest bid in last round</p>
+            <% else %>
+              <p>Auction completed!</p>
             <% end %>
-          <% else %>  
-              <p>Auction not started yet</p>
-          <% end %>  
           </td>
           <td class="response" id="response-<%= stone.id %>"></td>
         </tr>
       <% end %>
     </tbody>
   </table>
-
-  <script>
-    $(document).on('click','.place-bid',function(){
-      var stone_id = $(this).parents('.stone-detail').find('#stone_id').val();
-      var amount = $(this).parents('.stone-detail').find('#bid_amount').val();
-      $.ajax({
-        type: 'POST',
-        url: "<%= place_bid_auction_path(@auction) %>",
-        data: { stone_id: stone_id, bid_amount: amount },
-        success: function(response){
-          $('.response').html('');
-          $('#response-'+stone_id).html(response.msg)
-          if (response.success){
-            $('#response-'+stone_id).attr('style','color:green;');
-          }
-          else{
-            $('#response-'+stone_id).attr('style','color:red;');
-          }
-        }
-      })
-    });
-  </script>
-<%# end %>
+</div>
 
 <script>
+  $(document).on('click','.place-bid',function(){
+    var stone_id = $(this).parents('.stone-detail').find('#stone_id').val();
+    var amount = $(this).parents('.stone-detail').find('#bid_amount').val();
+    $.ajax({
+      type: 'POST',
+      url: "<%= place_bid_auction_path(@auction) %>",
+      data: { stone_id: stone_id, bid_amount: amount },
+      success: function(response){
+        $('.response').html('');
+        $('#response-'+stone_id).html(response.msg)
+        if (response.success){
+          $('#response-'+stone_id).attr('style','color:green;');
+        }
+        else{
+          $('#response-'+stone_id).attr('style','color:red;');
+        }
+      }
+    })
+  });
+
   <% unless @auction.completed? %>
     <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) %>
 
@@ -106,8 +104,7 @@
     });
   <% end %>
 </script>
-</table>
-</div>
+
 <style type="text/css">
   .table table td{text-align: center !important; }
   #myTable td{text-align: left !important; }
