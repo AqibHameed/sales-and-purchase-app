@@ -6,10 +6,10 @@ class AuctionsController < ApplicationController
   end
 
   def show
-    if @auction.started and !@auction.completed
+    if @auction.is_in_process?
       @last_round = @auction.auction_rounds.where(completed: true).sort_by(&:created_at).last
       @next_round = @auction.current_auction_round
-    elsif (!@auction.started && @auction.time <= Time.now)
+    elsif @auction.is_ready_to_start?
       @auction.make_it_started
       move_to_next_round
     end

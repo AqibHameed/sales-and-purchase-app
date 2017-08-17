@@ -20,7 +20,7 @@
 <%= link_to 'Back', auctions_path, class: "btn-02 login-btn" %>
 <br>
 
-<% if @auction.started? && !@auction.completed %>
+<%# if @auction.started? && !@auction.completed %>
   <table>
     <tr>
       <th>Index</th>
@@ -80,11 +80,11 @@
       })
     });
   </script>
-<% end %>
+<%# end %>
 
 <script>
   <% unless @auction.completed? %>
-    <% watch_time = @auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time %>
+    <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) rescue binding.pry %>
 
     $('#getting-started').countdown("<%= watch_time %>", function(event) {
       var auction_time = new Date("<%= watch_time %>");
