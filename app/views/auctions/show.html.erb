@@ -45,7 +45,9 @@
           <td><%= stone.description %></td>
           <td><%= number_field_tag :bid_amount %></td>
           <td>
-            <% if can_user_place_bid?(stone) %>
+            <% if user_win_last_round_for_stone?(stone) %>
+              <p>You are the winner</p>
+            <% elsif can_user_place_bid?(stone) %>
               <%= button_tag 'Place your Bid', class: 'place-bid' %>
             <% else %>
               <p>You have placed lowest bid in last round</p>
@@ -78,8 +80,6 @@
       })
     });
   </script>
-<% elsif @auction.started? && @auction.completed %>
-  Auction completed
 <% end %>
 
 <script>
