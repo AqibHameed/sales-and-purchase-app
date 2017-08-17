@@ -3,65 +3,64 @@
 <%= link_to "View Bidder List", "/winners/bidders?tender_id=" + @tender.id.to_s, :class => "btn-01", data: { turbolinks: false } %>
 <div class="clear20"></div>
 <div class="table">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
-		<thead>
-			<tr>
-				<th>Parcel Deec No</th>
-				<th>Lot No</th>
-				<th>Description</th>
-				<th>Carat</th>
-				<th>System Winner</th>
-				<th>Bid amount</th>
-				<th>Winning Bid Amount</th>
-			</tr>
-		</thead>
-		<tbody>
-			<%
-			bid_sum = 0
-			sum = 0
-			%>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <thead>
+      <tr>
+        <th>Parcel Deec No</th>
+        <th>Lot No</th>
+        <th>Description</th>
+        <th>Carat</th>
+        <th>System Winner</th>
+        <th>Bid amount</th>
+        <th>Winning Bid Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%
+      bid_sum = 0
+      sum = 0
+      %>
+      <% @stones.each_with_index do |stone,i| %>
+      <tr id="row_<%= i %>" >
+        <td><%= stone.deec_no %></td>
+        <td><%= stone.lot_no %></td>
+        <td><%= stone.description %></td>
+        <td><%= stone.weight %></td>
+        <% unless stone.winner.blank? %>
+          <% winner = stone.winner %>
+          <td><%= "#{winner.customer.name} (#{winner.customer.email})" %></td>
+          <td>
+            <%= number_to_currency winner.bid.total.to_f %>
+            <% bid_sum = bid_sum + winner.bid.total %>
+          </td>
+          <td><%= number_to_currency @winner_list[stone.lot_no].to_f %></td>
+          <% if @winner_list[stone.lot_no].to_f == winner.bid.total.to_f %>
+            <script>
+              $('#row_<%= i %>').addClass('winner');
+            </script>
+          <% end %>
+        <% else %>
+          <td><%= '-' %></td>
+          <td><%= '-' %></td>
+          <td><%= number_to_currency(@winner_list[stone.lot_no].to_f)  %></td>
+          <% sum = sum + @winner_list[stone.lot_no].to_f unless @winner_list[stone.deec_no].nil? %>
+        <% end %>
+      </tr>
+      <% end %>
+      <tr>
+        <td colspan="5" style="text-align:right;"  >
+          Total :
+        </td>
+        <td>
+          <%= number_to_currency(bid_sum) %>
+        </td>
+        <td>
+          <%= number_to_currency(sum) %>
+        </td>
+      </tr>
 
-			<% @stones.each_with_index do |stone,i| %>
-			<tr id="row_<%= i %>" >
-				<td><%= stone.deec_no %></td>
-				<td><%= stone.lot_no %></td>
-				<td><%= stone.description %></td>
-				<td><%= stone.weight %></td>
-				<% unless stone.winner.blank? %>
-				<% winner = stone.winner %>
-				<td><%= "#{winner.customer.name} (#{winner.customer.email})" %></td>
-				<td>
-					<%= number_to_currency winner.bid.total.to_f %>
-					<% bid_sum = bid_sum + winner.bid.total %>
-				</td>
-				<td><%= number_to_currency @winner_list[stone.deec_no].to_f %></td>
-				<% if @winner_list[stone.deec_no].to_f == winner.bid.total.to_f %>
-				<script>
-					$('#row_<%= i %>').addClass('winner');
-				</script>
-				<% end %>
-				<% else %>
-				<td><%= '-' %></td>
-				<td><%= '-' %></td>
-				<td><%= number_to_currency(@winner_list[stone.deec_no].to_f)  %></td>
-				<% sum = sum + @winner_list[stone.deec_no].to_f unless @winner_list[stone.deec_no].nil? %>
-				<% end %>
-			</tr>
-			<% end %>
-			<tr>
-				<td colspan="5" style="text-align:right;"  >
-					Total :
-				</td>
-				<td>
-					<%= number_to_currency(bid_sum) %>
-				</td>
-				<td>
-					<%= number_to_currency(sum) %>
-				</td>
-			</tr>
-
-		</tbody>
-	</table>
+    </tbody>
+  </table>
 </div>
 <div class="clear20"></div>
 <%= link_to raw("<span class='xls'></span>Export Winner List"), "/winners/winner.xls?tender_id=" + @tender.id.to_s, :class => "btn-01"   %>

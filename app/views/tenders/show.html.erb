@@ -45,7 +45,7 @@
 	</form>
 	<div class="clear"></div>
 	<% if @tender.open? or current_admin %>
-	
+
 	<div class="table">
 		<h2>Stone details :</h2>
 		<p>Round: <%= @round%> Ends in </p>
@@ -54,7 +54,7 @@
 
  			<div class='stone_filter'>
 				<%= render 'stone_filter' %>
-			</div> 
+			</div>
 			<% unless @tender.stones.length == 0%>
 			<div class='stone_list'>
 				<%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
@@ -75,7 +75,7 @@
 		<div class="bid-info bid_form" style="width:80%!important; margin-left:-10px; display:none">
 
 		</div>
-		
+
 		<div class="bid-info past_result" style="width:40%!important; margin-left:20px; display:none">
 
 		</div>

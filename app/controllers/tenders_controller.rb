@@ -1,7 +1,7 @@
 class TendersController < ApplicationController
 
   protect_from_forgery :except => [:filter, :temp_filter, :add_rating]
-  
+
   before_action :authenticate_logged_in_user!, :only => [:index, :history, :show, :filter, :view_past_result]
   # before_action :authenticate_customer!, :except => [:index, :history, :delete_stones,:delete_winner_details, :show, :filter, :view_past_result, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail ]
   # before_action :authenticate_admin!, :only => [:delete_stones,:delete_winner_details, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail]
@@ -37,7 +37,7 @@ class TendersController < ApplicationController
     else
       stone.lot_permission = false
       stone.save!
-    end  
+    end
   end
 
   def customer_bid_detail
@@ -95,14 +95,14 @@ class TendersController < ApplicationController
       companies = current_customer.companies
       if companies.blank?
         @tender = Tender.find(params[:id])
-      else  
+      else
         @tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
-      end  
+      end
       if @tender.open_date < Time.now && Time.now < @tender.close_date
         @round = 1
         # if params[:round].present?
         #   @round++
-        # end  
+        # end
       end
       @notes = current_customer.notes.where(tender_id: @tender.try(:id)).collect(&:key)
       flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)
@@ -157,8 +157,8 @@ class TendersController < ApplicationController
     else
       @tender = Tender.includes(:stones).find(params[:id])
     end
-    @stones = @tender.stones  
-    
+    @stones = @tender.stones
+
       # who_left = Customer.all.collect{|customer|customer.companies.collect{|company|company.tenders.collect{|tender|tender.stones.where(lot_permission:false)}}}.flatten.count
       # remaining =  Customer.all.collect{|customer|customer.companies.collect{|company|company.tenders.collect{|tender|tender.stones.where(lot_permission: [true, nil])}}}.flatten.count
       # cal= remaining / 5*(1-who_left/remaining)
@@ -446,7 +446,7 @@ class TendersController < ApplicationController
   def get_value(data)
     return ((data.class == Fixnum or data.class == Float)  ? data : (data.class == String ? data : data.nil? ? nil : data.value))
   end
-  
+
   def tender_params
     params.require(:tender).permit(:name, :description, :open_date, :close_date, :tender_open, :document_file_name, :document_content_type, :document_file_size, :winner_list_file_name, :winner_list_content_type, :winner_list_file_size, :temp_document_file_name, :temp_document_file_type, :temp_document_file_size, :deec_no_field, :lot_no_field, :desc_field, :sheet_no,:no_of_stones_field,:weight_field,:winner_lot_no_field,:reference_id)
   end
@@ -457,4 +457,3 @@ class TendersController < ApplicationController
 
 end
 
- 
