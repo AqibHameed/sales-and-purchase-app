@@ -43,7 +43,7 @@
           <td><%= '-' %></td>
           <td><%= '-' %></td>
           <td><%= number_to_currency(@winner_list[stone.lot_no].to_f)  %></td>
-          <% sum = sum + @winner_list[stone.lot_no].to_f unless @winner_list[stone.deec_no].nil? %>
+          <% sum = sum + @winner_list[stone.lot_no].to_f unless @winner_list[stone.lot_no].nil? %>
         <% end %>
       </tr>
       <% end %>
