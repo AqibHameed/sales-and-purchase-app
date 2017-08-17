@@ -56,10 +56,10 @@
               <p>You have placed lowest bid in last round</p>
             <% end %>
           <% else %>  
-              <p>Bid not started</p>
+              <p>Auction not started yet</p>
           <% end %>  
           </td>
-          <p class="response" id="response-<%= stone.id %>"></p>
+          <td class="response" id="response-<%= stone.id %>"></td>
         </tr>
       <% end %>
     </tbody>
@@ -108,3 +108,7 @@
 </script>
 </table>
 </div>
+<style type="text/css">
+  .table table td{text-align: center !important; }
+  #myTable td{text-align: left !important; }
+</style>
