@@ -2,10 +2,9 @@
   <div class="label">
    <h2>New Auction</h2>
   </div>
-  <div class="field">
-      <%= render 'form', auction: @auction %>
-      
-  </div>
+
+  <%= render 'form', auction: @auction %>  
+
   <div class="clear"></div>
   <%= link_to 'Back', auctions_path, class: "btn-02 login-btn" %>
 </div>

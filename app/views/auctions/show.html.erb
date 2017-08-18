@@ -5,10 +5,6 @@
       <td><%= @auction.time %></td>
     </tr>
     <tr>
-      <td> Minimum bid  : </td>
-      <td><%= @auction.min_bid %></td>
-    </tr>
-    <tr>
       <td> Tender :</td>
       <td><%= @auction.tender.name %></td>
     </tr>
@@ -45,7 +41,7 @@
           <td><%= stone.size %></td>
           <td><%= stone.weight %></td>
           <td><%= stone.description %></td>
-          <td><%= number_field_tag :bid_amount %></td>
+          <td><%= number_field_tag :bid_amount, last_bid_amount(stone), disabled: is_disable?(stone) %></td>
           <td>
             <% if !@auction.started? %>
               <p>Auction not started yet</p>
@@ -55,6 +51,8 @@
               <p>You are one of the lowest bidder</p>
             <% elsif @auction.started? && @auction.completed? %>
               <p>Auction completed!</p>
+            <% elsif auction_for_stone_completed?(stone) %>
+              <p>Auction for this stone is completed!</p>
             <% elsif can_user_place_bid?(stone) %>
               <%= button_tag 'Place your Bid', class: 'place-bid' %>
             <% end %>
@@ -86,7 +84,6 @@
       }
     })
   });
-
 
   <% unless @auction.completed? %>
     <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) %>

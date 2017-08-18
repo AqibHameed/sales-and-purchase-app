@@ -1,6 +1,3 @@
-<div class="table">
-<%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
-<%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
 <%= form_with(model: auction, local: true) do |form| %>
   <% if auction.errors.any? %>
     <div id="error_explanation">
@@ -17,7 +14,7 @@
 
   <div class="form-row">
     <div class="label">
-      Time
+      Auction Start Time
     </div>
     <div class="field">
       <%= form.datetime_select :time, :required => true %>
@@ -27,17 +24,7 @@
 
   <div class="form-row">
     <div class="label">
-      Min_bid
-    </div>
-    <div class="field">
-       <%= form.text_field :min_bid, :required => true%>
-    </div>
-    <div class="clear"></div>
-  </div>
-
-  <div class="form-row">
-    <div class="label">
-      Round_time_in_seconds
+      Round time in seconds
     </div>
     <div class="field">
        <%= form.number_field :round_time, :required => true %>
@@ -47,17 +34,7 @@
 
   <div class="form-row">
     <div class="label">
-      Number of Loosers
-    </div>
-    <div class="field">
-        <%= form.number_field :loosers_per_round, :required => true %>
-    </div>
-    <div class="clear"></div>
-  </div>
-
-  <div class="form-row">
-    <div class="label">
-      Tender_id
+      Tender
     </div>
     <div class="field">
         <%= form.select :tender_id, options_for_select(Tender.all.map{|t| [t.name,t.id] }), :required => true %>
@@ -75,6 +52,3 @@
     <div class="clear"></div>
   </div>
 <% end %>
-</div>
-</div>
-
