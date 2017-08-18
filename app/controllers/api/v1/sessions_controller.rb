@@ -23,24 +23,24 @@ class Api::V1::SessionsController < Devise::SessionsController
     return invalid_attempt unless customer
     customer.authentication_token = nil
     if customer.save
-      render :json => {:success => true}
+      render :json => {:success => true, response_code: 200}
     else
-      render :json => {:errors => customer.errors.full_messages}
+      render :json => {:errors => customer.errors.full_messages, response_code: 201}
     end
   end
 
   protected
   def ensure_params_exist
     return unless params[:customer].blank?
-    render :json => {:success => false, :message => "Missing user login parameter"}, :status => 422
+    render :json => {:success => false, :message => "Missing user login parameter", response_code: 201}, :status => 422
   end
 
   def invalid_login_attempt
-    render :json => {:success => false, :message => "Error with your login or password."}, :status => 401
+    render :json => {:success => false, :message => "Error with your login or password.", response_code: 201}, :status => 401
   end
 
   def invalid_attempt
-    render :json => {:success => false, :message => "Invalid attempt."}, :status => 401
+    render :json => {:success => false, :message => "Invalid attempt.", response_code: 201}, :status => 401
   end
 end
 

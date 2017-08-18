@@ -37,7 +37,7 @@ class Api::V1::ApiController < ApplicationController
     months.each do |month|
       data << { month: month[0], tender_count: month[1] }
     end
-    render json: { suppliers: suppliers, months: data, location: data_countries  }
+    render json: { suppliers: suppliers, months: data, location: data_countries, response_code: 200  }
   end
 
   def device_token
@@ -46,15 +46,15 @@ class Api::V1::ApiController < ApplicationController
         device = Device.new(device_params)
         device.customer_id = current_customer.id
         if device.save
-          render json: {success: true, device_token: device.token }, status: 200
+          render json: {success: true, device_token: device.token, type: device.device_type, response_code: 200 }
         else
-          render json: {success: false, message: device.errors.full_messages}
+          render json: {success: false, message: device.errors.full_messages, response_code: 201 }
         end
       else
-        render json: {success: false, message: 'Please use correct parameter'}
+        render json: {success: false, message: 'Please use correct parameter', response_code: 201 }
       end
     else
-      render json: { errors: "Not authenticated"}, status: :unauthorized
+      render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
   end
 

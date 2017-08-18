@@ -16,7 +16,7 @@ class Api::V1::CompaniesController < ApplicationController
       end
       @array.push(hash)
     end
-    render :json => {:success => true, :company=> @array}
+    render :json => {:success => true, :company=> @array, response_code: 200 }
   end
 
   def current_customer
@@ -27,17 +27,17 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def authenticate_with_token!
-    render json: { errors: "Not authenticated"}, status: :unauthorized unless current_customer.present?
+    render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized unless current_customer.present?
   end
 
   def not_found
-    render json: {errors: 'Not found' }, status: 404
+    render json: {errors: 'Not found', response_code: 201 }, status: 404
   end
 
   private
   def check_token
     if request.headers["Authorization"].blank?
-      render json: {msg: "Unauthorized Request"}
+      render json: {msg: "Unauthorized Request", response_code: 201 }
     end
   end
 end

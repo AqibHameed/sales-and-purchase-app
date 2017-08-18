@@ -7,8 +7,8 @@ class Api::V1::RegistrationsController < ActionController::Base
 
       render :json => customer, serializer: CustomerSerializer
     else
-      render :json => {:errors => customer.errors.full_messages}
-    end 
+      render :json => {:errors => customer.errors.full_messages, response_code: 201 }
+    end
   end
 
   private

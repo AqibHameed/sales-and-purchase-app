@@ -15,7 +15,7 @@ module Api
         else
           tenders = Tender.active.where(col_str).order("created_at desc")
         end
-        render json: { tenders: tender_data(tenders) }
+        render json: { tenders: tender_data(tenders), response_code: 200 }
       end
 
       def upcoming
@@ -25,12 +25,12 @@ module Api
         else
           tenders = Tender.where(col_str).order("created_at desc")
         end
-        render json: { success: true, tenders: tender_data(tenders) }
+        render json: { success: true, tenders: tender_data(tenders), response_code: 200 }
       end
 
       def tender_parcel
         stones = Stone.where(tender_id: params[:tender_id])
-        render json: { success: true, tender_parcels: stone_data(stones) }
+        render json: { success: true, tender_parcels: stone_data(stones), response_code: 200 }
       end
 
       def tender_data(tenders)
