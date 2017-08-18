@@ -13,6 +13,7 @@ class AuctionsController < ApplicationController
       @auction.make_it_started
       move_to_next_round
     end
+    move_to_next_round if @auction.started && @next_round.try(:started_at).blank?
   end
 
   def round_completed
