@@ -51,10 +51,11 @@
               <p>Auction not started yet</p>
             <% elsif user_win_auction_for_stone?(stone) %>
               <p>You are the winner</p>
+            <% elsif user_loose_auction_for_stone?(stone) %>
+              <p>You are one of the lowest bidder</p>
             <% elsif can_user_place_bid?(stone) %>
               <%= button_tag 'Place your Bid', class: 'place-bid' %>
-            <% elsif user_loose_auction_for_stone?(stone) %>
-              <p>You have placed lowest bid in last round</p>
+
             <% else %>
               <p>Auction completed!</p>
             <% end %>
@@ -86,6 +87,7 @@
       }
     })
   });
+
 
   <% unless @auction.completed? %>
     <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) %>
