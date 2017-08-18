@@ -60,7 +60,7 @@ class Api::V1::ApiController < ApplicationController
 
   private
   def device_params
-    params.require(:customer).permit(:token, :type)
+    params.require(:customer).permit(:token, :device_type)
   end
 
 end
