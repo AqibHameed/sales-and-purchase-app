@@ -37,7 +37,7 @@ class BidsController < ApplicationController
 
   def tender_total
     @tender = Tender.find(params[:tender_id])
-    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
     @past_tenders = past_tenders ? past_tenders.collect(&:id) : []
     if params[:deec_no] || params[:lot_no] || params[:client_name] || params[:description]
       col_str = ""
@@ -58,7 +58,7 @@ class BidsController < ApplicationController
 
   def tender_success
     @tender = Tender.find(params[:tender_id])
-    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?",@tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?",@tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
     @past_tenders = past_tenders.any? ? past_tenders.collect(&:id) : []
     @bids = @tender.tender_successful_bids
     respond_to do |format|
@@ -68,7 +68,7 @@ class BidsController < ApplicationController
 
   def tender_unsuccess
     @tender = Tender.find(params[:tender_id])
-    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
     @past_tenders = past_tenders ? past_tenders.collect(&:id) : []
     success_bids = @tender.tender_successful_bids
     @bids = @tender.bids - success_bids
@@ -79,7 +79,7 @@ class BidsController < ApplicationController
 
   def parcel_report
     @tender = Tender.find_by_id(params[:tender])
-    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC")
+    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC")
     @past_tenders = past_tenders ? past_tenders.collect(&:id) : []
     @bid = Bid.find_by_id(params[:bid])
     # bids = Bid.where(:stone_id => @bid.stone.id, :tender_id => @bid.tender.id).order('total desc')
@@ -134,7 +134,7 @@ class BidsController < ApplicationController
     @stone = Stone.find(params[:stone_id])
     tender = @stone.tender
     # past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
-    past_tenders = Tender.where("id != ? and company_id = ? and close_date < ?", tender.id, tender.company_id, tender.created_at).order("close_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("close_date DESC").limit(5)
     past_tender = past_tenders.first
     @history = TenderWinner.where("tender_id in (?) and description = ?", past_tenders.collect(&:id), @stone.description).order("tender_id")
     stones = Stone.where("description = ? and tender_id in (?)", @stone.description, past_tenders.collect(&:id))
