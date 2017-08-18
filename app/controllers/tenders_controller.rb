@@ -271,7 +271,6 @@ class TendersController < ApplicationController
   end
 
   def temp_filter
-
     query = []
     if params[:filter]
       params[:filter].each do |f|
@@ -283,9 +282,7 @@ class TendersController < ApplicationController
           query << "(carat >= '#{f['from'].to_f}' and  carat <= '#{f['to'].to_f}')" if (f['from'] != "" && f['to'] != "")
         else
         end
-
       end
-
     end
 
     q = query.join(' or ')
@@ -413,7 +410,7 @@ class TendersController < ApplicationController
     # get last 3 tender details
     @tender = current_customer.tenders.find(params[:id]) rescue Tender.find(params[:id])
     @desc = params[:key]
-    tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and created_at < ?", @tender.id, @tender.company_id, @tender.created_at).order("close_date DESC").limit(5)
+    tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and close_date < ?", @tender.id, @tender.company_id, @tender.created_at).order("close_date DESC").limit(5)
     @winners = TenderWinner.includes(:tender).where("tender_id in (?) and tender_winners.description = ?", tenders.collect(&:id), @desc)
     render :partial => 'view_past_result'
   end

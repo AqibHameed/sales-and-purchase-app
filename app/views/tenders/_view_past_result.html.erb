@@ -1,54 +1,52 @@
 <div class=''>
-	<div class=''>
-		<div class='tender-detail'>
-			<div id="container" style="width:38%;" ></div>
+  <div class=''>
+    <div class='tender-detail'>
+      <div id="container" style="width:38%;" ></div>
+      <!--  Form Wrapper Start -->
+      <div class="form-wrapper tend-detail" style="height:400px;overflow-y:auto;overflow-x:hidden;" >
+        <p style="text-align:center;">Past History : <strong><%= @desc%></strong></p>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable1" class="tablesorter">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Tender</th>
+              <th>Avg. Selling Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @winners.each do |w| %>
+            <tr>
+              <td>
+                <%= w.tender.close_date.strftime('%b %Y') %>
+              </td>
+              <td>
+                <%= w.tender.name %>
+              </td>
+              <td>
+                <%= number_to_currency(w.avg_selling_price) %>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
 
-			<!--  Form Wrapper Start -->
-			<div class="form-wrapper tend-detail" style="height:400px;overflow-y:auto;overflow-x:hidden;" >
-				<p style="text-align:center;">Past History : <strong><%= @desc%></strong></p>	
-				<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable1" class="tablesorter">
-					<thead>
-						<tr>
-							<th>Month</th>
-							<th>Tender</th>
-							<th>Avg. Selling Price</th>
+        <div class="form-row">
+          <div class="label" style='width:25%!important'>
+            &nbsp;
+          </div>
+          <div class="clear10"></div>
+          <div class="field" style='width:60%!important;float:right'>
+            <%= button_tag "Close", :class => 'btn-01 submit_bid', :onclick => "$('tr').removeClass('current_bid');$('.bid_form').html('').hide();removeMask();" %>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div class="clear10"></div>
 
-						</tr>
-					</thead>
-					<tbody>
-						<% @winners.each do |w| %>
-						<tr>
-							<td>
-								<%= w.tender.close_date.strftime('%b %Y') %>
-							</td>
-							<td>
-								<%= w.tender.name %>
-							</td>
-							<td>
-								<%= number_to_currency(w.avg_selling_price) %>
-							</td>
-						</tr>
-						<% end %>
-					</tbody>
-				</table>
+      </div>
+      <div class='clear'></div>
 
-				<div class="form-row">
-					<div class="label" style='width:25%!important'>
-						&nbsp;
-					</div>
-					<div class="clear10"></div>
-					<div class="field" style='width:60%!important;float:right'>
-						<%= button_tag "Close", :class => 'btn-01 submit_bid', :onclick => "$('tr').removeClass('current_bid');$('.bid_form').html('').hide();removeMask();" %>
-					</div>
-					<div class="clear"></div>
-				</div>
-				<div class="clear10"></div>
-
-			</div>
-			<div class='clear'></div>
-
-		</div>
-		<div class='clear'></div>
-	</div>
+    </div>
+    <div class='clear'></div>
+  </div>
 </div>
 <script>addMask();</script>
