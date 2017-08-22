@@ -5,7 +5,7 @@
     <thead>
       <tr>
         <th>Time</th>
-        <th>Min bid</th>
+       <!--  <th>Min bid</th> -->
         <th>Tender</th>
         <th colspan="3"></th>
       </tr>
@@ -15,7 +15,7 @@
       <% @auctions.each do |auction| %>
         <tr>
           <td><%= auction.time %></td>
-          <td><%= auction.min_bid %></td>
+        <!--   <td><%= auction.min_bid %></td> -->
           <td><%= auction.tender.name %></td>
           <td><%= link_to 'Show', auction %></td>
           <% if current_admin %>

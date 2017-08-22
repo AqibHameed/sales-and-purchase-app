@@ -87,9 +87,16 @@ class TendersController < ApplicationController
 
   def show
     if current_customer
-      @tender = current_customer.tenders.includes(:stones).find(params[:id])
-      @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
+      # @tender = current_customer.tenders.includes(:stones).find(params[:id])
+      # @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
+      companies = current_customer.companies
+      @tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
+      if @tender.open_date < Time.now && Time.now < @tender.close_date
+        @round = 1 
+      end
+      @notes = current_customer.notes.where(tender_id: @tender.try(:id)).collect(&:key)
       flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)
+      # => Check for conflicts
       @important = []
       @read = []
       flags.each do |f|
