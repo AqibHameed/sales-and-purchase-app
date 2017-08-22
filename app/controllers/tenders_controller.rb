@@ -95,10 +95,7 @@ class TendersController < ApplicationController
       companies = current_customer.companies
       @tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
       if @tender.open_date < Time.now && Time.now < @tender.close_date
-        @round = 1
-        # if params[:round].present?
-        #   @round++
-        # end  
+        @round = 1 
       end
       @notes = current_customer.notes.where(tender_id: @tender.try(:id)).collect(&:key)
       flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)

@@ -15,9 +15,10 @@
 <%= link_to 'Edit', edit_auction_path(@auction),class: "btn-02 login-btn" %>
 <%= link_to 'Back', auctions_path, class: "btn-02 login-btn" %>
 <br><br><br>
-
+  <% if @auction.started? && !@auction.completed? %>
+    Round : <%= @auction.auction_rounds.count %>
+  <% end %>
 <div id="getting-started"></div><br>
-
 <div class="table">
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">  
     <tr>
