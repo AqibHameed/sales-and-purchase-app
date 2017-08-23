@@ -7,7 +7,7 @@ class AuctionsController < ApplicationController
 
   def show
     if @auction.is_in_process?
-      @last_round = @auction.auction_rounds.where(completed: true).sort_by(&:created_at).last
+      @last_round = @auction.last_round
       @next_round = @auction.current_auction_round
     elsif @auction.is_ready_to_start?
       @auction.make_it_started
@@ -56,22 +56,18 @@ class AuctionsController < ApplicationController
     redirect_to auctions_url, notice: 'Auction was successfully destroyed.'
   end
 
+  def highest_bid_for_stone_in_last_round stone_id
+    @highest_bid = @auction.last_round.highest_bid_for_stone(stone_id)
+  end
+
   def place_bid
-    if  @auction.auction_rounds.count == 1
+    if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)    
       user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
       user_bid.total = params[:bid_amount]
-      render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }     
+      render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
     else
-      last_amount=Bid.where("customer_id= ? && stone_id= ? && auction_round_id =?", current_customer.id, params[:stone_id], @auction.auction_rounds.first).first.total
-      current_amount=params[:bid_amount].to_i
-      if (current_amount > last_amount)
-        user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
-        user_bid.total = params[:bid_amount]
-        render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
-      else
-        render json: { msg: "Bid amount should be grater than #{last_amount}" }
-      end
-    end       
+      render json: { msg: "Bid amount must be grater than #{@highest_bid}" }
+    end
   end
 
   def auction_completed?
@@ -83,7 +79,12 @@ class AuctionsController < ApplicationController
   end
 
   def lowest_bids bids
-    bids.group_by(&:total).sort.to_h.first[1]
+    all_lowest_bids = bids.group_by(&:total).sort.to_h.first[1]
+    if bids.group_by(&:total).count.eql?(1)
+      all_lowest_bids - highest_bid(bids)
+    else
+      all_lowest_bids
+    end
   end
 
   def move_to_next_round
@@ -97,19 +98,11 @@ class AuctionsController < ApplicationController
 
   def remove_lowest_bidder_for_the_last_round
     @last_round.bids.group_by(&:stone_id).map do |stone_id, bids|
-      if (bids.count == 1)
+      if bids.count.eql?(1)
         @last_round.add_round_winner(highest_bid(bids))          
       else
-        $high_bid = highest_bid(bids).total 
-        if lowest_bids(bids).count == 2
-          lowest_bids(bids).first{ |bid| @last_round.add_round_winner(bid) }
-          @last_round.add_round_winner(bids.first)
-          lowest_bids(bids).last{ |bid| @last_round.add_round_looser(bid) }
-          @last_round.add_round_looser(bids.last)
-        else 
-          lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
-          @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
-        end
+        lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
+        @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
       end
     end
 

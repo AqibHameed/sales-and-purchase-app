@@ -22,4 +22,8 @@ class AuctionRound < ApplicationRecord
   def current_customer_bid_on_stone customer, stone_id
     self.bids.where(customer_id: customer.id, stone_id: stone_id).first_or_initialize
   end
+
+  def highest_bid_for_stone stone_id
+    self.bids.where(stone_id: stone_id).sort_by(&:total).try(:last).try(:total)
+  end
 end
