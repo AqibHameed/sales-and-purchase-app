@@ -30,7 +30,8 @@ module Api
 
       def tender_parcel
         stones = Stone.where(tender_id: params[:tender_id])
-        render json: { success: true, tender_parcels: stone_data(stones), response_code: 200 }
+        winners = TenderWinner.where(tender_id: params[:tender_id])
+        render json: { success: true, tender_parcels: stone_data(stones, winners), response_code: 200 }
       end
 
       def tender_data(tenders)
@@ -68,7 +69,7 @@ module Api
         end
       end
 
-      def stone_data(stones)
+      def stone_data(stones, winners)
         @stones = []
         stones.each do |stone|
           @stones << {
@@ -77,14 +78,14 @@ module Api
             no_of_stones: stone.no_of_stones,
             :size => stone.size,
             :weight => stone.weight,
-            :carat => stone.carat,
             :purity => stone.purity,
             :color => stone.color,
             :polished => stone.polished,
             :deec_no => stone.deec_no,
             :lot_no => stone.lot_no,
             :description => stone.description,
-            :tender => stone.tender
+            :tender => stone.tender,
+            :winners_data => winners.as_json(except: [:id])
           }
         end
         @stones
