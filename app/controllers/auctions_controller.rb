@@ -100,9 +100,15 @@ class AuctionsController < ApplicationController
       if (bids.count == 1)
         @last_round.add_round_winner(highest_bid(bids))          
       else
-        lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
-
-        @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
+        if lowest_bids(bids).count == 2
+          lowest_bids(bids).first{ |bid| @last_round.add_round_winner(bid) }
+          @last_round.add_round_winner(bids.first)
+          lowest_bids(bids).last{ |bid| @last_round.add_round_looser(bid) }
+          @last_round.add_round_looser(bids.last)
+        else  
+          lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
+          @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)
+        end
       end
     end
 
