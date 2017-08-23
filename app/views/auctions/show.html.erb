@@ -28,8 +28,8 @@
       <th>Size</th>
       <th>Weight</th>
       <th>Description</th>
-      <% if @auction.auction_rounds.count <= 2 %>
-        <th>Highest bid</th>
+      <% if @auction.auction_rounds.count > 1 %>
+        <th>Highest bid in last round</th>
       <% end %>
       <th>Your bid</th>
       <th></th>
@@ -45,8 +45,8 @@
           <td><%= stone.size %></td>
           <td><%= stone.weight %></td>
           <td><%= stone.description %></td>
-          <% if @auction.auction_rounds.count <= 2 %>
-            <td><%= $high_bid %></td>
+          <% if @auction.auction_rounds.count > 1 %>
+            <td><%= @auction.last_round.highest_bid_for_stone(stone.id) %></td>
           <% end %>
           <td><%= number_field_tag :bid_amount, last_bid_amount(stone), disabled: is_disable?(stone) %></td>
           <td>

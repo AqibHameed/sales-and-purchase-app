@@ -17,6 +17,10 @@ class Auction < ApplicationRecord
     !started && (time <= Time.now)
   end
 
+  def last_round
+    auction_rounds.where(completed: true).sort_by(&:created_at).last
+  end
+
   def make_it_completed
     self.update(completed: true)
   end
