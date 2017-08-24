@@ -42,10 +42,15 @@ module Api
 
       def stone_parcel
         stone_parcel = Stone.where(id: params[:id]).first
-        if stone_parcel.update(comments: params[:comments], valuation:  params[:valuation], parcel_rating:  params[:parcel_rating])
-          render :json => { stone_parcel: stone_parcel, response_code: 200 }
+        if stone_parcel.nil?
+          errors = ['Parcel not found']
+          render :json => { :errors => errors, response_code: 201 }
         else
-          render :json => {:errors => stone_parcel.errors.full_messages, response_code: 201 }
+          if stone_parcel.update(comments: params[:comments], valuation:  params[:valuation], parcel_rating:  params[:parcel_rating])
+            render :json => { stone_parcel: stone_parcel, response_code: 200 }
+          else
+            render :json => {:errors => stone_parcel.errors.full_messages, response_code: 201 }
+          end
         end
       end  
 
@@ -108,7 +113,6 @@ module Api
         end
         @stones
       end
-
     end
   end
 end
