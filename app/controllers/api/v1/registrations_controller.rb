@@ -3,8 +3,8 @@ class Api::V1::RegistrationsController < ActionController::Base
     customer = Customer.new(customer_params)
     if customer.save
       customer.ensure_authentication_token
+      customer.save!
       response.headers['Authorization'] = customer.authentication_token
-
       render :json => { customer: customer_data(customer), response_code: 200 }
     else
       render :json => {:errors => customer.errors.full_messages, response_code: 201 }
