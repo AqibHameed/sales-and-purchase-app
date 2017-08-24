@@ -36,8 +36,7 @@ module Api
 
       def tender_parcel
         stones = Stone.where(tender_id: params[:tender_id])
-        winners = TenderWinner.where(tender_id: params[:tender_id])
-        render json: { success: true, tender_parcels: stone_data(stones, winners), response_code: 200 }
+        render json: { success: true, tender_parcels: stone_data(stones), response_code: 200 }
       end
 
       def stone_parcel
@@ -52,7 +51,7 @@ module Api
             render :json => {:errors => stone_parcel.errors.full_messages, response_code: 201 }
           end
         end
-      end  
+      end
 
       def tender_data(tenders)
         @data = []
@@ -89,7 +88,7 @@ module Api
         end
       end
 
-      def stone_data(stones, winners)
+      def stone_data(stones)
         @stones = []
         stones.each do |stone|
           @stones << {
@@ -108,10 +107,29 @@ module Api
             :valuation => stone.valuation,
             :parcel_rating => stone.parcel_rating,
             :tender => stone.tender,
-            :winners_data => winners.as_json(except: [:id])
+            :winners_data => historical_data(stone.try(:tender).try(:id), stone.description)
           }
         end
         @stones
+      end
+
+      def historical_data(id, desc)
+        @w = []
+        tender = current_customer.tenders.find(id) rescue Tender.find(id)
+        tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+        winners = TenderWinner.includes(:tender).where("tender_id in (?) and tender_winners.description = ?", tenders.collect(&:id), desc)
+        winners.each do |winner|
+          @w << {
+            tender_id: winner.tender_id,
+            lot_no: winner.lot_no,
+            selling_price: winner.selling_price,
+            created_at: winner.created_at,
+            updated_at: winner.updated_at,
+            description: winner.description,
+            avg_selling_price: winner.avg_selling_price
+          }
+        end
+        @w
       end
     end
   end
