@@ -3,8 +3,8 @@ class TendersController < ApplicationController
   protect_from_forgery :except => [:filter, :temp_filter, :add_rating]
 
   before_action :authenticate_logged_in_user!, :only => [:index, :history, :show, :filter, :view_past_result]
-  # before_action :authenticate_customer!, :except => [:index, :history, :delete_stones,:delete_winner_details, :show, :filter, :view_past_result, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail ]
-  # before_action :authenticate_admin!, :only => [:delete_stones,:delete_winner_details, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail]
+  before_action :authenticate_customer!, :except => [:index, :history, :delete_stones,:delete_winner_details, :show, :filter, :view_past_result, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail ]
+  before_action :authenticate_admin!, :only => [:delete_stones,:delete_winner_details, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail]
 
   layout :false, :only => [:admin_details, :admin_winner_details]
 
@@ -21,11 +21,6 @@ class TendersController < ApplicationController
     else
       render 'new'
     end
-  end
-
-  def next_round
-    @tender = Tender.find(params[:id])
-    redirect_to tender_path(@tender, round: params[:round])
   end
 
   def block_lot
@@ -92,19 +87,8 @@ class TendersController < ApplicationController
 
   def show
     if current_customer
-      companies = current_customer.companies
-      if companies.blank?
-        @tender = Tender.find(params[:id])
-      else
-        @tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
-      end
-      if @tender.open_date < Time.now && Time.now < @tender.close_date
-        @round = 1
-        # if params[:round].present?
-        #   @round++
-        # end
-      end
-      @notes = current_customer.notes.where(tender_id: @tender.try(:id)).collect(&:key)
+      @tender = current_customer.tenders.includes(:stones).find(params[:id])
+      @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
       flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)
       @important = []
       @read = []
@@ -158,10 +142,6 @@ class TendersController < ApplicationController
       @tender = Tender.includes(:stones).find(params[:id])
     end
     @stones = @tender.stones
-
-      # who_left = Customer.all.collect{|customer|customer.companies.collect{|company|company.tenders.collect{|tender|tender.stones.where(lot_permission:false)}}}.flatten.count
-      # remaining =  Customer.all.collect{|customer|customer.companies.collect{|company|company.tenders.collect{|tender|tender.stones.where(lot_permission: [true, nil])}}}.flatten.count
-      # cal= remaining / 5*(1-who_left/remaining)
   end
 
   def add_note

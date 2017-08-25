@@ -1,15 +1,13 @@
 class Tender < ApplicationRecord
   paginates_per 25
 
-  attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
-                  :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
-                  :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
-                  :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id,
-                  :country, :city
+  # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
+  #                 :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
+  #                 :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
+  #                 :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id,
+  #                 :country, :city
 
   attr_accessor :delete_stones, :delete_winner_list, :total_carat_value
-
-
 
 
   has_many :customers_tenders
@@ -20,13 +18,13 @@ class Tender < ApplicationRecord
   has_many :winners
   has_many :tender_winners
   has_many :tender_notifications
-  belongs_to :company
+  belongs_to :company, optional: true
   has_many :reference, :class_name => "Tender", :foreign_key => "reference_id"
   belongs_to :parent_reference, :class_name => "Tender", :foreign_key => "reference_id", optional: true
 
   accepts_nested_attributes_for :stones
 
-  validates_presence_of :name, :open_date, :close_date, :company_id, :country
+  # validates_presence_of :name, :open_date, :close_date, :company_id, :country
 
   has_attached_file :temp_document
   do_not_validate_attachment_file_type :temp_document

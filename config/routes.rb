@@ -68,7 +68,6 @@ Rails.application.routes.draw do
       get :tender_success
       get :tender_unsuccess
       get :parcel_report
-      get :start_bid
     end
   end
 

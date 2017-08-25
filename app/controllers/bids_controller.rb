@@ -3,20 +3,12 @@ class BidsController < ApplicationController
   before_action :authenticate_admin!, :only => [:list, :tender_total, :tender_success, :tender_unsuccess]
   before_action :authenticate_logged_in_user!
 
-  def start_bid
-    @bid = Bid.new
-    @tenders = Tender.all
-    @stones = Stone.all
-  end
-
   def create
     @stone = Stone.find(params[:stone_id])
     @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
     @tender = @stone.tender
     @bid.total = params[:bid][:total]
     @bid.price_per_carat = params[:bid][:price_per_carat]
-    @bid.stone_id = @stone.id
-    # @bid.round = 1
     if @bid.save
       respond_to do |format|
         format.js { render 'tenders/refresh_data.js.erb'}
@@ -29,6 +21,7 @@ class BidsController < ApplicationController
         format.html {redirect_to @bid.stone.tender}
       end
     end
+
   end
 
   def list
@@ -37,7 +30,7 @@ class BidsController < ApplicationController
 
   def tender_total
     @tender = Tender.find(params[:tender_id])
-    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
     @past_tenders = past_tenders ? past_tenders.collect(&:id) : []
     if params[:deec_no] || params[:lot_no] || params[:client_name] || params[:description]
       col_str = ""
@@ -58,7 +51,7 @@ class BidsController < ApplicationController
 
   def tender_success
     @tender = Tender.find(params[:tender_id])
-    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?",@tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?",@tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
     @past_tenders = past_tenders.any? ? past_tenders.collect(&:id) : []
     @bids = @tender.tender_successful_bids
     respond_to do |format|
@@ -68,7 +61,7 @@ class BidsController < ApplicationController
 
   def tender_unsuccess
     @tender = Tender.find(params[:tender_id])
-    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
     @past_tenders = past_tenders ? past_tenders.collect(&:id) : []
     success_bids = @tender.tender_successful_bids
     @bids = @tender.bids - success_bids
@@ -79,14 +72,14 @@ class BidsController < ApplicationController
 
   def parcel_report
     @tender = Tender.find_by_id(params[:tender])
-    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC")
+    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", @tender.id, @tender.company_id, @tender.open_date.to_date).order("open_date DESC")
     @past_tenders = past_tenders ? past_tenders.collect(&:id) : []
     @bid = Bid.find_by_id(params[:bid])
     # bids = Bid.where(:stone_id => @bid.stone.id, :tender_id => @bid.tender.id).order('total desc')
 
     #################### Graph Data #################
     @history = TenderWinner.where("tender_id in (?) and description = ?", past_tenders.collect(&:id), @bid.stone.description).order("tender_id")
-    # @history = TenderWinner.where("tender_id in (?)", past_tenders.collect(&:id)).order("tender_id")
+
     @stones = Stone.where("description = ? and tender_id in (?)", @bid.stone.description, past_tenders.collect(&:id))
     @bid_history = Bid.where("tender_id in (?) and stone_id in (?) and customer_id is NOT NULL", past_tenders.collect(&:id), @stones.collect(&:id)).order("total desc")
 
@@ -115,7 +108,6 @@ class BidsController < ApplicationController
     @bid = Bid.find(params[:id])
     @stone = @bid.stone
     @tender = @bid.stone.tender
-    @round = @bid.round
     if @bid.update_attributes(params[:bid])
       respond_to do |format|
         format.js { render 'tenders/refresh_data.js.erb'}
@@ -133,10 +125,10 @@ class BidsController < ApplicationController
   def place_new
     @stone = Stone.find(params[:stone_id])
     tender = @stone.tender
-    # past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
-    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("close_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
     past_tender = past_tenders.first
     @history = TenderWinner.where("tender_id in (?) and description = ?", past_tenders.collect(&:id), @stone.description).order("tender_id")
+
     stones = Stone.where("description = ? and tender_id in (?)", @stone.description, past_tenders.collect(&:id))
     bid_history = Bid.where("tender_id in (?) and customer_id = ? and stone_id in (?)", past_tenders.collect(&:id), current_customer.id, stones.collect(&:id)).order("tender_id")
     my_list = {}
@@ -147,10 +139,16 @@ class BidsController < ApplicationController
     @history.each do |h|
       @my_bid_list << (my_list[h.tender_id].nil? ? 0 : my_list[h.tender_id])
     end
+
+
+
     @past_winner = @history.last
+
+
     logger.info "---------------------------------"
     logger.info @my_bid_list
     logger.info "---------------------------------"
+
     @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
     render :partial => 'place_new'
   end

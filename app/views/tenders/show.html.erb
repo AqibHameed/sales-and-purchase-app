@@ -23,7 +23,7 @@
 				</div>
 				<div class="field">
 					<div>
-						<%= @tender.close_date.strftime('%b %e, %l:%M %p') rescue "" %>
+						<%= @tender.try(:close_date).strftime('%b %e, %l:%M %p') rescue "" %>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -45,16 +45,14 @@
 	</form>
 	<div class="clear"></div>
 	<% if @tender.open? or current_admin %>
-
+	
 	<div class="table">
 		<h2>Stone details :</h2>
-		<p>Round: <%= @round%> Ends in </p>
-		<p id="timer"></p>
 		<div class="form-wrapper bid-info">
 
  			<div class='stone_filter'>
 				<%= render 'stone_filter' %>
-			</div>
+			</div> 
 			<% unless @tender.stones.length == 0%>
 			<div class='stone_list'>
 				<%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
@@ -75,7 +73,7 @@
 		<div class="bid-info bid_form" style="width:80%!important; margin-left:-10px; display:none">
 
 		</div>
-
+		
 		<div class="bid-info past_result" style="width:40%!important; margin-left:20px; display:none">
 
 		</div>
@@ -89,30 +87,4 @@
 		$("#myTable").tablesorter();
 	});
 
- function countdown() {
-    var seconds = 30;
-    function tick() {
-        var counter = document.getElementById("timer");
-        seconds--;
-        counter.innerHTML = "0:" + (seconds < 10 ? "0" : "") + String(seconds);
-        if( seconds > 0 ) {
-            setTimeout(tick, 1000);
-        } else {
-          $.ajax({
-          	url: "/tenders/<%= @tender.id%>/next_round?round=<%= @round %>"
-          })
-          window.location.reload(true);
-        }
-    }
-    tick();
-}
-
-countdown();
 </script>
-<style type="text/css">
-	#timer{
-		border: 2px solid #808080;
-		float: right;
-		font-size: 18px;
-	}
-</style>
