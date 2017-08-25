@@ -48,8 +48,8 @@
              <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>
              
           </td>
-        <% end %>         
-          <td><%= link_to "View", view_past_result_tender_path(@tender.id,:key => stone.description), :class => "past_result_link" %></td>
+        <% end %>
+          <td><%= link_to "View", view_past_result_tender_path(@tender.id,:key => stone.description, stone_count: stone.no_of_stones), :class => "past_result_link" %></td>
         <% if current_customer %>
           <td><%= link_to 'Bid', place_new_stone_bids_path(stone.id), :class => 'place_bid' %></td>
         <% end %> 
