@@ -420,7 +420,7 @@ class TendersController < ApplicationController
       tender_winner_array.each_pair do |tender_winner|
         @winners << tender_winner.try(:last).try(:first)
       end
-      @winners = @winners.compact.sort_by{|e| e.created_at}.reverse
+      @winners = @winners.compact.sort_by{|e| e.tender.open_date}.reverse
     end
     render :partial => 'view_past_result'
   end
