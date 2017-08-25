@@ -1,170 +1,170 @@
 <div class="table">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
-		<thead>
-			<tr>
-				<% if current_customer %>
-					<th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
-					<th>Read&nbsp;&nbsp;&nbsp;&nbsp;</th>
-				<% end %>
-				<th>Lot No</th>
-				<th>DEEC No</th>
-				<th>Description</th>
-				<th>Stones&nbsp;&nbsp;&nbsp;&nbsp;</th>
-				<!-- <th>Carat</th>
-				<% if current_customer %>
-					<th>Price per carat</th>
-					<th>Total Bid</th>
-					<th>My Note</th>
-				<% end %> -->
-				<th>System Price</th>
-				<th>Lot Permission</th>
-				<th>History&nbsp;&nbsp;&nbsp;&nbsp;</th>
-				<% if current_customer %>
-					<th>Bid&nbsp;&nbsp;&nbsp;&nbsp;</th>
-				<% end %>
-			</tr>
-		</thead>
-		<tbody>
-			<% @stones.where(lot_permission: [true, nil]).each_with_index do |stone,i| %>
-			<tr class="<%= get_color(@diff, stone.description) %>" id="<%=stone.id%>" >
-				<% if current_customer %>
-					<td><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
-					<td><%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
-				<% end %>	
-				<td><%= stone.lot_no %></td>
-				<td><%= stone.deec_no %></td>
-				<td><%= stone.description %></td>
-				<td><%= stone.no_of_stones %></td>
-				<!-- <td><%= stone.weight %></td> -->
-				<td><%= stone.system_price %></td>
-				<td>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <thead>
+      <tr>
+        <% if current_customer %>
+          <th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
+          <th>Read&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <% end %>
+        <th>Lot No</th>
+        <th>DEEC No</th>
+        <th>Description</th>
+        <th>Stones&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <!-- <th>Carat</th>
+        <% if current_customer %>
+          <th>Price per carat</th>
+          <th>Total Bid</th>
+          <th>My Note</th>
+        <% end %> -->
+        <th>System Price</th>
+        <th>Lot Permission</th>
+        <th>History&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <% if current_customer %>
+          <th>Bid&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @stones.where(lot_permission: [true, nil]).each_with_index do |stone,i| %>
+      <tr class="<%= get_color(@diff, stone.description) %>" id="<%=stone.id%>" >
+        <% if current_customer %>
+          <td><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
+          <td><%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
+        <% end %>
+        <td><%= stone.lot_no %></td>
+        <td><%= stone.deec_no %></td>
+        <td><%= stone.description %></td>
+        <td><%= stone.no_of_stones %></td>
+        <!-- <td><%= stone.weight %></td> -->
+        <td><%= stone.system_price %></td>
+        <td>
           <%= form_for :lot_permission do |f| %>
           <% if stone.lot_permission.nil? %>
-					  <button type="button" class="btn btn-info lot-block1">YES</button>
-					<% end %>
-					  <button type="button" class="btn btn-info lot-block">NO</button>
-					<% end %>
-				</td>
-    		<td><%= link_to 'Bid', show_stone_tender_path(stone.id),class: "btn-02 login-btn"%></td>
-  
-				<% if current_customer %>
-					<% bid = stone.per_carat_bid(current_customer) %>
-					<td id="pcb_<%= stone.id %>" >
-						<%= number_to_currency(bid) unless bid.class == String %>
-					</td>
-					<% total_bid = stone.total_bid(current_customer) %>
-					<td id="tb_<%= stone.id %>" >
-						<%= number_to_currency(total_bid) unless total_bid.class == String %>
-					</td>
-					
-					<td>
-						<span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(stone.key) %></span>
-						 <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>	 
-					</td>
-				<% end %>					
-					<td><%= link_to "View", view_past_result_tender_path(@tender.id,:key => stone.description), :class => "past_result_link" %></td>
-				<% if current_customer %>
-					<td><%= link_to 'Bid', place_new_stone_bids_path(stone.id), :class => 'place_bid' %></td>
-				<% end %>	
-			</tr>
-			<% end %>
-		</tbody>
-		<tr>
-		<%  if current_admin
-				left = 4
-				right = 1
-			else
-				left = 6 
-				right = 5
-			end 
-		%>
-		
-		</tr>
-	</table>
+            <button type="button" class="btn btn-info lot-block1">YES</button>
+          <% end %>
+            <button type="button" class="btn btn-info lot-block">NO</button>
+          <% end %>
+        </td>
+        <td><%= link_to 'Bid', show_stone_tender_path(stone.id),class: "btn-02 login-btn"%></td>
+
+        <% if current_customer %>
+          <% bid = stone.per_carat_bid(current_customer) %>
+          <td id="pcb_<%= stone.id %>" >
+            <%= number_to_currency(bid) unless bid.class == String %>
+          </td>
+          <% total_bid = stone.total_bid(current_customer) %>
+          <td id="tb_<%= stone.id %>" >
+            <%= number_to_currency(total_bid) unless total_bid.class == String %>
+          </td>
+
+          <td>
+            <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(stone.key) %></span>
+             <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>
+          </td>
+        <% end %>
+          <td><%= link_to "View", view_past_result_tender_path(@tender.id,:key => stone.description, stone_count: stone.no_of_stones), :class => "past_result_link" %></td>
+        <% if current_customer %>
+          <td><%= link_to 'Bid', place_new_stone_bids_path(stone.id), :class => 'place_bid' %></td>
+        <% end %>
+      </tr>
+      <% end %>
+    </tbody>
+    <tr>
+    <%  if current_admin
+        left = 4
+        right = 1
+      else
+        left = 6
+        right = 5
+      end
+    %>
+
+    </tr>
+  </table>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() {
+  $(document).ready(function() {
 
-		addStarRatings('<%= @tender.id %>')
-		addRead('<%= @tender.id %>')
+    addStarRatings('<%= @tender.id %>')
+    addRead('<%= @tender.id %>')
 
 
-		$(document).on('click', '.place_bid', function(e) {
-			e.preventDefault()
-			var _this = $(this);
-			var top = $(this).position()['top'] - 300;
-			var url = $(this).attr('href')
-			$.ajax({
-				url : url,
-				type : 'GET',
-				success : function(response) {
-					$('.bid_form').html(response).show()
-					// $('.bid_form').css('margin-top', top + 'px' )
-					$('tr').removeClass('current_bid');
-					$(_this).parents('tr').addClass('current_bid');
-				}
-			})
-		});
-		
-		$(document).on('click', '.add_note', function(e) {
-			e.preventDefault()
-			var _this = $(this);
-			var top = $(this).position()['top'] - 300;
-			var url = $(this).attr('href')
-			$.ajax({
-				url : url,
-				type : 'GET',
-				success : function(response) {
-					$('.bid_form').html(response).show()
-					// $('.bid_form').css('margin-top', top + 'px' )
-					$('tr').removeClass('current_bid');
-					$(_this).parents('tr').addClass('current_bid');
-				}
-			})
-		});
-		
-		$(document).on('click', '.past_result_link', function(e) {
-		e.preventDefault()
-		var _this = $(this);
-		var top = $(this).position()['top'] - 300;
-		var url = $(this).attr('href')
-		$.ajax({
-			url : url,
-			type : 'GET',
-			success : function(response) {
-				$('.bid_form').html(response).show()
-				// $('.bid_form').css('margin-top', top + 'px' )
-				$('tr').removeClass('current_bid');
-				$(_this).parents('tr').addClass('current_bid');
-			}
-		})
-	});
-		
-	})
+    $(document).on('click', '.place_bid', function(e) {
+      e.preventDefault()
+      var _this = $(this);
+      var top = $(this).position()['top'] - 300;
+      var url = $(this).attr('href')
+      $.ajax({
+        url : url,
+        type : 'GET',
+        success : function(response) {
+          $('.bid_form').html(response).show()
+          // $('.bid_form').css('margin-top', top + 'px' )
+          $('tr').removeClass('current_bid');
+          $(_this).parents('tr').addClass('current_bid');
+        }
+      })
+    });
 
-	$(document).ready(function(){ 
-	    $(".btn-info").click(function(){ 
-	    var id= $(this).closest('tr').attr('id') 
-	    var lot_permission=$(this).html()
-	    	if($(this).html()=="NO"){
-	    		$(this).closest('tr').hide();
-	    	}else{
-	    		$(this).hide();
-	    	} 
-	    	$.ajax({
-				  url: ' /tenders/block_lot',
-			    data: {id: id,lot_permission: lot_permission},
-		    	type: 'get'
-				  }); 
-	    });  
-	});  
+    $(document).on('click', '.add_note', function(e) {
+      e.preventDefault()
+      var _this = $(this);
+      var top = $(this).position()['top'] - 300;
+      var url = $(this).attr('href')
+      $.ajax({
+        url : url,
+        type : 'GET',
+        success : function(response) {
+          $('.bid_form').html(response).show()
+          // $('.bid_form').css('margin-top', top + 'px' )
+          $('tr').removeClass('current_bid');
+          $(_this).parents('tr').addClass('current_bid');
+        }
+      })
+    });
+
+    $(document).on('click', '.past_result_link', function(e) {
+    e.preventDefault()
+    var _this = $(this);
+    var top = $(this).position()['top'] - 300;
+    var url = $(this).attr('href')
+    $.ajax({
+      url : url,
+      type : 'GET',
+      success : function(response) {
+        $('.bid_form').html(response).show()
+        // $('.bid_form').css('margin-top', top + 'px' )
+        $('tr').removeClass('current_bid');
+        $(_this).parents('tr').addClass('current_bid');
+      }
+    })
+  });
+
+  })
+
+  $(document).ready(function(){
+      $(".btn-info").click(function(){
+      var id= $(this).closest('tr').attr('id')
+      var lot_permission=$(this).html()
+        if($(this).html()=="NO"){
+          $(this).closest('tr').hide();
+        }else{
+          $(this).hide();
+        }
+        $.ajax({
+          url: ' /tenders/block_lot',
+          data: {id: id,lot_permission: lot_permission},
+          type: 'get'
+          });
+      });
+  });
 
 
 </script>
 
 <style>
-	.current_bid {
-		background-color: #E4E4E4 !important;
-	}
+  .current_bid {
+    background-color: #E4E4E4 !important;
+  }
 
 </style>
