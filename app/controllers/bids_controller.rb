@@ -125,10 +125,16 @@ class BidsController < ApplicationController
   def place_new
     @stone = Stone.find(params[:stone_id])
     tender = @stone.tender
-    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+    # past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+    past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
     past_tender = past_tenders.first
-    @history = TenderWinner.where("tender_id in (?) and description = ?", past_tenders.collect(&:id), @stone.description).order("tender_id")
-
+    # @history = TenderWinner.where("tender_id in (?) and description = ?", past_tenders.collect(&:id), @stone.description).order("tender_id")
+    history_array = TenderWinner.includes(:tender).where(description: @stone.description, tender_id: past_tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
+    @history = []
+    history_array.each_pair do |ha|
+      @history << ha.try(:last).try(:first)
+    end
+    @history = @history.compact.sort_by{|e| e.tender.open_date}.reverse
     stones = Stone.where("description = ? and tender_id in (?)", @stone.description, past_tenders.collect(&:id))
     bid_history = Bid.where("tender_id in (?) and customer_id = ? and stone_id in (?)", past_tenders.collect(&:id), current_customer.id, stones.collect(&:id)).order("tender_id")
     my_list = {}
@@ -139,19 +145,12 @@ class BidsController < ApplicationController
     @history.each do |h|
       @my_bid_list << (my_list[h.tender_id].nil? ? 0 : my_list[h.tender_id])
     end
-
-
-
     @past_winner = @history.last
-
-
     logger.info "---------------------------------"
     logger.info @my_bid_list
     logger.info "---------------------------------"
-
     @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
     render :partial => 'place_new'
   end
-
 end
 
