@@ -1,16 +1,18 @@
 class Bid < ApplicationRecord
 
-  # attr_accessible :total, :bid_date, :customer_id, :tender_id, :no_of_parcels, :price_per_carat, :stone_id
+
+  # attr_accessible :total, :bid_date, :customer_id, :tender_id, :no_of_parcels, :price_per_carat
 
   has_one :winner
 
   belongs_to :tender, optional: true
   belongs_to :customer, required: true
   belongs_to :stone, optional: true
+  belongs_to :auction_round, optional: true
 
   validates_presence_of :total, :customer_id
 
-  validates_uniqueness_of :stone_id, :scope => :customer_id
+  # validates_uniqueness_of :stone_id, :scope => :customer_id
 
   before_save :set_bid_date_and_lot_no, :set_tender_id
 
@@ -20,7 +22,7 @@ class Bid < ApplicationRecord
   end
 
   def set_tender_id
-    self.tender_id = self.stone.tender_id
+    # self.tender_id = self.stone.tender_id
   end
 
   def stone_description

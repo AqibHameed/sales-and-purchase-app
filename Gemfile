@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
-# gem 'rails', '3.2.13'
-gem 'rails', '5.1.0'
+ruby '2.3.1'
 
-gem 'byebug'
+gem 'rails', '5.1.0'
+# gem 'pg', '~> 0.18.4'
+
 gem "mysql2"
 gem "devise"
 # gem 'rails_admin_example_theme', :git => 'git://github.com/bbenezech/rails_admin_example_theme.git'
@@ -23,6 +24,16 @@ gem 'active_model_serializers'
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
 
+gem 'momentjs-rails', '>= 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
+
+gem 'countdown'
+
+gem 'momentjs-rails', '>= 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
+
+gem 'countdown'
+
 group :assets do
   gem 'sass-rails'
   gem 'coffee-rails'
@@ -31,10 +42,11 @@ group :assets do
 end
 
 group :development do
-  gem 'pry'
+  gem 'pry-byebug'
   gem "thin"
   gem 'listen', '>= 3.0.5', '< 3.2'
 end
+
 gem "whenever"
 gem 'protected_attributes_continued'
 gem 'turbolinks', '~> 5.0.0'
