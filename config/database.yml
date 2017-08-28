@@ -20,17 +20,16 @@
 #   # socket: /var/run/mysqld/mysqld.sock
 
 default: &default
-  adapter: postgresql
+  adapter: mysql2
   host: localhost
-  encoding: unicode
   pool: 50
-  port: 5432
-  username: postgres
-  password: postgres
+  port: 3306
+  username: root
+  password: root
 
-development:
+production:
   <<: *default
-  database: dialuck_development
+  database: dialuck_production
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
