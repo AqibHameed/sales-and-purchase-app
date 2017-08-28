@@ -17,4 +17,3 @@ config/database.yml
 config/puma.rb
 
 # Ignore Byebug command history file.
-.byebug_history

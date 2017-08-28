@@ -1,5 +1,6 @@
 class Bid < ApplicationRecord
 
+
   # attr_accessible :total, :bid_date, :customer_id, :tender_id, :no_of_parcels, :price_per_carat
 
   has_one :winner

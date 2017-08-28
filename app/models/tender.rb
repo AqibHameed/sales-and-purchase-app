@@ -1,15 +1,13 @@
 class Tender < ApplicationRecord
   paginates_per 25
 
-  attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
-                  :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
-                  :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
-                  :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id,
-                  :country, :city
+  # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
+  #                 :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
+  #                 :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
+  #                 :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id,
+  #                 :country, :city
 
   attr_accessor :delete_stones, :delete_winner_list, :total_carat_value
-
-
 
 
   has_many :customers_tenders
@@ -20,13 +18,13 @@ class Tender < ApplicationRecord
   has_many :winners
   has_many :tender_winners
   has_many :tender_notifications
-  belongs_to :company
+  belongs_to :company, optional: true
   has_many :reference, :class_name => "Tender", :foreign_key => "reference_id"
   belongs_to :parent_reference, :class_name => "Tender", :foreign_key => "reference_id", optional: true
 
   accepts_nested_attributes_for :stones
 
-  # validates_presence_of :name, :open_date, :close_date, :company_id
+  # validates_presence_of :name, :open_date, :close_date, :company_id, :country
 
   has_attached_file :temp_document
   do_not_validate_attachment_file_type :temp_document
@@ -54,6 +52,10 @@ class Tender < ApplicationRecord
   scope :opening_today, -> { where("open_date <= ? AND open_date >= ?", DateTime.now.in_time_zone.end_of_day, DateTime.now.in_time_zone.beginning_of_day)}
 
   scope :closing_today, -> { where("close_date <= ? AND close_date >= ?", DateTime.now.in_time_zone.end_of_day, DateTime.now.in_time_zone.beginning_of_day)}
+
+  scope :active, -> { where("open_date <= ? AND close_date >= ?", Time.zone.now, Time.zone.now) }
+
+
   #  validates_attachment_content_type :document, :content_type => ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/excel"], :message => 'Only *.xls files allowed'
   def self.tenders_with_bid
     where(:id => Bid.all.map(&:tender_id).uniq)
@@ -147,11 +149,11 @@ class Tender < ApplicationRecord
               stone = self.stones.find_or_initialize_by(lot_no: Tender.get_value(data_row[Tender.get_index(self.lot_no_field)]))
               stone.deec_no = Tender.get_value(data_row[Tender.get_index(self.deec_no_field)]) unless self.deec_no_field.blank?
               stone.description = Tender.get_value(data_row[Tender.get_index(self.desc_field)]) unless self.desc_field.blank?
-              stone.no_of_stones = Tender.get_value(data_row[Tender.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
-              stone.weight = Tender.get_value(data_row[Tender.get_index(self.weight_field)]) unless self.weight_field.blank?
+              stone.no_of_stones = Tender.get_value(data_row[Tender.get_index(self.no_of_stones_field)].to_i) unless self.no_of_stones_field.blank?
+              stone.weight = Tender.get_value(data_row[Tender.get_index(self.weight_field)].to_f) unless self.weight_field.blank?
               stone.stone_type = (data_row[Tender.get_index(self.no_of_stones_field)].to_i == 1 ? 'Stone' : 'Parcel' rescue 'Stone'  ) unless self.no_of_stones_field.blank?
               stone.save
-              puts stone.errors.inspect
+              puts stone.errors.full_messages
             end
           end
         end
@@ -210,6 +212,8 @@ class Tender < ApplicationRecord
               win = self.tender_winners.find_or_initialize_by(lot_no: lot_no)
               win.description = data_row[Tender.get_index(self.winner_desc_field)]
               win.selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
+              # actual_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
+              # check_selling_price(actual_selling_price)
               win.avg_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_carat_selling_price_field)])
               win.save
             end
@@ -217,11 +221,20 @@ class Tender < ApplicationRecord
           Tender.send_winner_list_uploaded_mail(self.id)
         end
       end
+
     else
       puts "==============no file==============="
     end
   end
 
+  # def check_selling_price(actual_selling_price)
+  #   @stones = self.stones
+  #   @stones.each do |stone|
+  #     selling_price = stone.winner.try(:bid).try(:total)
+  #     customer = stone.winner.try(:bid).try(:customer)
+  #     TenderMailer.send_notify_winning_buyers_mail(self, customer).deliver rescue logger.info "Error sending email" if (actual_selling_price == selling_price && customer)
+  #   end
+  # end
 
   def Tender.send_winner_list_uploaded_mail(id)
     tender = Tender.find(id)

@@ -46,7 +46,7 @@
           <td><%= stone.weight %></td>
           <td><%= stone.description %></td>
           <% if @auction.auction_rounds.count > 1 %>
-            <td><%= @auction.last_round.highest_bid_for_stone(stone.id) %></td>
+            <td><%= @auction.last_round.highest_bid_for_stone(stone) %></td>
           <% end %>
           <td><%= number_field_tag :bid_amount, last_bid_amount(stone), disabled: is_disable?(stone) %></td>
           <td>

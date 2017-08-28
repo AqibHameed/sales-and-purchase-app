@@ -11,7 +11,7 @@ class Api::V1::SessionsController < Devise::SessionsController
       customer.save!
       response.headers['Authorization'] = customer.authentication_token
 
-      render :json => customer, serializer: CustomerSerializer
+      render :json => { customer: customer_data(customer), response_code: 200 }
       return
     end
     invalid_login_attempt
@@ -23,24 +23,45 @@ class Api::V1::SessionsController < Devise::SessionsController
     return invalid_attempt unless customer
     customer.authentication_token = nil
     if customer.save
-      render :json => {:success => true}
+      render :json => {:success => true, response_code: 200}
     else
-      render :json => {:errors => customer.errors.full_messages}
+      render :json => {:errors => customer.errors.full_messages, response_code: 201}
     end
   end
 
   protected
+  def customer_data(customer)
+    {
+      id: customer.id, 
+      email:  customer.email, 
+      created_at: customer.created_at, 
+      updated_at: customer.updated_at, 
+      first_name: customer.first_name, 
+      last_name: customer.last_name, 
+      city: customer.city, 
+      address: customer.address, 
+      postal_code: customer.postal_code, 
+      phone: customer.phone, 
+      status: customer.status, 
+      company: customer.company, 
+      company_address: customer.company_address, 
+      phone_2: customer.phone_2, 
+      mobile_no: customer.mobile_no, 
+      authentication_token: customer.authentication_token
+    }
+  end
+
   def ensure_params_exist
     return unless params[:customer].blank?
-    render :json => {:success => false, :message => "Missing user login parameter"}, :status => 422
+    render :json => {:success => false, :message => "Missing user login parameter", response_code: 201}, :status => 422
   end
 
   def invalid_login_attempt
-    render :json => {:success => false, :message => "Error with your login or password."}, :status => 401
+    render :json => {:success => false, :message => "Error with your login or password.", response_code: 201}, :status => 401
   end
 
   def invalid_attempt
-    render :json => {:success => false, :message => "Invalid attempt."}, :status => 401
+    render :json => {:success => false, :message => "Invalid attempt.", response_code: 201}, :status => 401
   end
 end
 

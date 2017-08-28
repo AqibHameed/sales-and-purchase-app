@@ -61,13 +61,19 @@ class AuctionsController < ApplicationController
   end
 
   def place_bid
-    if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)    
-      user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
-      user_bid.total = params[:bid_amount]
-      render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
+    if @auction.auction_rounds.count > 1   
+      if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)    
+        user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
+        user_bid.total = params[:bid_amount]
+        render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
+      else
+        render json: { msg: "Bid amount must be grater than #{@highest_bid}" }
+      end
     else
-      render json: { msg: "Bid amount must be grater than #{@highest_bid}" }
-    end
+      user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
+        user_bid.total = params[:bid_amount]
+        render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
+    end  
   end
 
   def auction_completed?
@@ -81,7 +87,7 @@ class AuctionsController < ApplicationController
   def lowest_bids bids
     all_lowest_bids = bids.group_by(&:total).sort.to_h.first[1]
     if bids.group_by(&:total).count.eql?(1)
-      all_lowest_bids - highest_bid(bids)
+      all_lowest_bids -  Array(highest_bid(bids))
     else
       all_lowest_bids
     end
