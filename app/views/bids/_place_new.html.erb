@@ -4,8 +4,10 @@
   <div class=''>
     <table>
       <tr>
-        <td  >
-          <div id="container"></div>
+        <td>
+
+            <div id="container"></div>
+
         </td>
         <td style="width:330px !important;" >
         <div class='tender-detail'>
@@ -257,54 +259,56 @@
   showDiff()
 
   $(function() {
-    $('#container').highcharts({
-      chart : {
-        type : 'column',
-        width: $(document).width() / 2
-      },
-      title : {
-        text : 'Past Tender History'
-      },
-      // subtitle : {
-        // text : 'Source: WorldClimate.com'
-      // },
-      xAxis : {
-        categories : <%= raw @history.collect{ |t| t.tender.name }.last(5) %>
-      },
-      yAxis : {
-        min : 0,
+    <% if @stone.no_of_stones > 2 %>
+      $('#container').highcharts({
+        chart : {
+          type : 'column',
+          width: $(document).width() / 2
+        },
         title : {
-          text : 'Price in $'
-        }
-      },
-      tooltip : {
-        headerFormat : '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat : '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>${point.y:.2f}</b></td></tr>',
-        footerFormat : '</table>',
-        shared : true,
-        useHTML : true
-      },
-      plotOptions : {
-        column : {
-          pointPadding : 0.2,
-          borderWidth : 0
-        }
-      },
-      series : [{
-        name : 'Avg. Selling Price',
-        data : <%= raw @history.collect{ |t| t.avg_selling_price }.last(5) %>
+          text : 'Past Tender History'
+        },
+        // subtitle : {
+          // text : 'Source: WorldClimate.com'
+        // },
+        xAxis : {
+          categories : <%= raw @history.collect{ |t| t.tender.name }.last(5) %>
+        },
+        yAxis : {
+          min : 0,
+          title : {
+            text : 'Price in $'
+          }
+        },
+        tooltip : {
+          headerFormat : '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat : '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>${point.y:.2f}</b></td></tr>',
+          footerFormat : '</table>',
+          shared : true,
+          useHTML : true
+        },
+        plotOptions : {
+          column : {
+            pointPadding : 0.2,
+            borderWidth : 0
+          }
+        },
+        series : [{
+          name : 'Avg. Selling Price',
+          data : <%= raw @history.collect{ |t| t.avg_selling_price }.last(5) %>
 
-      }, {
-                type: 'spline',
-                name: 'My Bid',
-                data: <%= raw @my_bid_list %>,
-                marker: {
-                  lineWidth: 2,
-                  lineColor: Highcharts.getOptions().colors[3],
-                  fillColor: 'white'
-                }
-            }]
-    });
+        }, {
+                  type: 'spline',
+                  name: 'My Bid',
+                  data: <%= raw @my_bid_list %>,
+                  marker: {
+                    lineWidth: 2,
+                    lineColor: Highcharts.getOptions().colors[3],
+                    fillColor: 'white'
+                  }
+              }]
+      });
+    <% end %>
   });
 
 </script>
