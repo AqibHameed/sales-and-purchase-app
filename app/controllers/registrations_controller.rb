@@ -1,7 +1,7 @@
 class RegistrationsController < Devise::RegistrationsController 
 	def create 
 		super do
-		    if resource
+		    if resource.valid?
 		      resource.companies.create(name: params[:name],email: params[:email],status: params[:status])
 	    end
   	end

@@ -1,0 +1,116 @@
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <tr>
+      <td> Time  : </td>
+      <td><%= @auction.time %></td>
+    </tr>
+    <tr>
+      <td> Tender :</td>
+      <td><%= @auction.tender.name %></td>
+    </tr>
+  </table>
+</div>
+<br>
+
+<%= link_to 'Edit', edit_auction_path(@auction),class: "btn-02 login-btn" %>
+<%= link_to 'Back', auctions_path, class: "btn-02 login-btn" %>
+<br><br><br>
+  <% if @auction.started? && !@auction.completed? %>
+    Round : <%= @auction.auction_rounds.count %>
+  <% end %>
+<div id="getting-started"></div><br>
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">  
+    <tr>
+      <th>Index</th>
+      <th>Stone Type</th>
+      <th>No. of stones</th>
+      <th>Size</th>
+      <th>Weight</th>
+      <th>Description</th>
+      <% if @auction.auction_rounds.count > 1 %>
+        <th>Highest bid in last round</th>
+      <% end %>
+      <th>Your bid</th>
+      <th></th>
+    </tr>
+    <tbody>
+      <%= hidden_field_tag :auction_id, @auction.id %>
+      <% @auction.tender.stones.each_with_index do |stone,index| %>
+        <tr class="stone-detail">
+          <%= hidden_field_tag :stone_id, stone.id %>
+          <td><%= index+1 %></td>
+          <td><%= stone.stone_type %></td>
+          <td><%= stone.no_of_stones %></td>
+          <td><%= stone.size %></td>
+          <td><%= stone.weight %></td>
+          <td><%= stone.description %></td>
+          <% if @auction.auction_rounds.count > 1 %>
+            <td><%= @auction.last_round.highest_bid_for_stone(stone) %></td>
+          <% end %>
+          <td><%= number_field_tag :bid_amount, last_bid_amount(stone), disabled: is_disable?(stone) %></td>
+          <td>
+            <% if !@auction.started? %>
+              <p>Auction not started yet</p>
+            <% elsif user_win_auction_for_stone?(stone) %>
+              <p>You are the winner</p>
+            <% elsif user_loose_auction_for_stone?(stone) %>
+              <p>You are one of the lowest bidder</p>
+            <% elsif @auction.started? && @auction.completed? %>
+              <p>Auction completed!</p>
+            <% elsif auction_for_stone_completed?(stone) %>
+              <p>Auction for this stone is completed!</p>
+            <% elsif can_user_place_bid?(stone) %>
+              <%= button_tag 'Place your Bid', class: 'place-bid' %>
+            <% end %>
+          </td>
+          <td class="response" id="response-<%= stone.id %>"></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $(document).on('click','.place-bid',function(){
+    var stone_id = $(this).parents('.stone-detail').find('#stone_id').val();
+    var amount = $(this).parents('.stone-detail').find('#bid_amount').val();
+    $.ajax({
+      type: 'POST',
+      url: "<%= place_bid_auction_path(@auction) %>",
+      data: { stone_id: stone_id, bid_amount: amount },
+      success: function(response){
+        $('.response').html('');
+        $('#response-'+stone_id).html(response.msg)
+        if (response.success){
+          $('#response-'+stone_id).attr('style','color:green;');
+        }
+        else{
+          $('#response-'+stone_id).attr('style','color:red;');
+        }
+      }
+    })
+  });
+
+  <% unless @auction.completed? %>
+    <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) %>
+
+    $('#getting-started').countdown("<%= watch_time %>", function(event) {
+      var auction_time = new Date("<%= watch_time %>");
+      var current_time = new Date();
+      $(this).html(event.strftime('%w weeks %d days %H:%M:%S'));
+      if (auction_time < current_time){
+        <% if @auction.started %>
+          window.location = "<%= round_completed_auction_path(@auction) %>?round=<%= @next_round.id %>"
+        <% else %>
+          window.location = "<%= auction_path(@auction) %>"
+        <% end %>
+      }
+    });
+  <% end %>
+</script>
+
+<style type="text/css">
+  .table table td{text-align: center !important; }
+  #myTable td{text-align: left !important; }
+</style>

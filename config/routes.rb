@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   get '/login', :to => 'home#login'
   get '/signup', :to => 'home#registration'
@@ -128,6 +129,13 @@ Rails.application.routes.draw do
 
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
+    end
+  end
+
+  resources :auctions do
+    member do
+      post :place_bid
+      get :round_completed
     end
   end
 
