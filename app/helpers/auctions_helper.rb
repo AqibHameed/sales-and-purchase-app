@@ -31,4 +31,8 @@ module AuctionsHelper
   def winner_for_stone stone
     @auction.round_winners.where(stone_id: stone.id, customer_id: current_customer.id).try(:last)
   end
+
+  def winner_for_the_stone(stone)
+    @auction.round_winners.where(stone_id: stone.id).try(:first).try(:customer)
+  end
 end
