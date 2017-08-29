@@ -28,12 +28,14 @@
   </table>
 </div>
 
-<div class="form-row">
-  <div class="label">
-    &nbsp;
+<% if current_admin.present? %>
+  <div class="form-row">
+    <div class="label">
+      &nbsp;
+    </div>
+    <div class="field">
+      <%= link_to 'New Auction', new_auction_path , class: "btn-02 login-btn" %>
+    </div>
+    <div class="clear"></div>
   </div>
-  <div class="field">
-    <%= link_to 'New Auction', new_auction_path , class: "btn-02 login-btn" %>
-  </div>
-  <div class="clear"></div>
-</div>
+<% end %>
