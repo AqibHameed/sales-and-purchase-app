@@ -395,7 +395,7 @@ class TendersController < ApplicationController
 
   def view_past_result
     # get last 3 tender details
-    if params[:stone_count] == "1" || params[:stone_count] == "0"
+    if params[:stone_count] == "1"
       @winners = []
     else
       @tender = current_customer.tenders.find(params[:id]) rescue Tender.find(params[:id])

@@ -107,34 +107,39 @@ module Api
             :valuation => stone.valuation,
             :parcel_rating => stone.parcel_rating,
             :tender => stone.tender,
-            :winners_data => historical_data(stone.try(:tender).try(:id), stone.description)
+            :winners_data => historical_data(stone.try(:tender).try(:id), stone)
           }
         end
         @stones
       end
 
-      def historical_data(id, desc)
+      def historical_data(id, stone)
         @w = []
-        tender = current_customer.tenders.find(id) rescue Tender.find(id)
-        tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
-        # winners = TenderWinner.includes(:tender).where("tender_id in (?) and tender_winners.description = ?", tenders.collect(&:id), desc)
-        tender_winner_array = TenderWinner.includes(:tender).where(description: desc, tender_id: tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
-        @winners = []
-        tender_winner_array.each_pair do |tender_winner|
-          @winners << tender_winner.try(:last).try(:first)
-        end
-        @winners = @winners.compact.sort_by{|e| e.tender.open_date}.reverse
+        if stone.no_of_stones.to_i == 1
+          # do nothing
+        else
+          desc = stone.description
+          tender = current_customer.tenders.find(id) rescue Tender.find(id)
+          tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+          # winners = TenderWinner.includes(:tender).where("tender_id in (?) and tender_winners.description = ?", tenders.collect(&:id), desc)
+          tender_winner_array = TenderWinner.includes(:tender).where(description: desc, tender_id: tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
+          @winners = []
+          tender_winner_array.each_pair do |tender_winner|
+            @winners << tender_winner.try(:last).try(:first)
+          end
+          @winners = @winners.compact.sort_by{|e| e.tender.open_date}.reverse
 
-        @winners.each do |winner|
-          @w << {
-            tender_id: winner.tender_id,
-            lot_no: winner.lot_no,
-            selling_price: winner.selling_price,
-            created_at: winner.created_at,
-            updated_at: winner.updated_at,
-            description: winner.description,
-            avg_selling_price: winner.avg_selling_price
-          }
+          @winners.each do |winner|
+            @w << {
+              tender_id: winner.tender_id,
+              lot_no: winner.lot_no,
+              selling_price: winner.selling_price,
+              created_at: winner.created_at,
+              updated_at: winner.updated_at,
+              description: winner.description,
+              avg_selling_price: winner.avg_selling_price
+            }
+          end
         end
         @w
       end

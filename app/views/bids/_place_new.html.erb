@@ -259,7 +259,7 @@
   showDiff()
 
   $(function() {
-    <% if @stone.no_of_stones > 2 %>
+    <% if @stone.no_of_stones.to_i == 1 %>
       $('#container').highcharts({
         chart : {
           type : 'column',
