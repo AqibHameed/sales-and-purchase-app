@@ -37,7 +37,7 @@
       Tender
     </div>
     <div class="field">
-        <%= form.select :tender_id, options_for_select(Tender.all.map{|t| [t.name,t.id] }), :required => true %>
+        <%= form.select :tender_id, options_for_select(Tender.all.map{|t| [t.name,t.id] }, form.object.tender_id), :required => true %>
     </div>
     <div class="clear"></div>
   </div>

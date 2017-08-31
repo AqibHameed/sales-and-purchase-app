@@ -7,13 +7,18 @@ class AuctionsController < ApplicationController
 
   def show
     if @auction.is_in_process?
-      @last_round = @auction.last_round
-      @next_round = @auction.current_auction_round
+      in_process_variables
     elsif @auction.is_ready_to_start?
+      in_process_variables and return true if @auction.is_in_process?
       @auction.make_it_started
       move_to_next_round
     end
     move_to_next_round if @auction.started && @next_round.try(:started_at).blank?
+  end
+
+  def in_process_variables
+    @last_round = @auction.last_round
+    @next_round = @auction.current_auction_round
   end
 
   def round_completed
