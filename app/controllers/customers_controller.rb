@@ -63,5 +63,9 @@ class CustomersController < ApplicationController
     end
   end
 
+  def trading
+    @parcels = TradingParcel.where.not(customer_id: current_customer.id)
+  end
+
 end
 

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= "DIALUCK - Tender Program" %></title>
+		<meta content="width=device-width, initial-scale=1.0" name="viewport">
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+		<%= stylesheet_link_tag "application", :media => "all" %>
+		<%= stylesheet_link_tag "jquery.dataTables.css", :media => "all"  unless controller.controller_name == 'calculator' %>
+		<%= javascript_include_tag "application" %>
+
+		<%= csrf_meta_tags %>
+	</head>
+	<body>
+	  <div class='wrapper <%=  ' calculator-page' if controller.controller_name == 'calculator'%>'>
+			<%= render :partial => "layouts/supplier/navigation" if current_customer or current_admin %>
+			<div class="clear20"></div>
+			<div class='container'>
+			  <%= yield %>
+		  </div>
+		</div>
+	</body>
+</html>

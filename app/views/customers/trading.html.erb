@@ -1,0 +1,22 @@
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th>Lot No</th>
+      <th>Description</th>
+      <th>No. of Stones</th>
+      <th>Weight</th>
+      <th>Credit</th>
+      <th></th>
+    </tr>
+    <% @parcels.each do |parcel|%>
+      <tr>
+        <td><%= parcel.lot_no %></td>
+        <td><%= parcel.description %></td>
+        <td><%= parcel.no_of_stones %></td>
+        <td><%= parcel.weight %></td>
+        <td><%= parcel.credit_period %></td>
+        <td><%= link_to 'Buy', '#' %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

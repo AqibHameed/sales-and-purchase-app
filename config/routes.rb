@@ -85,6 +85,7 @@ Rails.application.routes.draw do
       get :change_password
       get :list_company
       patch :update_password
+      get :trading
     end
     member do
       get :add_company
@@ -105,6 +106,13 @@ Rails.application.routes.draw do
       collection do
         get :place_new
       end
+    end
+  end
+
+  resources :suppliers do
+    collection do
+      get :trading
+      post :parcels
     end
   end
 

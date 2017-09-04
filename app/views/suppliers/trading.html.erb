@@ -1,0 +1,45 @@
+<h3>Trading</h3>
+
+<div class="form-row">
+  <%= form_for @trading_document, url: parcels_suppliers_path do |f| %>
+    <% if @trading_document.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@trading_document.errors.count, "error") %> prohibited this auction from being saved:</h2>
+        <ul>
+          <% @trading_document.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-wrapper">
+      <div class="label">Upload Parcel: <%= f.file_field :document, class: 'form-field' %></div>
+      <%= f.hidden_field :customer_id, value: current_customer.id %>
+    </div>
+    <div class="form-wrapper">
+      <div class="label">
+        Credit Column : <%= f.text_field :credit_field, :value => 'E', class: 'form-field' %>
+      </div>
+      <div class="label">
+        Lot No Column : <%= f.text_field :lot_no_field, :value => 'A', class: 'form-field'%>
+      </div>
+      <div class="label">
+        Description Column : <%= f.text_field :desc_field, :value => 'B', class: 'form-field' %>
+      </div>
+      <div class="label">
+        No of Stones Column :  <%= f.text_field :no_of_stones_field, :value => 'C', class: 'form-field' %>
+      </div>
+      <div class="label">
+        Weight Column : <%= f.text_field :weight_field, :value => 'D', class: 'form-field' %>
+      </div>
+      <div class="label">
+        Sheet Number : <%= f.select :sheet_no, (1..20).to_a, {}, class: 'form-field' %>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="form-wrapper">
+      <%=f.submit 'Submit', class: 'login-btn btn-02 mt10' %>
+    </div>
+  <% end %>
+</div>

@@ -20,7 +20,7 @@
 }
 
 tr.winner {
-	background: #00D812;
+  background: #00D812;
 }
 
 
@@ -30,13 +30,13 @@ a.add{background:url(../assets/add.png) no-repeat;padding:5px 12px 9px;text-inde
 a.remove{background:url(../assets/remove.png) no-repeat;padding:5px 12px 9px;text-indent:-9999px;margin-left:5px;}
 
 .filter input,.filter select {
-	width:110px;
-	border: 1px solid #B8B8B8;
+  width:110px;
+  border: 1px solid #B8B8B8;
 }
 
 .input1.error {
 
-	border: 1px solid #FF0000;
+  border: 1px solid #FF0000;
 }
 
 
@@ -58,17 +58,17 @@ a.remove{background:url(../assets/remove.png) no-repeat;padding:5px 12px 9px;tex
 }
 
 .bid_form{
-	z-index:9999;
-	position:fixed;
-	left:10%;
-	top:10%;
-	box-shadow: 0px 0px 10px #000;
+  z-index:9999;
+  position:fixed;
+  left:10%;
+  top:10%;
+  box-shadow: 0px 0px 10px #000;
 }
 
 .close_bid {
-	position:absolute;
-	right:-32px;
-	top:-16px;
+  position:absolute;
+  right:-32px;
+  top:-16px;
 }
 
 #screenMask {
@@ -83,29 +83,43 @@ a.remove{background:url(../assets/remove.png) no-repeat;padding:5px 12px 9px;tex
 }
 
 div.title1 {
-	padding:0 0 10px;
-	font-weight:bold;
-	clear:both;
-	cursor:pointer;
-	color:#ED5A48;
+  padding:0 0 10px;
+  font-weight:bold;
+  clear:both;
+  cursor:pointer;
+  color:#ED5A48;
 }
 
 .border {
-	border:1px solid #999;
+  border:1px solid #999;
 }
 
 .low {
-	background-color:#A0D9FF;
+  background-color:#A0D9FF;
 }
 
 .mid {
-	background-color: #7CB5EC;
+  background-color: #7CB5EC;
 }
 
 .high {
-	background-color:#71AAE1;
+  background-color:#71AAE1;
 }
 
 .vhigh {
-	background-color: #4D86BD;
+  background-color: #4D86BD;
+}
+
+
+.form-field{
+  margin: 5px 0px 0px 20px
+}
+.label{
+  margin-top: 5px;
+}
+.mt10{
+  margin-top: 10px !important;
+}
+.hide {
+  display: none;
 }
