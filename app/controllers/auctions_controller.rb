@@ -9,7 +9,7 @@ class AuctionsController < ApplicationController
     if @auction.is_in_process?
       in_process_variables
     elsif @auction.is_ready_to_start?
-      # in_process_variables and return true if @auction.is_in_process?
+      in_process_variables and return true if @auction.is_in_process?
       @auction.make_it_started
       move_to_next_round
     end
