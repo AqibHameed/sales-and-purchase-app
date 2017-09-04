@@ -6,7 +6,9 @@ class Auction < ApplicationRecord
   belongs_to :tender
 
   def current_auction_round
-    self.auction_rounds.where(completed: false).first_or_create
+    round = self.auction_rounds.where(completed: false).try(:last)
+    round = auction_rounds.create() if round.blank?
+    round
   end
 
   def is_in_process?
@@ -20,6 +22,10 @@ class Auction < ApplicationRecord
   def last_round
     auction_rounds.where(completed: true).sort_by(&:created_at).last
   end
+
+  # def is_last_round_completed?
+  #   auction_rounds.sort_by(&:round_no).try(:last).try(:completed)
+  # end
 
   def make_it_completed
     self.update(completed: true)
