@@ -66,19 +66,21 @@ class AuctionsController < ApplicationController
   end
 
   def place_bid
-    if @auction.last_round_no > 1   
+    if @auction.current_round_no > 1   
       if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)    
-        user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
-        user_bid.total = params[:bid_amount]
-        render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
+        create_or_update_user_bid_for_stone
       else
         render json: { msg: "Bid amount must be grater than #{@highest_bid}" }
       end
     else
-      user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
-        user_bid.total = params[:bid_amount]
-        render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
+      create_or_update_user_bid_for_stone
     end  
+  end
+
+  def create_or_update_user_bid_for_stone
+    user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
+    user_bid.total = params[:bid_amount]
+    render json: { success: user_bid.save, msg: user_bid.save ? 'Bid placed successfully!' : user_bid.errors.full_messages }
   end
 
   def auction_completed?

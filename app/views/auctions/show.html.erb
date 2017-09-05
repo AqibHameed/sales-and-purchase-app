@@ -37,7 +37,7 @@
       <th>Size</th>
       <th>Weight</th>
       <th>Description</th>
-      <% if @auction.last_round_no > 1 %>
+      <% if @auction.current_round_no > 1 %>
         <th>Highest bid in last round</th>
       <% end %>
       <th><%= current_admin.present? ? 'Winner' : 'Your bid' %></th>
@@ -55,7 +55,7 @@
           <td><%= stone.weight %></td>
           <td><%= stone.description %></td>
 
-          <% if @auction.last_round_no > 1 %>
+          <% if @auction.current_round_no > 1 %>
             <td><%= @auction.last_round.highest_bid_for_stone(stone) %></td>
           <% end %>
 
