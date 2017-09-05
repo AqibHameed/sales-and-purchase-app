@@ -10,7 +10,7 @@ class SuppliersController < ApplicationController
   end
 
   def parcels
-    if params[:document].present?
+    if params[:trading_document][:document].present?
       @trading_document = TradingDocument.new(trading_document_params)
       if @trading_document.save
         flash[:notice] = "Document uploaded successfully"
