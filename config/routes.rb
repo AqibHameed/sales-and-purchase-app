@@ -116,6 +116,7 @@ Rails.application.routes.draw do
       post :parcels
     end
   end
+  resources :trading_parcels
 
   namespace :api do
     namespace :v1 do

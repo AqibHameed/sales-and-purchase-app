@@ -15,20 +15,12 @@
       <td><%= parcel.no_of_stones %></td>
       <td><%= parcel.weight %></td>
       <td><%= parcel.credit_period %></td>
-      <td><%= parcel.company.name %></td>
+      <td><%= parcel.try(:company).try(:name) %></td>
       <%- if parcel.customer_id == current_customer.id %>
-        <td><%= link_to 'Share', '#' %></td>
+        <td><%= link_to 'Share', 'javascript:void(0)', 'data-id' => parcel.id, id: 'share' %></td>
       <% else %>
-        <td><%= link_to 'Buy', '#' %></td>
+        <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
       <% end %>
     </tr>
   <% end %>
 </table>
-
-
-
-
-
-
-
-

@@ -1,0 +1,30 @@
+<h3>Parcel Details</h3>
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <tr>
+      <td> Supplier</td>
+      <td><%= @parcel.company.try(:name) %></td>
+    </tr>
+    <tr>
+      <td> Description</td>
+      <td><%= @parcel.description %></td>
+    </tr>
+    <tr>
+      <td> No. of stones</td>
+      <td><%= @parcel.no_of_stones %></td>
+    </tr>
+    <tr>
+      <td> Weight</td>
+      <td><%= @parcel.weight %></td>
+    </tr>
+    <tr>
+      <td> Credit</td>
+      <td><%= @parcel.credit_period %> days </td>
+    </tr>
+    <tr>
+      <td> Price</td>
+      <td></td>
+    </tr>
+  </table>
+</div><br>
+<%= link_to 'Buy', '#', class: 'btn-02 login-btn' %>
