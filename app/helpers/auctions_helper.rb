@@ -1,7 +1,7 @@
 module AuctionsHelper
 
   def auction_for_stone_completed? stone
-    winner_for_stone(stone).present?
+    @auction.round_winners.where(stone_id: stone.id).try(:last).present?
   end
 
   def can_user_place_bid? stone

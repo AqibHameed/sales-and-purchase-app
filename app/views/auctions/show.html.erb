@@ -20,7 +20,7 @@
 <br>
 
 <% if @auction.started? && !@auction.completed? %>
-  Round : <%= @auction.auction_rounds.count %>
+  Round : <%= @next_round.try(:round_no) %>
 <% end %>
 
 <% if @auction.started? && @auction.completed? %>
@@ -37,10 +37,10 @@
       <th>Size</th>
       <th>Weight</th>
       <th>Description</th>
-      <% if @auction.auction_rounds.count > 1 %>
+      <% if @auction.current_round_no > 1 %>
         <th>Highest bid in last round</th>
       <% end %>
-      <th>Your bid</th>
+      <th><%= current_admin.present? ? 'Winner' : 'Your bid' %></th>
       <th></th>
     </tr>
     <tbody>
@@ -55,7 +55,7 @@
           <td><%= stone.weight %></td>
           <td><%= stone.description %></td>
 
-          <% if @auction.auction_rounds.count > 1 %>
+          <% if @auction.current_round_no > 1 %>
             <td><%= @auction.last_round.highest_bid_for_stone(stone) %></td>
           <% end %>
 
@@ -73,6 +73,8 @@
                 <p>You are one of the lowest bidder</p>
               <% elsif auction_for_stone_completed?(stone) %>
                 <p>Auction for this stone is completed!</p>
+              <% elsif @auction.started? && @auction.completed? %>
+                <p>Auction completed!</p>
               <% elsif can_user_place_bid?(stone) %>
                 <%= button_tag 'Place your Bid', class: 'place-bid' %>
               <% end %>
@@ -112,9 +114,15 @@
     <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) %>
 
     $('#getting-started').countdown("<%= watch_time %>", function(event) {
-      var auction_time = new Date("<%= watch_time %>");
+      var watch_time = ("<%= watch_time %>");
+      var auction_time = ''
       var current_time = new Date();
       $(this).html(event.strftime('%w weeks %d days %H:%M:%S'));
+
+      auction_time = new Date(watch_time);
+      if (isNaN(auction_time)){
+        auction_time = new Date( Date.parse( watch_time.replace(/-/g, '/') ) );
+      }
       if (auction_time < current_time){
         <% if @auction.started %>
           window.location = "<%= round_completed_auction_path(@auction) %>?round=<%= @next_round.id %>"
