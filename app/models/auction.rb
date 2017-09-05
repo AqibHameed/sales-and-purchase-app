@@ -6,7 +6,7 @@ class Auction < ApplicationRecord
   belongs_to :tender
 
   def current_auction_round
-    round = self.auction_rounds.where(completed: false).try(:last)
+    round = auction_rounds.where(completed: false).try(:last)
     round = auction_rounds.create() if round.blank?
     round
   end
