@@ -3,7 +3,7 @@
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
     <tr>
       <td> Supplier</td>
-      <td><%= @parcel.company.try(:name) %></td>
+      <td><%= @parcel.try(:customer).try(:company) %></td>
     </tr>
     <tr>
       <td> Description</td>

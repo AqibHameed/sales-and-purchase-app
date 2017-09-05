@@ -7,7 +7,7 @@ class SuppliersController < ApplicationController
 
   def trading
     @trading_document = TradingDocument.new
-    @company = current_customer.companies.where(parent_id: nil).first
+    # @company = current_customer.companies.where(parent_id: nil).first
   end
 
   def parcels

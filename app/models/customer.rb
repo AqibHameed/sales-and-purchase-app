@@ -23,6 +23,7 @@ class Customer < ApplicationRecord
   has_many :customer_ratings
   has_many :customer_comments
   has_many :customer_pictures
+  has_many :trading_parcels
 
 
   # Setup accessible (or protected) attributes for your model

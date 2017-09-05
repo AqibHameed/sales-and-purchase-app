@@ -15,7 +15,7 @@
       <td><%= parcel.no_of_stones %></td>
       <td><%= parcel.weight %></td>
       <td><%= parcel.credit_period %></td>
-      <td><%= parcel.try(:company).try(:name) %></td>
+      <td><%= parcel.try(:customer).try(:company) %></td>
       <%- if parcel.customer_id == current_customer.id %>
         <td><%= link_to 'Share', 'javascript:void(0)', 'data-id' => parcel.id, id: 'share' %></td>
       <% else %>
