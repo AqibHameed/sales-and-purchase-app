@@ -23,6 +23,10 @@ class Auction < ApplicationRecord
     auction_rounds.where(completed: true).sort_by(&:created_at).last
   end
 
+  def last_round_no
+    try(:last_round).try(:round_no).to_i
+  end
+
   def make_it_completed
     self.update(completed: true)
   end

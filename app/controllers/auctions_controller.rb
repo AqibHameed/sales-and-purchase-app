@@ -66,7 +66,7 @@ class AuctionsController < ApplicationController
   end
 
   def place_bid
-    if @auction.auction_rounds.count > 1   
+    if @auction.last_round_no > 1   
       if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)    
         user_bid = @auction.current_auction_round.current_customer_bid_on_stone(current_customer, params[:stone_id])
         user_bid.total = params[:bid_amount]
