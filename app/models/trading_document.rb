@@ -1,14 +1,14 @@
 class TradingDocument < ApplicationRecord
-  HUMANIZED_ATTRIBUTES = {
-    :company_id => "Supplier"
-  }
+  # HUMANIZED_ATTRIBUTES = {
+  #   :company_id => "Supplier"
+  # }
 
 	belongs_to :customer
 
 	has_attached_file :document
   do_not_validate_attachment_file_type :document
 
-  validates :company_id, presence: true
+  # validates :company_id, presence: true
 
   after_save :create_trading_parcels_from_uploaded_file
 
@@ -49,8 +49,8 @@ class TradingDocument < ApplicationRecord
     return ((data.class == Fixnum or data.class == Float)  ? data : (data.class == String ? data : data.nil? ? nil : data.value))
   end
 
-  def self.human_attribute_name(attr, options = {})
-    HUMANIZED_ATTRIBUTES[attr.to_sym] || super
-  end
+  # def self.human_attribute_name(attr, options = {})
+  #   HUMANIZED_ATTRIBUTES[attr.to_sym] || super
+  # end
 end
 

@@ -19,16 +19,7 @@
       <div class="field">
         <%= f.file_field :document, class: 'input' %>
         <%= f.hidden_field :customer_id, value: current_customer.id %>
-      </div>
-      <div class="clear"></div>
-    </div>
-
-    <div class="form-row">
-      <div class="label">
-        Supplier:
-      </div>
-      <div class="field">
-        <%= f.select :company_id, options_for_select(current_customer.companies.map { |e| [e.name, e.id] }), {}, class: 'input' %>
+        <%= f.hidden_field :company_id, value: @company.id %>
       </div>
       <div class="clear"></div>
     </div>
