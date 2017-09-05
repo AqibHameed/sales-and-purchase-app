@@ -6,10 +6,8 @@ class AuctionRound < ApplicationRecord
   belongs_to :auction
 
   before_validation :add_round_no
-
   validate :uniq_round_no_for_auction, on: :create
-  
-  after_validation :check_last_round_completion
+  validate :check_last_round_completion
   
   def add_round_looser bid
     self.round_loosers.create(stone_id: bid.stone_id, customer_id: bid.customer_id, bid_id: bid.id, auction_id: self.auction.id).save
@@ -24,9 +22,9 @@ class AuctionRound < ApplicationRecord
   end
 
   def check_last_round_completion
-    return true if auction.auction_rounds.blank?
-    return true if self == auction.auction_rounds.sort_by(&:round_no).reject{ |f| f unless f.persisted? }.try(:last)
-    errors.add(:auction_round, "Last auction not completed yet!") unless auction.auction_rounds.sort_by(&:round_no).reject{ |f| f unless f.persisted? }.try(:last).try(:completed)
+    status = auction.auction_rounds.where(round_no: self.round_no-1).try(:last).try(:completed)
+    return true if status.nil?
+    errors.add(:auction_round, "Last auction not completed yet!") unless status
   end
 
   def current_customer_bid_on_stone customer, stone_id

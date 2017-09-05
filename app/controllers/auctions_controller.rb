@@ -1,8 +1,38 @@
 class AuctionsController < ApplicationController
   before_action :set_auction, only: [:show, :edit, :update, :destroy, :place_bid, :start_round, :round_completed]
 
+  def destroy
+    @auction.destroy
+    redirect_to auctions_url, notice: 'Auction was successfully destroyed.'
+  end
+
+  def create
+    @auction = Auction.new(auction_params)
+
+    if @auction.save
+      redirect_to @auction, notice: 'Auction was successfully created.'
+    else
+      render :new
+    end
+  end
+
+  def edit
+  end
+
   def index
     @auctions = Auction.all
+  end
+
+  def new
+    @auction = Auction.new
+  end
+
+  def update
+    if @auction.update(auction_params)
+      redirect_to @auction, notice: 'Auction was successfully updated.'
+    else
+      render :edit
+    end
   end
 
   def show
@@ -16,11 +46,6 @@ class AuctionsController < ApplicationController
     move_to_next_round if @auction.started && @next_round.try(:started_at).blank?
   end
 
-  def in_process_variables
-    @last_round = @auction.last_round
-    @next_round = @auction.current_auction_round
-  end
-
   def round_completed
     if @auction.evaluating_round_id != params[:round].to_i
       @auction.update(evaluating_round_id: params[:round])
@@ -31,34 +56,9 @@ class AuctionsController < ApplicationController
     redirect_to auction_path(@auction)
   end
 
-  def new
-    @auction = Auction.new
-  end
-
-  def edit
-  end
-
-  def create
-    @auction = Auction.new(auction_params)
-
-    if @auction.save
-      redirect_to @auction, notice: 'Auction was successfully created.'
-    else
-      render :new
-    end
-  end
-
-  def update
-    if @auction.update(auction_params)
-      redirect_to @auction, notice: 'Auction was successfully updated.'
-    else
-      render :edit
-    end
-  end
-
-  def destroy
-    @auction.destroy
-    redirect_to auctions_url, notice: 'Auction was successfully destroyed.'
+  def in_process_variables
+    @last_round = @auction.last_round
+    @next_round = @auction.current_auction_round
   end
 
   def highest_bid_for_stone_in_last_round stone_id
