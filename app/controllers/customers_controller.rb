@@ -11,7 +11,7 @@ class CustomersController < ApplicationController
 
   def update_profile
     @customer = current_customer
-    if @customer.update_attributes(params[:customer])
+    if @customer.update_attributes(customer_params)
       redirect_to profile_customers_path, :notice => 'Profile_updated_successfully'
     else
       render 'profile'
@@ -72,6 +72,11 @@ class CustomersController < ApplicationController
     respond_to do |format|
       format.js { render 'customers/trading/search_trading' }
     end
+  end
+
+  private
+  def customer_params
+    params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address)
   end
 end
 
