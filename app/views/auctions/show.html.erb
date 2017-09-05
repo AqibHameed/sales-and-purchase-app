@@ -20,7 +20,7 @@
 <br>
 
 <% if @auction.started? && !@auction.completed? %>
-  Round : <%= @auction.auction_rounds.count %>
+  Round : <%= @next_round.try(:round_no) %>
 <% end %>
 
 <% if @auction.started? && @auction.completed? %>
@@ -114,9 +114,15 @@
     <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) %>
 
     $('#getting-started').countdown("<%= watch_time %>", function(event) {
-      var auction_time = new Date("<%= watch_time %>");
+      var watch_time = ("<%= watch_time %>");
+      var auction_time = ''
       var current_time = new Date();
       $(this).html(event.strftime('%w weeks %d days %H:%M:%S'));
+
+      auction_time = new Date(watch_time);
+      if (isNaN(auction_time)){
+        auction_time = new Date( Date.parse( watch_time.replace(/-/g, '/') ) );
+      }
       if (auction_time < current_time){
         <% if @auction.started %>
           window.location = "<%= round_completed_auction_path(@auction) %>?round=<%= @next_round.id %>"

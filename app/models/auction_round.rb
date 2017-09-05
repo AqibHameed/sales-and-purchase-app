@@ -16,7 +16,7 @@ class AuctionRound < ApplicationRecord
   end
 
   def add_round_no
-    self.round_no = self.auction.auction_rounds.sort_by(&:round_no).try(:last).try(:round_no).to_i+1
+    self.round_no = self.auction.auction_rounds.sort_by(&:round_no).try(:last).try(:round_no).to_i+1 if self.round_no.blank?
   end
 
   def add_round_winner bid
