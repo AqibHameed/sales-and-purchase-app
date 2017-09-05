@@ -2,8 +2,8 @@
   <div class="c1">
     <nav class="nav">
       <ul>
-        <li class="first">
-          <%= link_to 'Trading', '#', :class => 'home', data: { turbolinks: false } %>
+        <li class="first" onClick=" window.location.href = '/suppliers' ">
+          <%= link_to 'Home', suppliers_path, class: 'home', data: { turbolinks: false } %>
         </li>
         <li>
           <%= link_to 'Trading', trading_suppliers_path, data: { turbolinks: false } %>

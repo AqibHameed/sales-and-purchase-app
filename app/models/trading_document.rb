@@ -21,7 +21,7 @@ class TradingDocument < ApplicationRecord
               parcel.no_of_stones = TradingDocument.get_value(data_row[TradingDocument.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
               parcel.weight = TradingDocument.get_value(data_row[TradingDocument.get_index(self.weight_field)]) unless self.weight_field.blank?
               parcel.customer_id = self.customer_id
-              parcel.company_id = nil
+              parcel.company_id = self.company_id
               parcel.save
               puts parcel.errors.full_messages
             end

@@ -86,6 +86,7 @@ Rails.application.routes.draw do
       get :list_company
       patch :update_password
       get :trading
+      get :search_trading
     end
     member do
       get :add_company

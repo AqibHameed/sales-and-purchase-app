@@ -64,8 +64,14 @@ class CustomersController < ApplicationController
   end
 
   def trading
-    @parcels = TradingParcel.where.not(customer_id: current_customer.id)
+    @parcels = TradingParcel.where.not(customer_id: current_customer.id).order(created_at: :desc)
   end
 
+  def search_trading
+    @parcels = TradingParcel.search_by_filters(params[:search], current_customer)
+    respond_to do |format|
+      format.js { render 'customers/trading/search_trading' }
+    end
+  end
 end
 
