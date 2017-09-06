@@ -4,7 +4,7 @@
    <div class="tender_filter">
     <div class="company_div">
       <span><%= text_field_tag "search_tender", nil, :placeholder => 'Enter Tender Name'%></span>
-    	<span><%= select_tag "search_company",  options_from_collection_for_select(Company.all, "id", "name"), :selected => params[:search_company], :prompt => 'Select Company' %></span>     	
+    	<span><%= select_tag "search_company",  options_from_collection_for_select(Company.all, "id", "name"), :selected => params[:search_company], :prompt => 'Select Company' %></span>
      	<span><%= select_tag "search_status",  options_for_select([["Select", ""],['Open',1],['Closed',0]], :selected => params[:search_status])%></span>
      	<div class="actions">
 	     	<input type="submit" value="Filter" name="commit" class="fright btn-00" id="tender_index" >
@@ -23,9 +23,9 @@
 <div class="clear"></div>
  <script>
   $(document).ready(function() {
- 	$("#tender_index").click(function(){  
+ 	$("#tender_index").click(function(){
  		var tender = $("#search_tender").val();
- 		var company = $("#search_company option:selected").val();   
+ 		var company = $("#search_company option:selected").val();
  		var status = $("#search_status option:selected").val();
  		$.ajax({
 				url : '/tenders',
@@ -34,10 +34,10 @@
         success: function (data) {
           var html = $('.tenderList', data).html();
           $(".tenderList").html(html);
-        }			
+        }
 			})
     });
-    }); 
+    });
 </script>
 
 
