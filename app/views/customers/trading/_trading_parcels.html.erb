@@ -29,7 +29,7 @@
           <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
         <% else %>
           <td>
-            <%= link_to 'Share', share_trading_parcels_path, 'data-id' => parcel.id, id: 'share', class: 'mr5' %>
+            <%= link_to 'Share', '#', 'data-id' => parcel.id, id: 'share', class: 'mr5' %>
             <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5' %>
             <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5' %>
             <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?"} %>
