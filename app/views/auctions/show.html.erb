@@ -124,11 +124,13 @@
         auction_time = new Date( Date.parse( watch_time.replace(/-/g, '/') ) );
       }
       if (auction_time < current_time){
-        <% if @auction.started %>
-          window.location = "<%= round_completed_auction_path(@auction) %>?round=<%= @next_round.id %>"
-        <% else %>
-          window.location = "<%= auction_path(@auction) %>"
-        <% end %>
+        setTimeout(function() {
+          <% if @auction.started %>
+            window.location = "<%= round_completed_auction_path(@auction) %>?round=<%= @next_round.id %>"
+          <% else %>
+            window.location = "<%= auction_path(@auction) %>"
+          <% end %>
+        }, <%= current_admin.present? ? 0 : (2000..5000).collect{|i| i}.sample %>);
       }
     });
   <% end %>
