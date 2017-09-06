@@ -71,10 +71,10 @@
                 <p>You are the winner</p>
               <% elsif user_loose_auction_for_stone?(stone) %>
                 <p>You are one of the lowest bidder</p>
-              <% elsif auction_for_stone_completed?(stone) %>
-                <p>Auction for this stone is completed!</p>
               <% elsif @auction.started? && @auction.completed? %>
                 <p>Auction completed!</p>
+              <% elsif auction_for_stone_completed?(stone) %>
+                <p>Auction for this stone is completed!</p>
               <% elsif can_user_place_bid?(stone) %>
                 <%= button_tag 'Place your Bid', class: 'place-bid' %>
               <% end %>

@@ -6,9 +6,9 @@ class AuctionRound < ApplicationRecord
   belongs_to :auction
 
   before_validation :add_round_no
-  validate :uniq_round_no_for_auction, on: :create
-  validate :check_last_round_completion
-  validate :auction_not_completed
+  validate :uniq_round_no_for_auction, :check_last_round_completion, :auction_not_completed
+
+  default_scope { where.not(id: nil) }
 
   def add_round_looser bid
     self.round_loosers.create(stone_id: bid.stone_id, customer_id: bid.customer_id, bid_id: bid.id, auction_id: self.auction.id).save
