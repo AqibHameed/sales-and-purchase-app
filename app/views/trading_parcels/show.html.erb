@@ -7,24 +7,38 @@
     </tr>
     <tr>
       <td> Description</td>
-      <td><%= @parcel.description %></td>
+      <td><%= @parcel.description.nil? ? 'N/A' : @parcel.description %></td>
     </tr>
     <tr>
       <td> No. of stones</td>
       <td><%= @parcel.no_of_stones %></td>
     </tr>
     <tr>
-      <td> Weight</td>
+      <td> Carats</td>
       <td><%= @parcel.weight %></td>
+    </tr>
+    <tr>
+      <td> Cost</td>
+      <td><%= @parcel.cost.nil? ? 'N/A' : @parcel.cost %></td>
+    </tr>
+    <tr>
+      <td> Box Value</td>
+      <td><%= @parcel.box_value.nil? ? 'N/A' : @parcel.box_value %></td>
+    </tr>
+    <tr>
+      <td> Sight</td>
+      <td><%= @parcel.sight.nil? ? 'N/A' : @parcel.sight %></td>
+    </tr>
+    <tr>
+      <td> Price</td>
+      <td><%= @parcel.price.nil? ? 'N/A' : @parcel.price %></td>
     </tr>
     <tr>
       <td> Credit</td>
       <td><%= @parcel.credit_period %> days </td>
     </tr>
-    <tr>
-      <td> Price</td>
-      <td></td>
-    </tr>
   </table>
 </div><br>
-<%= link_to 'Buy', '#', class: 'btn-02 login-btn' %>
+<% unless current_customer.id == @parcel.customer_id %>
+  <%= link_to 'Buy', '#', class: 'btn-02 login-btn'  %>
+<% end %>

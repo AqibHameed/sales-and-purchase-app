@@ -3,7 +3,11 @@
     <th></th>
     <th>Description</th>
     <th>No. of Stones</th>
-    <th>Weight</th>
+    <th>Carats</th>
+    <th>Cost</th>
+    <th>Box Value</th>
+    <th>Sight</th>
+    <th>Price</th>
     <th>Credit</th>
     <th>Supplier</th>
     <th></th>
@@ -14,10 +18,23 @@
       <td><%= parcel.description %></td>
       <td><%= parcel.no_of_stones %></td>
       <td><%= parcel.weight %></td>
+      <td><%= 'N/A' %></td>
+      <td><%= 'N/A' %></td>
+      <td><%= 'N/A' %></td>
+      <td><%= parcel.price.nil? ? 'N/A' : parcel.price %></td>
       <td><%= parcel.credit_period %></td>
       <td><%= parcel.try(:customer).try(:company) %></td>
-      <%- if parcel.customer_id == current_customer.id %>
-        <td><%= link_to 'Share', 'javascript:void(0)', 'data-id' => parcel.id, id: 'share' %></td>
+      <% if parcel.customer_id == current_customer.id %>
+        <% if params[:controller] == 'customers' %>
+          <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
+        <% else %>
+          <td>
+            <%= link_to 'Share', share_trading_parcels_path, 'data-id' => parcel.id, id: 'share', class: 'mr5' %>
+            <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5' %>
+            <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5' %>
+            <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?"} %>
+          </td>
+        <% end %>
       <% else %>
         <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
       <% end %>

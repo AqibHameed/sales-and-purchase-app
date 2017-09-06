@@ -1,5 +1,6 @@
 class SuppliersController < ApplicationController
   layout 'supplier'
+  before_action :authenticate_customer!
 
   def index
     @parcels = TradingParcel.where(customer_id: current_customer.id).order(created_at: :desc)
@@ -7,7 +8,6 @@ class SuppliersController < ApplicationController
 
   def trading
     @trading_document = TradingDocument.new
-    # @company = current_customer.companies.where(parent_id: nil).first
   end
 
   def parcels
@@ -15,7 +15,7 @@ class SuppliersController < ApplicationController
       @trading_document = TradingDocument.new(trading_document_params)
       if @trading_document.save
         flash[:notice] = "Document uploaded successfully"
-        redirect_to trading_suppliers_path
+        redirect_to suppliers_path
       else
         render :trading
       end

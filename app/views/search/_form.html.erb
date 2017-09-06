@@ -9,12 +9,12 @@
 			Name of Tender
 		</div>
 		<div class="field">
-			<% 
+			<%
 			if current_customer
-				tenders = current_customer.tenders 
-			else 
+				tenders = current_customer.tenders
+			else
 				tenders = Tender.all
-			end	
+			end
 			%>
 			<%= select_tag "search[name]",options_for_select(tenders.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
 		</div>

@@ -64,7 +64,7 @@ class CustomersController < ApplicationController
   end
 
   def trading
-    @parcels = TradingParcel.where.not(customer_id: current_customer.id).order(created_at: :desc)
+    @parcels = TradingParcel.all.order(created_at: :desc)
   end
 
   def search_trading
