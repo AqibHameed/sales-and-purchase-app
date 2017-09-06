@@ -1,102 +1,162 @@
-<h3>Trading</h3>
-<div class="clear10"></div>
-<%= form_for @trading_document, url: parcels_suppliers_path do |f| %>
-  <% if @trading_document.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@trading_document.errors.count, "error") %> prohibited this auction from being saved:</h2>
-      <ul>
-        <% @trading_document.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<div class="">
+  <h3>Trading</h3>
+  <div class="clear10"></div>
   <div class="form-wrapper">
-    <div class="form-row">
-      <div class="label">
-        Upload Parcel:
-      </div>
-      <div class="field">
-        <%= f.file_field :document, class: 'input' %>
-        <%= f.hidden_field :customer_id, value: current_customer.id %>
-        <%#= f.hidden_field :company_id, value: @company.id %>
-      </div>
-      <div class="clear"></div>
-    </div>
+    <%= form_for @trading_document, url: parcels_suppliers_path do |f| %>
+      <% if @trading_document.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@trading_document.errors.count, "error") %> prohibited this auction from being saved:</h2>
+          <ul>
+            <% @trading_document.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
 
-    <div class="form-row">
-      <div class="label">
-        Credit Column:
+      <div class="form-row">
+        <div class="label">Diamond Type: </div>
+        <div class="field">
+          <%= f.select :diamond_type, options_for_select(['Rough', 'Sight']), {include_blank: true}, class: 'input' %>
+        </div>
       </div>
-      <div class="field">
-        <%= f.text_field :credit_field, :value => 'E', class: 'input' %>
-      </div>
-      <div class="clear"></div>
-    </div>
 
-    <div class="form-row">
-      <div class="label">
-        Lot No Column:
-      </div>
-      <div class="field">
-        <%= f.text_field :lot_no_field, :value => 'A', class: 'input' %>
-      </div>
-      <div class="clear"></div>
-    </div>
+      <div class="common hide">
+        <div class="form-row">
+          <div class="label">
+            Upload Parcel:
+          </div>
+          <div class="field">
+            <%= f.file_field :document, class: 'input' %>
+            <%= f.hidden_field :customer_id, value: current_customer.id %>
+          </div>
+        </div>
 
-    <div class="form-row">
-      <div class="label">
-        Description Column:
-      </div>
-      <div class="field">
-        <%= f.text_field :desc_field, :value => 'B', class: 'input' %>
-      </div>
-      <div class="clear"></div>
-    </div>
+        <div class="form-row">
+          <div class="label">
+            Credit Column:
+          </div>
+          <div class="field">
+            <%= f.text_field :credit_field, :value => 'E', class: 'input' %>
+          </div>
+        </div>
 
-    <div class="form-row">
-      <div class="label">
-        No of Stones Column:
-      </div>
-      <div class="field">
-        <%= f.text_field :no_of_stones_field, :value => 'C', class: 'input' %>
-      </div>
-      <div class="clear"></div>
-    </div>
+        <div class="form-row">
+          <div class="label">Carats Column: </div>
+          <div class="field">
+            <%= f.text_field :weight_field, :value => 'D', class: 'input' %>
+          </div>
+        </div>
 
-    <div class="form-row">
-      <div class="label">
-        Weight Column:
+        <div class="form-row">
+          <div class="label"> Price Column:</div>
+          <div class="field">
+            <%= f.text_field :price_field, :value => 'H', class: 'input' %>
+          </div>
+        </div>
       </div>
-      <div class="field">
-        <%= f.text_field :weight_field, :value => 'D', class: 'input' %>
-      </div>
-      <div class="clear"></div>
-    </div>
 
-    <div class="form-row">
-      <div class="label">
-        Sheet Number:
-      </div>
-      <div class="field">
-        <%= f.select :sheet_no, (1..20).to_a, {}, class: 'input' %>
-      </div>
-      <div class="clear"></div>
-    </div>
+      <div class="rough_diamond hide">
+        <div class="form-row">
+          <div class="label">
+            Lot No Column:
+          </div>
+          <div class="field">
+            <%= f.text_field :lot_no_field, :value => 'A', class: 'input' %>
+          </div>
+        </div>
 
-    <div class="form-row">
-      <div class="label"></div>
-      <div class="field">
-        <%=f.submit 'Submit', class: 'login-btn btn-02' %>
+        <div class="form-row">
+          <div class="label"> Description Column:</div>
+          <div class="field">
+            <%= f.text_field :desc_field, :value => 'B', class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> No of Stones Column:</div>
+          <div class="field">
+            <%= f.text_field :no_of_stones_field, :value => 'C', class: 'input' %>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div class="sight_diamond hide">
+        <div class="form-row">
+          <div class="label"> Source Column:</div>
+          <div class="field">
+            <%= f.text_field :source_field, :value => 'B', class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Box Column:</div>
+          <div class="field">
+            <%= f.text_field :box_field, :value => 'C', class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Cost Column:</div>
+          <div class="field">
+            <%= f.text_field :cost_field, :value => 'E', class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Box Value Column:</div>
+          <div class="field">
+            <%= f.text_field :box_value_field, :value => 'F', class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Sight Column:</div>
+          <div class="field">
+            <%= f.text_field :sight_field, :value => 'G', class: 'input' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="common hide">
+        <div class="form-row">
+          <div class="label">Sheet Number:</div>
+          <div class="field">
+            <%= f.select :sheet_no, (1..20).to_a, {}, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"></div>
+          <div class="field">
+            <%=f.submit 'Submit', class: 'login-btn btn-02' %>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
   </div>
-<% end %>
+</div>
 
-
-
-
-
-
-
-
+<script type="text/javascript">
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $(this).val()
+    if(val == "Rough"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('#trading_document_credit_field').val('E')
+      $('#trading_document_price_field').val('F')
+    }else if(val == "Sight"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').removeClass('hide')
+      $('#trading_document_credit_field').val('I')
+      $('#trading_document_price_field').val('H')
+    }else{
+      $('.common').addClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+    }
+  })
+</script>

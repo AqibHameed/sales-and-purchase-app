@@ -6,12 +6,20 @@
       <td><%= @parcel.try(:customer).try(:company) %></td>
     </tr>
     <tr>
+      <td> Source </td>
+      <td><%= @parcel.source.nil? ? 'N/A' : @parcel.source %></td>
+    </tr>
+    <tr>
       <td> Description</td>
-      <td><%= @parcel.description.nil? ? 'N/A' : @parcel.description %></td>
+      <td><%= get_description(@parcel) %></td>
     </tr>
     <tr>
       <td> No. of stones</td>
-      <td><%= @parcel.no_of_stones %></td>
+      <td><%= @parcel.no_of_stones.nil? ? 'N/A' : @parcel.no_of_stones %></td>
+    </tr>
+    <tr>
+      <td> Box </td>
+      <td><%= @parcel.box.nil? ? 'N/A' : @parcel.box %></td>
     </tr>
     <tr>
       <td> Carats</td>
@@ -27,11 +35,11 @@
     </tr>
     <tr>
       <td> Sight</td>
-      <td><%= @parcel.sight.nil? ? 'N/A' : @parcel.sight %></td>
+      <td><%= @parcel.sight.nil? ? 'N/A' : @parcel.sight.to_date.strftime("%m/%y") %></td>
     </tr>
     <tr>
       <td> Price</td>
-      <td><%= @parcel.price.nil? ? 'N/A' : @parcel.price %></td>
+      <td><%= @parcel.price.nil? ? 'N/A' : number_to_percentage(@parcel.price*100, precision: 1) %></td>
     </tr>
     <tr>
       <td> Credit</td>

@@ -12,7 +12,11 @@ class SuppliersController < ApplicationController
 
   def parcels
     if params[:trading_document][:document].present?
-      @trading_document = TradingDocument.new(trading_document_params)
+      if params[:trading_document][:diamond_type] == 'Rough'
+        @trading_document = TradingDocument.new(rough_diamond_params)
+      else
+        @trading_document = TradingDocument.new(sight_diamond_params)
+      end
       if @trading_document.save
         flash[:notice] = "Document uploaded successfully"
         redirect_to suppliers_path
@@ -26,7 +30,11 @@ class SuppliersController < ApplicationController
   end
 
   private
-  def trading_document_params
-    params.require(:trading_document).permit(:company_id, :customer_id, :document, :credit_field, :lot_no_field, :desc_field, :no_of_stones_field, :sheet_no, :weight_field)
+  def sight_diamond_params
+    params.require(:trading_document).permit(:diamond_type, :customer_id, :document, :credit_field, :price_field, :sheet_no, :weight_field, :sight_field, :source_field, :box_field, :cost_field, :box_value_field)
+  end
+
+  def rough_diamond_params
+    params.require(:trading_document).permit(:diamond_type, :customer_id, :document, :credit_field, :price_field, :lot_no_field, :desc_field, :no_of_stones_field, :sheet_no, :weight_field)
   end
 end

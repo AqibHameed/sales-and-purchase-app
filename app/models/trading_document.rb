@@ -1,14 +1,10 @@
 class TradingDocument < ApplicationRecord
-  # HUMANIZED_ATTRIBUTES = {
-  #   :company_id => "Supplier"
-  # }
-
 	belongs_to :customer
 
 	has_attached_file :document
   do_not_validate_attachment_file_type :document
 
-  # validates :company_id, presence: true
+  validates :diamond_type, presence: true
 
   after_save :create_trading_parcels_from_uploaded_file
 
@@ -18,16 +14,30 @@ class TradingDocument < ApplicationRecord
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
-          unless i == 0 || i == 1
-            unless data_row[('A'..'AZ').to_a.index(self.lot_no_field)].nil?
-            	parcel = TradingParcel.where(lot_no: TradingDocument.get_value(data_row[TradingDocument.get_index(self.lot_no_field)]), trading_document_id: self.id).first_or_initialize
-              parcel.lot_no = TradingDocument.get_value(data_row[TradingDocument.get_index(self.lot_no_field)]) unless self.lot_no_field.blank?
+          if self.diamond_type == 'Sight'
+            condition = (i == 0)
+          else
+            condition = (i == 0 || i == 1)
+          end
+          unless condition
+            unless data_row[('A'..'AZ').to_a.index(self.credit_field)].nil?
+            	parcel = TradingParcel.new(trading_document_id: self.id)
+              parcel.price = TradingDocument.get_value(data_row[TradingDocument.get_index(self.price_field)]) unless self.price_field.blank?
               parcel.credit_period = TradingDocument.get_value(data_row[TradingDocument.get_index(self.credit_field)]) unless self.credit_field.blank?
-              parcel.description = TradingDocument.get_value(data_row[TradingDocument.get_index(self.desc_field)]) unless self.desc_field.blank?
-              parcel.no_of_stones = TradingDocument.get_value(data_row[TradingDocument.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
               parcel.weight = TradingDocument.get_value(data_row[TradingDocument.get_index(self.weight_field)]) unless self.weight_field.blank?
+              if self.diamond_type == 'Rough'
+                parcel.lot_no = TradingDocument.get_value(data_row[TradingDocument.get_index(self.lot_no_field)]) unless self.lot_no_field.blank?
+                parcel.description = TradingDocument.get_value(data_row[TradingDocument.get_index(self.desc_field)]) unless self.desc_field.blank?
+                parcel.no_of_stones = TradingDocument.get_value(data_row[TradingDocument.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
+              end
+              if self.diamond_type == 'Sight'
+                parcel.source = TradingDocument.get_value(data_row[TradingDocument.get_index(self.source_field)]) unless self.source_field.blank?
+                parcel.box = TradingDocument.get_value(data_row[TradingDocument.get_index(self.box_field)]) unless self.box_field.blank?
+                parcel.box_value = TradingDocument.get_value(data_row[TradingDocument.get_index(self.box_value_field)]) unless self.box_value_field.blank?
+                parcel.sight = TradingDocument.get_value(data_row[TradingDocument.get_index(self.sight_field)]) unless self.sight_field.blank?
+                parcel.cost = TradingDocument.get_value(data_row[TradingDocument.get_index(self.cost_field)]) unless self.cost_field.blank?
+              end
               parcel.customer_id = self.customer_id
-              parcel.company_id = self.company_id
               parcel.save
               puts parcel.errors.full_messages
             end
@@ -41,16 +51,11 @@ class TradingDocument < ApplicationRecord
     ary = ('A'..'AZ').to_a
     puts "===========#{alpha}================"
     puts "===========#{ary.index(alpha)}================"
-
     return ary.index(alpha)
   end
 
   def self.get_value(data)
-    return ((data.class == Fixnum or data.class == Float)  ? data : (data.class == String ? data : data.nil? ? nil : data.value))
+    return ((data.class == Fixnum or data.class == Float)  ? data : (data.class == String ? data : (data.class == Date ? data : data.nil? ? nil : data.value)))
   end
-
-  # def self.human_attribute_name(attr, options = {})
-  #   HUMANIZED_ATTRIBUTES[attr.to_sym] || super
-  # end
 end
 

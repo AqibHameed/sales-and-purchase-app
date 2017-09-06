@@ -1,4 +1,5 @@
 class TradingParcelsController < ApplicationController
+  layout 'supplier'
   before_action :authenticate_customer!
   before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :check_authenticate_supplier]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
@@ -29,10 +30,7 @@ class TradingParcelsController < ApplicationController
     redirect_to suppliers_path
   end
 
-  # def share
-  #   puts '2332323232'
-  #   render partial: 'share'
-  # end
+  
 
   private
   def trading_parcel_params

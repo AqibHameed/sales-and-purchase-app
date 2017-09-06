@@ -51,11 +51,8 @@ module ApplicationHelper
   end
 
   def get_color(diff, desc)
-
     dif = diff[desc].abs rescue nil
-
     if (dif.nil?)
-
       return ''
     elsif dif.to_i <= 5
       return 'low'
@@ -66,7 +63,14 @@ module ApplicationHelper
     else
       return 'vhigh'
     end
+  end
 
+  def get_description(parcel)
+    if parcel.description.nil?
+      return "#{parcel.source} #{parcel.box}"
+    else
+      return parcel.description
+    end
   end
 
 end
