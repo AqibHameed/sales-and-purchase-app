@@ -76,7 +76,7 @@ class ProposalsController < ApplicationController
       # do nothing
     else
       flash[:notice] == "You have already sent proposal to other party."
-      redirect_to :back
+      redirect_back fallback_location: root_path
     end
   end
 
