@@ -117,6 +117,12 @@ Rails.application.routes.draw do
     end
   end
   resources :trading_parcels
+  resources :proposals do 
+    member do
+      put :accept
+      put :reject
+    end
+  end
 
   namespace :api do
     namespace :v1 do

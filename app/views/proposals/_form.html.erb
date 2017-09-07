@@ -1,0 +1,29 @@
+
+<div class="form-row">
+  <div class="label">Price</div>
+  <div class='field'>
+    <%=f.text_field :price, value: @parcel.price, class: 'input' %>
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="label">Credit</div>
+  <div class='field'>
+    <%=f.number_field :credit, value: @parcel.credit_period, class: 'input' %>
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="label">Notes</div>
+  <div class='field'>
+    <%=f.text_area :notes, class: 'input' %>
+  </div>
+</div>
+
+ <div class="form-row">
+  <div class="label"></div>
+  <div class='field'>
+    <%=f.submit 'Submit', class: 'btn-01 login_btn' %>
+    <%=link_to 'Back', trading_customers_path, class: 'btn-01 login_btn' %>
+  </div>
+</div>

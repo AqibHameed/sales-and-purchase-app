@@ -1,5 +1,6 @@
 class TradingParcel < ApplicationRecord
   belongs_to :customer
+  has_many :proposals
 
   def self.search_by_filters(params, current_customer)
     parcels = TradingParcel.where.not(customer_id: current_customer.id).order(created_at: :desc)

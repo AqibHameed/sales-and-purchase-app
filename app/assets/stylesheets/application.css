@@ -126,3 +126,9 @@ div.title1 {
 .mr5{
   margin-right: 5px;
 }
+.green {
+  background-color: #5cb85c;
+}
+.red{
+  background-color: #440001;
+}
