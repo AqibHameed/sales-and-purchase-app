@@ -13,15 +13,16 @@ class ProposalsController < ApplicationController
     if @proposal.save
       # Sent an email to supplier
       flash[:notice] = "Proposal sent to supplier."
+      redirect_to trading_customers_path
     else
-      error = @proposal.errors.first.full_messages
+      error = @proposal.errors.full_messages.first
       flash[:notice] = error
+      redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
     end
-    redirect_to trading_customers_path
   end
 
   def index
-    @proposals = Proposal.includes(:trading_parcel).where.not(status: 1).where(action_for: current_customer.id)
+    @proposals = Proposal.includes(:trading_parcel).where.not(status: 1).where(action_for: current_customer.id).page params[:page]
   end
 
   def show
@@ -35,34 +36,34 @@ class ProposalsController < ApplicationController
     if @proposal.update_attributes(proposal_params)
       # Email sent to action for column user
       flash[:notice] = "Proposal sent successfully."
+      redirect_to proposals_path
     else
-      error = @proposal.errors.first.full_messages
+      error = @proposal.errors.full_messages.first
       flash[:notice] = error
+      redirect_to proposal_path(@proposal)
     end
-    redirect_to proposals_path
   end
 
   def accept
-    if params[:accept] == "true"
-      @proposal.status = 1
-      @proposal.save
+    @proposal.status = 1
+    if @proposal.save
+      Transaction.create_new(@proposal)
       flash[:notice] = "Proposal accepted."
-    end
-    respond_to do |format|
-      format.js { render js: "window.location = '/proposals'"}
-      format.html { redirect_to proposals_path }
+      respond_to do |format|
+        format.js { render js: "window.location = '/proposals'"}
+        format.html { redirect_to proposals_path }
+      end
     end
   end
 
   def reject
-    if params[:reject] == "true"
-      @proposal.status = 2
-      @proposal.save
+    @proposal.status = 2
+    if @proposal.save
       flash[:notice] = "Proposal rejected."
-    end
-    respond_to do |format|
-      format.js { render js: "window.location = '/proposals'"}
-      format.html { redirect_to proposals_path }
+      respond_to do |format|
+        format.js { render js: "window.location = '/proposals'"}
+        format.html { redirect_to proposals_path }
+      end
     end
   end
 
@@ -75,7 +76,7 @@ class ProposalsController < ApplicationController
     if @proposal.action_for == current_customer.id
       # do nothing
     else
-      flash[:notice] == "You have already sent proposal to other party."
+      flash[:notice] = "You have already sent proposal to other party."
       redirect_back fallback_location: root_path
     end
   end

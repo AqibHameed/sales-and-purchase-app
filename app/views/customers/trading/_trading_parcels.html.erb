@@ -12,16 +12,16 @@
     <th>Supplier</th>
     <th></th>
   </tr>
-  <% @parcels.each_with_index do |parcel, i|%>
+  <% @parcels.each.with_index(1) do |parcel, i|%>
     <tr>
-      <td><%= i + 1 %></td>
-      <td><%= get_description(parcel) %></td>
+      <td><%= index_count(params[:page].to_i) + i %></td>
+      <td><%= get_description(parcel) if parcel %></td>
       <td><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
       <td><%= parcel.weight %></td>
       <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
-      <td><%= parcel.box_value.nil? ? 'N/A' : parcel.box_value %></td>
-      <td><%= parcel.sight.nil? ? 'N/A' : parcel.sight.to_date.strftime("%m/%y") %></td>
-      <td><%= parcel.price.nil? ? 'N/A' : number_to_percentage(parcel.price*100, precision: 1) %></td>
+      <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
+      <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight.to_date.try(:strftime, "%m/%y") %></td>
+      <td><%= parcel.price.nil? ? 'N/A' : parcel.price %></td>
       <td><%= parcel.credit_period %></td>
       <td><%= parcel.try(:customer).try(:company) %></td>
       <% if parcel.customer_id == current_customer.id %>
@@ -41,3 +41,4 @@
     </tr>
   <% end %>
 </table>
+<%= paginate @parcels %>

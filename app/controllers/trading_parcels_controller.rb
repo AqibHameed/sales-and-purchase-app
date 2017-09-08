@@ -9,6 +9,16 @@ class TradingParcelsController < ApplicationController
     redirect_to suppliers_path
   end
 
+  def create
+    @parcel = TradingParcel.new(trading_parcel_params)
+    if @parcel.save
+      redirect_to suppliers_path, notice: 'Parcel created successfully'
+    else
+      error = @parcel.errors.full_messages.first
+      redirect_to suppliers_path, notice: error
+    end
+  end
+
   def show
     @proposal = Proposal.new
   end
@@ -31,11 +41,9 @@ class TradingParcelsController < ApplicationController
     redirect_to suppliers_path
   end
 
-  
-
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:credit_period, :lot_no, :description, :no_of_stones, :weight, :price)
+    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight)
   end
 
   def set_trading_parcel

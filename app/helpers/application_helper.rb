@@ -66,10 +66,22 @@ module ApplicationHelper
   end
 
   def get_description(parcel)
-    if parcel.description.nil?
-      return "#{parcel.source} #{parcel.box}"
+    if parcel.nil?
+
     else
-      return parcel.description
+      if parcel.description.nil?
+        return "#{parcel.source} #{parcel.box}"
+      else
+        return parcel.description
+      end
+    end
+  end
+
+  def index_count page
+    if page == 0
+      return 0
+    else
+      (page - 1)*25
     end
   end
 

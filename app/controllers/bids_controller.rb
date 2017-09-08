@@ -21,7 +21,6 @@ class BidsController < ApplicationController
         format.html {redirect_to @bid.stone.tender}
       end
     end
-
   end
 
   def list

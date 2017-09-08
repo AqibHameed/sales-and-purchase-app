@@ -12,16 +12,16 @@
     <th>Buyer</th>
     <th></th>
   </tr>
-  <% @proposals.each_with_index do |proposal, i|%>
+  <% @proposals.each.with_index(1) do |proposal, i|%>
     <tr>
-      <td><%= i + 1 %></td>
+      <td><%= index_count(params[:page].to_i) + i %></td>
       <td><%= get_description(proposal.trading_parcel) %></td>
       <td><%= proposal.trading_parcel.no_of_stones.nil? ? 'N/A' : proposal.trading_parcel.no_of_stones %></td>
       <td><%= proposal.trading_parcel.weight %></td>
       <td><%= proposal.trading_parcel.cost.nil? ? 'N/A' : proposal.trading_parcel.cost %></td>
-      <td><%= proposal.trading_parcel.box_value.nil? ? 'N/A' : proposal.trading_parcel.box_value %></td>
-      <td><%= proposal.trading_parcel.sight.nil? ? 'N/A' : proposal.trading_parcel.sight.to_date.strftime("%m/%y") %></td>
-      <td><%= proposal.trading_parcel.price.nil? ? 'N/A' : number_to_percentage(proposal.trading_parcel.price*100, precision: 1) %></td>
+      <td><%= (proposal.trading_parcel.box_value.nil? || proposal.trading_parcel.box_value.blank?)? 'N/A' : proposal.trading_parcel.box_value %></td>
+      <td><%= (proposal.trading_parcel.sight.nil? || proposal.trading_parcel.sight.blank?) ? 'N/A' : proposal.trading_parcel.sight.to_date.try(:strftime, "%m/%y") %></td>
+      <td><%= proposal.trading_parcel.price.nil? ? 'N/A' : proposal.trading_parcel.price %></td>
       <td><%= proposal.trading_parcel.credit_period %></td>
       <% if current_customer.id == proposal.buyer_id%>
         <td><%= proposal.supplier.company %></td>
@@ -32,3 +32,4 @@
     </tr>
   <% end %>
 </table>
+<%= paginate @proposals %>
