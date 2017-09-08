@@ -17,7 +17,7 @@
     <tbody>
       <% @transactions.each do |transaction| %>
       <tr>
-        <td><%= transaction.trading_parcel.description rescue 'N/A'  %></td>
+        <td><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
         <td><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
         <td><%= transaction.trading_parcel.weight rescue 'N/A'  %></td>
         <td><%= transaction.trading_parcel.cost rescue 'N/A'  %></td>
