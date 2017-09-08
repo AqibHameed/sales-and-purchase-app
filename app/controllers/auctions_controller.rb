@@ -66,15 +66,15 @@ class AuctionsController < ApplicationController
   end
 
   def place_bid
-    if @auction.current_round_no > 1   
-      if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)    
+    if @auction.current_round_no > 1
+      if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)
         create_or_update_user_bid_for_stone
       else
         render json: { msg: "Bid amount must be grater than #{@highest_bid}" }
       end
     else
       create_or_update_user_bid_for_stone
-    end  
+    end
   end
 
   def create_or_update_user_bid_for_stone
@@ -112,7 +112,7 @@ class AuctionsController < ApplicationController
   def remove_lowest_bidder_for_the_last_round
     @last_round.bids.group_by(&:stone_id).map do |stone_id, bids|
       if bids.count.eql?(1)
-        @last_round.add_round_winner(highest_bid(bids))          
+        @last_round.add_round_winner(highest_bid(bids))
       else
         lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
         @last_round.add_round_winner(highest_bid(bids)) if only_single_customer_left_for_the_stone?(bids, stone_id)

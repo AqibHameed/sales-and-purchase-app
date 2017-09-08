@@ -1,0 +1,38 @@
+<div class="table">
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>No. of Stones</th>
+        <th>Carats</th>
+        <th>Cost</th>
+        <th>Box Value</th>
+        <th>Sight</th>
+        <th>Price</th>
+        <th>Credit</th>
+        <th>Activity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @transactions.each do |transaction| %>
+      <tr>
+        <td><%= transaction.trading_parcel.description rescue 'N/A'  %></td>
+        <td><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
+        <td><%= transaction.trading_parcel.weight rescue 'N/A'  %></td>
+        <td><%= transaction.trading_parcel.cost rescue 'N/A'  %></td>
+        <td><%= transaction.trading_parcel.box_value rescue 'N/A' %></td>
+        <td><%= transaction.trading_parcel.sight rescue 'N/A' %></td>
+        <td><%= transaction.price rescue 'N/A' %></td>
+        <td><%= transaction.credit rescue 'N/A' %></td>
+        <% if current_user.id == transaction.buyer_id %>
+          <td>Bought</td>
+        <% elsif current_user.id == transaction.supplier_id  %>
+          <td>Sold</td>
+        <% end %>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<script>$("#myTable").tablesorter();</script>

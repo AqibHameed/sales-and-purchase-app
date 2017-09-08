@@ -299,6 +299,7 @@ class TendersController < ApplicationController
       @customer = Customer.find(params[:search][:customer_id])
     end
     @stones = Tender.search_results(params[:search], @customer, true)
+    @transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? or supplier_id = ?", current_customer.id, current_customer.id)
     @selling_price = {}
 
     winners = TenderWinner.where("lot_no in (?) or tender_id in (?)", @stones.collect(&:deec_no), @stones.collect(&:tender_id))
