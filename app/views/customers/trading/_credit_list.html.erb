@@ -18,7 +18,7 @@
         <td><%= get_description(transaction.trading_parcel) if transaction %></td>
         <td><%= transaction.trading_parcel.weight %></td>
         <td><%= transaction.price.nil? ? 'N/A' : transaction.price %></td>
-        <td><%= get_credit_limit(current_customer, transaction.supplier ) %></td>
+        <td><%= transaction.credit.nil? ? 'N/A' : transaction.credit %></td>
         <td><%= transaction.due_date.strftime("%B, %d %Y") %></td>
         <td><%= transaction.created_at.strftime("%B, %d %Y") %></td>
         <td></td>

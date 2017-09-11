@@ -22,7 +22,7 @@ class ProposalsController < ApplicationController
   end
 
   def index
-    @proposals = Proposal.includes(:trading_parcel).where.not(status: 1).where(action_for: current_customer.id).page params[:page]
+    @proposals = Proposal.includes(:trading_parcel).where(status: 0).where(action_for: current_customer.id).page params[:page]
   end
 
   def show
@@ -46,7 +46,7 @@ class ProposalsController < ApplicationController
 
   def accept
     @proposal.status = 1
-    if @proposal.save
+    if @proposal.save(validate: false)
       Transaction.create_new(@proposal)
       flash[:notice] = "Proposal accepted."
       respond_to do |format|
@@ -58,7 +58,7 @@ class ProposalsController < ApplicationController
 
   def reject
     @proposal.status = 2
-    if @proposal.save
+    if @proposal.save(validate: false)
       flash[:notice] = "Proposal rejected"
       respond_to do |format|
         format.js { render js: "window.location = '/proposals'"}
