@@ -91,7 +91,7 @@ class Customer < ApplicationRecord
 
   def has_overdue_transaction_of_30_days
     date = Date.today - 30.days
-    if Transaction.where("buyer_id = ? AND due_date > ?", self.id, date).present?
+    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
       true
     else
       false

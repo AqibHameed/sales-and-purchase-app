@@ -8,6 +8,7 @@
       <th>Price</th>
       <th>Credit</th>
       <th>Due Date</th>
+      <th>Transaction Date</th>
       <th></th>
     </tr>
     <% transactions.each.with_index(1) do |transaction, i|%>
@@ -19,6 +20,7 @@
         <td><%= transaction.price.nil? ? 'N/A' : transaction.price %></td>
         <td><%= get_credit_limit(transaction.buyer, current_customer) %></td>
         <td><%= transaction.due_date.strftime("%B, %d %Y") %></td>
+        <td><%= transaction.created_at.strftime("%B, %d %Y") %></td>
         <td><%= link_to 'Mark as paid', paid_proposal_path(id: transaction.id), remote: true, method: :put unless transaction.paid? %></td>
       </tr>
     <% end %>
