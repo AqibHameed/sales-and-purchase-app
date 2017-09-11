@@ -45,18 +45,27 @@ $(document).ready(function() {
       $('.pending').removeClass('hide')
       $('.overdue').addClass('hide')
       $('.complete').addClass('hide')
+      $('.rejected').addClass('hide')
     }else if(val == "Overdue Transactions"){
       $('.pending').addClass('hide')
       $('.overdue').removeClass('hide')
       $('.complete').addClass('hide')
+      $('.rejected').addClass('hide')
     }else if (val == "Complete Transactions"){
       $('.pending').addClass('hide')
       $('.overdue').addClass('hide')
       $('.complete').removeClass('hide')
+      $('.rejected').addClass('hide')
+    }else if (val == "Rejected Transactions"){
+      $('.pending').addClass('hide')
+      $('.overdue').addClass('hide')
+      $('.complete').addClass('hide')
+      $('.rejected').removeClass('hide')
     }else{
       $('.pending').addClass('hide')
       $('.overdue').addClass('hide')
       $('.complete').addClass('hide')
+      $('.rejected').addClass('hide')
     }
   })
 
