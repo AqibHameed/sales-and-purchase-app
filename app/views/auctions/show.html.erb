@@ -111,7 +111,7 @@
   });
 
   <% unless @auction.completed? %>
-    <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) %>
+    <% watch_time = (@auction.started ? @next_round.started_at+@auction.round_time.seconds : @auction.time) + (current_admin.present? ? 0 : 2.seconds) %>
 
     $('#getting-started').countdown("<%= watch_time %>", function(event) {
       var watch_time = ("<%= watch_time %>");
@@ -124,13 +124,11 @@
         auction_time = new Date( Date.parse( watch_time.replace(/-/g, '/') ) );
       }
       if (auction_time < current_time){
-        setTimeout(function() {
-          <% if @auction.started %>
-            window.location = "<%= round_completed_auction_path(@auction) %>?round=<%= @next_round.id %>"
-          <% else %>
-            window.location = "<%= auction_path(@auction) %>"
-          <% end %>
-        }, <%= current_admin.present? ? 0 : (2000..5000).collect{|i| i}.sample %>);
+        <% if @auction.started %>
+          window.location = "<%= round_completed_auction_path(@auction) %>?round=<%= @next_round.id %>"
+        <% else %>
+          window.location = "<%= auction_path(@auction) %>"
+        <% end %>
       }
     });
   <% end %>
