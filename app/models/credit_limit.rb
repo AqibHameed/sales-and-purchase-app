@@ -1,0 +1,3 @@
+class CreditLimit < ApplicationRecord
+
+end

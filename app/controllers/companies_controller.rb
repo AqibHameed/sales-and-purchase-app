@@ -1,26 +1,22 @@
 class CompaniesController < ApplicationController
 
-	def list_company
+  def list_company
     if params[:name].present?
-      @companies = Company.where('name LIKE ?', "%#{params[:name]}%")
-    # else
-    #   @companies = Company.all
+      @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
-
   end
 
   def company_limits
-  	@company_limit = Company.find(params[:company][:company_id])
-  	@company_limit.update_attributes(credit_limit: params[:company][:credit_limit],market_limit: params[:company][:market_limit])
-    if @company_limit.save
-    	redirect_to list_company_companies_path
-    else
-    	redirent_to company_limits_companies_path
+    cl = CreditLimit.where(buyer_id: params[:credit_limit][:buyer_id], supplier_id: params[:credit_limit][:supplier_id]).first_or_initialize
+    cl.credit_limit = params[:credit_limit][:credit_limit]
+    cl.market_limit = params[:credit_limit][:market_limit]
+    if cl.save
+      redirect_to list_company_companies_path
     end
   end
 
   def index
-  	@company = Company.all
+    @company = Company.all
   end
 
 end

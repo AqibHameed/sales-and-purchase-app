@@ -59,10 +59,22 @@ class ProposalsController < ApplicationController
   def reject
     @proposal.status = 2
     if @proposal.save
-      flash[:notice] = "Proposal rejected."
+      flash[:notice] = "Proposal rejected"
       respond_to do |format|
         format.js { render js: "window.location = '/proposals'"}
         format.html { redirect_to proposals_path }
+      end
+    end
+  end
+
+  def paid
+    transaction = Transaction.find(params[:id])
+    transaction.paid = true
+    if transaction.save
+      flash[:notice] = "Status changed"
+      respond_to do |format|
+        format.js { render js: "window.location = '/suppliers/credit'"}
+        format.html { redirect_to credit_suppliers_path }
       end
     end
   end

@@ -67,9 +67,8 @@ module ApplicationHelper
 
   def get_description(parcel)
     if parcel.nil?
-
     else
-      if parcel.description.nil?
+      if parcel.description.nil? || parcel.description.blank?
         return "#{parcel.source} #{parcel.box}"
       else
         return parcel.description
@@ -85,5 +84,35 @@ module ApplicationHelper
     end
   end
 
+  def get_credit_limit(buyer, supplier)
+    cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
+    if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
+      0
+    else
+      cl.credit_limit
+    end
+  end
+
+  def get_market_limit(buyer, supplier)
+    cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
+    if cl.nil? || cl.market_limit.nil? || cl.market_limit.blank?
+      0
+    else
+      cl.market_limit
+    end
+  end
+
+  def grey_buy_btn(buyer, supplier)
+    cl = CreditLimit.where(buyer_id: buyer, supplier_id: supplier).first
+    if cl.nil?
+      return true
+    else
+      if (cl.credit_limit.nil? || cl.credit_limit == 0 || cl.credit_limit.blank?)
+        return true
+      else
+        return false
+      end
+    end
+  end
 end
 

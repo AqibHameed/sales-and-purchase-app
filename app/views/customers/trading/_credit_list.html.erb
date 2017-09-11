@@ -1,0 +1,27 @@
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th></th>
+      <th>Supplier</th>
+      <th>Description</th>
+      <th>Carats</th>
+      <th>Price</th>
+      <th>Credit</th>
+      <th>Due Date</th>
+      <th></th>
+    </tr>
+    <% transactions.each.with_index(1) do |transaction, i|%>
+      <tr>
+        <td><%= index_count(params[:page].to_i) + i %></td>
+        <td><%= transaction.try(:supplier).try(:company) %></td>
+        <td><%= get_description(transaction.trading_parcel) if transaction %></td>
+        <td><%= transaction.trading_parcel.weight %></td>
+        <td><%= transaction.price.nil? ? 'N/A' : transaction.price %></td>
+        <td><%= get_credit_limit(current_customer, transaction.supplier ) %></td>
+        <td><%= transaction.due_date.strftime("%B, %d %Y") %></td>
+        <td></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+<%= paginate transactions %>

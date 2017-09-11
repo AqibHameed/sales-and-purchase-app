@@ -30,6 +30,12 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def credit
+    @pending_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
+    @complete_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND paid = ?", current_customer.id, true).page params[:page]
+  end
+
   private
   def sight_diamond_params
     params.require(:trading_document).permit(:diamond_type, :customer_id, :document, :credit_field, :price_field, :sheet_no, :weight_field, :sight_field, :source_field, :box_field, :cost_field, :box_value_field)

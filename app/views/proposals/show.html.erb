@@ -27,7 +27,7 @@
   </table>
 </div>
 <div class="clear10"></div>
-<% unless @proposal.accepted? || @proposal.rejected?   %>
+<% unless @proposal.accepted? || @proposal.rejected? %>
   <%= link_to 'Accept', accept_proposal_path(id: @proposal.id), class: 'btn-01 login_btn green', remote: true, method: :put if @proposal.trading_parcel.customer_id == current_customer.id %>
   <%= link_to 'Reject', accept_proposal_path(id: @proposal.id), class: 'btn-01 login_btn red', remote: true, method: :put if @proposal.trading_parcel.customer_id == current_customer.id %>
   <%= link_to 'Negotiate', edit_proposal_path(@proposal), class: 'btn-01 login_btn' %>
