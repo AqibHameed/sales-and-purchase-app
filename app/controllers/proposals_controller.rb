@@ -48,6 +48,7 @@ class ProposalsController < ApplicationController
   def accept
     @proposal.status = 1
     if @proposal.save(validate: false)
+    	@proposal.trading_parcel.update_column(:sold, true)
       Transaction.create_new(@proposal)
       flash[:notice] = "Proposal accepted."
       respond_to do |format|

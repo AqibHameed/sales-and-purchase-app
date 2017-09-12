@@ -64,7 +64,7 @@ class CustomersController < ApplicationController
   end
 
   def trading
-    @parcels = TradingParcel.all.order(created_at: :desc).page params[:page]
+    @parcels = TradingParcel.where(sold: false).order(created_at: :desc).page params[:page]
   end
 
   def search_trading

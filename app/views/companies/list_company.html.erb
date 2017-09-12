@@ -26,17 +26,14 @@
             </td>
             <td>
               <p>Credit Limit: <%= get_credit_limit(buyer, current_customer) %></p>
-              <p>Market Limit: <%= get_market_limit(buyer, current_customer) %></p>
               <br>
               <div class="form-wrapper">
                 <%= form_for(CreditLimit.new, url: company_limits_companies_path) do |f|%>
                   <div class="form-row">
-                    <%= f.label :credit_limit, class: '' %>
+                    <%= f.label :credit_limit, 'Credit Limit:', class: '' %>
                     <%= hidden_field_tag 'credit_limit[buyer_id]', buyer.id %>
                     <%= hidden_field_tag 'credit_limit[supplier_id]', current_customer.id %>
                     <%= f.text_field :credit_limit, class: 'input' %><br><br>
-                    <%= f.label :market_limit, class: '' %>
-                    <%= f.text_field :market_limit, class: 'input' %><br><br>
                     <%= f.submit "Set Limit", class: 'login-btn btn-02' %>
                   </div>
                 <% end %>

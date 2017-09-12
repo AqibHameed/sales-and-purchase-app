@@ -1,0 +1,73 @@
+<%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
+<%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
+<h3>Transaction </h3>
+
+<div class="transaction-form">
+  <div class="clear10"></div>
+  <div class="form-wrapper">
+    <%= form_for @transaction do |f| %>
+      <% if @transaction.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@transaction.errors.count, "error") %> prohibited this auction from being saved:</h2>
+          <ul>
+            <% @transaction.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-row">
+        <div class="label">Buyer</div>
+        <div class='field'>
+          <%=f.select :buyer_id, options_for_select(customer_list), { include_blank: true }, class: 'input' %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label">Parcel</div>
+        <div class='field'>
+          <%= f.select :trading_parcel_id, options_for_select(trading_parcel_list), {include_blank: true },  class: 'input' %>
+        </div>
+      </div>
+      <%= f.hidden_field :supplier_id, value: current_customer.id %>
+      <div class="form-row">
+        <div class="label">Price</div>
+        <div class='field'>
+          <%=f.text_field :price, class: 'input' %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label">Credit</div>
+        <div class='field'>
+          <%=f.text_field :credit, class: 'input' %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label">Due Date</div>
+        <div class='field'>
+          <%=f.text_field :due_date,  class: 'input date' %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label">Paid</div>
+        <div class='field'>
+          <%=f.select :paid, options_for_select([[true, 1],[false, 0]]), { include_blank: true },  class: 'input' %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label"></div>
+        <div class='field'>
+          <%=f.submit class: 'btn-01 login_btn' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="clear"></div>
+
+
+<script type="text/javascript">
+  $(".date").datepicker({
+    "dateFormat" : 'dd/mm/yy'
+  });
+</script>

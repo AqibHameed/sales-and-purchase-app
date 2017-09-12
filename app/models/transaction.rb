@@ -3,7 +3,7 @@ class Transaction < ApplicationRecord
   belongs_to :buyer, class_name: 'Customer', foreign_key: 'buyer_id'
   belongs_to :supplier, class_name: 'Customer', foreign_key: 'supplier_id'
 
-  after_create :update_credit_limit
+  after_create :update_credit_limit, :set_sold_boolean
 
   def self.create_new(proposal)
     Transaction.create(buyer_id: proposal.buyer_id, supplier_id: proposal.supplier_id,
@@ -18,5 +18,11 @@ class Transaction < ApplicationRecord
     remaining_limit = cl.credit_limit.to_f - price
     cl.credit_limit = remaining_limit
     cl.save!
+  end
+
+  def set_sold_boolean
+    if paid
+      trading_parcel.update_column(:sold, true)
+    end
   end
 end

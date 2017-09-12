@@ -114,5 +114,13 @@ module ApplicationHelper
       end
     end
   end
+
+  def trading_parcel_list
+    TradingParcel.where(customer_id: current_user.id).map { |e| [ get_description(e), e.id ] }
+  end
+
+  def customer_list
+    Customer.where.not(id: current_customer.id).map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+  end
 end
 

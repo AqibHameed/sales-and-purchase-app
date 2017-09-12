@@ -119,6 +119,7 @@ Rails.application.routes.draw do
     end
   end
   resources :trading_parcels
+  resources :transactions
   resources :proposals do
     member do
       put :accept
