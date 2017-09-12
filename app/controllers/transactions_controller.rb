@@ -1,5 +1,7 @@
 class TransactionsController < ApplicationController
-
+  layout 'supplier'
+  before_action :authenticate_customer!
+  
   def new
     @transaction = Transaction.new
   end
