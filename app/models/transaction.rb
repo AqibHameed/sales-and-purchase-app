@@ -3,7 +3,7 @@ class Transaction < ApplicationRecord
   belongs_to :buyer, class_name: 'Customer', foreign_key: 'buyer_id'
   belongs_to :supplier, class_name: 'Customer', foreign_key: 'supplier_id'
 
-  after_create :update_credit_limit, :set_sold_boolean
+  after_create :update_credit_limit
 
   def self.create_new(proposal)
     Transaction.create(buyer_id: proposal.buyer_id, supplier_id: proposal.supplier_id,
@@ -20,9 +20,8 @@ class Transaction < ApplicationRecord
     cl.save!
   end
 
-  def set_sold_boolean
-    if paid
-      trading_parcel.update_column(:sold, true)
-    end
+  def set_due_date
+    self.due_date = created_at + (credit).days
+    self.save!
   end
 end

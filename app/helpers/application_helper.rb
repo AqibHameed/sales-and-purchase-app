@@ -120,7 +120,7 @@ module ApplicationHelper
   end
 
   def customer_list
-    Customer.where.not(id: current_customer.id).map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+    Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
   end
 end
 

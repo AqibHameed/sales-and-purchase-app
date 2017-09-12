@@ -32,5 +32,4 @@ class Company < ApplicationRecord
       end
     end
   end
-
 end

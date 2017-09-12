@@ -41,6 +41,6 @@
   </tr>
   <tr class="parcel-details">
     <td> Credit</td>
-    <td><%= @parcel.credit_period %> days (<%= (Date.today + (@parcel.credit_period).days).strftime("%B %d, %Y") %>)</td>
+    <td><%= @parcel.credit_period %> days (<%= (Date.today + (@parcel.credit_period.to_i).days).strftime("%B %d, %Y") %>)</td>
   </tr>
 </table>

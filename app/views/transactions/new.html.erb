@@ -5,59 +5,135 @@
 <div class="transaction-form">
   <div class="clear10"></div>
   <div class="form-wrapper">
-    <%= form_for @transaction do |f| %>
-      <% if @transaction.errors.any? %>
+    <%= nested_form_for @parcel, url: transactions_path do |p| %>
+      <% if @parcel.errors.any? %>
         <div id="error_explanation">
-          <h2><%= pluralize(@transaction.errors.count, "error") %> prohibited this auction from being saved:</h2>
+          <h2><%= pluralize(@parcel.errors.count, "error") %> prohibited this auction from being saved:</h2>
           <ul>
-            <% @transaction.errors.full_messages.each do |message| %>
+            <% @parcel.errors.full_messages.each do |message| %>
               <li><%= message %></li>
             <% end %>
           </ul>
         </div>
       <% end %>
+      <div class="form-row">
+        <div class="label">Diamond Type: </div>
+        <div class="field">
+          <%= select_tag "trading_document_diamond_type", options_for_select(['Rough', 'Sight']),  {class: 'input', include_blank: true} %>
+        </div>
+      </div>
 
-      <div class="form-row">
-        <div class="label">Buyer</div>
-        <div class='field'>
-          <%=f.select :buyer_id, options_for_select(customer_list), { include_blank: true }, class: 'input' %>
+      <div class="rough_diamond hide">
+        <div class="form-row">
+          <div class="label">Description: </div>
+          <div class="field">
+            <%= p.text_field :description,  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">No of Stones: </div>
+          <div class="field">
+            <%= p.number_field :no_of_stones,  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Lot No: </div>
+          <div class="field">
+            <%= p.number_field :lot_no,  class: 'input' %>
+          </div>
         </div>
       </div>
-      <div class="form-row">
-        <div class="label">Parcel</div>
-        <div class='field'>
-          <%= f.select :trading_parcel_id, options_for_select(trading_parcel_list), {include_blank: true },  class: 'input' %>
+
+      <div class="sight_diamond hide">
+        <div class="form-row">
+          <div class="label"> Source: </div>
+          <div class="field">
+            <%= p.text_field :source, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Box: </div>
+          <div class="field">
+            <%= p.text_field :box, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Cost:</div>
+          <div class="field">
+            <%= p.text_field :cost, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Box Value:</div>
+          <div class="field">
+            <%= p.text_field :box_value, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Sight:</div>
+          <div class="field">
+            <%= p.text_field :sight, class: 'input' %>
+          </div>
         </div>
       </div>
-      <%= f.hidden_field :supplier_id, value: current_customer.id %>
-      <div class="form-row">
-        <div class="label">Price</div>
-        <div class='field'>
-          <%=f.text_field :price, class: 'input' %>
+
+      <div class="common hide">
+        <div class="form-row">
+          <div class="label">Credit: </div>
+          <div class="field">
+            <%= p.number_field :credit_period, class: 'input' %>
+            <%= p.hidden_field :customer_id, value: current_customer.id %>
+            <%= p.hidden_field :sold, value: true %>
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="label">Credit</div>
-        <div class='field'>
-          <%=f.text_field :credit, class: 'input' %>
+
+        <div class="form-row">
+          <div class="label">Carats:</div>
+          <div class="field">
+            <%= p.text_field :weight, class: 'input' %>
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="label">Due Date</div>
-        <div class='field'>
-          <%=f.text_field :due_date,  class: 'input date' %>
+
+        <div class="form-row">
+          <div class="label"> Price:</div>
+          <div class="field">
+            <%= p.text_field :price, class: 'input' %>
+          </div>
         </div>
+      
+        <%= p.fields_for :my_transaction do |f| %>
+          <div class="form-row">
+            <div class="label">Buyer</div>
+            <div class='field'>
+              <%=f.select :buyer_id, options_for_select(customer_list), { include_blank: true }, class: 'input' %>
+            </div>
+          </div>
+          <%= f.hidden_field :supplier_id, value: current_customer.id %>
+          <%= f.hidden_field :price, class: 'transactions-price' %>
+          <%= f.hidden_field :credit, class: 'transactions-credit' %>
+          <div class="form-row">
+            <div class="label">Transaction Date</div>
+            <div class='field'>
+              <%=f.text_field :created_at,  class: 'input date' %>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="label">Paid</div>
+            <div class='field'>
+              <%=f.select :paid, options_for_select([[true, 1],[false, 0]]), { include_blank: true },  class: 'input' %>
+            </div>
+          </div>
+        <% end %>
       </div>
-      <div class="form-row">
-        <div class="label">Paid</div>
-        <div class='field'>
-          <%=f.select :paid, options_for_select([[true, 1],[false, 0]]), { include_blank: true },  class: 'input' %>
-        </div>
-      </div>
+
       <div class="form-row">
         <div class="label"></div>
         <div class='field'>
-          <%=f.submit class: 'btn-01 login_btn' %>
+          <%=p.submit 'Submit', class: 'btn-01 login_btn' %>
         </div>
       </div>
     <% end %>
@@ -70,4 +146,32 @@
   $(".date").datepicker({
     "dateFormat" : 'dd/mm/yy'
   });
+
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $(this).val()
+    if(val == "Rough"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
+    }else if(val == "Sight"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').removeClass('hide')
+    }else{
+      $('.common').addClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+    }
+  })
+
+  $(document).on('input', '#trading_parcel_credit_period', function() {
+    val = $(this).val()
+    $('.transactions-credit').val(val)
+  });
+
+  $(document).on('input', '#trading_parcel_price', function() {
+    val = $(this).val()
+    $('.transactions-price').val(val)
+  });
+
 </script>

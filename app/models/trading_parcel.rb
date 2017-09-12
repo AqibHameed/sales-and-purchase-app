@@ -2,7 +2,9 @@ class TradingParcel < ApplicationRecord
   paginates_per 25
   belongs_to :customer
   has_many :proposals
-  has_many :transactions
+  has_one :my_transaction, class_name: 'Transaction'
+
+  accepts_nested_attributes_for :my_transaction
 
   def self.search_by_filters(params, current_customer)
     parcels = TradingParcel.where.not(customer_id: current_customer.id).order(created_at: :desc)
