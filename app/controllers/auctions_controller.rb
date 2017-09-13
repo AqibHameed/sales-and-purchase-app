@@ -112,7 +112,7 @@ class AuctionsController < ApplicationController
   def remove_lowest_bidder_for_the_last_round
     @second_last_round = @auction.second_last_round(@last_round)
 
-    @active_stone_with_no_bidding.map{ |stone_id| choose_winner_from_second_last_round(stone_id) } if @second_last_round.present? && active_stone_with_no_bidding.present?
+    set_winner_for_active_stones if @second_last_round.present? && active_stone_with_no_bidding.present?
 
     @last_round.bids.group_by(&:stone_id).map do |stone_id, bids|
       if bids.count.eql?(1)
@@ -135,6 +135,10 @@ class AuctionsController < ApplicationController
 
   def active_stone_with_no_bidding
     @active_stone_with_no_bidding = @second_last_round.bids.pluck(:stone_id).uniq - @second_last_round.round_winners.pluck(:stone_id).uniq - @last_round.bids.pluck(:stone_id).uniq
+  end
+
+  def set_winner_for_active_stones
+    @active_stone_with_no_bidding.map{ |stone_id| choose_winner_from_second_last_round(stone_id) }
   end
 
   private
