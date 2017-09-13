@@ -51,11 +51,8 @@ module ApplicationHelper
   end
 
   def get_color(diff, desc)
-
     dif = diff[desc].abs rescue nil
-
     if (dif.nil?)
-
       return ''
     elsif dif.to_i <= 5
       return 'low'
@@ -66,8 +63,64 @@ module ApplicationHelper
     else
       return 'vhigh'
     end
-
   end
 
+  def get_description(parcel)
+    if parcel.nil?
+    else
+      if parcel.description.nil? || parcel.description.blank?
+        return "#{parcel.source} #{parcel.box}"
+      else
+        return parcel.description
+      end
+    end
+  end
+
+  def index_count page
+    if page == 0
+      return 0
+    else
+      (page - 1)*25
+    end
+  end
+
+  def get_credit_limit(buyer, supplier)
+    cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
+    if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
+      0
+    else
+      cl.credit_limit
+    end
+  end
+
+  def get_market_limit(buyer, supplier)
+    cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
+    if cl.nil? || cl.market_limit.nil? || cl.market_limit.blank?
+      0
+    else
+      cl.market_limit
+    end
+  end
+
+  def grey_buy_btn(buyer, supplier)
+    cl = CreditLimit.where(buyer_id: buyer, supplier_id: supplier).first
+    if cl.nil?
+      return true
+    else
+      if (cl.credit_limit.nil? || cl.credit_limit == 0 || cl.credit_limit.blank?)
+        return true
+      else
+        return false
+      end
+    end
+  end
+
+  def trading_parcel_list
+    TradingParcel.where(customer_id: current_user.id).map { |e| [ get_description(e), e.id ] }
+  end
+
+  def customer_list
+    Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+  end
 end
 

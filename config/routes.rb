@@ -87,6 +87,7 @@ Rails.application.routes.draw do
       patch :update_password
       get :trading
       get :search_trading
+      get :credit
     end
     member do
       get :add_company
@@ -114,9 +115,18 @@ Rails.application.routes.draw do
     collection do
       get :trading
       post :parcels
+      get :credit
     end
   end
   resources :trading_parcels
+  resources :transactions
+  resources :proposals do
+    member do
+      put :accept
+      put :reject
+      put :paid
+    end
+  end
 
   namespace :api do
     namespace :v1 do

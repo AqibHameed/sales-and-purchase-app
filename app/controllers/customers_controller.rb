@@ -64,7 +64,7 @@ class CustomersController < ApplicationController
   end
 
   def trading
-    @parcels = TradingParcel.all.order(created_at: :desc)
+    @parcels = TradingParcel.where(sold: false).order(created_at: :desc).page params[:page]
   end
 
   def search_trading
@@ -72,6 +72,13 @@ class CustomersController < ApplicationController
     respond_to do |format|
       format.js { render 'customers/trading/search_trading' }
     end
+  end
+
+  def credit
+    @pending_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
+    @complete_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ?", current_customer.id, true).page params[:page]
+    @rejected_transactions = Proposal.includes(:trading_parcel).where("status = ? AND buyer_id = ?", 2, current_customer.id).page params[:page]
   end
 
   private

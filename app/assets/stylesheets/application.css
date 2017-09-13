@@ -110,7 +110,6 @@ div.title1 {
   background-color: #4D86BD;
 }
 
-
 .form-field{
   margin: 5px 0px 0px 20px
 }
@@ -125,4 +124,16 @@ div.title1 {
 }
 .mr5{
   margin-right: 5px;
+}
+.green {
+  background-color: #5cb85c;
+}
+.red{
+  background-color: #440001;
+}
+.disabled {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
 }

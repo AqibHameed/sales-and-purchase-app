@@ -12,32 +12,60 @@
     <th>Supplier</th>
     <th></th>
   </tr>
-  <% @parcels.each_with_index do |parcel, i|%>
-    <tr>
-      <td><%= i + 1 %></td>
-      <td><%= parcel.description %></td>
-      <td><%= parcel.no_of_stones %></td>
-      <td><%= parcel.weight %></td>
-      <td><%= 'N/A' %></td>
-      <td><%= 'N/A' %></td>
-      <td><%= 'N/A' %></td>
-      <td><%= parcel.price.nil? ? 'N/A' : parcel.price %></td>
-      <td><%= parcel.credit_period %></td>
-      <td><%= parcel.try(:customer).try(:company) %></td>
-      <% if parcel.customer_id == current_customer.id %>
-        <% if params[:controller] == 'customers' %>
-          <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
-        <% else %>
-          <td>
-            <%= link_to 'Share', '#', 'data-id' => parcel.id, id: 'share', class: 'mr5' %>
-            <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5' %>
-            <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5' %>
-            <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?"} %>
-          </td>
-        <% end %>
-      <% else %>
-        <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
-      <% end %>
-    </tr>
+  <% @parcels.each.with_index(1) do |parcel, i|%>
+  	<% if parcel.sold %>
+  		<tr style="background: #ccc;">
+	      <td><%= index_count(params[:page].to_i) + i %></td>
+	      <td><%= get_description(parcel) if parcel %></td>
+	      <td><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
+	      <td><%= parcel.weight %></td>
+	      <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
+	      <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
+	      <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight.to_date.try(:strftime, "%m/%y") %></td>
+	      <td><%= parcel.price.nil? ? 'N/A' : parcel.price %></td>
+	      <td><%= parcel.credit_period %></td>
+	      <td><%= parcel.try(:customer).try(:company) %></td>
+	      <% if parcel.customer_id == current_customer.id %>
+	        <% if params[:controller] == 'customers' %>
+	          <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
+	        <% else %>
+	          <td>
+	            <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5' %>
+	            <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?"} %>
+	          </td>
+	        <% end %>
+	      <% else %>
+	        <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
+	      <% end %>
+	    </tr>
+  	<% else %>
+  		<tr>
+	      <td><%= index_count(params[:page].to_i) + i %></td>
+	      <td><%= get_description(parcel) if parcel %></td>
+	      <td><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
+	      <td><%= parcel.weight %></td>
+	      <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
+	      <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
+	      <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight.to_date.try(:strftime, "%m/%y") %></td>
+	      <td><%= parcel.price.nil? ? 'N/A' : parcel.price %></td>
+	      <td><%= parcel.credit_period %></td>
+	      <td><%= parcel.try(:customer).try(:company) %></td>
+	      <% if parcel.customer_id == current_customer.id %>
+	        <% if params[:controller] == 'customers' %>
+	          <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
+	        <% else %>
+	          <td>
+	            <%= link_to 'Share', '#', 'data-id' => parcel.id, id: 'share', class: 'mr5' %>
+	            <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5' %>
+	            <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5' %>
+	            <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?"} %>
+	          </td>
+	        <% end %>
+	      <% else %>
+	        <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
+	      <% end %>
+	    </tr>
+	  <% end %>
   <% end %>
 </table>
+<%= paginate @parcels %>

@@ -1,34 +1,50 @@
-<%= form_tag(list_company_companies_path, :method => "get", id: "search-form") do %>
-    <%= text_field_tag :name, params[:search], placeholder: "Search Companeis" %>
-    <%= submit_tag "Search", :name => nil %>
-<% end %>
-
-<% if @companies.present? %>
-<% @companies.each do |company|%>
-  <table>
-    <tr>
-	    <td width='100px'>
-	    	<%= company.name%>
-	    </td>
-	    <td>
-	    <%if company.credit_limit.present? && company.market_limit.present? %>
-	       <p> Credit Limit   <%= company.credit_limit  %> </p>
-	       <p> Market Limit   <%= company.market_limit %> </p>
-	       
-	    <% else %>
-	    	<%= form_for(Company.new, url: company_limits_companies_path) do |f|%>
-				 <%= f.label :credit_limit %>
-				 <%= hidden_field_tag 'company[company_id]',company.id %>
-				 <%= f.text_field :credit_limit %><br><br>
-				 <%= f.label :market_limit %>
-				 <%= f.text_field :market_limit %><br><br>
-				 <%= f.submit "Set Limit" %>
-				<% end %>
-			<% end %>	
-	    </td>
-    </tr>
-  </table>
-<% end %>
-<% end %>
+<div class="">
+  <h2> Set Credit Limit </h2>
+  <div class="clear10"></div>
+  <div class="form-wrapper">
+    <%= form_tag(list_company_companies_path, :method => "get", id: "search-form") do %>
+      <div class="form-row">
+        <div class="label">Search</div>
+        <div class="field">
+          <%= text_field_tag :name, params[:search], placeholder: "Search Companeis", class: 'input'%>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label"></div>
+        <div class="field">
+          <%= submit_tag "Search", :name => nil, class: 'login-btn btn-02' %>
+        </div>
+      </div>
+    <% end %>
+    <div class="clear"></div>
+    <% if @companies.present? %>
+      <% @companies.each do |buyer|%>
+        <table>
+          <tr>
+            <td width='49%'>
+              <%= buyer.company %>
+            </td>
+            <td>
+              <p>Credit Limit: <%= get_credit_limit(buyer, current_customer) %></p>
+              <br>
+              <div class="form-wrapper">
+                <%= form_for(CreditLimit.new, url: company_limits_companies_path) do |f|%>
+                  <div class="form-row">
+                    <%= f.label :credit_limit, 'Credit Limit:', class: '' %>
+                    <%= hidden_field_tag 'credit_limit[buyer_id]', buyer.id %>
+                    <%= hidden_field_tag 'credit_limit[supplier_id]', current_customer.id %>
+                    <%= f.text_field :credit_limit, class: 'input' %><br><br>
+                    <%= f.submit "Set Limit", class: 'login-btn btn-02' %>
+                  </div>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div class="clear10"></div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
 
 <%= link_to 'Back', root_path %>

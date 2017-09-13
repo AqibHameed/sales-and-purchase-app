@@ -66,15 +66,15 @@ class AuctionsController < ApplicationController
   end
 
   def place_bid
-    if @auction.current_round_no > 1   
-      if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)    
+    if @auction.current_round_no > 1
+      if (highest_bid_for_stone_in_last_round(params[:stone_id]).to_f < params[:bid_amount].to_f)
         create_or_update_user_bid_for_stone
       else
         render json: { msg: "Bid amount must be grater than #{@highest_bid}" }
       end
     else
       create_or_update_user_bid_for_stone
-    end  
+    end
   end
 
   def create_or_update_user_bid_for_stone

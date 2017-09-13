@@ -27,8 +27,8 @@ a {color:#ED5A48;}
 .m-right20{margin-right:20px;}
 .m-left120{margin-left:20px;}
 
-.header .c1{float:left; width:80%;}
-.header .c2{float:left; width:19%; text-align:right; font-size:12px; color:#ffffff; padding:12px 0;}
+.header .c1{float:left; width:77%;}
+.header .c2{float:left; width:22%; text-align:right; font-size:12px; color:#ffffff; padding:12px 0;}
 .header .c2 a{color:#fff; text-decoration:none}
 .header .c1 .nav  li {float:left; padding:10px 15px; background:url(../assets/nav-divider.jpg) 0 0 repeat-y;}
 .header .c1 .nav  li:hover, .header .c1 .nav  li.active{background:#C12E1C;}

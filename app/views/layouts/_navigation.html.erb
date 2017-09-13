@@ -4,15 +4,12 @@
       <ul>
         <li class="first" onClick=" window.location.href = '/' ">
           <%= link_to 'Home', root_path, :class => 'home', data: { turbolinks: false } %>
-          <!-- <a class="home" href="#">Home</a> -->
         </li>
         <li>
           <%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
-          <!-- <a href="tender-dashboard.html">Tenders</a> -->
         </li>
         <li>
           <%= link_to 'History', history_tenders_path, data: { turbolinks: false } %>
-          <!-- <a href="tender-history.html">History</a> -->
         </li>
         <% if current_customer %>
           <li>
@@ -33,7 +30,10 @@
         </li>
         <li>
           <%= link_to 'Trading', trading_customers_path, data: { turbolinks: false } %>
-          </li>
+        </li>
+        <li>
+          <%= link_to 'Transactions', credit_customers_path, data: { turbolinks: false } %>
+        </li>
         <% if current_admin %>
           <!-- <li>
             <%#= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>

@@ -24,7 +24,7 @@ class Customer < ApplicationRecord
   has_many :customer_comments
   has_many :customer_pictures
   has_many :trading_parcels
-
+  has_many :transactions
 
   # Setup accessible (or protected) attributes for your model
   # attr_accessible :email, :password, :password_confirmation, :remember_me,
@@ -86,6 +86,15 @@ class Customer < ApplicationRecord
   def ensure_authentication_token
     if authentication_token.blank?
       self.authentication_token = generate_authentication_token
+    end
+  end
+
+  def has_overdue_transaction_of_30_days
+    date = Date.today - 30.days
+    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+      true
+    else
+      false
     end
   end
 
