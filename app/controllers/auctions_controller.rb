@@ -111,7 +111,9 @@ class AuctionsController < ApplicationController
 
   def remove_lowest_bidder_for_the_last_round
     @last_round.bids.group_by(&:stone_id).map do |stone_id, bids|
-      if bids.count.eql?(1)
+      if bids.count.eql?(0)
+        choose_winner_from_second_last_round(stone_id)
+      elsif bids.count.eql?(1)
         @last_round.add_round_winner(highest_bid(bids))          
       else
         lowest_bids(bids).each{ |bid| @last_round.add_round_looser(bid) }
@@ -122,6 +124,11 @@ class AuctionsController < ApplicationController
     @last_round.update(completed: true)
 
     @auction.make_it_completed if auction_completed?
+  end
+
+  def choose_winner_from_second_last_round stone_id
+    highest_bid_so_far = Bid.joins(auction_round: :auction, 'stone_id': stone_id).where('auctions.id': @auction.id).sort_by(&:total).try(:last)
+    @last_round.add_round_winner(highest_bid_so_far) if highest_bid_so_far.present?
   end
 
   private
