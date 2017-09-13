@@ -129,7 +129,7 @@ class AuctionsController < ApplicationController
   end
 
   def choose_winner_from_second_last_round stone_id
-    highest_bid_so_far = Bid.joins(auction_round: :auction).where('auctions.id': @auction.id, 'stone_id': stone_id).sort_by(&:total).try(:last)
+    highest_bid_so_far = @auction.highest_bid_for_stone(stone_id)
     @last_round.add_round_winner(highest_bid_so_far) if highest_bid_so_far.present?
   end
 

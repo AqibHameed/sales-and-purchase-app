@@ -38,4 +38,8 @@ class Auction < ApplicationRecord
   def second_last_round last_round
     auction_rounds.where(round_no: last_round.round_no.to_i-1).try(:first)
   end
+
+  def highest_bid_for_stone stone_id
+    Bid.joins(auction_round: :auction).where('auctions.id': id, 'stone_id': stone_id).sort_by(&:total).try(:last)
+  end
 end

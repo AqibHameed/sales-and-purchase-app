@@ -56,7 +56,7 @@
           <td><%= stone.description %></td>
 
           <% if @auction.current_round_no > 1 %>
-            <td><%= @auction.last_round.highest_bid_for_stone(stone) %></td>
+            <td><%= @auction.last_round.highest_bid_for_stone(stone) || @auction.highest_bid_for_stone(stone.id).try(:total) %></td>
           <% end %>
 
           <% if current_customer.present? %>
