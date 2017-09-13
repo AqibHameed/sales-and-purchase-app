@@ -39,7 +39,11 @@ class Auction < ApplicationRecord
     auction_rounds.where(round_no: last_round.round_no.to_i-1).try(:first)
   end
 
+  def highest_bids_for_stone stone_id
+    @bids = Bid.joins(auction_round: :auction).where('auctions.id': id, 'stone_id': stone_id)
+  end
+
   def highest_bid_for_stone stone_id
-    Bid.joins(auction_round: :auction).where('auctions.id': id, 'stone_id': stone_id).sort_by(&:total).try(:last)
+    @bids.group_by(&:total).try(:sort).try(:reverse).to_h.try(:first).try(:second).sort_by(&:created_at).try(:first) if highest_bids_for_stone(stone_id).present?
   end
 end

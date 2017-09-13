@@ -84,12 +84,12 @@ class AuctionsController < ApplicationController
   end
 
   def auction_completed?
-    @last_round.bids.group_by(&:stone_id).keys.count == @last_round.round_winners.pluck(:stone_id).uniq.count
+    @last_round.bids.group_by(&:stone_id).keys.try(:count) + @active_stone_with_no_bidding.try(:count).to_i == @last_round.round_winners.pluck(:stone_id).uniq.try(:count).to_i
   end
 
   def highest_bid bids
-    bids.group_by(&:total).sort.reverse.to_h.first[1].sort_by(&:created_at).first
-  end
+    bids.group_by(&:total).try(:sort).try(:reverse).to_h.try(:first).try(:second).sort_by(&:created_at).try(:first)
+  end  
 
   def lowest_bids bids
     all_lowest_bids = bids.group_by(&:total).sort.to_h.first[1]
