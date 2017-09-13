@@ -1,4 +1,5 @@
 class Customer < ApplicationRecord
+  paginates_per 25
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -96,6 +97,23 @@ class Customer < ApplicationRecord
     else
       false
     end
+  end
+
+  def is_blocked_by_supplier(supplier)
+    bu = BlockUser.where(customer_id: supplier).first
+    if bu.nil?
+      false  
+    else
+      if bu.block_user_ids.include?(self.id.to_s)
+        true
+      else
+        false
+      end
+    end
+  end
+
+  def has_limit(supplier)
+    CreditLimit.where(supplier_id: supplier, buyer_id: self.id).first.present?
   end
 
   rails_admin do

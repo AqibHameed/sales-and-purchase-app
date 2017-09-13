@@ -37,7 +37,7 @@
   </tr>
   <tr class="parcel-details">
     <td> Price</td>
-    <td><%= @parcel.price.nil? ? 'N/A' : @parcel.price %></td>
+    <td><%= @parcel.price.nil? ? 'N/A' : number_with_precision(@parcel.price, precision: 2) %></td>
   </tr>
   <tr class="parcel-details">
     <td> Credit</td>

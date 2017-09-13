@@ -14,7 +14,7 @@
     <% end %>
     <tr>
       <td> List Price </td>
-      <td><%= @proposal.trading_parcel.price.nil? ? 'N/A' : @proposal.trading_parcel.price %></td>
+      <td><%= @proposal.trading_parcel.price.nil? ? 'N/A' : number_with_precision(@proposal.trading_parcel.price, precision: 2) %></td>
     </tr>
     <tr>
       <td> List Credit </td>

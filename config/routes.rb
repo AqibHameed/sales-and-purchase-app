@@ -87,6 +87,7 @@ Rails.application.routes.draw do
       patch :update_password
       get :trading
       get :search_trading
+      get :transactions
       get :credit
     end
     member do
@@ -115,6 +116,7 @@ Rails.application.routes.draw do
     collection do
       get :trading
       post :parcels
+      get :transactions
       get :credit
     end
   end
@@ -160,4 +162,5 @@ Rails.application.routes.draw do
   end
 
   root :to => 'tenders#index'
+  get '/change_limits' => 'suppliers#change_limits', as: 'change_credit_limit'
 end

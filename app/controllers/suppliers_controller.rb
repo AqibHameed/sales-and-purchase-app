@@ -30,11 +30,26 @@ class SuppliersController < ApplicationController
     end
   end
 
-  def credit
+  def transactions
     @pending_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
     @overdue_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
     @complete_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND paid = ?", current_customer.id, true).page params[:page]
     @rejected_transactions = Proposal.includes(:trading_parcel).where("status = ? AND supplier_id = ?", 2, current_customer.id).page params[:page]
+  end
+
+  def credit
+    @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
+    @blocked_users = BlockUser.where(customer_id: current_customer.id).first
+  end
+
+  def change_limits
+    cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
+    cl.credit_limit = params[:limit].to_f
+    if cl.save
+      render json: { message: 'Credit Limit updated.'}
+    else
+      render json: { message: 'Some error occured'}
+    end
   end
 
   private

@@ -11,7 +11,7 @@ class TransactionsController < ApplicationController
     @parcel = TradingParcel.new(parcel_transaction_params)
     if @parcel.save
       @parcel.my_transaction.set_due_date
-      redirect_to credit_suppliers_path, notice: "Transaction added."
+      redirect_to transactions_suppliers_path, notice: "Transaction added."
     else
       render :new
       @parcel.build_my_transaction

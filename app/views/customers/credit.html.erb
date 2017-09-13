@@ -1,29 +1,25 @@
-<div class="form-wrapper">
-  <div class="form-row">
-    <div class="label">Transactions :</div>
-    <div class="field">
-      <%= select_tag "transaction", options_for_select(['Pending Transactions', 'Overdue Transactions', 'Complete Transactions', 'Rejected Transactions']), class: 'input', include_blank: true %>
-    </div>
+<div class="">
+  <h2>Add Limit</h2>
+  <p>Total Credit Received = <%= overall_credit_received(current_customer) %></p>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+      <tr>
+        <th>Supplier Name</th>
+        <th>Total Credits</th>
+        <th>Remaining Credits</th>
+        <th></th>
+      </tr>
+      <% @customers.each.with_index(1) do |customer, i|%>
+        <% unless current_customer.is_blocked_by_supplier(customer.id) %>
+          <tr>
+            <td><%= customer.company %></td>
+            <td><%= get_total_credit_limit(current_customer, customer) %></td>
+            <td><%= get_credit_limit(current_customer, customer) %></td>
+            <td></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
   </div>
-</div>
-<div class="clear10"></div>
-<div class="dashboard pending hide">
-  <h3>Pending Transactions</h3>
-  <div class="clear10"></div>
-  <%= render partial: "customers/trading/credit_list", locals: {transactions: @pending_transactions} %>
-</div>
-<div class="dashboard overdue hide">
-  <h3>Overdue Transactions</h3>
-  <div class="clear10"></div>
-  <%= render partial: "customers/trading/credit_list", locals: {transactions: @overdue_transactions} %>
-</div>
-<div class="dashboard complete hide">
-  <h3>Complete Transactions</h3>
-  <div class="clear10"></div>
-  <%= render partial: "customers/trading/credit_list", locals: {transactions: @complete_transactions} %>
-</div>
-<div class="dashboard rejected hide">
-  <h3>Rejected Transactions</h3>
-  <div class="clear10"></div>
-  <%= render partial: "shared/rejected_list", locals: { transactions: @rejected_transactions } %>
+  <%= paginate @customers %>
 </div>

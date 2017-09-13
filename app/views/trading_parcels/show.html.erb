@@ -4,6 +4,10 @@
 </div><br>
 <div class="parcel-details">
   <% if (current_customer.id == @parcel.customer_id)  %>
+  <% elsif current_customer.is_blocked_by_supplier(@parcel.customer_id) %>
+    <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
+  <% elsif !current_customer.has_limit(@parcel.customer_id) %>
+    <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has not given credit limit to you.</p>
   <% elsif current_customer.has_overdue_transaction_of_30_days %>
     <p style="margin: 0px 0px 0px 5px; color: red;">You cannot buy anything.</p>
   <% elsif grey_buy_btn(current_customer.id, @parcel.customer_id) %>

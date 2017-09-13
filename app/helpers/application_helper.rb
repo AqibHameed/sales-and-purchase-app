@@ -89,8 +89,15 @@ module ApplicationHelper
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
       0
     else
-      cl.credit_limit
+      number_with_precision((cl.credit_limit), precision: 2)
     end
+  end
+
+  def get_total_credit_limit(buyer, supplier)
+    transaction_amt = Transaction.where(buyer_id: buyer.id, supplier_id: supplier.id, paid: false).sum(:price)
+    cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first.try(:credit_limit)
+    total_limit = transaction_amt.to_f + cl.to_f
+    number_with_precision(total_limit, precision: 2)
   end
 
   def get_market_limit(buyer, supplier)
@@ -100,6 +107,23 @@ module ApplicationHelper
     else
       cl.market_limit
     end
+  end
+
+  def overall_credit_received(customer)
+    current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)
+    transaction_amt = Transaction.where(buyer_id: customer.id, paid: false).sum(:price)
+    number_with_precision((transaction_amt + current_limit), precision: 2)
+  end
+
+  def overall_credit_spent(customer)
+    transaction_amt = Transaction.where(buyer_id: customer.id).sum(:price)
+    number_with_precision(transaction_amt, precision: 2)
+  end
+
+  def overall_credit_given(customer)
+    current_limit = CreditLimit.where(supplier_id: customer.id).sum(:credit_limit)
+    transaction_amt = Transaction.where(supplier_id: customer.id, paid: false).sum(:price)
+    number_with_precision((transaction_amt.to_f + current_limit.to_f), precision: 2)
   end
 
   def grey_buy_btn(buyer, supplier)

@@ -1,31 +1,93 @@
-<div class="form-wrapper">
-  <div class="form-row">
-    <div class="label">Transactions :</div>
-    <div class="field">
-      <%= select_tag "transaction", options_for_select(['Pending Transactions', 'Overdue Transactions', 'Complete Transactions', 'Rejected Transactions']), class: 'input', include_blank: true %>
-    </div>
+<div class="">
+  <%= link_to "Search Companies / Add Limit", list_company_companies_path, style:"float: right" %>
+  <h2>Approve Customers</h2>
+  <p>Total Credit Given: <%= overall_credit_given(current_customer) %></p>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+      <tr>
+        <th></th>
+        <th>Buyer </th>
+        <th>Add Credit Limit</th>
+        <th>Block</th>
+      </tr>
+      <% @customers.each.with_index(1) do |customer, i|%>
+        <% unless customer.is_blocked_by_supplier(current_customer.id) %>
+          <tr>
+            <td></td>
+            <td><%= customer.company %></td>
+            <td><%=text_field_tag "limit", get_credit_limit(customer, current_customer), 'data-id'=> customer.id %></td>
+            <td><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> customer.id) %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
   </div>
-  <%=link_to 'Set Credit Limit', list_company_companies_path, style: "margin-left: 7%;" %>
-  <%=link_to 'Create Manual Transaction', new_transaction_path, style: "margin-left: 7px;" %>
+  <%= paginate @customers %>
 </div>
-<div class="clear10"></div>
-<div class="dashboard pending hide ">
-  <h3>Pending Transactions</h3>
-  <div class="clear10"></div>
-  <%= render partial: "credit_list", locals: { transactions: @pending_transactions } %>
+<div class="clear20"></div>
+<div class="">
+  <h2>Blocked Customers</h2>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+      <tr>
+        <th></th>
+        <th>Buyer </th>
+        <th>Credit Limit</th>
+        <th>Unblock</th>
+      </tr>
+      <% @blocked_users.block_user_ids.each.with_index(1) do |u_id, i|%>
+        <% customer = Customer.where(:id => u_id.to_i).first %>
+        <tr>
+          <td></td>
+          <td><%= customer.company %></td>
+          <td><%= get_credit_limit(customer, current_customer) %></td>
+          <td><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
 </div>
-<div class="dashboard overdue hide">
-  <h3>Overdue Transactions</h3>
-  <div class="clear10"></div>
-  <%= render partial: "credit_list", locals: { transactions: @overdue_transactions } %>
-</div>
-<div class="dashboard complete hide">
-  <h3>Complete Transactions</h3>
-  <div class="clear10"></div>
-  <%= render partial: "credit_list", locals: { transactions: @complete_transactions } %>
-</div>
-<div class="dashboard rejected hide">
-  <h3>Rejected Transactions</h3>
-  <div class="clear10"></div>
-  <%= render partial: "shared/rejected_list", locals: { transactions: @rejected_transactions } %>
-</div>
+
+<script type="text/javascript">
+  $(document).on('click', '.image_block', function(){
+    self = $(this)
+    id = $(this).data('id')
+    $.ajax({
+      url: '<%= block_unblock_user_customer_path(current_user)%>',
+      method: 'get',
+      dataType: 'json',
+      data: {status: 'block', block_user_id: id},
+      success:function(){
+        $(self).parents('tr').fadeOut( "slow" );
+      }
+    })
+  })
+
+  $(document).on('click', '.image_approve', function(){
+    self = $(this)
+    id = $(this).data('id')
+    $.ajax({
+      url: '<%= block_unblock_user_customer_path(current_user)%>',
+      method: 'get',
+      dataType: 'json',
+      data: {status: 'unblock', block_user_id: id},
+      success:function(){
+        $(self).parents('tr').fadeOut( "slow" );
+      }
+    })
+  })
+
+  $(document).on('change', '#limit', function(){
+    value = $(this).val()
+    user_id = $(this).data('id')
+    $.ajax({
+      url: '<%=change_credit_limit_path%>',
+      method: 'get',
+      dataType: 'json',
+      data: {limit: value, buyer_id: user_id},
+      success:function(){
+        
+      }
+    })
+  })
+</script>
