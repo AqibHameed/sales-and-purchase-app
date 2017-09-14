@@ -1,8 +1,9 @@
 class SessionsController <  Devise::SessionsController
   def get_resource
-    if Customer.find_by_email_and_status(params[resource_name][:email],true).present?
+
+    if customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login]).present?
       return :customer
-    elsif Admin.find_by_email(params[resource_name][:email]).present?
+    elsif Admin.find_by_email(params[resource_name][:login]).present?
       return :admin
     end
   end
@@ -12,8 +13,8 @@ class SessionsController <  Devise::SessionsController
   end
 
   def create
-    customer = Customer.where(email: params[:customer][:email])
-    admin = Admin.where(email: params[:customer][:email])
+    customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login])
+    admin = Admin.where(email: params[:customer][:login])
     if !customer.blank? 
       resource = warden.authenticate!(auth_options)
       sign_in(resource_name, resource)
@@ -26,7 +27,7 @@ class SessionsController <  Devise::SessionsController
         format.js{ render json: path }
       end
 
-    elsif !admin.blank? 
+    elsif !admin.blank?
       scope = get_resource
       resource = warden.authenticate!(:scope => scope )
       if resource.sign_in_count == 1

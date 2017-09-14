@@ -3,12 +3,21 @@ class Admin < ApplicationRecord
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :roles, :name
     # attr_accessible :title, :body
   before_validation :save_roles
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions.to_h).where(["lower(email) = :value", { :value => login.downcase }]).first
+    elsif conditions.has_key?(:email)
+      where(conditions.to_h).first
+    end
+  end
 
   def name
     "Admin"
@@ -37,6 +46,7 @@ class Admin < ApplicationRecord
       end
     end
   end
+
   def save_roles
     unless self.roles.nil?
       data = self.roles

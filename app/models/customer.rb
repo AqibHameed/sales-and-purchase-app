@@ -3,9 +3,10 @@ class Customer < ApplicationRecord
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
+  attr_accessor :login
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
 
   # validates :auth_token, uniqueness: true
   # before_create :generate_authentication_token!
@@ -43,9 +44,9 @@ class Customer < ApplicationRecord
   #           :format => {:with => /^\d{10}$/, multiline: true},
   #           :unless => proc{|obj| obj.phone_2.blank?} , :reduce => true
 
-  # validates :mobile_no,
-  #           :format => {:with => /^\d{10}$/, multiline: true},
-  #           :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
+  validates :mobile_no,
+            :format => {:with => /^\d{10}$/, multiline: true},
+            :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
 
   # validates :email,
   #           :format => {:with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, multiline: true },
@@ -58,12 +59,21 @@ class Customer < ApplicationRecord
   after_create :send_account_creation_mail
   default_scope { order("first_name asc, last_name asc") }
 
-  validates :first_name, :company, :presence => true
+  validates :first_name, :company, :mobile_no, :presence => true
   # def generate_authentication_token! customer
   #   begin
   #     customer.auth_token = Devise.friendly_token
   #   end #while self.class.exists?(auth_token: auth_token)
   # end
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions.to_h).where(["mobile_no = :value OR lower(email) = :value", { :value => login.downcase }]).first
+    elsif conditions.has_key?(:username) || conditions.has_key?(:email)
+      where(conditions.to_h).first
+    end
+  end
 
   def name
     "#{first_name} #{last_name}"
