@@ -2,13 +2,13 @@
   <h2>Credit Limits</h2>
   <p>Total Credit Received = <%= overall_credit_received(current_customer) %></p>
   <div class="table">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-      <tr>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter">
+      <thead>
         <th>Supplier Name</th>
         <th>Total Credits</th>
         <th>Remaining Credits</th>
         <th></th>
-      </tr>
+      </thead>
       <% @customers.each.with_index(1) do |customer, i|%>
         <% unless current_customer.is_blocked_by_supplier(customer.id) %>
           <tr>

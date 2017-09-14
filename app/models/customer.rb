@@ -58,6 +58,7 @@ class Customer < ApplicationRecord
   after_create :send_account_creation_mail
   default_scope { order("first_name asc, last_name asc") }
 
+  validates :first_name, :company, :presence => true
   # def generate_authentication_token! customer
   #   begin
   #     customer.auth_token = Devise.friendly_token
@@ -75,7 +76,6 @@ class Customer < ApplicationRecord
   def send_account_creation_mail
     TenderMailer.account_creation_mail(self).deliver  rescue logger.info "Error sending email"
   end
-
 
   def generate_authentication_token
     loop do

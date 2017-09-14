@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_nested_form
 //= require jquery_ujs
+//= require dataTables/jquery.dataTables
 //= require fancybox
 //= require jquery.dataTables.min.js
 //= require jquery.raty.js
@@ -68,6 +69,13 @@ $(document).ready(function() {
       $('.rejected').addClass('hide')
     }
   })
+
+  $('#creditList').DataTable({
+    "paging": false,
+    "bLengthChange": false,
+    "searching": false,
+    "bInfo" : false,
+  });
 
 });
 

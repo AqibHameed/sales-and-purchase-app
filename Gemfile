@@ -53,3 +53,4 @@ gem 'turbolinks', '~> 5.0.0'
 gem 'rubocop', require: false
 gem 'puma',  '3.6.2'
 gem 'country_select', git: 'https://github.com/alibabajan/country_select.git'
+gem 'jquery-datatables-rails', '~> 3.4.0'

@@ -13,10 +13,15 @@ class Transaction < ApplicationRecord
   end
 
   def update_credit_limit
-    price = self.price
     cl = CreditLimit.where(buyer_id: self.buyer_id, supplier_id: self.supplier_id).first
-    remaining_limit = cl.credit_limit.to_f - price
-    cl.credit_limit = remaining_limit
+    price = self.price
+    if paid
+      remaining_limit = cl.credit_limit.to_f + price
+      cl.credit_limit = remaining_limit
+    else
+      remaining_limit = cl.credit_limit.to_f - price
+      cl.credit_limit = remaining_limit
+    end
     cl.save!
   end
 

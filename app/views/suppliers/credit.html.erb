@@ -59,6 +59,7 @@
   })
 
   $(document).on('change', '#limit', function(){
+    self = $(this)
     value = $(this).val()
     user_id = $(this).data('id')
     $.ajax({
@@ -66,8 +67,8 @@
       method: 'get',
       dataType: 'json',
       data: {limit: value, buyer_id: user_id},
-      success:function(){
-        
+      success:function(data){
+        $(self).parent().find('span').text(data.message).fadeIn("slow").delay(1000).fadeOut("slow");
       }
     })
   })
