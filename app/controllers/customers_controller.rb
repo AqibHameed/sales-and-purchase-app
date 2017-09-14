@@ -47,7 +47,10 @@ class CustomersController < ApplicationController
       block_user = current_customer.block_user.update_attributes(block_user_ids: current_customer.block_user.block_user_ids)
       result = block_user.present?
     end
+    @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
+    @blocked_users = BlockUser.where(customer_id: current_customer.id).first
     respond_to do |format|
+      format.js {render 'block_unblock'}
       format.json {render json: {status: params[:status], result: result}}
     end
   end
@@ -68,7 +71,7 @@ class CustomersController < ApplicationController
   end
 
   def search_trading
-    @parcels = TradingParcel.search_by_filters(params[:search], current_customer)
+    @parcels = TradingParcel.search_by_filters(params[:search], current_customer).page params[:page]
     respond_to do |format|
       format.js { render 'customers/trading/search_trading' }
     end

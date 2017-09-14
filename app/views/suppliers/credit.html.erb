@@ -1,52 +1,33 @@
+<%= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
+<div class="search-form form-wrapper mt50 hide">
+  <%= form_tag(list_company_companies_path, :method => "get", id: "search-form") do %>
+    <div class="form-row">
+      <div class="label">Search</div>
+      <div class="field">
+        <%= text_field_tag :name, params[:search], placeholder: "Search Companeis", class: 'input'%>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%= submit_tag "Search", :name => nil, class: 'login-btn btn-02' %>
+      </div>
+    </div>
+  <% end %>
+</div>
 <div class="">
-  <%= link_to "Search Companies / Add Limit", list_company_companies_path, style:"float: right" %>
   <h2>Approve Customers</h2>
   <p>Total Credit Given: <%= overall_credit_given(current_customer) %></p>
-  <div class="table">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-      <tr>
-        <th></th>
-        <th>Buyer </th>
-        <th>Add Credit Limit</th>
-        <th>Block</th>
-      </tr>
-      <% @customers.each.with_index(1) do |customer, i|%>
-        <% unless customer.is_blocked_by_supplier(current_customer.id) %>
-          <tr>
-            <td></td>
-            <td><%= customer.company %></td>
-            <td><%=text_field_tag "limit", get_credit_limit(customer, current_customer), 'data-id'=> customer.id %></td>
-            <td><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> customer.id) %></td>
-          </tr>
-        <% end %>
-      <% end %>
-    </table>
+  <div class="approve_list">
+    <%= render partial: 'approve_customers_list' %>
   </div>
   <%= paginate @customers %>
 </div>
 <div class="clear20"></div>
 <div class="">
   <h2>Blocked Customers</h2>
-  <div class="table">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-      <tr>
-        <th></th>
-        <th>Buyer </th>
-        <th>Credit Limit</th>
-        <th>Unblock</th>
-      </tr>
-      <% if @blocked_users.try(:block_user_ids).present? %>
-        <% @blocked_users.try(:block_user_ids).each.with_index(1) do |u_id, i|%>
-          <% customer = Customer.where(:id => u_id.to_i).first %>
-          <tr>
-            <td></td>
-            <td><%= customer.company %></td>
-            <td><%= get_credit_limit(customer, current_customer) %></td>
-            <td><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
-          </tr>
-        <% end %>
-      <% end %>  
-    </table>
+  <div class="block_list">
+    <%= render partial: 'block_customers_list' %>
   </div>
 </div>
 
@@ -57,7 +38,6 @@
     $.ajax({
       url: '<%= block_unblock_user_customer_path(current_user)%>',
       method: 'get',
-      dataType: 'json',
       data: {status: 'block', block_user_id: id},
       success:function(){
         $(self).parents('tr').fadeOut( "slow" );
@@ -71,7 +51,6 @@
     $.ajax({
       url: '<%= block_unblock_user_customer_path(current_user)%>',
       method: 'get',
-      dataType: 'json',
       data: {status: 'unblock', block_user_id: id},
       success:function(){
         $(self).parents('tr').fadeOut( "slow" );
@@ -83,7 +62,7 @@
     value = $(this).val()
     user_id = $(this).data('id')
     $.ajax({
-      url: '<%=change_credit_limit_path%>',
+      url: '<%=change_credit_limit_path %>',
       method: 'get',
       dataType: 'json',
       data: {limit: value, buyer_id: user_id},
@@ -92,4 +71,9 @@
       }
     })
   })
+
+  $(document).on('click', '.search_link', function(){
+    $('.search-form').slideToggle();
+  })
+
 </script>
