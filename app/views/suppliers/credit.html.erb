@@ -23,13 +23,7 @@
   </div>
   <%= paginate @customers %>
 </div>
-<div class="clear20"></div>
-<div class="">
-  <h2>Blocked Customers</h2>
-  <div class="block_list">
-    <%= render partial: 'block_customers_list' %>
-  </div>
-</div>
+
 
 <script type="text/javascript">
   $(document).on('click', '.image_block', function(){
@@ -40,7 +34,7 @@
       method: 'get',
       data: {status: 'block', block_user_id: id},
       success:function(){
-        $(self).parents('tr').fadeOut( "slow" );
+        // $(self).parents('tr').fadeOut( "slow" );
       }
     })
   })
@@ -53,7 +47,7 @@
       method: 'get',
       data: {status: 'unblock', block_user_id: id},
       success:function(){
-        $(self).parents('tr').fadeOut( "slow" );
+        // $(self).parents('tr').fadeOut( "slow" );
       }
     })
   })

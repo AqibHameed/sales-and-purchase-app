@@ -39,7 +39,6 @@ class SuppliersController < ApplicationController
 
   def credit
     @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
-    @blocked_users = BlockUser.where(customer_id: current_customer.id).first
   end
 
   def change_limits

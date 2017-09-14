@@ -48,7 +48,6 @@ class CustomersController < ApplicationController
       result = block_user.present?
     end
     @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
-    @blocked_users = BlockUser.where(customer_id: current_customer.id).first
     respond_to do |format|
       format.js {render 'block_unblock'}
       format.json {render json: {status: params[:status], result: result}}

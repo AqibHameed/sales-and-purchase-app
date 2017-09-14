@@ -6,7 +6,13 @@
       <th>Block</th>
     </thead>
     <% @customers.each.with_index(1) do |customer, i|%>
-      <% unless customer.is_blocked_by_supplier(current_customer.id) %>
+      <% if customer.is_blocked_by_supplier(current_customer.id) %>
+        <tr style="background: #c12e1c;">
+          <td><%= customer.company %></td>
+          <td><%= get_credit_limit(customer, current_customer) %><span style="color: green;"></span></td>
+          <td><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
+        </tr>
+      <% else %>
         <tr>
           <td><%= customer.company %></td>
           <td><%=text_field_tag "limit", get_credit_limit(customer, current_customer), 'data-id'=> customer.id %><span style="color: green;"></span></td>
