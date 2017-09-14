@@ -1,5 +1,5 @@
-<%= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
-<div class="search-form form-wrapper mt50 hide">
+<%#= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
+<div class="search-form form-wrapper">
   <%= form_tag(list_company_companies_path, :method => "get", id: "search-form") do %>
     <div class="form-row">
       <div class="label">Search</div>
@@ -21,7 +21,7 @@
   <div class="approve_list">
     <%= render partial: 'approve_customers_list' %>
   </div>
-  <%= paginate @customers %>
+  <%#= paginate @customers %>
 </div>
 
 
@@ -67,8 +67,8 @@
     })
   })
 
-  $(document).on('click', '.search_link', function(){
-    $('.search-form').slideToggle();
-  })
+  // $(document).on('click', '.search_link', function(){
+  //   $('.search-form').slideToggle();
+  // })
 
 </script>

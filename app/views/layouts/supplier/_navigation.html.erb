@@ -2,8 +2,8 @@
   <div class="c1">
     <nav class="nav">
       <ul>
-        <li class="first" onClick=" window.location.href = '/suppliers' ">
-          <%= link_to 'Home', suppliers_path, class: 'home', data: { turbolinks: false } %>
+        <li class="first">
+          <%= link_to 'Home', 'javascript:void(0)', class: 'home', data: { turbolinks: false } %>
         </li>
         <li>
           <%= link_to 'Trading', trading_suppliers_path, data: { turbolinks: false } %>
@@ -18,7 +18,7 @@
           <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
         </li>
         <li>
-          <%= link_to 'Inventory', '#', data: { turbolinks: false } %>
+          <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
         </li>
       </ul>
     </nav>
