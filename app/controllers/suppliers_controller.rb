@@ -43,12 +43,20 @@ class SuppliersController < ApplicationController
 
   def change_limits
     cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
-    cl.credit_limit = params[:limit]
-    if cl.save
-      render json: { message: 'Credit Limit updated.'}
+    if cl.credit_limit.nil?
+      cl.credit_limit = params[:limit]
     else
-      render json: { message: cl.errors.full_messages.first }
+      cl.credit_limit = cl.credit_limit + params[:limit].to_f
     end
+    if cl.save
+      render json: { message: 'Credit Limit updated.', value: cl.credit_limit }
+    else
+      render json: { message: cl.errors.full_messages.first, value: '' }
+    end
+  end
+
+  def credit_given_list
+    @credit_limits = CreditLimit.where(supplier_id: current_customer.id)
   end
 
   private

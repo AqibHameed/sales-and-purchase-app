@@ -100,14 +100,11 @@ module ApplicationHelper
     number_with_precision(total_limit, precision: 2)
   end
 
-  def get_market_limit(buyer, supplier)
-    cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
-    if cl.nil? || cl.market_limit.nil? || cl.market_limit.blank?
-      0
-    else
-      cl.market_limit
-    end
+  def get_used_credit_limit(buyer, supplier)
+    transaction_amt = Transaction.where(buyer_id: buyer.id, supplier_id: supplier.id, paid: false).sum(:price)
+    number_with_precision(transaction_amt, precision: 2)
   end
+
 
   def overall_credit_received(customer)
     current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)

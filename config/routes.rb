@@ -118,10 +118,15 @@ Rails.application.routes.draw do
       post :parcels
       get :transactions
       get :credit
+      get :credit_given_list
     end
   end
   resources :trading_parcels
-  resources :transactions
+  resources :transactions do
+    collection do 
+      get :customer
+    end
+  end
   resources :proposals do
     member do
       put :accept

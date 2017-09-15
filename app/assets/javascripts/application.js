@@ -72,6 +72,7 @@ $(document).ready(function() {
 
   $('#creditList').DataTable({
     // "paging": false,
+    "pageLength": 20,
     "bLengthChange": false,
     "searching": false,
     "bInfo" : false,

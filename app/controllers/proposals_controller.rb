@@ -73,10 +73,11 @@ class ProposalsController < ApplicationController
     transaction = Transaction.find(params[:id])
     transaction.paid = true
     if transaction.save
+      transaction.release_credits
       flash[:notice] = "Status changed"
       respond_to do |format|
-        format.js { render js: "window.location = '/suppliers/credit'"}
-        format.html { redirect_to credit_suppliers_path }
+        format.js { render js: "window.location = '/suppliers/transactions'"}
+        format.html { redirect_to transactions_suppliers_path }
       end
     end
   end

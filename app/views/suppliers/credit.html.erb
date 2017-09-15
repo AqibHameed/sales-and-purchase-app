@@ -17,7 +17,7 @@
 </div>
 <div class="">
   <h2>Approve Customers</h2>
-  <p>Total Credit Given: <%= overall_credit_given(current_customer) %></p>
+  <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path  %>: <%= overall_credit_given(current_customer) %></p>
   <div class="approve_list">
     <%= render partial: 'approve_customers_list' %>
   </div>
@@ -62,7 +62,9 @@
       dataType: 'json',
       data: {limit: value, buyer_id: user_id},
       success:function(data){
+        $(self).parents('tr').find('td.credit_limit').text(data.value)
         $(self).parent().find('span').text(data.message).fadeIn("slow").delay(1000).fadeOut("slow");
+        $(self).val('')
       }
     })
   })

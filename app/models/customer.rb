@@ -27,6 +27,7 @@ class Customer < ApplicationRecord
   has_many :customer_pictures
   has_many :trading_parcels
   has_many :transactions
+  has_many :credit_limits
 
   # Setup accessible (or protected) attributes for your model
   # attr_accessible :email, :password, :password_confirmation, :remember_me,
@@ -44,7 +45,7 @@ class Customer < ApplicationRecord
   #           :format => {:with => /^\d{10}$/, multiline: true},
   #           :unless => proc{|obj| obj.phone_2.blank?} , :reduce => true
 
-  validates :mobile_no,
+  validates :mobile_no, uniqueness: true,
             :format => {:with => /^\d{10}$/, multiline: true},
             :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
 
@@ -53,7 +54,7 @@ class Customer < ApplicationRecord
   #           :presence => true, :reduce => true ,
   #           :on => :create
 
-  # validates :city,:company,:company_address , :first_name, :last_name,
+  # validates :city, :company,:company_address , :first_name, :last_name,
   #           :presence => true , :reduce => true
 
   after_create :send_account_creation_mail

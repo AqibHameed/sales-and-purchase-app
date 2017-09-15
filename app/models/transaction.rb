@@ -14,19 +14,21 @@ class Transaction < ApplicationRecord
 
   def update_credit_limit
     cl = CreditLimit.where(buyer_id: self.buyer_id, supplier_id: self.supplier_id).first
-    price = self.price
-    if paid
-      remaining_limit = cl.credit_limit.to_f + price
-      cl.credit_limit = remaining_limit
-    else
-      remaining_limit = cl.credit_limit.to_f - price
-      cl.credit_limit = remaining_limit
+    if cl.nil?
+      cl = CreditLimit.create(buyer_id: self.buyer_id, supplier_id: self.supplier_id, credit_limit: 0.0)
     end
-    cl.save!
   end
 
   def set_due_date
     self.due_date = created_at + (credit).days
     self.save!
+  end
+
+  def release_credits
+    cl = CreditLimit.where(buyer_id: self.buyer_id, supplier_id: self.supplier_id).first
+    if cl
+      cl.credit_limit = cl.credit_limit + price
+      cl.save!
+    end
   end
 end

@@ -8,7 +8,11 @@ class CompaniesController < ApplicationController
 
   def company_limits
     cl = CreditLimit.where(buyer_id: params[:credit_limit][:buyer_id], supplier_id: params[:credit_limit][:supplier_id]).first_or_initialize
-    cl.credit_limit = params[:credit_limit][:credit_limit]
+    if cl.credit_limit.nil?
+      cl.credit_limit = params[:credit_limit][:credit_limit]
+    else
+      cl.credit_limit = cl.credit_limit + params[:credit_limit][:credit_limit].to_f
+    end
     cl.market_limit = params[:credit_limit][:market_limit]
     if cl.save
       redirect_to list_company_companies_path

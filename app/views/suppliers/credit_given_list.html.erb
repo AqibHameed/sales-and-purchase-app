@@ -1,0 +1,25 @@
+<div class="">
+  <h2>Credit Details</h2>
+  <div class="credit_given">
+    <div class="table">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+        <tr>
+          <th></th>
+          <th>Buyer</th>
+          <th>Given</th>
+          <th>Used</th>
+          <th>Available</th>
+        </tr>
+        <% @credit_limits.each.with_index(1) do |cl, i|%>
+          <tr>
+            <td><%= %></td>
+            <td><%= link_to cl.buyer.try(:company), customer_transactions_path(buyer_id: cl.buyer.id, supplier_id: current_customer.id) %></td>
+            <td><%= get_total_credit_limit(cl.buyer, current_customer) %></td>
+            <td><%= get_used_credit_limit(cl.buyer, current_customer) %></td>
+            <td><%= get_credit_limit(cl.buyer, current_customer) %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
