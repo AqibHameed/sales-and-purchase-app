@@ -152,7 +152,11 @@ Rails.application.routes.draw do
           get :upcoming
         end
       end
-      resources :tender_notifications
+      resources :tender_notifications do
+        collection do
+          get :notifications
+        end
+      end
 
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
