@@ -35,7 +35,9 @@ class Tender < ApplicationRecord
 
   after_save :create_stones_from_uploaded_file
   # after_save :create_temp_stones_from_uploaded_file #==> remove on Nov 15 2013
-  after_save :update_winner_list_from_uploaded_file
+  after_save :update_winner_list_from_uploaded_file, :send_tender_update_push
+
+  after_create :send_tender_create_push
 
   scope :open_tenders, lambda{|date| where("close_date >= ?", date.beginning_of_day) }
 
@@ -263,7 +265,6 @@ class Tender < ApplicationRecord
     cust_arr = cust_arr.any?  ? cust_arr.flatten : []
   end
 
-
   def total_bids_amount
     #self.bids.pluck(:total).inject{|sum,x| sum + x}.round(2)
     self.bids.map(&:total).inject{|sum,x| sum + x}.round(2)
@@ -458,6 +459,34 @@ class Tender < ApplicationRecord
     end
   end
 
+  def send_tender_create_push
+    message = "New Tender Alert: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+    fcm = FCM.new(ENV['FCM_KEY'])
+    all_devices = Device.find_by_sql("select device_type, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
+    registration_ids = all_devices.map { |e| e.token }
+
+    options = { data: { message: message }, collapse_key: "IDT" }
+    response = fcm.send(registration_ids, options)
+    data = all_devices.map { |e| { title: 'new tender', description: message, tender_id: self.id, customer_id: e.customer_id }}
+    Notification.create(data) unless data.empty?
+    status = true if response[:body]["success"] == 1
+  end
+
+  def send_tender_update_push
+    if self.open_date_changed? || self.close_date_changed?
+      message = "Tender Dates Changed: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+      fcm = FCM.new(ENV['FCM_KEY'])
+      all_devices = Device.find_by_sql("select device_type from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
+      registration_ids = all_devices.map { |e| e.token }
+      options = { data: {message: message}, collapse_key: "IDT" }
+      response = fcm.send(registration_ids, options)
+
+      data = all_devices.map { |e| { title: 'tender date change', description: message, tender_id: self.id, customer_id: e.customer_id }}
+      Notification.create(data) unless data.empty?
+      status = true if response[:body]["success"] == 1
+    end
+  end
+
   rails_admin do
     configure :id do
       pretty_value do
@@ -467,7 +496,6 @@ class Tender < ApplicationRecord
         %{<a data-toggle="modal" onclick="$(this).modal('hide')" href="/tenders/#{self.value}/admin_details"  data-target="#modal_#{self.value.to_i}" >#{Tender.total_carat_value(self.value)}</a><div class="modal fade" id="modal_#{self.value.to_i}" role="dialog" aria-labelledby="Tender Details" aria-hidden="true" >#{head}<div class="modal-body"></div>#{foot}</div>}.html_safe
       end
     end
-
     configure :winner_details do
       pretty_value do
         util = bindings[:object]
@@ -476,7 +504,6 @@ class Tender < ApplicationRecord
         %{<a data-toggle="modal" onclick="$(this).modal('hide')" href="/tenders/#{self.value}/admin_winner_details"  data-target="#winner_#{self.value.to_i}" >#{Tender.total_winner_value(self.value)}</a><div class="modal fade" id="winner_#{self.value.to_i}" role="dialog" aria-labelledby="Tender Details" aria-hidden="true" >#{head}<div class="modal-body"></div>#{foot}</div>}.html_safe
       end
     end
-
     list do
       [:name].each do |field_name|
         field field_name
@@ -545,7 +572,5 @@ class Tender < ApplicationRecord
       end
       field :customers
     end
-
   end
-
 end
