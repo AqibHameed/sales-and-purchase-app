@@ -26,8 +26,10 @@ class Customer < ApplicationRecord
   has_many :customer_comments
   has_many :customer_pictures
   has_many :trading_parcels
-  has_many :transactions
-  has_many :credit_limits
+  has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction"
+  has_many :supplier_transactions, :foreign_key => "supplier_id", :class_name => "Transaction"
+  has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
+  has_many :supplier_credit_limits, :foreign_key => "supplier_id", :class_name => "CreditLimit"
 
   # Setup accessible (or protected) attributes for your model
   # attr_accessible :email, :password, :password_confirmation, :remember_me,
