@@ -474,10 +474,10 @@ class Tender < ApplicationRecord
   end
 
   def send_tender_update_push
-    if self.open_date_changed? || self.close_date_changed?
+    if self.saved_change_to_open_date? || self.saved_change_to_close_date?
       message = "Tender Dates Changed: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
       fcm = FCM.new(ENV['FCM_KEY'])
-      all_devices = Device.find_by_sql("select token from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
+      all_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
       registration_ids = all_devices.map { |e| e.token }
       options = { data: {message: message}, collapse_key: "IDT" }
       response = fcm.send(registration_ids, options)
