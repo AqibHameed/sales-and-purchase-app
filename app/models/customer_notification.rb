@@ -1,0 +1,2 @@
+class CustomerNotification < ApplicationRecord
+end
