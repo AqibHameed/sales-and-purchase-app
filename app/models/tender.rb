@@ -35,9 +35,10 @@ class Tender < ApplicationRecord
 
   after_save :create_stones_from_uploaded_file
   # after_save :create_temp_stones_from_uploaded_file #==> remove on Nov 15 2013
-  after_save :update_winner_list_from_uploaded_file, :send_tender_update_push
+  after_save :update_winner_list_from_uploaded_file
 
   after_create :send_tender_create_push
+  after_update :send_tender_update_push
 
   scope :open_tenders, lambda{|date| where("close_date >= ?", date.beginning_of_day) }
 
