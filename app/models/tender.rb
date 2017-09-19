@@ -547,6 +547,11 @@ class Tender < ApplicationRecord
         default_value Date.today
       end
       field :close_date
+      field :bidding_start
+      field :bidding_end
+      field :timezone do
+        partial :timezone_list
+      end
       field :stones
       field :delete_stones do
         partial :delete_stones
