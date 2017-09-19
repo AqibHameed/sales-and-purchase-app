@@ -467,7 +467,7 @@ class Tender < ApplicationRecord
 
     fcm = FCM.new(ENV['FCM_KEY'])
     registration_ids = all_devices.map { |e| e.token }
-    options = { data: { message: message }, collapse_key: "IDT" }
+    options = { data: { message: message, id: self.id }, collapse_key: "IDT" }
     response = fcm.send(registration_ids, options)
     
     uniq_users = all_devices.uniq{|t| t.customer_id }
@@ -478,19 +478,23 @@ class Tender < ApplicationRecord
 
   def send_tender_update_push
     if self.saved_change_to_open_date? || self.saved_change_to_close_date?
-      message = "Tender Dates Changed: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
-      all_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
-      notification = Notification.create(title: 'tender date change', description: message, tender_id: self.id)
+      tender_notifications = TenderNotification.where(tender_id: self.id, notify: true)
+      unless tender_notifications.empty?
+        message = "Tender Dates Changed: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+        customer_ids = tender_notifications.map { |e| e.customer_id }
+        all_devices = Device.where(customer_id: customer_ids)
+        notification = Notification.create(title: 'tender date change', description: message, tender_id: self.id)
 
-      fcm = FCM.new(ENV['FCM_KEY'])
-      registration_ids = all_devices.map { |e| e.token }
-      options = { data: {message: message}, collapse_key: "IDT" }
-      response = fcm.send(registration_ids, options)
-      
-      uniq_users = all_devices.uniq{|t| t.customer_id }
-      data = uniq_users.map { |e| { notification_id: notification.id, customer_id: e.customer_id }}
-      CustomerNotification.create(data) unless data.empty?
-      status = true if response[:body]["success"] == 1
+        fcm = FCM.new(ENV['FCM_KEY'])
+        registration_ids = all_devices.map { |e| e.token }
+        options = { data: {message: message, id: self.id }, collapse_key: "IDT" }
+        response = fcm.send(registration_ids, options)
+        
+        uniq_users = all_devices.uniq{|t| t.customer_id }
+        data = uniq_users.map { |e| { notification_id: notification.id, customer_id: e.customer_id }}
+        CustomerNotification.create(data) unless data.empty?
+        status = true if response[:body]["success"] == 1
+      end
     end
   end
 
