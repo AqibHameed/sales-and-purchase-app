@@ -131,7 +131,7 @@ class Customer < ApplicationRecord
 
   rails_admin do
     list do
-      [:email, :first_name, :last_name, :city, :company, :company_address].each do |field_name|
+      [:email, :first_name, :last_name, :mobile_no, :city, :company, :company_address].each do |field_name|
         field field_name
       end
     end

@@ -56,9 +56,9 @@ class CustomersController < ApplicationController
 
   def update_password
     @customer = current_customer
-    if @customer.update_attributes(params[:customer])
-      sign_in @customer, :bypass => true
-      flash[:message] = "Password changed successfully."
+    if @customer.update(password_params)
+      bypass_sign_in(@customer)
+      flash[:notice] = "Password changed successfully."
       redirect_to root_path
     else
       render 'change_password'
@@ -90,6 +90,10 @@ class CustomersController < ApplicationController
   private
   def customer_params
     params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address)
+  end
+
+  def password_params
+    params.require(:customer).permit(:password, :password_confirmation)
   end
 end
 
