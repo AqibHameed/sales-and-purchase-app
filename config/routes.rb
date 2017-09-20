@@ -160,6 +160,7 @@ Rails.application.routes.draw do
 
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
+      post '/supplier_notification', to: 'api#supplier_notification'
     end
   end
 

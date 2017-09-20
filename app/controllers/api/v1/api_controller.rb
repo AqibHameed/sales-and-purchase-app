@@ -1,6 +1,6 @@
 class Api::V1::ApiController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:device_token]
-  before_action :current_customer, only: [:device_token]
+  skip_before_action :verify_authenticity_token, only: [:device_token, :supplier_notification]
+  before_action :current_customer, only: [:device_token, :supplier_notification]
 
   def current_customer
     token = request.headers['Authorization'].presence
@@ -52,6 +52,20 @@ class Api::V1::ApiController < ApplicationController
         end
       else
         render json: {success: false, message: 'Please use correct parameter', response_code: 201 }
+      end
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
+    end
+  end
+
+  def supplier_notification
+    if current_customer
+      supplier_notification = SupplierNotification.where(customer_id: current_customer.id, supplier_id: params[:supplier_id]).first_or_initialize
+      supplier_notification.notify = params[:notify]
+      if supplier_notification.save
+        render json: {success: true, supplier_notification: supplier_notification.as_json(only: [:supplier_id, :notify]), response_code: 200 }
+      else
+        render json: {success: false, errors: supplier_notification.errors.full_messages, response_code: 201 }
       end
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
