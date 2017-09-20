@@ -78,7 +78,27 @@ $(document).ready(function() {
     "bInfo" : false,
   });
 
+  $(document).click(function(e){
+    if (!e.target.matches('.dropbtn')) {
+      var dropdowns = $(".dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (dropdowns.hasClass('show')) {
+          dropdowns.removeClass('show');
+        }
+      }
+    }
+  })
+
+  $(document).on('click', '#dropbtn', function(){
+    myFunction()
+  })
 });
+
+function myFunction() {
+  $("#myDropdown").toggleClass("show");
+}
 
 function addMask() {
   $('body').append("<div id='screenMask'></div>")

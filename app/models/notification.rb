@@ -11,6 +11,7 @@ class Notification < ApplicationRecord
   def self.send_ios_notifications(registration_ids, message, id)
     apn = Houston::Client.development
     apn.certificate = File.open(Rails.root.join("config/pushcert.pem")).read
+    apn.passphrase = ENV['APN_PASSWORD']
 
     notification = Houston::Notification.new(device: registration_ids)
     notification.alert = message

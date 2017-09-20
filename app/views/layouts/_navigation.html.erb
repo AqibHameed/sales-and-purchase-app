@@ -52,14 +52,18 @@
           <%= link_to 'Credit', credit_customers_path, data: { turbolinks: false } %>
         </li>
       </ul>
-
     </nav>
   </div>
   <% if current_user %>
-  <div class="c2">
-    Welcome <a href="#"><%= current_user.name %></a>
-    | <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
-    | <%= link_to 'Supplier', trading_suppliers_path %>
+  <div class="">
+    <div class="dropdown nav-dropdown">
+      <a id="dropbtn" class="dropbtn">Welcome <%= current_user.name %></a>
+      <span><%=image_tag "down-arrow.png", width: '4%' %></span>
+      <div id="myDropdown" class="dropdown-content">
+        <%= link_to 'Supplier Page', trading_suppliers_path %>
+        <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
+      </div>
+    </div>
   </div>
   <% end %>
   <div class="clear"></div>
@@ -72,7 +76,6 @@
   </div>
   <a class="mobile-menu-icon" href="javascript:void(0);"></a>
   <div class="clear"></div>
-
 </div>
 
 <div class="mobilemenu">
@@ -131,6 +134,5 @@
         }, 'slow');
       }
     });
-
   });
 </script>
