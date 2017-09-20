@@ -13,12 +13,6 @@
         </li>
         <% if current_customer %>
           <li>
-            <%= link_to 'Database', new_search_path, data: { turbolinks: false } %>
-          </li>
-          <li>
-            <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
-          </li>
-          <li>
             <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
           </li>
         <% end %>
@@ -61,6 +55,7 @@
       <span><%=image_tag "down-arrow.png", width: '4%' %></span>
       <div id="myDropdown" class="dropdown-content">
         <%= link_to 'Supplier Page', trading_suppliers_path %>
+        <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
         <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
       </div>
     </div>
