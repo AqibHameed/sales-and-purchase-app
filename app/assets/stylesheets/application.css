@@ -218,3 +218,30 @@ table.dataTable.no-footer{
   border: medium none !important;
   margin-top: -5px;
 }
+.list_dropdown{
+  display: inline-block;
+  padding: 0 0 0 7px;
+  position: relative;
+  width: 43px;
+}
+
+.header .c1 .nav li .list-dropdown-content a{
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+}
+
+.list-dropdown-content{
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  margin-top: 13px;
+}
+.list-dropdown-content a:hover {
+  background-color: #ed5a48
+}
