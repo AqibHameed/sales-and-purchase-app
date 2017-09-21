@@ -13,16 +13,16 @@
         </li>
         <% if current_customer %>
           <li>
-            <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
+            <%= link_to 'Inbox', proposals_path, data: { turbolinks: false } %>
           </li>
           <li>
             <%= link_to 'Auctions', auctions_path, data: { turbolinks: false } %>
           </li>
           <li>
-            <%= link_to 'Buyer', trading_customers_path, data: { turbolinks: false } %>
+            <%= link_to 'Buy', trading_customers_path, data: { turbolinks: false } %>
           </li>
           <li>
-            <%= link_to 'Seller', trading_suppliers_path, data: { turbolinks: false } %>
+            <%= link_to 'Sell', trading_suppliers_path, data: { turbolinks: false } %>
           </li>
         <% end %>
         <!-- <li>
@@ -51,13 +51,10 @@
         <a id="dropbtn" class="dropbtn">Welcome <%= current_user.name %></a>
         <span><%=image_tag "down-arrow.png", width: '4%' %></span>
         <div id="myDropdown" class="dropdown-content">
-          <%#= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
-          <%= link_to 'Trading', trading_suppliers_path, data: { turbolinks: false } %>
-          <%= link_to 'Proposals', proposals_path, data: { turbolinks: false } %>
-          <%= link_to 'Transactions', transactions_suppliers_path, data: { turbolinks: false } %>
+          <%#= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %>
           <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
+          <%= link_to 'Transactions', transactions_suppliers_path, data: { turbolinks: false } %>
           <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
-          <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
         </div>
       </div>
     </div>
