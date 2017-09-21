@@ -143,5 +143,13 @@ module ApplicationHelper
   def customer_list
     Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
   end
+
+  def show_buyer_links
+    if current_page?(trading_customers_path) || current_page?(transactions_customers_path) || current_page?(credit_customers_path)
+      true
+    else
+      false
+    end
+  end
 end
 

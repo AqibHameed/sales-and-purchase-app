@@ -2,24 +2,46 @@
   <div class="c1">
     <nav class="nav">
       <ul>
-        <li class="first">
-          <%= link_to 'Home', 'javascript:void(0)', class: 'home', data: { turbolinks: false } %>
+        <li class="first" onClick=" window.location.href = '/' ">
+          <%= link_to 'Home', root_path, :class => 'home', data: { turbolinks: false } %>
         </li>
         <li>
-          <%= link_to 'Trading', trading_suppliers_path, data: { turbolinks: false } %>
+          <%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
         </li>
         <li>
-          <%= link_to 'Proposals', proposals_path, data: { turbolinks: false } %>
+          <%= link_to 'History', history_tenders_path, data: { turbolinks: false } %>
         </li>
-        <li>
-          <%= link_to 'Transactions', transactions_suppliers_path, data: { turbolinks: false } %>
-        </li>
-        <li>
-          <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
-        </li>
-        <li>
-          <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
-        </li>
+        <% if current_customer %>
+          <li>
+            <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
+          </li>
+          <li>
+            <%= link_to 'Auctions', auctions_path, data: { turbolinks: false } %>
+          </li>
+          <li>
+            <%= link_to 'Buyer', trading_customers_path, data: { turbolinks: false } %>
+          </li>
+          <li>
+            <%= link_to 'Seller', trading_suppliers_path, data: { turbolinks: false } %>
+          </li>
+        <% end %>
+        <!-- <li>
+        <a href="#">Reports</a>
+        </li> -->
+        <% if current_admin %>
+          <!-- <li>
+            <%#= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
+          </li> -->
+          <li>
+            <%= link_to 'Winners List', list_winners_path, data: { turbolinks: false } %>
+          </li>
+          <li class="bids_list">
+            <%= link_to 'Bids List', list_bids_path, data: { turbolinks: false } %>
+          </li>
+          <li>
+            <%= link_to 'Admin Panel', '/admins', data: { turbolinks: false } %>
+          </li>
+        <% end %>
       </ul>
     </nav>
   </div>
@@ -29,7 +51,12 @@
         <a id="dropbtn" class="dropbtn">Welcome <%= current_user.name %></a>
         <span><%=image_tag "down-arrow.png", width: '4%' %></span>
         <div id="myDropdown" class="dropdown-content">
-          <%= link_to 'Customer Page', root_path %>
+          <%#= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
+          <%= link_to 'Trading', trading_suppliers_path, data: { turbolinks: false } %>
+          <%= link_to 'Proposals', proposals_path, data: { turbolinks: false } %>
+          <%= link_to 'Transactions', transactions_suppliers_path, data: { turbolinks: false } %>
+          <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
+          <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
           <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
         </div>
       </div>
