@@ -3,19 +3,22 @@ class Transaction < ApplicationRecord
   belongs_to :buyer, class_name: 'Customer', foreign_key: 'buyer_id'
   belongs_to :supplier, class_name: 'Customer', foreign_key: 'supplier_id'
   
-  validate :credit_validation
+  validate :credit_validation, :validate_invoice_date
   after_create :update_credit_limit
 
 
   def credit_validation
-    puts self.inspect
     limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
     if limit.present?
       credit_limit = limit.credit_limit
       if price.to_f > credit_limit
-        errors[:base] << "customer has credit limit of #{limit.credit_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
+        errors[:base] << "Customer has credit limit of #{limit.credit_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
       end
     end
+  end
+
+  def validate_invoice_date
+    errors[:base] << "Invoice date can't be nil." if created_at.nil? || created_at.blank?
   end
 
   def self.create_new(proposal)

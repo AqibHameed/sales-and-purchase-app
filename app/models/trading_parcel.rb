@@ -4,6 +4,9 @@ class TradingParcel < ApplicationRecord
   has_many :proposals
   has_one :my_transaction, class_name: 'Transaction'
 
+  validates :price, :credit_period, presence: true
+  validates :price, :credit_period, numericality: true
+
   accepts_nested_attributes_for :my_transaction
 
   def self.search_by_filters(params, current_customer)
