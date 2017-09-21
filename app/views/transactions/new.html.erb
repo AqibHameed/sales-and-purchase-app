@@ -8,10 +8,16 @@
     <%= nested_form_for @parcel, url: transactions_path do |p| %>
       <% if @parcel.errors.any? %>
         <div id="error_explanation">
-          <h2><%= pluralize(@parcel.errors.count, "error") %> prohibited this auction from being saved:</h2>
+          <h2><%= pluralize(@parcel.errors.count, "error") %> prohibited this transaction from being saved:</h2>
           <ul>
-            <% @parcel.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
+            <% @parcel.errors.each do |atr, msg| %>
+              <li>
+                <% if atr.to_s.include? "base" %>
+                  <%= msg %>
+                <% else %>
+                  <%= @parcel.errors.full_message(atr, msg) %>
+                <% end %>
+              </li>
             <% end %>
           </ul>
         </div>
@@ -110,7 +116,7 @@
           <div class="form-row">
             <div class="label">Buyer:</div>
             <div class='field'>
-              <%=f.select :buyer_id, options_for_select(customer_list), { include_blank: true }, class: 'input' %>
+              <%=f.select :buyer_id, options_for_select(customer_list), { include_blank: true }, class: 'input no-border' %>
             </div>
           </div>
           <%= f.hidden_field :supplier_id, value: current_customer.id %>
@@ -174,5 +180,10 @@
     val = $(this).val()
     $('.transactions-price').val(val)
   });
+
+  $(document).ready(function(){
+    $('#trading_parcel_my_transaction_attributes_buyer_id').select2({
+    });
+  })
 
 </script>

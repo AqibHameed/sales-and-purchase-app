@@ -57,3 +57,4 @@ gem 'jquery-datatables-rails', '~> 3.4.0'
 gem 'fcm'
 gem 'figaro'
 gem 'houston'
+gem "select2-rails"
