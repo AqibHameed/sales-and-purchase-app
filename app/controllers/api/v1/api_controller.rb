@@ -72,9 +72,29 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+  def get_suppliers
+    if current_customer
+      companies = Company.all
+      render json: { success: true, supplier_notifications: suppliers_data(companies, current_customer), response_code: 200 }
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
+    end
+  end
+
   private
   def device_params
     params.require(:customer).permit(:token, :device_type)
   end
 
+  def suppliers_data(suppliers, customer)
+    @data = []
+    suppliers.each do |supplier|
+      @data << {
+        supplier_id: supplier.id,
+        supplier_name: supplier.name,
+        is_notified: customer.notify_by_supplier(supplier)
+      }
+    end
+    @data
+  end
 end

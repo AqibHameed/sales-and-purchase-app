@@ -30,7 +30,7 @@ class Customer < ApplicationRecord
   has_many :supplier_transactions, :foreign_key => "supplier_id", :class_name => "Transaction"
   has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
   has_many :supplier_credit_limits, :foreign_key => "supplier_id", :class_name => "CreditLimit"
-
+  has_many :supplier_notifications, :foreign_key => "supplier_id", :class_name => "SupplierNotification"
   # Setup accessible (or protected) attributes for your model
   # attr_accessible :email, :password, :password_confirmation, :remember_me,
   #                 :first_name, :last_name,
@@ -139,6 +139,10 @@ class Customer < ApplicationRecord
       }
     end
     CustomersTender.create(customer_tenders)
+  end
+
+  def notify_by_supplier supplier
+    SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false 
   end
 
   rails_admin do
