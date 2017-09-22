@@ -4,11 +4,11 @@ class SuppliersController < ApplicationController
 
   def index
     @parcels = TradingParcel.where(customer_id: current_customer.id).order(created_at: :desc).page params[:page]
+    @trading_document = TradingDocument.new
+    @trading_parcel = TradingParcel.new
   end
 
   def trading
-    @trading_document = TradingDocument.new
-    @trading_parcel = TradingParcel.new
   end
 
   def parcels

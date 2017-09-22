@@ -87,24 +87,22 @@ module ApplicationHelper
   def get_credit_limit(buyer, supplier)
     cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
-      0
+      0.00
     else
       number_with_precision((cl.credit_limit), precision: 2)
     end
   end
 
-  def get_total_credit_limit(buyer, supplier)
-    transaction_amt = Transaction.where(buyer_id: buyer.id, supplier_id: supplier.id, paid: false).sum(:price)
-    cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first.try(:credit_limit)
-    total_limit = transaction_amt.to_f + cl.to_f
-    number_with_precision(total_limit, precision: 2)
+  def get_available_credit_limit(buyer, supplier)
+    total = get_credit_limit(buyer, supplier)
+    used  =  get_used_credit_limit(buyer, supplier)
+    number_with_precision((total.to_f - used.to_f), precision: 2)
   end
 
   def get_used_credit_limit(buyer, supplier)
     transaction_amt = Transaction.where(buyer_id: buyer.id, supplier_id: supplier.id, paid: false).sum(:price)
     number_with_precision(transaction_amt, precision: 2)
   end
-
 
   def overall_credit_received(customer)
     current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)

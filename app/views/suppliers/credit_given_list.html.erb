@@ -15,9 +15,9 @@
             <tr>
               <td><%= %></td>
               <td><%= link_to cl.buyer.try(:company), customer_transactions_path(buyer_id: cl.buyer.id, supplier_id: current_customer.id) rescue 'N/A' %></td>
-              <td><%= get_total_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
-              <td><%= get_used_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
               <td><%= get_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
+              <td><%= get_used_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
+              <td><%= get_available_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
             </tr>
           <% end %>
         <% end %>
