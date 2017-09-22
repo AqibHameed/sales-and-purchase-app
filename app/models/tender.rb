@@ -37,7 +37,7 @@ class Tender < ApplicationRecord
   # after_save :create_temp_stones_from_uploaded_file #==> remove on Nov 15 2013
   after_save :update_winner_list_from_uploaded_file
 
-  after_create :send_tender_create_push
+  after_create :send_tender_create_push, :add_users_to_tender
   after_update :send_tender_update_push
 
   scope :open_tenders, lambda{|date| where("close_date >= ?", date.beginning_of_day) }
@@ -508,6 +508,18 @@ class Tender < ApplicationRecord
     end
   end
 
+  def add_users_to_tender
+    customer_tenders = []
+    Customer.all.each do |c|
+      customer_tenders << {
+        customer_id: c.id,
+        tender_id: self.id,
+        confirmed: false
+      }
+    end
+    CustomersTender.create(customer_tenders)
+  end
+
   rails_admin do
     configure :id do
       pretty_value do
@@ -596,7 +608,7 @@ class Tender < ApplicationRecord
       field :delete_winner_list do
         partial :delete_winner_list
       end
-      field :customers
+      # field :customers
     end
   end
 end

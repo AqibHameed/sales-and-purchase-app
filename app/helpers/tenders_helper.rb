@@ -14,7 +14,7 @@ module TendersHelper
   end
 
   def bid_confirmation_link(tender, customer)
-    if CustomersTender.find_by_tender_id_and_customer_id(tender.id, customer.id).confirmed
+    if CustomersTender.find_by_tender_id_and_customer_id(tender.id, customer.id).try(:confirmed)
       time_remaining(tender.close_date) == 'Closed' ? "Confirmed" : "Confirmation sent &nbsp; #{link_to 'Undo', undo_confirmation_tender_path(tender), :method => :put}".html_safe
     else
       time_remaining(tender.close_date) == 'Closed' ? "Time Over" : (link_to 'Send Confirmation', confirm_bids_tender_path(tender))

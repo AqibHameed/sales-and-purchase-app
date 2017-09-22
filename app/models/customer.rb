@@ -59,7 +59,7 @@ class Customer < ApplicationRecord
   # validates :city, :company,:company_address , :first_name, :last_name,
   #           :presence => true , :reduce => true
 
-  after_create :send_account_creation_mail
+  after_create :send_account_creation_mail, :add_user_to_tenders
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
@@ -127,6 +127,18 @@ class Customer < ApplicationRecord
 
   def has_limit(supplier)
     CreditLimit.where(supplier_id: supplier, buyer_id: self.id).first.present?
+  end
+
+  def add_user_to_tenders
+    customer_tenders = []
+    Tender.all.each do |t|
+      customer_tenders << {
+        customer_id: self.id,
+        tender_id: t.id,
+        confirmed: false
+      }
+    end
+    CustomersTender.create(customer_tenders)
   end
 
   rails_admin do
