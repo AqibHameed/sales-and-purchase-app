@@ -7,16 +7,16 @@
         <th>Supplier Name</th>
         <th>Total Credits</th>
         <th>Used Credits</th>
-        <th>Avail Credits</th>
+        <th>Available Credits</th>
         <th></th>
       </thead>
       <% @customers.each.with_index(1) do |customer, i|%>
-        <% unless current_customer.is_blocked_by_supplier(customer.id) %>
+        <% if customer.present? && !current_customer.is_blocked_by_supplier(customer.id) %>
           <tr>
             <td><%= customer.company %></td>
-            <td><%= get_total_credit_limit(current_customer, customer) %></td>
-            <td><%= get_used_credit_limit(current_customer, customer) %></td>
             <td><%= get_credit_limit(current_customer, customer) %></td>
+            <td><%= get_used_credit_limit(current_customer, customer) %></td>
+            <td><%= get_available_credit_limit(current_customer, customer) %></td>
             <td></td>
           </tr>
         <% end %>

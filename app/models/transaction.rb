@@ -9,7 +9,9 @@ class Transaction < ApplicationRecord
 
   def credit_validation
     limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
-    if limit.present?
+    if limit.nil?
+      errors[:base] << "You haven't given any limit to selected customer. Please <a href = '/suppliers/credit'>click here</a> to assign.".html_safe
+    else
       credit_limit = limit.credit_limit
       if price.to_f > credit_limit
         errors[:base] << "Customer has credit limit of #{limit.credit_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
