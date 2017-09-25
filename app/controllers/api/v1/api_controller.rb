@@ -81,6 +81,15 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+  def find_active_parcels
+    if params[:term].nil? || params[:term].blank?
+      render json: { errors: "Invalid Parameters", response_code: 201 }
+    else
+      parcels = Stone.active_parcels(params[:term])
+      render json: { success: true, parcels: parcels }
+    end
+  end
+
   private
   def device_params
     params.require(:customer).permit(:token, :device_type)

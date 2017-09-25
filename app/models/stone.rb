@@ -90,6 +90,16 @@ class Stone < ApplicationRecord
     "#{self.description}##{ self.weight.to_s}"
   end
 
+  def self.active_parcels term
+    Tender.find_by_sql(
+      "SELECT tenders.id, s.* FROM tenders 
+      left join stones s on s.tender_id = tenders.id
+      WHERE (open_date <= '#{Time.zone.now}'
+      AND close_date >= '#{Time.zone.now}')
+      AND (s.weight = #{term} OR s.lot_no = #{term})"
+    )
+  end
+
   rails_admin do
     label "List"
     list do
