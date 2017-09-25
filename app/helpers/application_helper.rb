@@ -124,10 +124,14 @@ module ApplicationHelper
   def get_status transaction
     if transaction.paid
       'Completed'
-    elsif (transaction.due_date > Date.today) && (transaction.paid == false)
-      'Pending'
-    elsif (transaction.due_date < Date.today) && (transaction.paid == false)
-      'Overdue'
+    else
+      if transaction.due_date.nil? || transaction.due_date.blank?
+        'N/A'
+      elsif (transaction.due_date > Date.today) && (transaction.paid == false)
+        'Pending'
+      elsif (transaction.due_date < Date.today) && (transaction.paid == false)
+        'Overdue'
+      end
     end
   end
 
