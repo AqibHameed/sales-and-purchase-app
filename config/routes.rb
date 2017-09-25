@@ -175,4 +175,5 @@ Rails.application.routes.draw do
 
   root :to => 'tenders#index'
   get '/change_limits' => 'suppliers#change_limits', as: 'change_credit_limit'
+  get '/trading_history' => 'tenders#trading_history', as: 'trading_history'
 end

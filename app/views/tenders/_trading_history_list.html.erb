@@ -12,6 +12,9 @@
         <th>Price</th>
         <th>Credit</th>
         <th>Activity</th>
+        <th>Counterparty</th>
+        <th>Status</th>
+        <th>Invoice Date</th>
       </tr>
     </thead>
     <tbody>
@@ -27,9 +30,13 @@
         <td><%= transaction.credit rescue 'N/A' %></td>
         <% if current_user.id == transaction.buyer_id %>
           <td>Bought</td>
+          <td><%= transaction.supplier.company rescue 'N/A' %></td>
         <% elsif current_user.id == transaction.supplier_id  %>
           <td>Sold</td>
+          <td><%= transaction.buyer.company rescue 'N/A' %></td>
         <% end %>
+        <td><%= get_status(transaction) %></td>
+        <td><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
       </tr>
       <% end %>
     </tbody>

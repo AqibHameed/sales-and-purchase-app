@@ -121,6 +121,16 @@ module ApplicationHelper
     number_with_precision((transaction_amt.to_f + current_limit.to_f), precision: 2)
   end
 
+  def get_status transaction
+    if transaction.paid
+      'Completed'
+    elsif (transaction.due_date > Date.today) && (transaction.paid == false)
+      'Pending'
+    elsif (transaction.due_date < Date.today) && (transaction.paid == false)
+      'Overdue'
+    end
+  end
+
   def grey_buy_btn(buyer, supplier)
     cl = CreditLimit.where(buyer_id: buyer, supplier_id: supplier).first
     if cl.nil?

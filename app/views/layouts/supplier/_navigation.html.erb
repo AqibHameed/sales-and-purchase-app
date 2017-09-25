@@ -9,7 +9,14 @@
           <%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
         </li>
         <li>
-          <%= link_to 'History', history_tenders_path, data: { turbolinks: false } %>
+          <div class="dropdown list_dropdown" style="width: 66px;">
+            <a id="dropbtn" class="dropbtn"> History </a>
+            <span><%=image_tag "down-arrow.png", width: '18%' %></span>
+            <div id="myDropdown" class="list-dropdown-content">
+              <%= link_to 'Auction', history_tenders_path, data: { turbolinks: false } %>
+              <%= link_to 'Trading', trading_history_path, data: { turbolinks: false } %>
+            </div>
+          </div>
         </li>
         <% if current_customer %>
           <li>
@@ -25,7 +32,7 @@
               <div id="myDropdown" class="list-dropdown-content">
                 <%= link_to 'Trade', trading_customers_path, data: { turbolinks: false } %>
                 <%= link_to 'Credit', credit_customers_path, data: { turbolinks: false } %>
-                <%= link_to 'Transactions', transactions_customers_path, data: { turbolinks: false } %>
+                <%#= link_to 'Transactions', transactions_customers_path, data: { turbolinks: false } %>
               </div>
             </div>
           </li>
@@ -36,7 +43,7 @@
               <div id="myDropdown" class="list-dropdown-content">
                 <%= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %>
                 <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
-                <%= link_to 'Transactions', transactions_suppliers_path, data: { turbolinks: false } %>
+                <%#= link_to 'Transactions', transactions_suppliers_path, data: { turbolinks: false } %>
                 <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
               </div>
             </div>
