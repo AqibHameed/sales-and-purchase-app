@@ -26,7 +26,7 @@
       <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select(['Rough', 'Sight']),  {class: 'input', include_blank: true} %>
+          <%= select_tag "trading_document_diamond_type", options_for_select(['Rough', 'Sight', 'Finance']),  { class: 'input', include_blank: true } %>
         </div>
       </div>
 
@@ -98,7 +98,7 @@
           </div>
         </div>
 
-        <div class="form-row">
+        <div class="form-row carat-field">
           <div class="label">Carats:</div>
           <div class="field">
             <%= p.text_field :weight, class: 'input' %>
@@ -160,14 +160,22 @@
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
+      $('.carat-field').removeClass('hide')
     }else if(val == "Sight"){
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
+      $('.carat-field').removeClass('hide')
+    }else if(val == "Finance"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.carat-field').addClass('hide')
     }else{
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').addClass('hide')
+      $('.carat-field').removeClass('hide')
     }
   })
 
