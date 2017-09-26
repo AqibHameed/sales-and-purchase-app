@@ -137,7 +137,7 @@ class Tender < ApplicationRecord
   end
 
   def total_bid_amount(customer)
-    #    self.bids.map(&:total).sum rescue 0
+    # self.bids.map(&:total).sum rescue 0
     Bid.where(:stone_id => self.stone_ids, :customer_id => customer.id).map(&:total).sum.round(2) rescue 0
   end
 
@@ -147,7 +147,7 @@ class Tender < ApplicationRecord
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
-          unless i == 0
+          unless Tender.get_value(data_row[Tender.get_index(self.desc_field)]) == "Description"
             unless data_row[('A'..'AZ').to_a.index(self.lot_no_field)].nil?
               stone = self.stones.find_or_initialize_by(lot_no: Tender.get_value(data_row[Tender.get_index(self.lot_no_field)]))
               stone.deec_no = Tender.get_value(data_row[Tender.get_index(self.deec_no_field)]) unless self.deec_no_field.blank?

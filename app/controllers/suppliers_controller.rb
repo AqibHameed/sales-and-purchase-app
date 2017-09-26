@@ -3,7 +3,7 @@ class SuppliersController < ApplicationController
   before_action :authenticate_customer!
 
   def index
-    @parcels = TradingParcel.where(customer_id: current_customer.id).order(created_at: :desc).page params[:page]
+    @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc).page params[:page]
     @trading_document = TradingDocument.new
     @trading_parcel = TradingParcel.new
   end
