@@ -158,6 +158,11 @@ Rails.application.routes.draw do
           get :notifications
         end
       end
+      resources :stones, path: '/parcels' do
+        collection do 
+          post :upload
+        end
+      end
 
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'

@@ -10,6 +10,8 @@ gem "devise"
 # gem 'rails_admin_example_theme', :git => 'git://github.com/bbenezech/rails_admin_example_theme.git'
 gem "rails_admin"
 gem "paperclip"
+# For S3
+gem 'aws-sdk', '~> 2.3'
 gem 'bootstrap-wysihtml5-rails'
 gem 'rails_admin_toggleable'
 gem 'spreadsheet'

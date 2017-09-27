@@ -4,6 +4,7 @@ class Stone < ApplicationRecord
   #                 :deec_no, :lot_no, :description, :tender_id
 
   has_many :bids
+  has_many :parcel_images, :foreign_key => "parcel_id", :class_name => "ParcelImage"
   has_one :winner
   has_one :note
 
