@@ -29,7 +29,7 @@ class Transaction < ApplicationRecord
     Transaction.create(buyer_id: proposal.buyer_id, supplier_id: proposal.supplier_id,
                       trading_parcel_id: proposal.trading_parcel_id, price: proposal.price,
                       credit: proposal.credit, due_date: Date.today + (proposal.credit).days,
-                      paid: false)
+                      paid: false, created_at: Time.now)
   end
 
   def update_credit_limit
