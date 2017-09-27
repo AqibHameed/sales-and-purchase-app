@@ -161,21 +161,25 @@
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
       $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
     }else if(val == "Sight"){
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
       $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
     }else if(val == "Finance"){
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').addClass('hide')
       $('.carat-field').addClass('hide')
+      $('#trading_parcel_description').val('Finance Transaction')
     }else{
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').addClass('hide')
       $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
     }
   })
 
