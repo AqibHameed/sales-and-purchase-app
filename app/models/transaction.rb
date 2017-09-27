@@ -13,8 +13,10 @@ class Transaction < ApplicationRecord
       errors[:base] << "You haven't given any limit to selected customer. Please <a href = '/suppliers/credit'>click here</a> to assign.".html_safe
     else
       credit_limit = limit.credit_limit
-      if price.to_f > credit_limit
-        errors[:base] << "Customer has credit limit of #{limit.credit_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
+      used_amt = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false).sum(:price)
+      available_limit = credit_limit.to_f - used_amt.to_f
+      if price.to_f > available_limit
+        errors[:base] << "Customer has available credit limit of #{available_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
       end
     end
   end
@@ -42,11 +44,11 @@ class Transaction < ApplicationRecord
     self.save!
   end
 
-  def release_credits
-    cl = CreditLimit.where(buyer_id: self.buyer_id, supplier_id: self.supplier_id).first
-    if cl
-      cl.credit_limit = cl.credit_limit + price
-      cl.save!
-    end
-  end
+  # def release_credits
+  #   cl = CreditLimit.where(buyer_id: self.buyer_id, supplier_id: self.supplier_id).first
+  #   if cl
+  #     cl.credit_limit = cl.credit_limit + price
+  #     cl.save!
+  #   end
+  # end
 end

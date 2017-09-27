@@ -72,8 +72,8 @@ class ProposalsController < ApplicationController
   def paid
     transaction = Transaction.find(params[:id])
     transaction.paid = true
-    if transaction.save
-      transaction.release_credits
+    if transaction.save(validate: false)
+      # transaction.release_credits
       flash[:notice] = "Status changed"
       respond_to do |format|
         format.js { render js: "window.location = '/suppliers/transactions'"}
