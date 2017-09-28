@@ -462,10 +462,13 @@ class Tender < ApplicationRecord
 
   def send_tender_create_push
     message = "New Tender Alert: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}" 
-    # Cusetomers devices 
-    android_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
-    ios_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'ios'")
-
+    # Cusetomers
+    customers_to_notify = SupplierNotification.where(supplier_id: self.company_id, notify: true).map { |e| e.customer_id }
+    android_devices = Device.where(device_type: 'android', customer_id: customers_to_notify)
+    # android_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
+    # ios_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'ios'")
+    ios_devices = Device.where(device_type: 'ios', customer_id: customers_to_notify)
+    
     # Added notification
     notification = Notification.create(title: 'new tender', description: message, tender_id: self.id)
 
