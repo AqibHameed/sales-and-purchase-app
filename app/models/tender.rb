@@ -142,8 +142,8 @@ class Tender < ApplicationRecord
   end
 
   def create_stones_from_uploaded_file
-    if self.document_updated_at_changed?
-      data_file = Spreadsheet.open(self.document.path)
+    if self.saved_change_to_document_updated_at?
+      data_file = Spreadsheet.open(open(self.document.url))
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
