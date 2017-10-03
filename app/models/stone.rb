@@ -92,6 +92,7 @@ class Stone < ApplicationRecord
   end
 
   def self.active_parcels term
+    # mysql
     Tender.find_by_sql(
       "SELECT tenders.id, s.* FROM tenders 
       left join stones s on s.tender_id = tenders.id
@@ -99,6 +100,15 @@ class Stone < ApplicationRecord
       AND close_date >= '#{Time.zone.now}')
       AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term})"
     )
+
+    # # pg
+    # Tender.find_by_sql(
+    #   "SELECT tenders.id, s.* FROM tenders 
+    #   left join stones s on s.tender_id = tenders.id
+    #   WHERE (open_date <= '#{Time.zone.now}'
+    #   AND close_date >= '#{Time.zone.now}')
+    #   AND (s.weight = #{term} OR s.lot_no = #{term})"
+    # )
   end
 
   rails_admin do

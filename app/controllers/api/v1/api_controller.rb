@@ -85,8 +85,14 @@ class Api::V1::ApiController < ApplicationController
     if params[:term].nil? || params[:term].blank?
       render json: { errors: "Invalid Parameters", response_code: 201 }
     else
-      parcels = Stone.active_parcels(params[:term])
-      render json: { success: true, parcels: parcels }
+      term = params[:term].split(' ')[1].nil? ? params[:term] : params[:term].split(' ')[1]
+      begin
+        parcels = Stone.active_parcels(term)
+      rescue => e
+        render json: { success: true, error: 'Something went wrong. Please try again with different image.' }
+      else
+        render json: { success: true, parcels: parcels }
+      end 
     end
   end
 
