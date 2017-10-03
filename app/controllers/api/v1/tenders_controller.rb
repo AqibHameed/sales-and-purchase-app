@@ -20,7 +20,7 @@ module Api
       end
 
       def upcoming
-        col_str = "open_date > '#{Time.now + 2.month}'"
+        col_str = "open_date > '#{Time.zone.now}'"
         if params[:location] || params[:month] || params[:supplier]
           col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
