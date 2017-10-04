@@ -53,6 +53,21 @@ module Api
         end
       end
 
+      def find_active_parcels
+        if params[:term].nil? || params[:term].blank?
+          render json: { errors: "Invalid Parameters", response_code: 201 }
+        else
+          term = params[:term].split(' ')[1].nil? ? params[:term] : params[:term].split(' ')[1]
+          begin
+            parcels = Stone.active_parcels(term)
+          rescue => e
+            render json: { success: true, error: 'Something went wrong. Please try again with different image.', response_code: 201 }
+          else
+            render json: { success: true, parcels: active_parcel_data(parcels), response_code: 200 }
+          end 
+        end
+      end
+
       def tender_data(tenders)
         @data = []
         if current_customer
@@ -142,6 +157,32 @@ module Api
           end
         end
         @w
+      end
+
+      def active_parcel_data(stones)
+        @stones = []
+        stones.each do |stone|
+          @stones << {
+            id: stone.id,
+            :description => stone.description,
+            created_at: stone.created_at,
+            updated_at: stone.updated_at,
+            stone_type: stone.stone_type,
+            no_of_stones: stone.no_of_stones,
+            :size => stone.size,
+            :weight => stone.weight,
+            :purity => stone.purity,
+            :color => stone.color,
+            :polished => stone.polished,
+            :deec_no => stone.deec_no,
+            :lot_no => stone.lot_no,
+            :comments => stone.comments,
+            :valuation => stone.valuation,
+            :parcel_rating => stone.parcel_rating,
+            :tender_name => stone.name
+          }
+        end
+        @stones
       end
     end
   end
