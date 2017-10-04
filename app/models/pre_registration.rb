@@ -1,0 +1,3 @@
+class PreRegistration < ApplicationRecord
+  
+end
