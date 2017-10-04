@@ -1,4 +1,5 @@
 class TradingDocument < ApplicationRecord
+  include DocumentUrl
 	belongs_to :customer
 
 	has_attached_file :document
@@ -10,7 +11,8 @@ class TradingDocument < ApplicationRecord
 
   def create_trading_parcels_from_uploaded_file
   	if self.document_updated_at_changed?
-      data_file = Spreadsheet.open(self.document.path)
+      file_path = document_url(self.document)
+      data_file = Spreadsheet.open(file_path)
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|

@@ -1,4 +1,5 @@
 class Tender < ApplicationRecord
+  include DocumentUrl
   paginates_per 25
 
   # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
@@ -143,7 +144,8 @@ class Tender < ApplicationRecord
 
   def create_stones_from_uploaded_file
     if self.saved_change_to_document_updated_at?
-      data_file = Spreadsheet.open(open(self.document.url))
+      file_path = document_url(self.document)
+      data_file = Spreadsheet.open(file_path)
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
@@ -206,7 +208,8 @@ class Tender < ApplicationRecord
     if self.winner_list_updated_at_changed?
       puts "==============file==============="
       unless self.winner_list.nil?
-        data_file = Spreadsheet.open(self.winner_list.path)
+        file_path = document_url(self.winner_list)
+        data_file = Spreadsheet.open(file_path)
         worksheet = data_file.worksheet(self.winner_sheet_no.to_i - 1)
         unless worksheet.nil?
           worksheet.each_with_index do |data_row, i|
