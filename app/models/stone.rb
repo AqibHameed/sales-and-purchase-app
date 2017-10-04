@@ -94,7 +94,7 @@ class Stone < ApplicationRecord
   def self.active_parcels term
     # mysql
     Tender.find_by_sql(
-      "SELECT tenders.id, s.* FROM tenders 
+      "SELECT tenders.name, s.* FROM tenders 
       left join stones s on s.tender_id = tenders.id
       WHERE (open_date <= '#{Time.zone.now}'
       AND close_date >= '#{Time.zone.now}')
@@ -103,7 +103,7 @@ class Stone < ApplicationRecord
 
     # # pg
     # Tender.find_by_sql(
-    #   "SELECT tenders.id, s.* FROM tenders 
+    #   "SELECT tenders.name, s.* FROM tenders 
     #   left join stones s on s.tender_id = tenders.id
     #   WHERE (open_date <= '#{Time.zone.now}'
     #   AND close_date >= '#{Time.zone.now}')
