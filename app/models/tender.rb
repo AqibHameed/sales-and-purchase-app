@@ -145,7 +145,7 @@ class Tender < ApplicationRecord
   def create_stones_from_uploaded_file
     if self.saved_change_to_document_updated_at?
       file_path = document_url(self.document)
-      data_file = Spreadsheet.open(file_path)
+      data_file = Spreadsheet.open(open(file_path))
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
@@ -209,7 +209,7 @@ class Tender < ApplicationRecord
       puts "==============file==============="
       unless self.winner_list.nil?
         file_path = document_url(self.winner_list)
-        data_file = Spreadsheet.open(file_path)
+        data_file = Spreadsheet.open(open(file_path))
         worksheet = data_file.worksheet(self.winner_sheet_no.to_i - 1)
         unless worksheet.nil?
           worksheet.each_with_index do |data_row, i|

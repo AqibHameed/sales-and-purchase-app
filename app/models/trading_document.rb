@@ -12,7 +12,7 @@ class TradingDocument < ApplicationRecord
   def create_trading_parcels_from_uploaded_file
   	if self.document_updated_at_changed?
       file_path = document_url(self.document)
-      data_file = Spreadsheet.open(file_path)
+      data_file = Spreadsheet.open(open(file_path))
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
