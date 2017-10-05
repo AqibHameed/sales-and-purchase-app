@@ -34,6 +34,21 @@ module Api
         render json: { success: true, tenders: tender_data(tenders), response_code: 200 }
       end
 
+      def closed
+        col_str = "close_date < '#{Time.zone.now}'"
+        if params[:location] || params[:month] || params[:supplier]
+          col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
+          col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
+          col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
+        end
+        if current_customer
+          tenders = current_customer.tenders.where(col_str).order("created_at desc")
+        else
+          tenders = Tender.where(col_str).order("created_at desc")
+        end
+        render json: { success: true, tenders: tender_data(tenders), response_code: 200 }
+      end
+
       def tender_parcel
         stones = Stone.where(tender_id: params[:tender_id])
         render json: { success: true, tender_parcels: stone_data(stones), response_code: 200 }

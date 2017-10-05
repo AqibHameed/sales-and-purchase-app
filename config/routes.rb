@@ -151,6 +151,7 @@ Rails.application.routes.draw do
       resources :tenders do
         collection do
           get :upcoming
+          get :closed
         end
       end
       resources :tender_notifications do
