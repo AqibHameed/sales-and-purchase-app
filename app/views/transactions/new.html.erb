@@ -200,12 +200,15 @@
     $('#trading_parcel_my_transaction_attributes_buyer_id').select2({
     });
 
+    $('#transaction_submit').prop('disabled', true);
     $('#read').click(function () {
       //check if checkbox is checked
       if ($(this).is(':checked')) {
         $('#transaction_submit').removeClass('disabled');
+        $('#transaction_submit').prop('disabled', false);
       } else {
         $('#transaction_submit').addClass('disabled');
+        $('#transaction_submit').prop('disabled', true);
       }
     });
   })
