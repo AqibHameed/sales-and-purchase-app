@@ -72,7 +72,7 @@ module Api
         if params[:term].nil? || params[:term].blank?
           render json: { errors: "Invalid Parameters", response_code: 201 }
         else
-          term = params[:term].split(' ')[1].nil? ? params[:term] : params[:term].split(' ')[1]
+          term = params[:term].split(' ')[1].nil? ? params[:term] : params[:term].split('\n').last
           begin
             parcels = Stone.active_parcels(term)
           rescue => e
