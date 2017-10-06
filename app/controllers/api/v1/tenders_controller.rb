@@ -72,13 +72,16 @@ module Api
         if params[:term].nil? || params[:term].blank?
           render json: { errors: "Invalid Parameters", response_code: 201 }
         else
-          term = params[:term].split(' ')[1].nil? ? params[:term] : params[:term].split('\n').last
+          terms = params[:term].split(' ').map(&:to_f).delete_if{|i|i==0.0}
+          @parcels = []
           begin
-            parcels = Stone.active_parcels(term)
+            terms.each do |term|
+              @parcels << Stone.active_parcels(term)
+            end
           rescue => e
             render json: { success: true, error: 'Something went wrong. Please try again with different image.', response_code: 201 }
           else
-            render json: { success: true, parcels: active_parcel_data(parcels), response_code: 200 }
+            render json: { success: true, parcels: active_parcel_data(@parcels.flatten), response_code: 200 }
           end 
         end
       end
@@ -176,7 +179,7 @@ module Api
 
       def active_parcel_data(stones)
         @stones = []
-        stones.each do |stone|
+        stones.uniq.each do |stone|
           @stones << {
             id: stone.id,
             :description => stone.description,

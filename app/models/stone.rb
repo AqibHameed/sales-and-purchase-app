@@ -98,7 +98,7 @@ class Stone < ApplicationRecord
       left join stones s on s.tender_id = tenders.id
       WHERE (open_date <= '#{Time.zone.now}'
       AND close_date >= '#{Time.zone.now}')
-      AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term})"
+      AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term.to_i})"
     )
 
     # # pg
@@ -107,7 +107,7 @@ class Stone < ApplicationRecord
     #   left join stones s on s.tender_id = tenders.id
     #   WHERE (open_date <= '#{Time.zone.now}'
     #   AND close_date >= '#{Time.zone.now}')
-    #   AND (s.weight = #{term} OR s.lot_no = #{term})"
+    #   AND (s.weight = #{term} OR s.lot_no = #{term.to_i})"
     # )
   end
 
