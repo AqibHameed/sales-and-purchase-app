@@ -29,6 +29,7 @@
         <div class="field">
           <%= f.label :company %><br />
           <%= f.text_field :company %>
+          <%#= f.select :company, options_for_select(PreRegistration.all.map { |e| e.company_name }), {},  prompt: 'Please select', class: 'input' %>
         </div>
         <div class="field">
           <%= f.label :email %><br />

@@ -136,18 +136,21 @@
           </div>
         <% end %>
       </div>
-
+      <div class="clear"></div>
+      <div>
+        <%=check_box_tag "read", true, false %>
+        <span>Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection.</span>
+      </div>
       <div class="form-row">
         <div class="label"></div>
         <div class='field'>
-          <%=p.submit 'Submit', class: 'btn-01 login_btn' %>
+          <%=p.submit 'Submit', class: 'btn-01 login_btn disabled', id: 'transaction_submit' %>
         </div>
       </div>
     <% end %>
   </div>
 </div>
 <div class="clear"></div>
-
 
 <script type="text/javascript">
   $(".date").datepicker({
@@ -195,6 +198,15 @@
 
   $(document).ready(function(){
     $('#trading_parcel_my_transaction_attributes_buyer_id').select2({
+    });
+
+    $('#read').click(function () {
+      //check if checkbox is checked
+      if ($(this).is(':checked')) {
+        $('#transaction_submit').removeClass('disabled');
+      } else {
+        $('#transaction_submit').addClass('disabled');
+      }
     });
   })
 
