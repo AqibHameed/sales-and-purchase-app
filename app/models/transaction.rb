@@ -41,7 +41,7 @@ class Transaction < ApplicationRecord
 
   def set_due_date
     self.due_date = created_at + (credit).days
-    self.save!
+    self.save(validate: false)
   end
 
   # def release_credits
