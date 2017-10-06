@@ -30,7 +30,7 @@
               <div class="form-wrapper">
                 <%= form_for(CreditLimit.new, url: company_limits_companies_path) do |f|%>
                   <div class="form-row">
-                    <%= f.label :credit_limit, 'Credit Limit:', class: '' %>
+                    <%= f.label :credit_limit, 'Add to Existing Credit:', class: '' %>
                     <%= hidden_field_tag 'credit_limit[buyer_id]', buyer.id %>
                     <%= hidden_field_tag 'credit_limit[supplier_id]', current_customer.id %>
                     <%= f.text_field :credit_limit, class: 'input' %><br><br>
