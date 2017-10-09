@@ -1,6 +1,6 @@
 class Tender < ApplicationRecord
   include DocumentUrl
-  paginates_per 25
+  paginates_per 50
 
   # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
   #                 :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
