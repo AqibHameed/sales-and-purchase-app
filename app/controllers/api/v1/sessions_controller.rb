@@ -5,13 +5,15 @@ class Api::V1::SessionsController < Devise::SessionsController
   def create
     customer = Customer.where(email: params[:customer][:email]).first
     return invalid_login_attempt unless customer
-     if customer.valid_password?(params[:customer][:password])
+    if customer.valid_password?(params[:customer][:password])
       sign_in(:customer, customer)
       customer.ensure_authentication_token
-      customer.save!
-      response.headers['Authorization'] = customer.authentication_token
-
-      render :json => { customer: customer_data(customer), response_code: 200 }
+      if customer.save
+        response.headers['Authorization'] = customer.authentication_token
+        render :json => { customer: customer_data(customer), response_code: 200 }
+      else
+        render :json => { errors: customer.errors.full_messages, response_code: 201 }
+      end
       return
     end
     invalid_login_attempt
