@@ -12,7 +12,7 @@ module Api
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.where(col_str).order("created_at desc")
+          tenders = current_customer.tenders.active.where(col_str).order("created_at desc")
         else
           tenders = Tender.active.where(col_str).order("created_at desc")
         end
