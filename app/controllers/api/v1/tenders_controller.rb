@@ -11,11 +11,11 @@ module Api
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
-        # if current_customer
-        # else
-        # end
-        tenders = Tender.active.where(col_str).order("created_at desc")
-          
+        if current_customer
+          tenders = current_customer.tenders.where(col_str).order("created_at desc")
+        else
+          tenders = Tender.active.where(col_str).order("created_at desc")
+        end
         render json: { tenders: tender_data(tenders), response_code: 200 }
       end
 
