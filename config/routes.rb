@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get "calculator/index1"
   get "calculator/get_parcels"
   get "calculator/get_prices"
+  get "/verified_unverified", to: 'home#verified_unverified'
 
   devise_for :admins, :controllers => {:sessions => 'sessions'}
   mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
