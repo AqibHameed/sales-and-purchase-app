@@ -152,8 +152,20 @@ module ApplicationHelper
     TradingParcel.where(customer_id: current_user.id).map { |e| [ get_description(e), e.id ] }
   end
 
-  def customer_list
-    Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+  def customer_list verification_status=nil
+    if verification_status
+      Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id, e.verified] }
+    else
+      Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+    end
+  end
+
+  def customer_list_options
+    options = []
+    customer_list(true).each do |customer|
+      options << [customer[0], customer[1], {'data-icon' => customer[2] ? "http://13.126.41.102/images/verified.png" : "http://13.126.41.102/images/unverified.png" }]
+    end
+    options
   end
 
   def show_buyer_links
@@ -162,6 +174,19 @@ module ApplicationHelper
     else
       false
     end
+  end
+
+  def get_verified_text customer
+    "Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection."
+  end
+
+  def get_unverified_text customer
+    if customer.has_overdue_transaction_of_30_days
+      status = "Restricted"
+    else
+      status = "Clear"
+    end
+    return "You are trading with an unregistered buyer. Kindly ask your buyer to register. For your protection, we are informing you regarding the unregistered buyer's credit status. This buyer's overdue status is: #{status}. Clear means this buyer does not have any overdues pending for 30 days or more. Restricted means this buyer has overdues of 30 days or more. Please be cautious when trading with Restricted buyers for your financial protection."
   end
 end
 

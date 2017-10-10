@@ -116,7 +116,7 @@
           <div class="form-row">
             <div class="label">Buyer:</div>
             <div class='field'>
-              <%=f.select :buyer_id, options_for_select(customer_list), { include_blank: true }, class: 'input no-border' %>
+              <%= f.select :buyer_id, customer_list_options, { include_blank: true }, class: 'input no-border' %>
             </div>
           </div>
           <%= f.hidden_field :supplier_id, value: current_customer.id %>
@@ -137,10 +137,7 @@
         <% end %>
       </div>
       <div class="clear"></div>
-      <div>
-        <%=check_box_tag "read", true, false %>
-        <span>Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection.</span>
-      </div>
+      <div class="idt_terms_text"></div>
       <div class="form-row">
         <div class="label"></div>
         <div class='field'>
@@ -196,11 +193,37 @@
     $('.transactions-price').val(val)
   });
 
+  function add_icons_to_select(state) {
+    var originalOption = state.element;
+
+    if (!state.id) return state.text; // optgroup
+    return "<img class='customer_list_verified_icon' src='" + $(originalOption).data('icon') +"'/>" + " " + state.text;
+  }
+
   $(document).ready(function(){
-    $('#trading_parcel_my_transaction_attributes_buyer_id').select2({
+    $("#trading_parcel_my_transaction_attributes_buyer_id").select2({
+      formatResult: add_icons_to_select,
+      formatSelection: add_icons_to_select
     });
 
     $('#transaction_submit').prop('disabled', true);
+  })
+
+  $(document.body).on("change", "#trading_parcel_my_transaction_attributes_buyer_id", function(){
+    id = $(this).val()
+    $.ajax({
+      url: '/verified_unverified',
+      type: 'GET',
+      data: {id: id},
+      success: function(data){
+        text = data.text
+        $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
+        toggle_checkbox()
+      }
+    })
+  });
+
+  function toggle_checkbox() {
     $('#read').click(function () {
       //check if checkbox is checked
       if ($(this).is(':checked')) {
@@ -211,6 +234,8 @@
         $('#transaction_submit').prop('disabled', true);
       }
     });
-  })
+  }
+
+  
 
 </script>
