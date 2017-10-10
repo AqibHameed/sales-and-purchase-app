@@ -127,6 +127,10 @@ Rails.application.routes.draw do
     collection do 
       get :customer
     end
+    member do
+      get :reject
+      patch :reject_reason
+    end
   end
   resources :proposals do
     member do

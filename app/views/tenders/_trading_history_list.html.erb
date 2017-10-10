@@ -15,6 +15,7 @@
         <th>Counterparty</th>
         <th>Status</th>
         <th>Invoice Date</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -37,6 +38,13 @@
         <% end %>
         <td><%= get_status(transaction) %></td>
         <td><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
+        <% if transaction.buyer_rejected %>
+          <td>Rejected</td>
+        <% elsif current_user.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_rejected && (transaction.updated_at + 7.days > Time.now) %>
+          <td><%=link_to 'Reject', reject_transaction_path(transaction) %></td>
+        <% else %>
+          <td></td>
+        <% end %>
       </tr>
       <% end %>
     </tbody>
