@@ -84,6 +84,7 @@ class CustomersController < ApplicationController
   end
 
   def credit
+    @credit_limit = CreditLimit.where(buyer_id: current_customer.id)
     @customers = Customer.unscoped.where.not(id: current_customer.id)
   end
 
