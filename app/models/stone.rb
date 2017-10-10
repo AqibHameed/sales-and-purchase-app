@@ -96,8 +96,8 @@ class Stone < ApplicationRecord
     Tender.find_by_sql(
       "SELECT tenders.name, s.* FROM tenders 
       left join stones s on s.tender_id = tenders.id
-      WHERE (open_date <= '#{Time.zone.now}'
-      AND close_date >= '#{Time.zone.now}')
+      WHERE (open_date <= '#{Time.now.utc}'
+      AND close_date >= '#{Time.now.utc}')
       AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term.to_i})"
     )
 
@@ -105,8 +105,8 @@ class Stone < ApplicationRecord
     # Tender.find_by_sql(
     #   "SELECT tenders.name, s.* FROM tenders 
     #   left join stones s on s.tender_id = tenders.id
-    #   WHERE (open_date <= '#{Time.zone.now}'
-    #   AND close_date >= '#{Time.zone.now}')
+    #   WHERE (open_date <= '#{Time.now.utc}'
+    #   AND close_date >= '#{Time.now.utc}')
     #   AND (s.weight = #{term} OR s.lot_no = #{term.to_i})"
     # )
   end

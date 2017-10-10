@@ -179,7 +179,13 @@ module Api
 
       def active_parcel_data(stones)
         @stones = []
-        stones.uniq.each do |stone|
+        duplicate_stones = stones.select{|item| stones.count(item) > 1}.uniq
+        if duplicate_stones.empty?
+          stones = stones
+        else
+          stones = duplicate_stones
+        end
+        stones.each do |stone|
           @stones << {
             id: stone.id,
             :description => stone.description,
