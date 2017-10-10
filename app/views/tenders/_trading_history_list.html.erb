@@ -20,7 +20,12 @@
     </thead>
     <tbody>
       <% @transactions.each do |transaction| %>
-      <tr>
+      <% if get_status(transaction) == 'Overdue' %>
+        <% color = 'bg-red' %>
+      <% else %>
+         <% color = 'bg-normal'%>
+      <% end %>
+      <tr class="<%= color %>">
         <td><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
         <td><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
         <td><%= transaction.trading_parcel.weight rescue 'N/A'  %></td>

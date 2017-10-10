@@ -257,3 +257,7 @@ h4{
   vertical-align: middle;
   width: 12px;
 }
+
+.bg-red{
+  background: #ee0000; 
+}
