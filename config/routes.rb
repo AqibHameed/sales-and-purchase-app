@@ -153,6 +153,7 @@ Rails.application.routes.draw do
       get '/tender_parcel', to: 'tenders#tender_parcel'
       post '/stone_parcel', to: 'tenders#stone_parcel'
       get '/find_active_parcels', to: 'tenders#find_active_parcels'
+      get '/tender_winners', to: 'tenders#tender_winners'
       resources :tenders do
         collection do
           get :upcoming

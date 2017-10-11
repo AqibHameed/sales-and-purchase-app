@@ -86,6 +86,16 @@ module Api
         end
       end
 
+      def tender_winners
+        tender_winners = TenderWinner.where(tender_id: params[:tender_id])
+        if tender_winners.empty?
+          render json: { error: 'No winners for the tender', response_code: 201 }
+        else
+          render json: {tender_winners: tender_winners_data(tender_winners)}
+        end
+      end
+
+      
       def tender_data(tenders)
         @data = []
         if current_customer
@@ -207,6 +217,34 @@ module Api
           }
         end
         @stones
+      end
+
+      def tender_winners_data(tender_winners)
+        winners = []
+        tender_winners.each do |winner|
+          stone = Stone.where(tender_id: winner.tender_id, lot_no: winner.lot_no).first
+          winners << {
+            description: winner.description,
+            weight: stone.weight,
+            comments: stone.comments,
+            valuation: stone.valuation,
+            parcel_rating: stone.parcel_rating,
+            size: stone.size,
+            weight: stone.weight,
+            purity: stone.purity,
+            color: stone.color,
+            polished: stone.polished,
+            deec_no: stone.deec_no,
+            lot_no: stone.lot_no,
+            selling_price: winner.selling_price,
+            avg_selling_price: winner.avg_selling_price,
+            tender_name: winner.tender.name,
+            comments: stone.comments,
+            valuation: stone.valuation,
+            parcel_rating: stone.parcel_rating
+          }
+        end
+        winners
       end
     end
   end
