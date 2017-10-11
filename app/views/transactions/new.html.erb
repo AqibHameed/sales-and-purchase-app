@@ -123,6 +123,7 @@
           <%= f.hidden_field :price, class: 'transactions-price' %>
           <%= f.hidden_field :credit, class: 'transactions-credit' %>
           <%= f.hidden_field :transaction_type, value: 'manual' %>
+          <%= f.hidden_field :weight, class: 'transactions-weight' %>
           <div class="form-row">
             <div class="label">Invoice Date:</div>
             <div class='field'>
@@ -192,6 +193,11 @@
   $(document).on('input', '#trading_parcel_price', function() {
     val = $(this).val()
     $('.transactions-price').val(val)
+  });
+
+  $(document).on('input', '#trading_parcel_weight', function() {
+    val = $(this).val()
+    $('.transactions-weight').val(val)
   });
 
   function add_icons_to_select(state) {

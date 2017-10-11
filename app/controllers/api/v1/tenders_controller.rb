@@ -95,7 +95,6 @@ module Api
         end
       end
 
-      
       def tender_data(tenders)
         @data = []
         if current_customer

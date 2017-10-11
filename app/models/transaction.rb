@@ -6,6 +6,7 @@ class Transaction < ApplicationRecord
   validate :credit_validation, :validate_invoice_date
   after_create :update_credit_limit
 
+  attr_accessor :weight
 
   def credit_validation
     limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
@@ -13,9 +14,18 @@ class Transaction < ApplicationRecord
       errors[:base] << "You haven't given any limit to selected customer. Please <a href = '/suppliers/credit'>click here</a> to assign.".html_safe
     else
       credit_limit = limit.credit_limit
-      used_amt = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false).sum(:price)
+      transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false)
+      @amount = []
+      transactions.each do |t|
+        weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
+        price = t.price
+        @amount << (weight.to_f * price.to_f)
+      end
+      used_amt = @amount.sum
+      get_weight = weight.blank? ? 1 : weight
+      total_price = price.to_f * weight.to_f
       available_limit = credit_limit.to_f - used_amt.to_f
-      if price.to_f > available_limit
+      if total_price.to_f > available_limit
         errors[:base] << "Customer has available credit limit of #{available_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
       end
     end
