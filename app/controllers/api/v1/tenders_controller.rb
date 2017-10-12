@@ -281,7 +281,7 @@ module Api
               city: tender.city,
               country: tender.country,
               notification: false,
-              tender_parcels: tender.stones
+              tender_parcels: stone_data(tender.stones)
             }
           end
           @data
