@@ -79,7 +79,7 @@ class TendersController < ApplicationController
     end
     if current_customer
       @tenders = current_customer.tenders.active.where(col_str).order("created_at desc").page params[:page]
-      @upcoming_tenders = current_customer.tenders.where("open_date > ?", Time.zone.now).where(col_str).order("created_at desc").page params[:page]
+      @upcoming_tenders = current_customer.tenders.where(upcomimg_str).where(col_str).order("created_at desc").page params[:page]
     else
       @tenders = Tender.active.where(col_str).order("created_at desc").page params[:page]
       @upcoming_tenders = Tender.where(upcomimg_str).where(col_str).order("created_at desc").page params[:page]  
