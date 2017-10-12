@@ -156,7 +156,7 @@ class Customer < ApplicationRecord
       end
     end
     show do
-      [:id, :email, :first_name, :last_name, :city, :address, :phone, :phone_2,:mobile_no, :company,:company_address].each do |field_name|
+      [:id, :email, :first_name, :last_name, :certificate, :city, :address, :phone, :phone_2,:mobile_no, :company,:company_address].each do |field_name|
         field field_name
       end
     end

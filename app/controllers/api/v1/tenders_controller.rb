@@ -95,6 +95,11 @@ module Api
         end
       end
 
+      def offline_data
+        tenders = Tender.all
+        render json: { tenders: offline_tender_data(tenders), response_code: 200 }
+      end
+
       def tender_data(tenders)
         @data = []
         if current_customer
@@ -244,6 +249,43 @@ module Api
           }
         end
         winners
+      end
+
+      def offline_tender_data(tenders)
+        @data = []
+        if current_customer
+          tenders.each do |tender|
+            @data << {
+              id: tender.id,
+              name: tender.name,
+              start_date: tender.open_date,
+              end_date: tender.close_date,
+              company_name: tender.company.try(:name),
+              company_logo: nil,
+              city: tender.city,
+              country: tender.country,
+              notification: tender.check_notification(current_customer),
+              tender_parcels: stone_data(tender.stones)
+            }
+          end
+          @data
+        else
+          tenders.each do |tender|
+            @data << {
+              id: tender.id,
+              name: tender.name,
+              start_date: tender.open_date,
+              end_date: tender.close_date,
+              company_name: tender.company.try(:name),
+              company_logo: nil,
+              city: tender.city,
+              country: tender.country,
+              notification: false,
+              tender_parcels: tender.stones
+            }
+          end
+          @data
+        end
       end
     end
   end
