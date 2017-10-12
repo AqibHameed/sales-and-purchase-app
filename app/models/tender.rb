@@ -224,7 +224,8 @@ class Tender < ApplicationRecord
               win.save
             end
           end
-          Tender.send_winner_list_uploaded_mail(self.id)
+          # Temprory stop
+          # Tender.send_winner_list_uploaded_mail(self.id)
         end
       end
 
