@@ -22,7 +22,7 @@
     <% end %>
     <div class="form-row">
       <div class="label">
-        First Name
+        First Name:
       </div>
       <div class="field">
         <%= f.text_field :first_name, :class => 'input' %>
@@ -32,7 +32,7 @@
 
     <div class="form-row">
       <div class="label">
-        Last Name
+        Last Name:
       </div>
       <div class="field">
         <%= f.text_field :last_name, :class => 'input' %>
@@ -42,7 +42,7 @@
 
     <div class="form-row">
       <div class="label">
-        Email
+        Email:
       </div>
       <div class="field">
         <%= f.text_field :email, :class => 'input', :readonly => true %>
@@ -52,7 +52,7 @@
 
     <div class="form-row">
       <div class="label">
-        Phone
+        Phone:
       </div>
       <div class="field">
         <%= f.text_field :phone, :class => 'input' %>
@@ -62,7 +62,7 @@
 
     <div class="form-row">
       <div class="label">
-        City
+        City:
       </div>
       <div class="field">
         <%= f.text_field :city, :class => 'input' %>
@@ -72,7 +72,7 @@
 
     <div class="form-row">
       <div class="label">
-        Address
+        Address:
       </div>
       <div class="field">
         <%= f.text_field :address, :class => 'input' %>
@@ -81,7 +81,7 @@
     </div>
       <div class="form-row">
       <div class="label">
-        Phone no 2
+        Phone no 2:
       </div>
       <div class="field">
         <%= f.text_field :phone_2, :class => 'input' %>
@@ -91,7 +91,7 @@
 
     <div class="form-row">
       <div class="label">
-        Mobile No
+        Mobile No:
       </div>
       <div class="field">
         <%= f.text_field :mobile_no, :class => 'input' %>
@@ -101,7 +101,7 @@
 
     <div class="form-row">
       <div class="label">
-        Company
+        Company:
       </div>
       <div class="field">
         <%= f.text_field :company, :class => 'input' %>
@@ -111,7 +111,7 @@
 
     <div class="form-row">
       <div class="label">
-        Company Address
+        Company Address:
       </div>
       <div class="field">
         <%= f.text_area :company_address, :class => 'input', :rows => 4 %>
@@ -119,6 +119,26 @@
       <div class="clear"></div>
     </div>
 
+    <% if @customer.certificate.present? %>
+      <div class="clear"></div>
+      <div class="form-row">
+        <div class="certificate_div" >
+          <%= image_tag @customer.certificate.url, style: "width: 20%", class: 'input' %>
+        </div>
+      </div>
+      <div class="clear"></div>
+    <% end %>
+
+    <div class="form-row">
+      <div class="label">
+        Upload Trade License/Certificate:
+      </div>
+      <div class="field">
+        <%= f.file_field :certificate, :class => 'input' %>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div class="clear20"></div>
     <div class="form-row">
       <div class="label">
         &nbsp;

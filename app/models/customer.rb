@@ -63,6 +63,9 @@ class Customer < ApplicationRecord
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
+
+  has_attached_file :certificate
+  do_not_validate_attachment_file_type :certificate
   # def generate_authentication_token! customer
   #   begin
   #     customer.auth_token = Devise.friendly_token
