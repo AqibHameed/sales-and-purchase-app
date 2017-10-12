@@ -71,6 +71,7 @@ class TendersController < ApplicationController
 
   def index
     col_str = ""
+    upcomimg_str = "open_date > '#{Time.zone.now}'"
     if params[:comapany] || params[:tender] || params[:status]
       col_str =  "tenders.name LIKE '%#{params[:tender]}%'"  unless params[:tender].blank?
       col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:company]}" : " AND tenders.company_id = #{params[:company]}" unless params[:company].blank?
@@ -81,7 +82,7 @@ class TendersController < ApplicationController
       @upcoming_tenders = current_customer.tenders.where("open_date > ?", Time.zone.now).where(col_str).order("created_at desc").page params[:page]
     else
       @tenders = Tender.active.where(col_str).order("created_at desc").page params[:page]
-      @upcoming_tenders = Tender.where("open_date > ?", Time.zone.now).where(col_str).order("created_at desc").page params[:page]  
+      @upcoming_tenders = Tender.where(upcomimg_str).where(col_str).order("created_at desc").page params[:page]  
     end
     @news = News.first(10)
   end
