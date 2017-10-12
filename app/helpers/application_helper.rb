@@ -113,15 +113,7 @@ module ApplicationHelper
 
   def overall_credit_received(customer)
     current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)
-    transactions = Transaction.where(buyer_id: customer.id, paid: false)
-    @amount = []
-    transactions.each do |t|
-      weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
-      price = t.price
-      @amount << (weight.to_f * price.to_f)
-    end
-    transaction_amt = @amount.sum
-    number_with_precision((transaction_amt + current_limit), precision: 2)
+    number_with_precision((current_limit), precision: 2)
   end
 
   def overall_credit_spent(customer)
@@ -138,15 +130,7 @@ module ApplicationHelper
 
   def overall_credit_given(customer)
     current_limit = CreditLimit.where(supplier_id: customer.id).sum(:credit_limit)
-    transactions = Transaction.where(supplier_id: customer.id, paid: false)
-    @amount = []
-    transactions.each do |t|
-      weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
-      price = t.price
-      @amount << (weight.to_f * price.to_f)
-    end
-    transaction_amt = @amount.sum
-    number_with_precision((transaction_amt.to_f + current_limit.to_f), precision: 2)
+    number_with_precision((current_limit), precision: 2)
   end
 
   def get_status transaction
