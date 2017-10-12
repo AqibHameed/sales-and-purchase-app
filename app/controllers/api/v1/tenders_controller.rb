@@ -265,7 +265,7 @@ module Api
               city: tender.city,
               country: tender.country,
               notification: tender.check_notification(current_customer),
-              tender_parcels: stone_data(tender.stones)
+              tender_parcels: offline_stone_data(tender.stones)
             }
           end
           @data
@@ -281,11 +281,34 @@ module Api
               city: tender.city,
               country: tender.country,
               notification: false,
-              tender_parcels: stone_data(tender.stones)
+              tender_parcels: offline_stone_data(tender.stones)
             }
           end
           @data
         end
+      end
+
+      def offline_stone_data(stones)
+        @stones = []
+        stones.each do |stone|
+          @stones << {
+            id: stone.id,
+            stone_type: stone.stone_type,
+            no_of_stones: stone.no_of_stones,
+            :size => stone.size,
+            :weight => stone.weight,
+            :purity => stone.purity,
+            :color => stone.color,
+            :polished => stone.polished,
+            :deec_no => stone.deec_no,
+            :lot_no => stone.lot_no,
+            :description => stone.description,
+            :comments => stone.comments,
+            :valuation => stone.valuation,
+            :parcel_rating => stone.parcel_rating
+          }
+        end
+        @stones
       end
     end
   end
