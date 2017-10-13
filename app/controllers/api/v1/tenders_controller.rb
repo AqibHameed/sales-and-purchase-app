@@ -96,7 +96,10 @@ module Api
       end
 
       def offline_data
-        tenders = Tender.all
+        col_str = "open_date > '#{Time.zone.now}'"
+        active_tenders = Tender.active
+        upcoming_tenders =  Tender.where(col_str)
+        tenders = active_tenders + upcoming_tenders
         render json: { tenders: offline_tender_data(tenders), response_code: 200 }
       end
 
