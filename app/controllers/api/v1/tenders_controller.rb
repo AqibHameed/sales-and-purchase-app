@@ -6,32 +6,52 @@ module Api
 
       def index
         col_str = ""
+        upcoming_str = "open_date > '#{Time.zone.now}'"
         if params[:location] || params[:month] || params[:supplier]
-          col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
+          col_str =  "(lower(tenders.country) LIKE '%#{params[:location].downcase}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.active.where(col_str).order("created_at desc")
+          active_tenders = current_customer.tenders.active.where(col_str).order("created_at desc")
+          upcoming_tenders = current_customer.tenders.where(upcoming_str).where(col_str).order("created_at desc")
         else
-          tenders = Tender.active.where(col_str).order("created_at desc")
+          active_tenders = Tender.active.where(col_str).order("created_at desc")
+          upcoming_tenders = Tender.where(upcoming_str).where(col_str).order("created_at desc")
         end
+        tenders = active_tenders + upcoming_tenders
         render json: { tenders: tender_data(tenders), response_code: 200 }
       end
 
       def upcoming
-        col_str = "open_date > '#{Time.zone.now}'"
+        # col_str = "open_date > '#{Time.zone.now}'"
+        # if params[:location] || params[:month] || params[:supplier]
+        #   col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
+        #   col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
+        #   col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
+        # end
+        # if current_customer
+        #   tenders = current_customer.tenders.where(col_str).order("created_at desc")
+        # else
+        #   tenders = Tender.where(col_str).order("created_at desc")
+        # end
+        # render json: { success: true, tenders: tender_data(tenders), response_code: 200 }
+        col_str = ""
+        upcoming_str = "open_date > '#{Time.zone.now}'"
         if params[:location] || params[:month] || params[:supplier]
-          col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
+          col_str =  "(lower(tenders.country) LIKE '%#{params[:location].downcase}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.where(col_str).order("created_at desc")
+          active_tenders = current_customer.tenders.active.where(col_str).order("created_at desc")
+          upcoming_tenders = current_customer.tenders.where(upcoming_str).where(col_str).order("created_at desc")
         else
-          tenders = Tender.where(col_str).order("created_at desc")
+          active_tenders = Tender.active.where(col_str).order("created_at desc")
+          upcoming_tenders = Tender.where(upcoming_str).where(col_str).order("created_at desc")
         end
-        render json: { success: true, tenders: tender_data(tenders), response_code: 200 }
+        tenders = active_tenders + upcoming_tenders
+        render json: { tenders: tender_data(tenders), response_code: 200 }
       end
 
       def closed
@@ -95,13 +115,13 @@ module Api
         end
       end
 
-      def offline_data
-        col_str = "open_date > '#{Time.zone.now}'"
-        active_tenders = Tender.active
-        upcoming_tenders =  Tender.where(col_str)
-        tenders = active_tenders + upcoming_tenders
-        render json: { tenders: offline_tender_data(tenders), response_code: 200 }
-      end
+      # def offline_data
+      #   col_str = "open_date > '#{Time.zone.now}'"
+      #   active_tenders = Tender.active
+      #   upcoming_tenders =  Tender.where(col_str)
+      #   tenders = active_tenders + upcoming_tenders
+      #   render json: { tenders: offline_tender_data(tenders), response_code: 200 }
+      # end
 
       def tender_data(tenders)
         @data = []
@@ -116,7 +136,8 @@ module Api
               company_logo: nil,
               city: tender.city,
               country: tender.country,
-              notification: tender.check_notification(current_customer)
+              notification: tender.check_notification(current_customer),
+              tender_parcels: stone_data(tender.stones)
             }
           end
           @data
@@ -131,7 +152,8 @@ module Api
               company_logo: nil,
               city: tender.city,
               country: tender.country,
-              notification: false
+              notification: false,
+              tender_parcels: stone_data(tender.stones)
             }
           end
           @data
@@ -254,66 +276,66 @@ module Api
         winners
       end
 
-      def offline_tender_data(tenders)
-        @data = []
-        if current_customer
-          tenders.each do |tender|
-            @data << {
-              id: tender.id,
-              name: tender.name,
-              start_date: tender.open_date,
-              end_date: tender.close_date,
-              company_name: tender.company.try(:name),
-              company_logo: nil,
-              city: tender.city,
-              country: tender.country,
-              notification: tender.check_notification(current_customer),
-              tender_parcels: offline_stone_data(tender.stones)
-            }
-          end
-          @data
-        else
-          tenders.each do |tender|
-            @data << {
-              id: tender.id,
-              name: tender.name,
-              start_date: tender.open_date,
-              end_date: tender.close_date,
-              company_name: tender.company.try(:name),
-              company_logo: nil,
-              city: tender.city,
-              country: tender.country,
-              notification: false,
-              tender_parcels: offline_stone_data(tender.stones)
-            }
-          end
-          @data
-        end
-      end
+      # def offline_tender_data(tenders)
+      #   @data = []
+      #   if current_customer
+      #     tenders.each do |tender|
+      #       @data << {
+      #         id: tender.id,
+      #         name: tender.name,
+      #         start_date: tender.open_date,
+      #         end_date: tender.close_date,
+      #         company_name: tender.company.try(:name),
+      #         company_logo: nil,
+      #         city: tender.city,
+      #         country: tender.country,
+      #         notification: tender.check_notification(current_customer),
+      #         tender_parcels: offline_stone_data(tender.stones)
+      #       }
+      #     end
+      #     @data
+      #   else
+      #     tenders.each do |tender|
+      #       @data << {
+      #         id: tender.id,
+      #         name: tender.name,
+      #         start_date: tender.open_date,
+      #         end_date: tender.close_date,
+      #         company_name: tender.company.try(:name),
+      #         company_logo: nil,
+      #         city: tender.city,
+      #         country: tender.country,
+      #         notification: false,
+      #         tender_parcels: offline_stone_data(tender.stones)
+      #       }
+      #     end
+      #     @data
+      #   end
+      # end
 
-      def offline_stone_data(stones)
-        @stones = []
-        stones.each do |stone|
-          @stones << {
-            id: stone.id,
-            stone_type: stone.stone_type,
-            no_of_stones: stone.no_of_stones,
-            :size => stone.size,
-            :weight => stone.weight,
-            :purity => stone.purity,
-            :color => stone.color,
-            :polished => stone.polished,
-            :deec_no => stone.deec_no,
-            :lot_no => stone.lot_no,
-            :description => stone.description,
-            :comments => stone.comments,
-            :valuation => stone.valuation,
-            :parcel_rating => stone.parcel_rating,
-            :winners_data => historical_data(stone.try(:tender).try(:id), stone)
-          }
-        end
-        @stones
-      end
+      # def offline_stone_data(stones)
+      #   @stones = []
+      #   stones.each do |stone|
+      #     @stones << {
+      #       id: stone.id,
+      #       stone_type: stone.stone_type,
+      #       no_of_stones: stone.no_of_stones,
+      #       :size => stone.size,
+      #       :weight => stone.weight,
+      #       :purity => stone.purity,
+      #       :color => stone.color,
+      #       :polished => stone.polished,
+      #       :deec_no => stone.deec_no,
+      #       :lot_no => stone.lot_no,
+      #       :description => stone.description,
+      #       :comments => stone.comments,
+      #       :valuation => stone.valuation,
+      #       :parcel_rating => stone.parcel_rating,
+      #       :winners_data => historical_data(stone.try(:tender).try(:id), stone)
+      #     }
+      #   end
+      #   @stones
+      # end
     end
   end
 end
