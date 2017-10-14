@@ -179,7 +179,8 @@ module Api
             :valuation => stone.valuation,
             :parcel_rating => stone.parcel_rating,
             :tender => stone.tender,
-            :winners_data => historical_data(stone.try(:tender).try(:id), stone)
+            :winners_data => []
+            # historical_data(stone.try(:tender).try(:id), stone)
           }
         end
         @stones
