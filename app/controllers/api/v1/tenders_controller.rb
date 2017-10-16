@@ -66,7 +66,7 @@ module Api
         else
           tenders = Tender.where(col_str).order("created_at desc")
         end
-        render json: { success: true, tenders: tender_data(tenders), response_code: 200 }
+        render json: { success: true, tenders: closed_tender_data(tenders), response_code: 200 }
       end
 
       def tender_parcel
@@ -275,6 +275,41 @@ module Api
           }
         end
         winners
+      end
+
+      def closed_tender_data(tenders)
+        @data = []
+        if current_customer
+          tenders.each do |tender|
+            @data << {
+              id: tender.id,
+              name: tender.name,
+              start_date: tender.open_date,
+              end_date: tender.close_date,
+              company_name: tender.company.try(:name),
+              company_logo: nil,
+              city: tender.city,
+              country: tender.country,
+              notification: tender.check_notification(current_customer)
+            }
+          end
+          @data
+        else
+          tenders.each do |tender|
+            @data << {
+              id: tender.id,
+              name: tender.name,
+              start_date: tender.open_date,
+              end_date: tender.close_date,
+              company_name: tender.company.try(:name),
+              company_logo: nil,
+              city: tender.city,
+              country: tender.country,
+              notification: false
+            }
+          end
+          @data
+        end
       end
 
       # def offline_tender_data(tenders)
