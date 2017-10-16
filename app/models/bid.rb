@@ -22,12 +22,24 @@ class Bid < ApplicationRecord
   end
 
   def set_tender_id
-    # self.tender_id = self.stone.tender_id
+    self.tender_id = self.stone.tender_id
   end
 
   def stone_description
     stone.try(:description)
   end
+
+  def self.last_3_bids(customer_id, desc, company_id)
+    query = "SELECT * from bids b
+    INNER JOIN tenders t on b.tender_id = t.id
+    INNER JOIN stones s on b.stone_id = s.id
+    where s.description = '#{desc}' and t.company_id = #{company_id}
+    and b.customer_id = #{customer_id}
+    order by b.created_at desc limit(3)"
+    results = Bid.find_by_sql(query)
+  end
+
+
 
   rails_admin do
     configure :stone_description do

@@ -154,7 +154,7 @@ Rails.application.routes.draw do
       post '/stone_parcel', to: 'tenders#stone_parcel'
       get '/find_active_parcels', to: 'tenders#find_active_parcels'
       get '/tender_winners', to: 'tenders#tender_winners'
-      # get '/offline_data', to: 'tenders#offline_data'
+      get '/bid_history', to: 'stones#last_3_bids'
       resources :tenders do
         collection do
           get :upcoming
