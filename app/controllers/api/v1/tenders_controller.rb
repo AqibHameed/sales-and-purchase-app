@@ -251,26 +251,24 @@ module Api
         winners = []
         tender_winners.each do |winner|
           stone = Stone.where(tender_id: winner.tender_id, lot_no: winner.lot_no).first
-          winners << {
-            description: winner.description,
-            weight: stone.weight,
-            comments: stone.comments,
-            valuation: stone.valuation,
-            parcel_rating: stone.parcel_rating,
-            size: stone.size,
-            weight: stone.weight,
-            purity: stone.purity,
-            color: stone.color,
-            polished: stone.polished,
-            deec_no: stone.deec_no,
-            lot_no: stone.lot_no,
-            selling_price: winner.selling_price,
-            avg_selling_price: winner.avg_selling_price,
-            tender_name: winner.tender.name,
-            comments: stone.comments,
-            valuation: stone.valuation,
-            parcel_rating: stone.parcel_rating
-          }
+          unless stone.nil?
+            winners << {
+              description: winner.description,
+              weight: stone.try(:weight),
+              comments: stone.comments,
+              valuation: stone.valuation,
+              parcel_rating: stone.parcel_rating,
+              size: stone.size,
+              purity: stone.purity,
+              color: stone.color,
+              polished: stone.polished,
+              deec_no: stone.deec_no,
+              lot_no: stone.lot_no,
+              selling_price: winner.selling_price,
+              avg_selling_price: winner.avg_selling_price,
+              tender_name: winner.tender.name
+            }
+          end
         end
         winners
       end
