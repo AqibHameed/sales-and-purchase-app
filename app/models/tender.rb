@@ -563,7 +563,9 @@ class Tender < ApplicationRecord
       field :tender_open, :toggle
     end
     edit do
-      field :company
+      field :company do
+        label "Supplier"
+      end
       field :name
       field :country do
         partial :country_list

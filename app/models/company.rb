@@ -7,6 +7,7 @@ class Company < ApplicationRecord
   has_many :tenders
   has_many :trading_parcels
   has_many :supplier_notifications
+  has_many :supplier_mines
 
   belongs_to :customer, optional: true
 
