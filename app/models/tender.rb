@@ -566,6 +566,12 @@ class Tender < ApplicationRecord
       field :company do
         label "Supplier"
       end
+      field :supplier_mine_id, :enum do
+        label "Mine"
+        enum do
+          SupplierMine.all.map { |c| [ c.name, c.id ] }
+        end
+      end
       field :name
       field :country do
         partial :country_list
