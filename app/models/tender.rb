@@ -215,13 +215,14 @@ class Tender < ApplicationRecord
           worksheet.each_with_index do |data_row, i|
             unless data_row[Tender.get_index(self.winner_lot_no_field)].nil?
               lot_no = Tender.get_value(data_row[Tender.get_index(self.winner_lot_no_field)])
-              win = self.tender_winners.find_or_initialize_by(lot_no: lot_no)
+              win = TenderWinner.where(tender_id: self.id, lot_no: lot_no).first_or_initialize
               win.description = data_row[Tender.get_index(self.winner_desc_field)]
               win.selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
               # actual_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
               # check_selling_price(actual_selling_price)
               win.avg_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_carat_selling_price_field)])
-              win.save
+              win.save(validate: false)
+              puts win.errors.inspect
             end
           end
           # Temprory stop
