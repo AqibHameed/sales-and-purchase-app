@@ -183,7 +183,7 @@ module Api
         else
           desc = stone.description
           tender = current_customer.tenders.find(id) rescue Tender.find(id)
-          tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+          tenders = Tender.includes(:tender_winners).where("id != ? and supplier_mine_id = ? and date(close_date) < ?", tender.id, tender.supplier_mine_id, tender.open_date.to_date).order("open_date DESC").limit(5)
           # winners = TenderWinner.includes(:tender).where("tender_id in (?) and tender_winners.description = ?", tenders.collect(&:id), desc)
           tender_winner_array = TenderWinner.includes(:tender).where(description: desc, tender_id: tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
           @winners = []
