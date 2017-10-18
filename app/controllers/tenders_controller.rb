@@ -78,11 +78,11 @@ class TendersController < ApplicationController
       col_str += (col_str.blank?) ? ((params[:status] == '0') ? ("tenders.close_date < DATE(NOW())") : ("close_date > DATE(NOW())")) : ((params[:status] == '0') ? (" AND tenders.close_date < DATE(NOW())") : (" AND close_date > DATE(NOW())")) unless params[:status].blank?
     end
     if current_customer
-      @tenders = current_customer.tenders.active.where(col_str).order("created_at desc").page params[:page]
-      @upcoming_tenders = current_customer.tenders.where(upcomimg_str).where(col_str).order("created_at desc").page params[:page]
+      @tenders = current_customer.tenders.active.where(col_str).order("open_date").page params[:page]
+      @upcoming_tenders = current_customer.tenders.where(upcomimg_str).where(col_str).order("open_date").page params[:page]
     else
-      @tenders = Tender.active.where(col_str).order("created_at desc").page params[:page]
-      @upcoming_tenders = Tender.where(upcomimg_str).where(col_str).order("created_at desc").page params[:page]  
+      @tenders = Tender.active.where(col_str).order("open_date").page params[:page]
+      @upcoming_tenders = Tender.where(upcomimg_str).where(col_str).order("open_date").page params[:page]  
     end
     @news = News.first(10)
   end

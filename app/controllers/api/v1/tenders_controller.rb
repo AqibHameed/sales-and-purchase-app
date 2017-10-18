@@ -12,10 +12,10 @@ module Api
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.active.where(col_str).order("created_at desc")
+          tenders = current_customer.tenders.active.where(col_str).order("open_date")
           # upcoming_tenders = current_customer.tenders.where(upcoming_str).where(col_str).order("created_at desc")
         else
-          tenders = Tender.active.where(col_str).order("created_at desc")
+          tenders = Tender.active.where(col_str).order("open_date")
           # upcoming_tenders = Tender.where(upcoming_str).where(col_str).order("created_at desc")
         end
         # tenders = active_tenders + upcoming_tenders
@@ -30,9 +30,9 @@ module Api
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.where(col_str).order("created_at desc")
+          tenders = current_customer.tenders.where(col_str).order("open_date")
         else
-          tenders = Tender.where(col_str).order("created_at desc")
+          tenders = Tender.where(col_str).order("open_date")
         end
         render json: { success: true, tenders: tender_data(tenders), response_code: 200 }
         # col_str = ""
@@ -113,14 +113,6 @@ module Api
           render json: {tender_winners: tender_winners_data(tender_winners)}
         end
       end
-
-      # def offline_data
-      #   col_str = "open_date > '#{Time.zone.now}'"
-      #   active_tenders = Tender.active
-      #   upcoming_tenders =  Tender.where(col_str)
-      #   tenders = active_tenders + upcoming_tenders
-      #   render json: { tenders: offline_tender_data(tenders), response_code: 200 }
-      # end
 
       def tender_data(tenders)
         @data = []
@@ -307,67 +299,6 @@ module Api
           @data
         end
       end
-
-      # def offline_tender_data(tenders)
-      #   @data = []
-      #   if current_customer
-      #     tenders.each do |tender|
-      #       @data << {
-      #         id: tender.id,
-      #         name: tender.name,
-      #         start_date: tender.open_date,
-      #         end_date: tender.close_date,
-      #         company_name: tender.company.try(:name),
-      #         company_logo: nil,
-      #         city: tender.city,
-      #         country: tender.country,
-      #         notification: tender.check_notification(current_customer),
-      #         tender_parcels: offline_stone_data(tender.stones)
-      #       }
-      #     end
-      #     @data
-      #   else
-      #     tenders.each do |tender|
-      #       @data << {
-      #         id: tender.id,
-      #         name: tender.name,
-      #         start_date: tender.open_date,
-      #         end_date: tender.close_date,
-      #         company_name: tender.company.try(:name),
-      #         company_logo: nil,
-      #         city: tender.city,
-      #         country: tender.country,
-      #         notification: false,
-      #         tender_parcels: offline_stone_data(tender.stones)
-      #       }
-      #     end
-      #     @data
-      #   end
-      # end
-
-      # def offline_stone_data(stones)
-      #   @stones = []
-      #   stones.each do |stone|
-      #     @stones << {
-      #       id: stone.id,
-      #       stone_type: stone.stone_type,
-      #       no_of_stones: stone.no_of_stones,
-      #       :size => stone.size,
-      #       :weight => stone.weight,
-      #       :purity => stone.purity,
-      #       :color => stone.color,
-      #       :polished => stone.polished,
-      #       :deec_no => stone.deec_no,
-      #       :lot_no => stone.lot_no,
-      #       :description => stone.description,
-      #       :comments => stone.comments,
-      #       :valuation => stone.valuation,
-      #       :parcel_rating => stone.parcel_rating,
-      #       :winners_data => historical_data(stone.try(:tender).try(:id), stone)
-      #     }
-      #   end
-      #   @stones
-      # end
     end
   end
 end
