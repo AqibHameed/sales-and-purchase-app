@@ -6,6 +6,7 @@ class TradingParcel < ApplicationRecord
 
   validates :price, :credit_period, :weight, presence: true
   validates :price, :credit_period, :weight, numericality: true
+  after_create :generate_and_add_uid
 
   accepts_nested_attributes_for :my_transaction
 
@@ -17,5 +18,11 @@ class TradingParcel < ApplicationRecord
     parcels = parcels.where(weight: params[:weight]) unless params[:weight].blank?
     parcels = parcels.where(credit_period: params[:credit_period]) unless params[:credit_period].blank?
     parcels
+  end
+
+  def generate_and_add_uid
+    uid = SecureRandom.hex(4)
+    self.uid = uid
+    self.save(validate: false) 
   end
 end
