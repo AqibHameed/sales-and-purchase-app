@@ -1,6 +1,7 @@
 class SuppliersController < ApplicationController
   layout 'supplier'
   before_action :authenticate_customer!
+  before_action :authenticate_admin!
 
   def index
     @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc).page params[:page]

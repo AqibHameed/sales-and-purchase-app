@@ -7,6 +7,7 @@ gem 'rails', '5.1.0'
 
 gem "mysql2"
 gem "devise"
+gem 'devise_invitable'
 # gem 'rails_admin_example_theme', :git => 'git://github.com/bbenezech/rails_admin_example_theme.git'
 gem "rails_admin"
 gem "paperclip"
