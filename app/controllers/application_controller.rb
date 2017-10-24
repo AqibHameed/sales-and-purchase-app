@@ -4,12 +4,13 @@ class ApplicationController < ActionController::Base
   
   before_action :configure_permitted_parameters, if: :devise_controller?
 
- protected
+  protected
 
- def configure_permitted_parameters
-   devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company, :company_address, :phone_2, :mobile_no])
-   devise_parameter_sanitizer.permit(:account_update, keys: [:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company, :company_address, :phone_2, :mobile_no])
- end
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company, :company_address, :phone_2, :mobile_no])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company, :company_address, :phone_2, :mobile_no])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: [:first_name, :company, :mobile_no, :password, :password_confirmation])
+  end
 
   before_action :set_user_language
   def after_sign_in_path_for(resource)
@@ -34,6 +35,10 @@ class ApplicationController < ActionController::Base
     if current_customer.blank? && current_admin.blank?
       redirect_to login_path
     end
+  end
+
+  def authenticate_inviter!
+    authenticate_admin!(:force => true)
   end
 
   private

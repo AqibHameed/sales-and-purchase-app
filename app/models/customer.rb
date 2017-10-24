@@ -5,7 +5,7 @@ class Customer < ApplicationRecord
   # :lockable, :timeoutable and :omniauthable
   attr_accessor :login
 
-  devise :database_authenticatable, :registerable,
+  devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
 
   # validates :auth_token, uniqueness: true
@@ -59,7 +59,8 @@ class Customer < ApplicationRecord
   # validates :city, :company,:company_address , :first_name, :last_name,
   #           :presence => true , :reduce => true
 
-  after_create :send_account_creation_mail, :add_user_to_tenders
+  # send_account_creation_mail
+  after_create :add_user_to_tenders
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true

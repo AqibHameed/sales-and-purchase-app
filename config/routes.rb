@@ -12,14 +12,13 @@ Rails.application.routes.draw do
 
   devise_for :admins, :controllers => {:sessions => 'sessions'}
   mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
-  devise_for :customers, :controllers => {:sessions => 'sessions',:registrations => "registrations"}
+  devise_for :customers, :controllers => {:sessions => 'sessions',:registrations => "registrations", :invitations => 'invitations'}
 
   resources :tenders do
     collection do
       get :history
       get :calendar
       get :calendar_data
-
     end
     member do
       delete :delete_stones
@@ -46,7 +45,6 @@ Rails.application.routes.draw do
       get :bidder_list
       get :customer_bid_list
       get :customer_bid_detail
-
     end
   end
 

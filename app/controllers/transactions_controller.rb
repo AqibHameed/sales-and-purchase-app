@@ -1,6 +1,7 @@
 class TransactionsController < ApplicationController
   layout 'supplier'
   before_action :authenticate_customer!
+  before_action :authenticate_admin!
   
   def new
     @parcel = TradingParcel.new
