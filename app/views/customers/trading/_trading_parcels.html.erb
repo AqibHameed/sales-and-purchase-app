@@ -10,7 +10,9 @@
     <th>Price</th>
     <th>Credit</th>
     <th>Supplier</th>
-    <th>For Sale</th>
+    <% unless params[:controller] == 'customers' %>
+      <th>For Sale</th>
+    <% end %>
     <th></th>
   </tr>
   <% @parcels.each.with_index(1) do |parcel, i|%>
@@ -51,11 +53,11 @@
         <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
-        <td><%= check_box_tag :for_sale, parcel.id, nil, checked: parcel.for_sale %></td>
         <% if parcel.customer_id == current_customer.id %>
           <% if params[:controller] == 'customers' %>
             <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
           <% else %>
+            <td><%= check_box_tag :for_sale, parcel.id, nil, checked: parcel.for_sale %></td>
             <td>
               <%= link_to 'Share', '#', 'data-id' => parcel.id, id: 'share', class: 'mr5' %>
               <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5' %>
