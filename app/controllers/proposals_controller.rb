@@ -46,15 +46,21 @@ class ProposalsController < ApplicationController
   end
 
   def accept
-    @proposal.status = 1
-    if @proposal.save(validate: false)
-    	@proposal.trading_parcel.update_column(:sold, true)
-      Transaction.create_new(@proposal)
-      flash[:notice] = "Proposal accepted."
-      respond_to do |format|
-        format.js { render js: "window.location = '/proposals'"}
-        format.html { redirect_to proposals_path }
+    ActiveRecord::Base.transaction do
+      @proposal.status = 1
+      if @proposal.save(validate: false)
+        @proposal.trading_parcel.update_column(:sold, true)
+        Transaction.create_new(@proposal)
+        flash[:notice] = "Proposal accepted."
+        respond_to do |format|
+          format.js { render js: "window.location = '/proposals'"}
+          format.html { redirect_to proposals_path }
+        end
       end
+      @trading_parcel = @proposal.trading_parcel.dup
+      @trading_parcel.customer_id = @proposal.buyer_id
+      @trading_parcel.sold = false
+      @trading_parcel.save
     end
   end
 
