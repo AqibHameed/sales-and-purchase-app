@@ -88,6 +88,11 @@ class CustomersController < ApplicationController
     @customers = Customer.unscoped.where.not(id: current_customer.id)
   end
 
+  def check_for_sale
+    @trading_parcel = TradingParcel.find_by_id(params[:id])
+    @trading_parcel.update(for_sale: !@trading_parcel.for_sale)
+  end
+
   private
   def customer_params
     params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate)

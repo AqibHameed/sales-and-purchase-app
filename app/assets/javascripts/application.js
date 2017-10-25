@@ -199,3 +199,13 @@ function isNumber(evt) {
   }
   return true;
 }
+
+$(document).ready(function() {
+  $(document).on('change', '#for_sale', function() {
+    parcel_id = $(this).val();
+    $.ajax({
+      url: '/customers/'+parcel_id+'/check_for_sale',
+      type: "GET"
+    })
+  });
+});

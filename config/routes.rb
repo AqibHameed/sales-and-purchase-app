@@ -93,6 +93,7 @@ Rails.application.routes.draw do
       get :add_company
       get :block_unblock_user
       post :create_sub_company
+      get :check_for_sale
     end
   end
 
