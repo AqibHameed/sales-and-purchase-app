@@ -19,8 +19,8 @@
         <td><%= transaction.trading_parcel.weight rescue 'N/A' %></td>
         <td><%= transaction.price.nil? ? 'N/A' : number_with_precision(transaction.price, precision: 2) %></td>
         <td><%= transaction.credit.nil? ? 'N/A' : transaction.credit %></td>
-        <td><%= transaction.due_date.strftime("%B, %d %Y") %></td>
-        <td><%= transaction.created_at.strftime("%B, %d %Y") %></td>
+        <td><%= transaction.due_date.try(:strftime, "%B, %d %Y") %></td>
+        <td><%= transaction.created_at.try(:strftime, "%B, %d %Y") %></td>
         <td><%= link_to 'Mark as paid', paid_proposal_path(id: transaction.id), remote: true, method: :put unless transaction.paid? %></td>
       </tr>
     <% end %>
