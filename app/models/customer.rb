@@ -117,15 +117,11 @@ class Customer < ApplicationRecord
   end
 
   def is_blocked_by_supplier(supplier)
-    bu = BlockUser.where(customer_id: supplier).first
+    bu = BlockUser.where(customer_id: supplier, block_user_ids: self.id).first
     if bu.nil?
-      false  
+      false
     else
-      if bu.block_user_ids.include?(self.id.to_s)
-        true
-      else
-        false
-      end
+      true
     end
   end
 
@@ -146,7 +142,7 @@ class Customer < ApplicationRecord
   end
 
   def notify_by_supplier supplier
-    SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false 
+    SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false
   end
 
   rails_admin do

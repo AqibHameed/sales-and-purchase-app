@@ -1,5 +1,5 @@
 class BlockUser < ApplicationRecord
-	serialize :block_user_ids, Array
+	# serialize :block_user_ids, Array
 	belongs_to :customer
 
 	def self.block_user user,id

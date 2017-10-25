@@ -40,12 +40,9 @@ class CustomersController < ApplicationController
 
   def block_unblock_user
     if params[:status] == 'block'
-      user = Customer.find(params[:id])
-      result = BlockUser.block_user user,params[:block_user_id]
+      BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first_or_create
     else
-      current_customer.block_user.block_user_ids.delete(params[:block_user_id])
-      block_user = current_customer.block_user.update_attributes(block_user_ids: current_customer.block_user.block_user_ids)
-      result = block_user.present?
+      BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first.destroy
     end
     @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
     respond_to do |format|
@@ -66,7 +63,8 @@ class CustomersController < ApplicationController
   end
 
   def trading
-    @parcels = TradingParcel.where(sold: false).order(created_at: :desc).page params[:page]
+    customer_id = BlockUser.where(block_user_ids: current_customer.id).map { |e| e.customer_id }
+    @parcels = TradingParcel.where(sold: false).where.not(customer_id: customer_id).order(created_at: :desc).page params[:page]
   end
 
   def search_trading
