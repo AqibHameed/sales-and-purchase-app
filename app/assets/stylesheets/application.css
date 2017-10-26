@@ -261,3 +261,6 @@ h4{
 .bg-red{
   background: #ee0000; 
 }
+.ui-datepicker-calendar {
+    display: none;
+    }
