@@ -3,154 +3,150 @@
 
 <%= form_tag(post_url, :method => search_method, :remote => true) do %>
 <div class="form-wrapper">
+  <div class="form-row">
+    <div class="label">
+      Name of Tender
+    </div>
+    <div class="field">
+      <%= select_tag "search[name]",options_for_select(@tenders.collect{|c| [c.name,c.id] }), include_blank: true, :class => 'select type_select' %>
+    </div>
+    <div class="clear"></div>
+  </div>
+  <div class="form-row">
+    <div class="label">
+      Supplier
+    </div>
+    <div class="field">
+      <%= select_tag "search[supplier_name]",options_for_select(@supplier.collect{|c| [c.name,c.id] }), include_blank: true, :class => 'select type_select' %>
+    </div>
+    <div class="clear"></div>
+  </div>
+  <div class="form-row">
+    <div class="label">
+      Mine
+    </div>
+    <div class="field">
 
-	<div class="form-row">
-		<div class="label">
-			Name of Tender
-		</div>
-		<div class="field">
+      <%= select_tag "search[mine_name]",options_for_select(@mine.collect{|c| [c.name,c.id] }), include_blank: true, :class => 'select type_select' %>
+    </div>
+    <div class="clear"></div>
+  </div>
 
+  <div class="form-row">
+    <div class="label">
+      Year / Period
+    </div>
+    <div class="field">
+      <div>
+        <span> <%= text_field_tag 'search[start_date]', '', :class => 'date' %> <!-- <input type="text" class="date"> --> <a class="calendar" href="#">Calendar</a> </span>
+        <span> <%= text_field_tag 'search[end_date]', '', :class => 'date' %> <!-- <input type="text" class="date"> --> <a class="calendar" href="#">Calendar</a> Date Range </span>
+      </div>
+      <div class="clear10"></div>
+      <div>
+        <span> <%= text_field_tag 'search[specific_date]', '', :class => 'date' %> <!-- <input type="text" class="date"> --> <a class="calendar" href="#">Calendar</a> Specific Date </span>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </div>
 
-			<%= select_tag "search[name]",options_for_select(@tenders.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="form-row">
-		<div class="label">
-			Supplier
-		</div>
-		<div class="field">
+  <div class="form-row">
+    <div class="label">
+      Type
+    </div>
+    <div class="field">
+      <%= select_tag 'search[type]', options_for_select(['Parcel', 'Stone']), :class => 'select type_select', :include_blank => true %>
+    </div>
+    <div class="clear"></div>
+  </div>
 
-			<%= select_tag "search[supplier_name]",options_for_select(@supplier.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
-		</div>
-		<div class="clear"></div>
-	</div>
-	<div class="form-row">
-		<div class="label">
-			Mine
-		</div>
-		<div class="field">
-
-			<%= select_tag "search[mine_name]",options_for_select(@mine.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
-		</div>
-		<div class="clear"></div>
-	</div>
-
-	<div class="form-row">
-		<div class="label">
-			Year / Period
-		</div>
-		<div class="field">
-			<div>
-				<span> <%= text_field_tag 'search[start_date]', '', :class => 'date' %> <!-- <input type="text" class="date"> --> <a class="calendar" href="#">Calendar</a> </span>
-				<span> <%= text_field_tag 'search[end_date]', '', :class => 'date' %> <!-- <input type="text" class="date"> --> <a class="calendar" href="#">Calendar</a> Date Range </span>
-			</div>
-			<div class="clear10"></div>
-			<div>
-				<span> <%= text_field_tag 'search[specific_date]', '', :class => 'date' %> <!-- <input type="text" class="date"> --> <a class="calendar" href="#">Calendar</a> Specific Date </span>
-			</div>
-		</div>
-		<div class="clear"></div>
-	</div>
-
-	<div class="form-row">
-		<div class="label">
-			Type
-		</div>
-		<div class="field">
-			<%= select_tag 'search[type]', options_for_select(['Parcel', 'Stone']), :class => 'select type_select', :include_blank => true %>
-		</div>
-		<div class="clear"></div>
-	</div>
-
-	<% if current_admin %>
-	<div class="form-row">
-		<div class="label">
-			Customer
-		</div>
-		<div class="field">
-			<%= select_tag 'search[customer_id]', options_for_select( Customer.all.map{|c| [c.name + ' (' + c.email + ')' , c.id] }), :class => 'select', :include_blank => true %>
-		</div>
-		<div class="clear"></div>
-	</div>
-	<% end %>
-	<div class="clear10"></div>
+  <% if current_admin %>
+  <div class="form-row">
+    <div class="label">
+      Customer
+    </div>
+    <div class="field">
+      <%= select_tag 'search[customer_id]', options_for_select( Customer.all.map{|c| [c.name + ' (' + c.email + ')' , c.id] }), :class => 'select', :include_blank => true %>
+    </div>
+    <div class="clear"></div>
+  </div>
+  <% end %>
+  <div class="clear10"></div>
 
 
-	<div class="clear10"></div>
+  <div class="clear10"></div>
 
-	<div class='parcel_search'>
-		<div class="form-row">
-			<div class="label">
-				Description
-			</div>
-			<div class="field">
-				<%= text_field_tag "search[description]","", :class => "input"  %>
-				<%#= select_tag 'search[description]', options_for_select(['']), :class => 'select parcel_fields', :include_blank => true %>
-			</div>
-			<div class="clear"></div>
-		</div>
+  <div class='parcel_search'>
+    <div class="form-row">
+      <div class="label">
+        Description
+      </div>
+      <div class="field">
+        <%= text_field_tag "search[description]","", :class => "input"  %>
+        <%#= select_tag 'search[description]', options_for_select(['']), :class => 'select parcel_fields', :include_blank => true %>
+      </div>
+      <div class="clear"></div>
+    </div>
 
-		<div class="form-row">
-			<div class="label">
-				Weight
-			</div>
-			<div class="field">
-			 	<%= text_field_tag "search[size]","", :class => "input" %>
-				<%#= select_tag 'search[size]', options_for_select( (1..10).to_a ), :class => 'select parcel_fields', :include_blank => true %>
-			</div>
-			<div class="clear"></div>
-		</div>
-	</div>
+    <div class="form-row">
+      <div class="label">
+        Weight
+      </div>
+      <div class="field">
+        <%= text_field_tag "search[size]","", :class => "input" %>
+        <%#= select_tag 'search[size]', options_for_select( (1..10).to_a ), :class => 'select parcel_fields', :include_blank => true %>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </div>
 
-	<div class='stone_search' style='display:none;'>
-		<div class="form-row">
-			<div class="label">
-				Carat
-			</div>
-			<div class="field">
-				<%= select_tag 'search[carat]', options_for_select( (18..24).to_a ), :class => 'select stone_fields', :include_blank => true %>
-			</div>
-			<div class="clear"></div>
-		</div>
+  <div class='stone_search' style='display:none;'>
+    <div class="form-row">
+      <div class="label">
+        Carat
+      </div>
+      <div class="field">
+        <%= select_tag 'search[carat]', options_for_select( (18..24).to_a ), :class => 'select stone_fields', :include_blank => true %>
+      </div>
+      <div class="clear"></div>
+    </div>
 
-		<div class="form-row">
-			<div class="label">
-				Color
-			</div>
-			<div class="field">
-				<%= select_tag 'search[color]', options_for_select( ['White', 'Silver']), :class => 'select stone_fields', :include_blank => true %>
-			</div>
-			<div class="clear"></div>
-		</div>
+    <div class="form-row">
+      <div class="label">
+        Color
+      </div>
+      <div class="field">
+        <%= select_tag 'search[color]', options_for_select( ['White', 'Silver']), :class => 'select stone_fields', :include_blank => true %>
+      </div>
+      <div class="clear"></div>
+    </div>
 
-		<div class="form-row">
-			<div class="label">
-				Purity
-			</div>
-			<div class="field">
-				<%= select_tag 'search[purity]', options_for_select( [25, 50, 75, 100] ), :class => 'select stone_fields', :include_blank => true %>
-			</div>
-			<div class="clear"></div>
-		</div>
-	</div>
+    <div class="form-row">
+      <div class="label">
+        Purity
+      </div>
+      <div class="field">
+        <%= select_tag 'search[purity]', options_for_select( [25, 50, 75, 100] ), :class => 'select stone_fields', :include_blank => true %>
+      </div>
+      <div class="clear"></div>
+    </div>
+  </div>
 
-	<div class="form-row">
-		<div class="label">
-			&nbsp;
-		</div>
-		<div class="field">
-			<%= submit_tag 'Search', :class => 'btn-01' %>
-			<!-- <a href="#" class="btn-01">Search</a> -->
-		</div>
-		<div class="clear"></div>
-	</div>
+  <div class="form-row">
+    <div class="label">
+      &nbsp;
+    </div>
+    <div class="field">
+      <%= submit_tag 'Search', :class => 'btn-01' %>
+      <!-- <a href="#" class="btn-01">Search</a> -->
+    </div>
+    <div class="clear"></div>
+  </div>
 </div>
 <% end %>
 <script>
-	$(".date").datepicker({
-		"dateFormat" : 'mm/yy',
-		changeMonth: true,
+  $(".date").datepicker({
+    "dateFormat" : 'mm/yy',
+    changeMonth: true,
         changeYear: true,
         // showButtonPanel: true,
 
@@ -159,10 +155,10 @@
         }
 
 
-	});
-	$('.calendar').click(function(){
-		$(this).prev().datepicker('show');
-	})
+  });
+  $('.calendar').click(function(){
+    $(this).prev().datepicker('show');
+  })
 
 </script>
 
