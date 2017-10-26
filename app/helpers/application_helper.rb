@@ -96,9 +96,9 @@ module ApplicationHelper
   def get_days_limit(buyer, supplier)
     dl = DaysLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
     if dl.nil? || dl.days_limit.nil? || dl.days_limit.blank?
-      30
+      pluralize(0, 'day')
     else
-      dl.days_limit
+      pluralize(dl.days_limit.to_i, 'day')
     end
   end
 
@@ -197,12 +197,12 @@ module ApplicationHelper
     end
   end
 
-  def get_verified_text customer
+  def get_verified_text customer, supplier
     "Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection."
   end
 
-  def get_unverified_text customer
-    if customer.has_overdue_transaction_of_30_days
+  def get_unverified_text customer, supplier
+    if customer.has_overdue_transaction_of_30_days(supplier.id)
       status = "Restricted"
     else
       status = "Clear"

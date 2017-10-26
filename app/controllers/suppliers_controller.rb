@@ -57,6 +57,7 @@ class SuppliersController < ApplicationController
   end
 
   def change_days_limits
+    buyer = Customer.find(params[:buyer_id])
     dl = DaysLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
     if dl.days_limit.nil?
       dl.days_limit = params[:limit]
@@ -64,7 +65,7 @@ class SuppliersController < ApplicationController
       dl.days_limit = dl.days_limit + params[:limit].to_i
     end
     if dl.save
-      render json: { message: 'Days Limit updated.', value: dl.days_limit }
+      render json: { message: 'Days Limit updated.', value: view_context.get_days_limit(buyer, current_customer) }
     else
       render json: { message: dl.errors.full_messages.first, value: '' }
     end

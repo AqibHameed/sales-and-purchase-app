@@ -8,8 +8,8 @@
     <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
   <% elsif !current_customer.has_limit(@parcel.customer_id) %>
     <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has not given credit limit to you.</p>
-  <% elsif current_customer.has_overdue_transaction_of_30_days %>
-    <p style="margin: 0px 0px 0px 5px; color: red;">You cannot buy anything.</p>
+  <% elsif current_customer.has_overdue_transaction_of_30_days(@parcel.customer_id) %>
+    <p style="margin: 0px 0px 0px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p>
   <% elsif grey_buy_btn(current_customer.id, @parcel.customer_id) %>
     <%= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
     <p style="margin: -14px 0px 0px 65px; color: red;">Credit limit is 0. Please contact supplier</p>

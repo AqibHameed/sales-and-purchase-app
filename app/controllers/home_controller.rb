@@ -13,9 +13,9 @@ class HomeController < ApplicationController
     customer = Customer.where(id: params[:id]).first
     if customer.present?
       if customer.verified?
-        render json: { text: get_verified_text(customer) }
+        render json: { text: get_verified_text(customer, current_customer) }
       else
-        render json: { text: get_unverified_text(customer) }
+        render json: { text: get_unverified_text(customer, current_customer) }
       end
     end
   end

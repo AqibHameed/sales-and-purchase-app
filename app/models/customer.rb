@@ -109,8 +109,14 @@ class Customer < ApplicationRecord
     end
   end
 
-  def has_overdue_transaction_of_30_days
-    date = Date.today - 30.days
+  def has_overdue_transaction_of_30_days(supplier_id)
+    dl = DaysLimit.where(buyer_id: self.id, supplier_id: supplier_id).first
+    if dl.nil?
+      number_of_days = 30
+    else
+      number_of_days = dl.days_limit.to_i
+    end
+    date = Date.today - number_of_days.days
     if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
       true
     else
