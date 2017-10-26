@@ -295,6 +295,9 @@ class TendersController < ApplicationController
   end
 
   def history
+    @tenders = Tender.where('close_date < ?', Date.today)
+    @supplier = Company.all
+    @mine = SupplierMine.all
     if current_customer
       @customer = current_customer
     elsif current_admin && !params[:search].blank? && !params[:search][:customer_id].blank?
