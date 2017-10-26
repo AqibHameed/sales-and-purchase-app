@@ -31,6 +31,8 @@ class Customer < ApplicationRecord
   has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
   has_many :supplier_credit_limits, :foreign_key => "supplier_id", :class_name => "CreditLimit"
   has_many :supplier_notifications, :foreign_key => "supplier_id", :class_name => "SupplierNotification"
+  has_many :buyer_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit"
+  has_many :supplier_days_limits, :foreign_key => "supplier_id", :class_name => "DaysLimit"
   # Setup accessible (or protected) attributes for your model
   # attr_accessible :email, :password, :password_confirmation, :remember_me,
   #                 :first_name, :last_name,

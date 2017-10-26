@@ -2,8 +2,10 @@
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter">
     <thead>
       <th>Buyer </th>
-      <th>Current Limit</th>
+      <th>Current Credit Limit</th>
       <th>Add Credit Limit</th>
+      <th>Current Day Limit</th>
+      <th>Add Days Limit</th>
       <th>Block</th>
     </thead>
     <% @customers.each.with_index(1) do |customer, i|%>
@@ -11,14 +13,18 @@
         <tr style="background: #c12e1c;">
           <td><%= customer.company %></td>
           <td class="credit_limit"><%= get_credit_limit(customer, current_customer) %></td>
-          <td><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter limit' %><span style="color: green;"></span></td>
+          <td><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %><span style="color: green;"></span></td>
+          <td class="days_limit"><%= get_days_limit(customer, current_customer)%> days</td>
+          <td><%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days limit' %><span style="color: green;"></span></td>
           <td><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
         </tr>
       <% else %>
         <tr>
           <td><%= customer.company %></td>
           <td class="credit_limit"><%= get_credit_limit(customer, current_customer) %></td>
-          <td><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter limit' %><span style="color: green;"></span></td>
+          <td><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %><span style="color: green;"></span></td>
+          <td class="days_limit"><%= get_days_limit(customer, current_customer)%> days</td>
+          <td><%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days limit' %><span style="color: green;"></span></td>
           <td><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> customer.id) %></td>
         </tr>
       <% end %>

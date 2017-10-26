@@ -70,6 +70,23 @@
     })
   })
 
+  $(document).on('change', '#days_limit', function(){
+    self = $(this)
+    value = $(this).val()
+    user_id = $(this).data('id')
+    $.ajax({
+      url: '<%=change_days_limit_path %>',
+      method: 'get',
+      dataType: 'json',
+      data: {limit: value, buyer_id: user_id},
+      success:function(data){
+        $(self).parents('tr').find('td.days_limit').text(data.value)
+        $(self).parent().find('span').text(data.message).fadeIn("slow").delay(1000).fadeOut("slow");
+        $(self).val('')
+      }
+    })
+  })
+
   // $(document).on('click', '.search_link', function(){
   //   $('.search-form').slideToggle();
   // })

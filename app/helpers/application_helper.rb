@@ -93,6 +93,15 @@ module ApplicationHelper
     end
   end
 
+  def get_days_limit(buyer, supplier)
+    dl = DaysLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
+    if dl.nil? || dl.days_limit.nil? || dl.days_limit.blank?
+      30
+    else
+      dl.days_limit
+    end
+  end
+
   def get_available_credit_limit(buyer, supplier)
     total = get_credit_limit(buyer, supplier)
     used  =  get_used_credit_limit(buyer, supplier)

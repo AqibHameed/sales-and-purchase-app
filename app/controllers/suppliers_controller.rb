@@ -56,6 +56,20 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def change_days_limits
+    dl = DaysLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
+    if dl.days_limit.nil?
+      dl.days_limit = params[:limit]
+    else
+      dl.days_limit = dl.days_limit + params[:limit].to_i
+    end
+    if dl.save
+      render json: { message: 'Days Limit updated.', value: dl.days_limit }
+    else
+      render json: { message: dl.errors.full_messages.first, value: '' }
+    end
+  end
+
   def credit_given_list
     @credit_limits = CreditLimit.where(supplier_id: current_customer.id)
   end
