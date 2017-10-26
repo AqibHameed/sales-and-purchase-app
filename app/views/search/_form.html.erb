@@ -9,14 +9,29 @@
 			Name of Tender
 		</div>
 		<div class="field">
-			<%
-			if current_customer
-				tenders = current_customer.tenders
-			else
-				tenders = Tender.all
-			end
-			%>
-			<%= select_tag "search[name]",options_for_select(tenders.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
+
+
+			<%= select_tag "search[name]",options_for_select(@tenders.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="form-row">
+		<div class="label">
+			Supplier
+		</div>
+		<div class="field">
+
+			<%= select_tag "search[supplier_name]",options_for_select(@supplier.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="form-row">
+		<div class="label">
+			Mine
+		</div>
+		<div class="field">
+
+			<%= select_tag "search[mine_name]",options_for_select(@mine.collect{|c| [c.name,c.id] }), :class => 'select type_select' %>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -61,7 +76,7 @@
 	<% end %>
 	<div class="clear10"></div>
 
-	<h2>Aditional Search</h2>
+
 	<div class="clear10"></div>
 
 	<div class='parcel_search'>
@@ -134,7 +149,16 @@
 <% end %>
 <script>
 	$(".date").datepicker({
-		"dateFormat" : 'dd/mm/yy'
+		"dateFormat" : 'mm/yy',
+		changeMonth: true,
+        changeYear: true,
+        // showButtonPanel: true,
+
+        onClose: function(dateText, inst) {
+            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+        }
+
+
 	});
 	$('.calendar').click(function(){
 		$(this).prev().datepicker('show');

@@ -17,7 +17,7 @@
         <% if current_customer %>
         <th>% Difference</th>
         <% end %>
-        <th>Status</th>
+
 
       </tr>
     </thead>
@@ -27,7 +27,6 @@
       <tr>
         <td><%= link_to_if current_customer, stone.tender.name, stone.tender %></td>
         <td><%= stone.description %></td>
-        <td><%= stone.deec_no %></td>
         <td><%= stone.weight %></td>
         <% if current_customer %>
         <td><%= number_to_currency stone.customer_bid_amount(current_customer) %></td>
@@ -40,7 +39,7 @@
         <% if current_customer %>
         <td><%= raw get_difference(stone.customer_bid_amount(current_customer), @selling_price[stone.deec_no.to_s + '_' + stone.tender_id.to_s]) unless @selling_price[stone.deec_no.to_s + '_' + stone.tender_id.to_s].nil? %></td>
         <% end %>
-        <td><%= stone.tender.open? ? 'Open' : 'Closed' %></td>
+
 
       </tr>
       <% end %>

@@ -25,13 +25,15 @@ module ApplicationHelper
 
     logger.info "bid : #{bid}"
     logger.info "sell : #{sell}"
-
-    if bid.to_f ==  sell.to_f
-      return "<font color='green'>Won the Bid</font>"
+    if sell.nil? || sell.blank? || bid.nil? || bid.blank?
+      return 'N/A'
     else
-      return (100.0 - (bid / sell.to_f * 100)).round(2).to_s + ' %'
+      if bid.to_f ==  sell.to_f
+        return "<font color='green'>Won the Bid</font>"
+      else
+        return (100.0 - (bid / sell.to_f * 100)).round(2).to_s + ' %'
+      end
     end
-
   end
 
   def get_sum(stones)

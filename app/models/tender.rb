@@ -360,9 +360,11 @@ class Tender < ApplicationRecord
     query = []
     unless filters.blank?
       query << "tenders.id in (#{Array(filters[:name]).join(',')})" unless filters[:name].blank?
+      query << "tenders.company_id in (#{Array(filters[:supplier_name]).join(',')})" unless filters[:supplier_name].blank?
+      query << "tenders.supplier_mine_id in (#{Array(filters[:mine_name]).join(',')})" unless filters[:mine_name].blank?
       query << "tenders.open_date >= '#{filters[:start_date].to_datetime.beginning_of_day}'" unless filters[:start_date].blank?
-      query << "tenders.close_date <= '#{filters[:end_date].to_datetime.end_of_day}'" unless filters[:end_date].blank?
-      query << "(tenders.open_date <= '#{filters[:specific_date].to_datetime.end_of_day}' AND tenders.open_date >= '#{filters[:specific_date].to_datetime.beginning_of_day}') OR (close_date <= '#{filters[:specific_date].to_datetime.end_of_day}' AND close_date >= '#{filters[:specific_date].to_datetime.beginning_of_day}')" unless filters[:specific_date].blank?
+      query << "tenders.close_date <= '#{filters[:end_date].to_datetime.end_of_month}'" unless filters[:end_date].blank?
+      query << "(tenders.open_date <= '#{filters[:specific_date].to_datetime.beginning_of_day}' AND tenders.open_date >= '#{filters[:specific_date].to_datetime.beginning_of_day}') OR (close_date <= '#{filters[:specific_date].to_datetime.end_of_month}' AND close_date >= '#{filters[:specific_date].to_datetime.end_of_month}')" unless filters[:specific_date].blank?
       query << "stones.stone_type like '%#{filters[:type]}%'" unless filters[:type].blank?
       query << "stones.description like '%#{filters[:description]}%'" unless filters[:description].blank?
       query << "stones.weight like '%#{filters[:size]}%'" unless filters[:size].blank?
