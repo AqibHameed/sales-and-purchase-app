@@ -46,7 +46,8 @@ class CustomersController < ApplicationController
     end
     @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
     respond_to do |format|
-      format.js {render 'block_unblock'}
+      format.js { render 'block_unblock' }
+      format.html { redirect_to credit_suppliers_path }
       format.json {render json: {status: params[:status], result: result}}
     end
   end

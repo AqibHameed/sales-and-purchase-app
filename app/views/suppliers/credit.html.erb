@@ -34,6 +34,7 @@
       url: '<%= block_unblock_user_customer_path(current_user)%>',
       method: 'get',
       data: {status: 'block', block_user_id: id},
+
       success:function(){
         // $(self).parents('tr').fadeOut( "slow" );
       }
@@ -47,6 +48,7 @@
       url: '<%= block_unblock_user_customer_path(current_user)%>',
       method: 'get',
       data: {status: 'unblock', block_user_id: id},
+
       success:function(){
         // $(self).parents('tr').fadeOut( "slow" );
       }
