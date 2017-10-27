@@ -25,7 +25,7 @@
         <td><%= parcel.weight %></td>
         <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
         <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight.to_date.try(:strftime, "%m/%y") %></td>
+        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
         <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
@@ -51,7 +51,7 @@
         <td><%= parcel.weight %></td>
         <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
         <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight.to_date.try(:strftime, "%m/%y") %></td>
+        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
         <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
