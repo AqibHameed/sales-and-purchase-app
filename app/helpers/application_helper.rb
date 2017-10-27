@@ -98,7 +98,7 @@ module ApplicationHelper
   def get_days_limit(buyer, supplier)
     dl = DaysLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
     if dl.nil? || dl.days_limit.nil? || dl.days_limit.blank?
-      pluralize(0, 'day')
+      pluralize(30, 'day')
     else
       pluralize(dl.days_limit.to_i, 'day')
     end

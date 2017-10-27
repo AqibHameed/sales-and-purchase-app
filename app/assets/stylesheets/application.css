@@ -15,6 +15,7 @@
  *= require bootstrap-datetimepicker
  *= require dataTables/jquery.dataTables
  *= require select2
+ *= require font-awesome
  */
 
 .validation-error{
@@ -262,5 +263,10 @@ h4{
   background: #ee0000; 
 }
 .ui-datepicker-calendar {
-    display: none;
-    }
+  display: none;
+}
+.save_btn {
+  left: 50%;
+  position: relative;
+  top: -18px;
+}

@@ -9,13 +9,16 @@
           <th>Given</th>
           <th>Used</th>
           <th>Available</th>
+          <th></th>
         </tr>
         <% @credit_limits.each.with_index(1) do |cl, i|%>
           <% if cl.buyer.present? %>
             <tr>
               <td><%= %></td>
               <td><%= link_to cl.buyer.try(:company), customer_transactions_path(buyer_id: cl.buyer.id, supplier_id: current_customer.id) rescue 'N/A' %></td>
-              <td><%= get_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
+              <td class="given_limit"><%= get_credit_limit(cl.buyer, current_customer) rescue 'N/A' %>
+              <i class="fa fa-edit pull-right" id='credit_edit'></i></td>
+              <td class="edit_field hide"><%=text_field_tag "limit", '', 'data-id'=> cl.buyer.id, placeholder: 'Enter limit' %><i class="fa fa-check-square-o save_btn"></i></td>
               <td><%= get_used_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
               <td><%= get_available_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
             </tr>
@@ -25,3 +28,28 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  $(document).on('click', '#credit_edit', function(){
+    $(this).parent('.given_limit').addClass('hide')
+    $(this).parent('td').next('td').removeClass('hide')
+  })
+
+  $(document).on('click', '.save_btn', function(){
+    self = $(this)
+    value = $(this).parent('.edit_field').find('#limit').val()
+    user_id = $(this).parent('.edit_field').find('#limit').data('id')
+    $.ajax({
+      url: '<%=change_credit_limit_path %>',
+      method: 'get',
+      dataType: 'json',
+      data: {limit: value, buyer_id: user_id},
+      success:function(data){
+        $(self).parents('tr').find('td.given_limit').removeClass('hide')
+        $(self).parents('tr').find('td.edit_field').addClass('hide')
+        $(self).parents('tr').find('td.given_limit').html(data.value + '<i id="credit_edit" class="fa fa-edit pull-right"></i>')
+        $(self).parent('.edit_field').find('#limit').val('')
+      }
+    })
+  })
+</script>
