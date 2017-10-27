@@ -10,6 +10,7 @@
     <th>Price</th>
     <th>Credit</th>
     <th>Supplier</th>
+    <th>UID</th>
     <% unless params[:controller] == 'customers' %>
       <th>For Sale</th>
     <% end %>
@@ -28,6 +29,7 @@
         <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
+        <td><%= parcel.uid %></td>
         <% if parcel.customer_id == current_customer.id %>
           <% if params[:controller] == 'customers' %>
             <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
@@ -53,6 +55,7 @@
         <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
+        <td><%= parcel.uid %></td>
         <% if parcel.customer_id == current_customer.id %>
           <% if params[:controller] == 'customers' %>
             <td><%= link_to 'View', trading_parcel_path(parcel) %></td>
