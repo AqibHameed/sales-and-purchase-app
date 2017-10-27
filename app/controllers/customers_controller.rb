@@ -44,7 +44,7 @@ class CustomersController < ApplicationController
     else
       BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first.destroy
     end
-    @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
+    @customers = Customer.unscoped.where.not(id: current_customer.id)
     respond_to do |format|
       format.js { render 'block_unblock' }
       format.html { redirect_to credit_suppliers_path }
