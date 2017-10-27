@@ -223,6 +223,7 @@
           <div class="field">
             <%= f.number_field :credit_period, class: 'input' %>
             <%= f.hidden_field :customer_id, value: current_customer.id, class: 'input' %>
+            <%= f.hidden_field :single_parcel, value: true, class: 'input' %>
           </div>
         </div>
 

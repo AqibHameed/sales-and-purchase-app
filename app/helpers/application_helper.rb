@@ -110,6 +110,31 @@ module ApplicationHelper
     number_with_precision((total.to_f - used.to_f), precision: 2)
   end
 
+  def get_number_of_customers(supplier, amount,check)
+    count=0
+    count1=0
+    buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
+    buyers = Customer.where(id: buyer_ids)
+    buyers.each do |b|
+      available_credit = get_available_credit_limit(b, supplier)
+      if amount <= available_credit.to_f
+        count += 1
+      else
+        count1 += 1
+      end
+    end
+    if check == 'available'
+      return count
+    else
+      return count1
+    end
+  end
+  def get_count_no_credit(supplier)
+    buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
+    buyers = Customer.where.not(id: buyer_ids)
+    buyers.count
+
+  end
   def get_used_credit_limit(buyer, supplier)
     transactions = Transaction.where(buyer_id: buyer.id, supplier_id: supplier.id, paid: false)
     @amount = []

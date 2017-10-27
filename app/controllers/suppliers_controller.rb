@@ -31,6 +31,14 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def single_parcel
+    @parcel = TradingParcel.find(params[:id])
+  end
+
+  def single_parcel_form
+    @trading_parcel = TradingParcel.new
+  end
+
   def transactions
     @pending_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
     @overdue_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]

@@ -10,6 +10,8 @@ class TradingParcel < ApplicationRecord
 
   accepts_nested_attributes_for :my_transaction
 
+  attr_accessor :single_parcel
+
   def self.search_by_filters(params, current_customer)
     parcels = TradingParcel.where.not(customer_id: current_customer.id).order(created_at: :desc)
     parcels = parcels.where("description like ? OR box like ? OR source like ?", "%#{params[:description]}%", "%#{params[:description]}%", "%#{params[:description]}%") unless params[:description].blank?

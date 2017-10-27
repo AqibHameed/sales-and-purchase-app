@@ -13,7 +13,11 @@ class TradingParcelsController < ApplicationController
   def create
     @parcel = TradingParcel.new(trading_parcel_params)
     if @parcel.save
-      redirect_to suppliers_path, notice: 'Parcel created successfully'
+      if params[:trading_parcel][:single_parcel].present?
+        redirect_to single_parcel_supplier_path(@parcel), notice: 'Parcel created successfully'
+      else
+        redirect_to suppliers_path, notice: 'Parcel created successfully'
+      end
     else
       error = @parcel.errors.full_messages.first
       redirect_to suppliers_path, notice: error

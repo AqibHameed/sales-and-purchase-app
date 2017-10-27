@@ -113,12 +113,16 @@ Rails.application.routes.draw do
   end
 
   resources :suppliers do
+    member do
+      get :single_parcel
+    end
     collection do
       get :trading
       post :parcels
       get :transactions
       get :credit
       get :credit_given_list
+      get :single_parcel_form
     end
   end
   resources :trading_parcels
