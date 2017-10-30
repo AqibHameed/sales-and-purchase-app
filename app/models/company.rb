@@ -6,7 +6,7 @@ class Company < ApplicationRecord
   has_many :contact_people
   has_many :tenders
   has_many :trading_parcels
-  has_many :supplier_notifications
+  has_many :supplier_notifications, :class_name => 'SupplierNotification', :foreign_key => :supplier_id
   has_many :supplier_mines
 
   belongs_to :customer, optional: true
