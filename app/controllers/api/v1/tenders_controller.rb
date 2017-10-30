@@ -25,7 +25,7 @@ module Api
       def upcoming
         col_str = "open_date > '#{Time.zone.now}'"
         if params[:location] || params[:month] || params[:supplier]
-          col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
+          col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
@@ -56,7 +56,7 @@ module Api
       def closed
         col_str = "close_date < '#{Time.zone.now}'"
         if params[:location] || params[:month] || params[:supplier]
-          col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
+          col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
