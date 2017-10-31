@@ -111,9 +111,9 @@ def count_value(condition, total, option,customer)
     number_with_precision((buyers), precision: 2)
   end
 
-  count_percent=(count/total)*100 rescue 0
-  value_total=overall_credit_received(customer).to_i
-  value_percent=(buyers/value_total)*100
+  count_percent=((count/total.to_f)*100).to_i rescue 0
+  value_total=overall_credit_received(customer).to_f
+  value_percent=((buyers/value_total)*100).to_i rescue 0
   if option == 'count'
   return "#{count}(#{count_percent}%)"
   else
@@ -150,9 +150,13 @@ def sale_count_value(condition,total,option,customer)
     number_with_precision((suppliers), precision: 2)
 
   end
-  count_percent=(count/total)*100 rescue 0
-  value_total=overall_credit_received(customer).to_i
-  value_percent=(suppliers/value_total)*100
+  count_percent=((count/total.to_f)*100).to_i rescue 0
+  value_total= overall_credit_given(customer).to_f
+  value_percent=((suppliers/value_total)*100).to_i rescue 0
+  puts "fffffffffffffffffffffffff"
+  puts count.inspect
+  puts total.inspect
+  puts count_percent.inspect
   if option == 'count'
   return "#{count}(#{count_percent}%)"
   else
