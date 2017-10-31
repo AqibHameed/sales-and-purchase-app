@@ -12,13 +12,10 @@ module Api
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.active.where(col_str).order("open_date")
-          # upcoming_tenders = current_customer.tenders.where(upcoming_str).where(col_str).order("created_at desc")
+          tenders = Tender.active.where(col_str).order("open_date")
         else
           tenders = Tender.active.where(col_str).order("open_date")
-          # upcoming_tenders = Tender.where(upcoming_str).where(col_str).order("created_at desc")
         end
-        # tenders = active_tenders + upcoming_tenders
         render json: { tenders: tender_data(tenders), response_code: 200 }
       end
 
@@ -30,7 +27,7 @@ module Api
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.where(col_str).order("open_date")
+          tenders = Tender.where(col_str).order("open_date")
         else
           tenders = Tender.where(col_str).order("open_date")
         end
@@ -61,7 +58,7 @@ module Api
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.where(col_str).order("created_at desc")
+          tenders = Tender.where(col_str).order("created_at desc")
         else
           tenders = Tender.where(col_str).order("created_at desc")
         end
