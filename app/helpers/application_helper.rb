@@ -78,6 +78,98 @@ module ApplicationHelper
     end
   end
 
+# def get_credit_purchase_percentage(count,total)
+#  return (count/total)*100
+
+# end
+
+def count_value(condition, total, option,customer)
+  if condition == '0'
+    count = Transaction.where('credit = ? and buyer_id =?', 0, customer.id).count
+    buyer_ids = Transaction.where('credit = ? and buyer_id =?', 0,customer.id).map { |e| e.buyer_id }
+    buyers = CreditLimit.where(buyer_id: buyer_ids).sum(:credit_limit)
+    number_with_precision((buyers), precision: 2)
+  elsif condition =='less_30'
+    count=Transaction.where('credit <= ? and buyer_id =?', 30,customer.id).count
+    buyer_ids=Transaction.where('credit <= ? and buyer_id =?', 30,customer.id).map { |e| e.buyer_id }
+    buyers = CreditLimit.where(buyer_id: buyer_ids).sum(:credit_limit)
+    number_with_precision((buyers), precision: 2)
+  elsif condition =='60'
+    count=Transaction.where('credit > ? and credit <= ? and buyer_id =?', 30,60,customer.id).count
+    buyer_ids=Transaction.where('credit > ? and credit <= ? and buyer_id =?',30,60,customer.id).map { |e| e.buyer_id }
+    buyers = CreditLimit.where(buyer_id: buyer_ids).sum(:credit_limit)
+    number_with_precision((buyers), precision: 2)
+  elsif condition =='90'
+    count=Transaction.where('credit > ? and credit <= ? and buyer_id =?', 60,90,customer.id).count
+    buyer_ids=Transaction.where('credit > ? and credit <= ? and buyer_id =?',60,90,customer.id).map { |e| e.buyer_id }
+    buyers = CreditLimit.where(buyer_id: buyer_ids).sum(:credit_limit)
+    number_with_precision((buyers), precision: 2)
+  else
+    count=Transaction.where('credit > ? and buyer_id =?', 90,customer.id).count
+    buyer_ids=Transaction.where('credit > ? and buyer_id =?', 90,customer.id).map { |e| e.buyer_id }
+    buyers = CreditLimit.where(buyer_id: buyer_ids).sum(:credit_limit)
+    number_with_precision((buyers), precision: 2)
+  end
+
+  count_percent=(count/total)*100 rescue 0
+  value_total=overall_credit_received(customer).to_i
+  value_percent=(buyers/value_total)*100
+  if option == 'count'
+  return "#{count}(#{count_percent}%)"
+  else
+    return "#{buyers}(#{value_percent}%)"
+  end
+end
+
+def sale_count_value(condition,total,option,customer)
+  count=0
+  if condition == '0'
+    count = Transaction.where('credit = ? and supplier_id =?', 0,customer.id).count
+    buyer_ids = Transaction.where('credit = ? and supplier_id =?', 0,customer.id).map { |e| e.buyer_id  }
+    suppliers = CreditLimit.where(buyer_id: buyer_ids,supplier_id: customer.id ).sum(:credit_limit)
+    number_with_precision((suppliers), precision: 2)
+  elsif condition == 'less_30'
+    count = Transaction.where('credit <= ? and supplier_id =?', 30,customer.id).count
+    buyer_ids = Transaction.where('credit <= ? and supplier_id =?', 30,customer.id).map { |e| e.buyer_id  }
+    suppliers = CreditLimit.where(buyer_id: buyer_ids,supplier_id: customer.id).sum(:credit_limit)
+    number_with_precision((suppliers), precision: 2)
+  elsif condition == '60'
+    count=Transaction.where('credit > ? and credit <= ? and supplier_id =?', 30,60,customer.id).count
+    buyer_ids=Transaction.where('credit > ? and credit <= ? and supplier_id =?',30,60,customer.id).map { |e| e.buyer_id  }
+    suppliers = CreditLimit.where(buyer_id: buyer_ids,supplier_id: customer.id).sum(:credit_limit)
+    number_with_precision((suppliers), precision: 2)
+  elsif condition == '90'
+    count=Transaction.where('credit > ? and credit <= ? and supplier_id =?', 60,90,customer.id).count
+    buyer_ids=Transaction.where('credit > ? and credit <= ? and supplier_id =?',60,90,customer.id).map { |e| e.buyer_id  }
+    suppliers = CreditLimit.where(buyer_id: buyer_ids,supplier_id:customer.id).sum(:credit_limit)
+    number_with_precision((suppliers), precision: 2)
+  else
+    count=Transaction.where('credit > ? and supplier_id =?', 90,customer.id).count
+    buyer_ids=Transaction.where('credit > ? and supplier_id =?', 90,customer.id).map { |e| e.buyer_id  }
+    suppliers = CreditLimit.where(buyer_id: buyer_ids,supplier_id: customer.id).sum(:credit_limit)
+    number_with_precision((suppliers), precision: 2)
+
+  end
+  count_percent=(count/total)*100 rescue 0
+  value_total=overall_credit_received(customer).to_i
+  value_percent=(suppliers/value_total)*100
+  if option == 'count'
+  return "#{count}(#{count_percent}%)"
+  else
+    return "#{suppliers}(#{value_percent}%)"
+  end
+end
+
+# def purchase_value(condition)
+#   buyer_ids = Transaction.where(credit: condition).map { |e| e.buyer_id  }
+#     buyers = CreditLimit.where(buyer_id: buyer_ids).sum(:credit_limit)
+#     # value=buyers.sum
+#     number_with_precision((buyers), precision: 2)
+#     return buyers
+
+
+# end
+
   def index_count page
     if page == 0
       return 0
@@ -98,7 +190,7 @@ module ApplicationHelper
   def get_days_limit(buyer, supplier)
     dl = DaysLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
     if dl.nil? || dl.days_limit.nil? || dl.days_limit.blank?
-      pluralize(30, 'day')
+      pluralize(0, 'day')
     else
       pluralize(dl.days_limit.to_i, 'day')
     end
@@ -129,6 +221,7 @@ module ApplicationHelper
       return count1
     end
   end
+
   def get_count_no_credit(supplier)
     buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
     buyers = Customer.where.not(id: buyer_ids)
@@ -148,7 +241,8 @@ module ApplicationHelper
   end
 
   def overall_credit_received(customer)
-    current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)
+    puts customer.inspect
+    current_limit = CreditLimit.where(buyer_id: customer.try(:id)).sum(:credit_limit)
     number_with_precision((current_limit), precision: 2)
   end
 
@@ -164,9 +258,29 @@ module ApplicationHelper
     number_with_precision(transaction_amt, precision: 2)
   end
 
+  def credit_available_by_customer
+    overall_credit_received(current_customer).to_f - overall_credit_spent(current_customer).to_f
+  end
+
   def overall_credit_given(customer)
     current_limit = CreditLimit.where(supplier_id: customer.id).sum(:credit_limit)
     number_with_precision((current_limit), precision: 2)
+  end
+
+   def overall_credit_spent_by_customer(customer)
+    transactions = Transaction.where(supplier_id: customer.id)
+    @amount = []
+    transactions.each do |t|
+      weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
+      price = t.price
+      @amount << (weight.to_f * price.to_f)
+    end
+    transaction_amt = @amount.sum
+    number_with_precision(transaction_amt, precision: 2)
+  end
+
+  def credit_available(customer)
+    overall_credit_given(customer).to_f-overall_credit_spent_by_customer(customer).to_f
   end
 
   def get_status transaction

@@ -1,0 +1,122 @@
+<div class="c1 dashboard">
+  <div class="clear10"></div>
+  <div class="company">
+    <h3>Transaction</h3>
+    <p>You have <%=@total_transaction%> transactions registered</p>
+    <ul>
+      <li>
+        <p><%=@pending_transactions%> pending transaction<%=link_to 'view',transaction_list_customers_path(type: "pending")%></p>
+      </li>
+      <li>
+        <p><%=@complete_transactions%> complete transaction<%=link_to 'view',transaction_list_customers_path(type: "Complete")%></p>
+      </li>
+      <li>
+        <p><%=@overdue_transactions%> overdue transaction<%=link_to 'view',transaction_list_customers_path%></p>
+      </li>
+    </ul>
+    <h3>Purchase</h3>
+    <p>Total Credit Received = <%= overall_credit_received(current_customer) %></p>
+    <p>Credit Providers = <%= @credit_recieved.count %></p>
+    <div class="table">
+      <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
+        <thead>
+          <th>Terms</th>
+          <th>#</th>
+          <th>value</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cash</td>
+            <td><%=count_value('0', @credit_recieved.count, 'count', current_customer)%></td>
+            <td><%=count_value('0', @credit_recieved.count, 'value', current_customer)%></td>
+          </tr>
+          <tr>
+            <td><=30</td>
+            <td><%=count_value('less_30', @credit_recieved.count,'count', current_customer)%></td>
+            <td><%=count_value('less_30', @credit_recieved.count,'value', current_customer)%></td>
+          </tr>
+          <tr>
+            <td>30<=60</th>
+            <td><%=count_value('60', @credit_recieved.count,'count', current_customer)%></td>
+            <td><%=count_value('60', @credit_recieved.count,'value', current_customer)%></td>
+          </tr>
+          <tr>
+            <td>60<=90</td>
+            <td><%=count_value('90', @credit_recieved.count,'count', current_customer)%></td>
+            <td><%=count_value('90', @credit_recieved.count,'value', current_customer)%></td>
+          </tr>
+          <tr>
+            <td>90<</td>
+            <td><%=count_value('more_90', @credit_recieved.count,'count', current_customer)%></td>
+            <td><%=count_value('more_90', @credit_recieved.count,'value', current_customer)%></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Sales</h3>
+    <p>Credit given to = <%=@credit_given.count%> </p>
+    <p>Total Credit Given=<%=overall_credit_given(current_customer)%></p>
+    <p>Total Credit Used= <%=overall_credit_spent_by_customer(current_customer)%></p>
+    <p>Total Credit Available= <%=credit_available(current_customer)%></p>
+    <div class="table">
+      <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
+        <thead>
+          <th>Terms</th>
+          <th>#</th>
+          <th>value</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cash</td>
+            <td><%=sale_count_value('0', @credit_given.count,'count', current_customer)%></td>
+            <td><%=sale_count_value('0', @credit_given.count,'value', current_customer)%></td>
+          </tr>
+          <tr>
+            <td><=30</td>
+            <td><%=sale_count_value('less_30', @credit_given.count,'count', current_customer)%></td>
+            <td><%=sale_count_value('less_30', @credit_given.count,'value', current_customer)%></td>
+          </tr>
+          <tr>
+            <td>30<=60</td>
+            <td><%=sale_count_value('60', @credit_given.count,'count', current_customer)%></td>
+            <td><%=sale_count_value('60', @credit_given.count,'value', current_customer)%></td>
+          </tr>
+          <tr>
+            <td>60<=90</td>
+            <td><%=sale_count_value('90', @credit_given.count,'count', current_customer)%></td>
+            <td><%=sale_count_value('90', @credit_given.count,'value', current_customer)%></td>
+          </tr>
+          <tr>
+            <td>90<</td>
+            <td><%=sale_count_value('more_90', @credit_given.count,'count', current_customer)%></td>
+            <td><%=sale_count_value('more_90', @credit_given.count,'value', current_customer)%></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="c2">
+  <div class="clear10"></div>
+  <h3>Share With</h3>
+  <%=form_for(@shared, :url=> shared_customers_path) do |f|%>
+    <%= f.select :shared_to_id, customer_list_options, { include_blank: true }, class: 'input no-border' %>
+    <%=f.submit "save", class: 'submit_share' %>
+  <%end%>
+  <div class="clear20"></div>
+  <div class="table">
+    <h3>Sharing With</h3>
+    <div class="share_with">
+      <%= render partial: 'sharing_info', locals: { shared_table: @shared_table } %>
+    </div>
+  </div>
+</div>
+<div class="clear"></div>
+<script>
+ $(document).ready(function(){
+
+    $("#shared_shared_to_id").select2({
+    });
+  })
+ </script>

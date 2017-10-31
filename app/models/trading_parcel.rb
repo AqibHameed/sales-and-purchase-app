@@ -25,6 +25,6 @@ class TradingParcel < ApplicationRecord
   def generate_and_add_uid
     uid = SecureRandom.hex(4)
     self.uid = uid
-    self.save(validate: false) 
+    self.save(validate: false)
   end
 end

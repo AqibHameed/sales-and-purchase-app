@@ -47,7 +47,7 @@ class SuppliersController < ApplicationController
   end
 
   def credit
-    @customers = Customer.unscoped.where.not(id: current_customer.id).order(company: :asc).page params[:page]
+    @customers = Customer.unscoped.where.not(id: current_customer.id)
   end
 
   def change_limits

@@ -1,12 +1,70 @@
 class CustomersController < ApplicationController
 
   before_action :authenticate_customer!
+  before_action :check_info_shared, only: [:shared_info]
+
   def profile
     @customer = current_customer
   end
 
+  def info
+    @total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?',current_customer.id,current_customer.id).count
+    @pending_transactions = Transaction.where("buyer_id = ? OR supplier_id = ? AND due_date >= ? AND paid = ?", current_customer.id, current_customer.id, Date.today, false).count
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", current_customer.id,current_customer.id, Date.today, false).count
+    @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", current_customer.id,current_customer.id,true).count
+    @credit_recieved = CreditLimit.where('buyer_id =?',current_customer.id)
+    @credit_given = CreditLimit.where('supplier_id =?',current_customer.id)
+    @shared = Shared.new
+    @shared_table = Shared.where(shared_by_id: current_customer.id)
+  end
+
+  def shared
+    @check_duplicate = Shared.where(shared_to_id: params[:shared][:shared_to_id], shared_by_id: current_customer.id)
+    if @check_duplicate.present?
+      redirect_to info_customers_path, notice: "Already shared."
+    else
+      @shared = Shared.new(shared_params)
+      if @shared.shared_to_id.nil?
+        redirect_to info_customers_path, notice: "Select company first."
+      else
+        @shared.shared_by_id = current_customer.id
+        if @shared.save
+          redirect_to info_customers_path, notice: "shared successfully"
+        end
+      end
+    end
+  end
+
+  def shared_info
+    @total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?',params[:id],params[:id]).count
+    @pending_transactions = Transaction.where("buyer_id = ? OR supplier_id = ? AND due_date >= ? AND paid = ?", params[:id], params[:id], Date.today, false).count
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", params[:id],params[:id], Date.today, false).count
+    @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", params[:id],params[:id],true).count
+    @credit_recieved = CreditLimit.where('buyer_id =?',params[:id])
+    @credit_given = CreditLimit.where('supplier_id =?',params[:id])
+    @customer = Customer.find(params[:id])
+  end
+
+  def transaction_list
+    @pending_transactions = Transaction.where("buyer_id = ? OR supplier_id = ? AND due_date >= ? AND paid = ?", current_customer.id, current_customer.id, Date.today, false)
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", current_customer.id,current_customer.id, Date.today, false)
+    @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", current_customer.id,current_customer.id,true)
+  end
+
   def index
     @customer = Customer.all
+  end
+
+  def destroy
+    @shared_user = Shared.find(params[:id])
+    @shared_user.destroy
+    @shared_table = Shared.where(shared_by_id: current_customer.id)
+
+    respond_to do |format|
+      format.js { render 'shared_customer' }
+
+    end
+
   end
 
   def update_profile
@@ -44,7 +102,7 @@ class CustomersController < ApplicationController
     else
       BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first.destroy
     end
-    @customers = Customer.unscoped.where.not(id: current_customer.id).order(company: :asc).page params[:page]
+    @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
     respond_to do |format|
       format.js { render 'block_unblock' }
       format.html { redirect_to credit_suppliers_path }
@@ -92,6 +150,15 @@ class CustomersController < ApplicationController
     @trading_parcel.update_attribute(:for_sale, !@trading_parcel.for_sale)
   end
 
+  def check_info_shared
+    check = Shared.where('shared_by_id = ? and shared_to_id = ?', params[:id], current_customer)
+    if check.present?
+      # do nothing
+    else
+      redirect_to root_path, notice: "You are not authorized."
+    end
+  end
+
   private
   def customer_params
     params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate)
@@ -100,5 +167,11 @@ class CustomersController < ApplicationController
   def password_params
     params.require(:customer).permit(:password, :password_confirmation)
   end
+
+  def shared_params
+    params.require(:shared).permit(:shared_to_id)
+  end
+
+
 end
 
