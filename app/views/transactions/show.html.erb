@@ -38,9 +38,10 @@
   </tr>
 </table>
 <br/>
-<div id='place_amount '><%=link_to 'Buy','#',  class: 'login-btn btn-02' %></div>
+<%=link_to 'Buy','#', id: 'place_amount', class: 'login-btn btn-02' %>
 </div>
-<div id = 'show_form hide'>
+ <div class="clear20"></div>
+<div id = 'show_form' class="hidden">
 <%= form_for @payment, url: payment_transactions_path do |f|%>
   <div class="form-row">
   <div class="label" style='width:33%!important'>
@@ -58,8 +59,9 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-     // $('#show_form').hide();
-     $('#place_amount').click(function() {
+     $('#show_form').hide();
+     $('#place_amount').click(function(e) {
+      e.preventDefault();
       $('#show_form').toggle();
     });
   });
