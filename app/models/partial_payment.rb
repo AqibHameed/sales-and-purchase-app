@@ -1,0 +1,3 @@
+class PartialPayment < ApplicationRecord
+
+end
