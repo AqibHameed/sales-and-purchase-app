@@ -19,6 +19,19 @@ class TransactionsController < ApplicationController
     end
   end
 
+  def payment
+    @payment = PartialPayment.new(partial_payment_params)
+    @payment.customer_id = current_customer.id
+    @payment.transaction_id = params[:partial_payment][:transaction_id]
+    if @payment.save
+      @transaction = Transaction.find(@payment.transaction_id)
+      amount = @transaction.amount
+      Transaction.update(@payment.transaction_id, :amount => amount-@payment.amount)
+      redirect_to trading_history_path
+    end
+
+  end
+
   def customer
     # @transactions = Transaction.where(buyer_id: params[:buyer_id], supplier_id: params[:supplier_id])
     @transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND supplier_id = ? ", params[:buyer_id], current_customer.id).page params[:page]
@@ -28,6 +41,11 @@ class TransactionsController < ApplicationController
 
   def reject
     @transaction = Transaction.find(params[:id])
+  end
+
+  def show
+    @transaction = Transaction.find(params[:id])
+    @payment = PartialPayment.new
   end
 
   def reject_reason
@@ -46,5 +64,9 @@ class TransactionsController < ApplicationController
   def parcel_transaction_params
     params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :sold,
                                         my_transaction_attributes: [:buyer_id, :supplier_id, :trading_parcel_id, :price, :credit, :paid, :created_at, :transaction_type, :weight ])
+  end
+
+   def partial_payment_params
+    params.require(:partial_payment).permit(:amount)
   end
 end

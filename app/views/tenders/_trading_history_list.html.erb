@@ -16,6 +16,7 @@
         <th>Status</th>
         <th>Invoice Date</th>
         <th></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -50,6 +51,7 @@
         <% else %>
           <td></td>
         <% end %>
+        <td><%=link_to 'view' , transaction_path(transaction) %></td>
       </tr>
       <% end %>
     </tbody>

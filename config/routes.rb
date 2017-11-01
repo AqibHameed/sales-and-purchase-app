@@ -135,6 +135,7 @@ Rails.application.routes.draw do
   resources :transactions do
     collection do 
       get :customer
+      post :payment
     end
     member do
       get :reject
