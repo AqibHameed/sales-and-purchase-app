@@ -5,7 +5,7 @@ class Transaction < ApplicationRecord
   belongs_to :supplier, class_name: 'Customer', foreign_key: 'supplier_id'
 
   validate :credit_validation, :validate_invoice_date
-  after_create :update_credit_limit
+  after_create :update_credit_limit, :generate_and_add_uid, :generate_and_add_amount
 
   attr_accessor :weight
 
@@ -52,6 +52,18 @@ class Transaction < ApplicationRecord
 
   def set_due_date
     self.due_date = created_at + (credit).days
+    self.save(validate: false)
+  end
+
+  def generate_and_add_uid
+    uid = SecureRandom.hex(6)
+    self.transaction_uid = uid
+    self.save(validate: false)
+  end
+
+  def generate_and_add_amount
+    amount = trading_parcel.price*trading_parcel.weight
+    self.amount = amount
     self.save(validate: false)
   end
 
