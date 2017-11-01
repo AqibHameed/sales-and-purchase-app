@@ -1,60 +1,87 @@
 <div class="table">
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
-
-
-  <tr>
-    <td> Description</td>
-    <td><%= @transaction.trading_parcel.description %></td>
-  </tr>
-  <tr>
-    <td> No. of stones</td>
-    <td><%= @transaction.trading_parcel.no_of_stones.nil? ? 'N/A' : @transaction.trading_parcel.no_of_stones %></td>
-  </tr>
-
-  <tr>
-    <td> Carats</td>
-    <td><%= @transaction.trading_parcel.weight %></td>
-  </tr>
-  <tr>
-    <td> Cost</td>
-    <td><%= @transaction.trading_parcel.cost.nil? ? 'N/A' : @transaction.trading_parcel.cost %></td>
-  </tr>
-  <tr>
-    <td> Box Value</td>
-    <td><%= (@transaction.trading_parcel.box_value.nil? || @transaction.trading_parcel.box_value.blank?) ? 'N/A' : @transaction.trading_parcel.box_value %></td>
-  </tr>
-  <tr>
-    <td> Sight</td>
-    <td><%= (@transaction.trading_parcel.sight.nil? || @transaction.trading_parcel.sight.blank?) ? 'N/A' : @transaction.trading_parcel.sight.to_date.strftime("%m/%y") %></td>
-  </tr>
-  <tr class="parcel-details">
-    <td> Price</td>
-    <td><%= @transaction.price.nil? ? 'N/A' : number_with_precision(@transaction.price, precision: 2) %></td>
-  </tr>
-  <tr class="parcel-details">
-    <td> Credit</td>
-    <td><%= @transaction.trading_parcel.credit_period %> days (<%= (Date.today + (@transaction.trading_parcel.credit_period.to_i).days).strftime("%B %d, %Y") %>)</td>
-  </tr>
-</table>
-<br/>
-<%=link_to 'Buy','#', id: 'place_amount', class: 'login-btn btn-02' %>
+  <h3>Transaction Detail</h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <tr>
+      <td> Description</td>
+      <td><%= @transaction.trading_parcel.description %></td>
+    </tr>
+    <tr>
+      <td> No. of stones</td>
+      <td><%= @transaction.trading_parcel.no_of_stones.nil? ? 'N/A' : @transaction.trading_parcel.no_of_stones %></td>
+    </tr>
+    <tr>
+      <td> Carats</td>
+      <td><%= @transaction.trading_parcel.weight %></td>
+    </tr>
+    <tr>
+      <td> Cost</td>
+      <td><%= @transaction.trading_parcel.cost.nil? ? 'N/A' : @transaction.trading_parcel.cost %></td>
+    </tr>
+    <tr>
+      <td> Box Value</td>
+      <td><%= (@transaction.trading_parcel.box_value.nil? || @transaction.trading_parcel.box_value.blank?) ? 'N/A' : @transaction.trading_parcel.box_value %></td>
+    </tr>
+    <tr>
+      <td> Sight</td>
+      <td><%= (@transaction.trading_parcel.sight.nil? || @transaction.trading_parcel.sight.blank?) ? 'N/A' : @transaction.trading_parcel.sight.to_date.strftime("%m/%y") %></td>
+    </tr>
+    <tr class="parcel-details">
+      <td> Price</td>
+      <td><%= @transaction.price.nil? ? 'N/A' : number_with_precision(@transaction.price, precision: 2) %></td>
+    </tr>
+    <tr class="parcel-details">
+      <td> Credit</td>
+      <td><%= @transaction.trading_parcel.credit_period %> days (<%= (Date.today + (@transaction.trading_parcel.credit_period.to_i).days).strftime("%B %d, %Y") %>)</td>
+    </tr>
+  </table>
+  <div class="clear20"></div>
+  <h3>Payment Details</h3>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <thead>
+      <th></th>
+      <th>Amount</th>
+      <th>Paid Date</th>
+    </thead>
+    <tbody>
+      <%@payment_details.each_with_index do |payment_detail,i|%>
+        <tr>
+          <td><%=i+1%></td>
+          <td><%=payment_detail.amount%></td>
+          <td><%=payment_detail.created_at.strftime("%b, %d %Y")%></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tr>
+    </tr>
+  </table>
+  <div class="clear20"></div>
+  <%=link_to 'Add Partial Payment','#', id: 'place_amount', class: 'login-btn btn-02' %>
 </div>
- <div class="clear20"></div>
-<div id = 'show_form' class="hidden">
-<%= form_for @payment, url: payment_transactions_path do |f|%>
-  <div class="form-row">
-  <div class="label" style='width:33%!important'>
-    Amount
-  </div>
-  <div class="field" style='width:60%!important'>
-    <%= f.text_field :amount, :style => 'width:200px;', :placeholder => 'Amount', :class => "input-1" %>
-    <%= f.hidden_field :transaction_id, value: @transaction.id %>
-    <%=f.submit 'Done'%>
-  </div>
-  <div class="clear"></div>
-</div>
-<% end %>
+<div class="clear20"></div>
+<div class="form-wrapper">
+      <div id = 'show_form' class="hidden">
+        <%= form_for @payment, url: payment_transactions_path do |f|%>
+          <div class="form-row">
+            <div class="label" style='width:33%!important'>
+              Amount
+            </div>
+            <div class="field" style='width:60%!important'>
+              <%= f.text_field :amount, :style => 'width:200px;', :placeholder => 'Amount', :class => "input-1" %>
+              <%= f.hidden_field :transaction_id, value: @transaction.id %>
+              <div class="clear"></div>
+              <div class="idt_terms_text"></div>
+              <div class="form-row">
+                <div class="label"></div>
+                <div class='field'>
+                 <%=f.submit 'Pay', class: 'btn-02 login_btn ', id: 'transaction_submit' %>
+                </div>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+          </div>
+        <% end %>
+      </div>
 </div>
 
 <script type="text/javascript">

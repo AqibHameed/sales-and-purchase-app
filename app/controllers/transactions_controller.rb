@@ -46,6 +46,7 @@ class TransactionsController < ApplicationController
   def show
     @transaction = Transaction.find(params[:id])
     @payment = PartialPayment.new
+    @payment_details = PartialPayment.where(transaction_id: params[:id])
   end
 
   def reject_reason
