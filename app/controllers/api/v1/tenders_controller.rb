@@ -12,25 +12,22 @@ module Api
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.active.where(col_str).order("open_date")
-          # upcoming_tenders = current_customer.tenders.where(upcoming_str).where(col_str).order("created_at desc")
+          tenders = Tender.active.where(col_str).order("open_date")
         else
           tenders = Tender.active.where(col_str).order("open_date")
-          # upcoming_tenders = Tender.where(upcoming_str).where(col_str).order("created_at desc")
         end
-        # tenders = active_tenders + upcoming_tenders
         render json: { tenders: tender_data(tenders), response_code: 200 }
       end
 
       def upcoming
         col_str = "open_date > '#{Time.zone.now}'"
         if params[:location] || params[:month] || params[:supplier]
-          col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
+          col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.where(col_str).order("open_date")
+          tenders = Tender.where(col_str).order("open_date")
         else
           tenders = Tender.where(col_str).order("open_date")
         end
@@ -56,12 +53,12 @@ module Api
       def closed
         col_str = "close_date < '#{Time.zone.now}'"
         if params[:location] || params[:month] || params[:supplier]
-          col_str =  "(tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
+          col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = current_customer.tenders.where(col_str).order("created_at desc")
+          tenders = Tender.where(col_str).order("created_at desc")
         else
           tenders = Tender.where(col_str).order("created_at desc")
         end
@@ -169,7 +166,8 @@ module Api
             :comments => stone.comments,
             :valuation => stone.valuation,
             :parcel_rating => stone.parcel_rating,
-            :winners_data => historical_data(stone.try(:tender).try(:id), stone)
+            :winners_data => []
+            # historical_data(stone.try(:tender).try(:id), stone)
           }
         end
         @stones
