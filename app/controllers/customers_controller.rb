@@ -8,8 +8,8 @@ class CustomersController < ApplicationController
   end
 
   def info
-    @total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?',current_customer.id,current_customer.id).count
-    @pending_transactions = Transaction.where("buyer_id = ? OR supplier_id = ? AND due_date >= ? AND paid = ?", current_customer.id, current_customer.id, Date.today, false).count
+    @total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?',current_customer.id, current_customer.id).count
+    @pending_transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ?", current_customer.id, current_customer.id, Date.today, false).count
     @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", current_customer.id,current_customer.id, Date.today, false).count
     @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", current_customer.id,current_customer.id,true).count
     @credit_recieved = CreditLimit.where('buyer_id =?',current_customer.id)
@@ -36,9 +36,9 @@ class CustomersController < ApplicationController
   end
 
   def shared_info
-    @total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?',params[:id],params[:id]).count
-    @pending_transactions = Transaction.where("buyer_id = ? OR supplier_id = ? AND due_date >= ? AND paid = ?", params[:id], params[:id], Date.today, false).count
-    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", params[:id],params[:id], Date.today, false).count
+    @total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?', params[:id], params[:id]).count
+    @pending_transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ?", params[:id], params[:id], Date.today, false).count
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", params[:id], params[:id], Date.today, false).count
     @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", params[:id],params[:id],true).count
     @credit_recieved = CreditLimit.where('buyer_id =?',params[:id])
     @credit_given = CreditLimit.where('supplier_id =?',params[:id])
