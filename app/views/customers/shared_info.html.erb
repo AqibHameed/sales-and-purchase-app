@@ -2,21 +2,24 @@
   <div class="clear10"></div>
   <div class="company">
     <h3>Transaction</h3>
-    <p>You have <%=@total_transaction%> transactions registered</p>
+    <div class="clear10"></div>
+    <h1><%=@customer.company %> have <%=@total_transaction%> transactions registered</h1>
     <ul>
       <li>
-        <p><%=@pending_transactions%> pending transaction<%=link_to 'view',transaction_list_customers_path(type: "pending")%></p>
+        <h1><%=@pending_transactions%> pending transaction<%=link_to 'view',transaction_list_customers_path(type: "pending", id: @customer.id) %></h1>
       </li>
       <li>
-        <p><%=@complete_transactions%> complete transaction<%=link_to 'view',transaction_list_customers_path(type: "Complete")%></p>
+        <h1><%=@complete_transactions%> complete transaction<%=link_to 'view',transaction_list_customers_path(type: "complete", id: @customer.id) %></h1>
       </li>
       <li>
-        <p><%=@overdue_transactions%> overdue transaction<%=link_to 'view',transaction_list_customers_path%></p>
+        <h1><%=@overdue_transactions%> overdue transaction<%=link_to 'view',transaction_list_customers_path(type: 'overdue', id: @customer.id) %></h1>
       </li>
     </ul>
+    <div class="clear20"></div>
     <h3>Purchase</h3>
-    <p>Total Credit Received=<%=overall_credit_received(@customer)%></p>
-    <p>Credit Providers = <%=@credit_recieved.count%></p>
+    <div class="clear10"></div>
+    <h1>Total Credit Received = <%=overall_credit_received(@customer)%></h1>
+    <h1>Credit Providers = <%=@credit_recieved.count%></h1>
     <div class="table">
       <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
         <thead>
@@ -53,11 +56,14 @@
         </tbody>
       </table>
     </div>
+
+    <div class="clear20"></div>
     <h3>Sales</h3>
-    <p>Credit given to = <%=@credit_given.count%> </p>
-    <p>Total Credit Given=<%=overall_credit_given(@customer)%></p>
-    <p>Total Credit Used= <%=overall_credit_spent_by_customer(@customer)%></p>
-    <p>Total Credit Available= <%=credit_available(@customer)%></p>
+    <div class="clear10"></div>
+    <h1>Credit given to = <%=@credit_given.count%> </h1>
+    <h1>Total Credit Given = <%=overall_credit_given(@customer)%></h1>
+    <h1>Total Credit Used = <%=overall_credit_spent_by_customer(@customer)%></h1>
+    <h1>Total Credit Available = <%=credit_available(@customer)%></h1>
     <div class="table">
       <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
         <thead>
@@ -96,3 +102,4 @@
     </div>
   </div>
 </div>
+<div class="clear"></div>

@@ -9,7 +9,7 @@
           <%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
         </li>
         <li>
-          <div class="dropdown list_dropdown" style="width: 66px;">
+          <div class="dropdown list_dropdown" style="width: 68px;">
             <a id="dropbtn" class="dropbtn"> History </a>
             <span><%=image_tag "down-arrow.png", width: '18%' %></span>
             <div id="myDropdown" class="list-dropdown-content">
@@ -76,6 +76,7 @@
         <span><%=image_tag "down-arrow.png", width: '4%' %></span>
         <div id="myDropdown" class="dropdown-content">
           <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
+          <%= link_to 'Info', info_customers_path, data: { turbolinks: false } %>
           <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
           <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
         </div>

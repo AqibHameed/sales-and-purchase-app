@@ -24,7 +24,6 @@ class TradingParcelsController < ApplicationController
     end
   end
 
-
   def show
     @proposal = Proposal.new
   end

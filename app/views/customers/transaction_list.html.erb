@@ -19,96 +19,27 @@
       </tr>
     </thead>
     <tbody>
-      <% if params[:type] == 'pending'%>
-      <% @pending_transactions.each do |pending_transaction| %>
-      <tr class='bg-normal'>
-        <td><%= get_description(pending_transaction.trading_parcel) rescue 'N/A'  %></td>
-        <td><%= pending_transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
-        <td><%= pending_transaction.trading_parcel.weight rescue 'N/A'  %></td>
-        <td><%= pending_transaction.trading_parcel.cost rescue 'N/A'  %></td>
-        <td><%= pending_transaction.trading_parcel.box_value rescue 'N/A' %></td>
-        <td><%= pending_transaction.trading_parcel.sight rescue 'N/A' %></td>
-        <td><%= pending_transaction.price rescue 'N/A' %></td>
-        <td><%= pending_transaction.credit rescue 'N/A' %></td>
-        <% if current_user.id == pending_transaction.buyer_id %>
-          <td>Bought</td>
-          <td><%= pending_transaction.supplier.company rescue 'N/A' %></td>
-        <% elsif current_user.id == pending_transaction.supplier_id  %>
-          <td>Sold</td>
-          <td><%= pending_transaction.buyer.company rescue 'N/A' %></td>
-        <% end %>
-        <td><%= get_status(pending_transaction) %></td>
-        <td><%= pending_transaction.created_at.strftime("%B, %d %Y")  %></td>
-        <% if pending_transaction.buyer_rejected %>
-          <td>Rejected</td>
-        <% elsif current_user.id == pending_transaction.buyer_id && pending_transaction.transaction_type == 'manual' && !pending_transaction.buyer_rejected && (pending_transaction.updated_at + 7.days > Time.now) %>
-          <td><%=link_to 'Reject', reject_transaction_path(pending_transaction) %></td>
-        <% else %>
+      <% @transactions.each do |transaction| %>
+        <tr class='bg-normal'>
+          <td><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
+          <td><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
+          <td><%= transaction.trading_parcel.weight rescue 'N/A'  %></td>
+          <td><%= transaction.trading_parcel.cost rescue 'N/A'  %></td>
+          <td><%= transaction.trading_parcel.box_value rescue 'N/A' %></td>
+          <td><%= transaction.trading_parcel.sight rescue 'N/A' %></td>
+          <td><%= transaction.price rescue 'N/A' %></td>
+          <td><%= transaction.credit rescue 'N/A' %></td>
+          <% if current_user.id == transaction.buyer_id %>
+            <td>Bought</td>
+            <td><%= transaction.supplier.company rescue 'N/A' %></td>
+          <% elsif current_user.id == transaction.supplier_id  %>
+            <td>Sold</td>
+            <td><%= transaction.buyer.company rescue 'N/A' %></td>
+          <% end %>
+          <td><%= get_status(transaction) %></td>
+          <td><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
           <td></td>
-        <% end %>
-      </tr>
-
-      <% end %>
-      <% elsif params[:type] == 'complete'%>
-      <% @complete_transactions.each do |complete_transaction| %>
-      <tr class='bg-normal'>
-        <td><%= get_description(complete_transaction.trading_parcel) rescue 'N/A'  %></td>
-        <td><%= complete_transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
-        <td><%= complete_transaction.trading_parcel.weight rescue 'N/A'  %></td>
-        <td><%= complete_transaction.trading_parcel.cost rescue 'N/A'  %></td>
-        <td><%= complete_transaction.trading_parcel.box_value rescue 'N/A' %></td>
-        <td><%= complete_transaction.trading_parcel.sight rescue 'N/A' %></td>
-        <td><%= complete_transaction.price rescue 'N/A' %></td>
-        <td><%= complete_transaction.credit rescue 'N/A' %></td>
-        <% if current_user.id == complete_transaction.buyer_id %>
-          <td>Bought</td>
-          <td><%= complete_transaction.supplier.company rescue 'N/A' %></td>
-        <% elsif current_user.id == complete_transaction.supplier_id  %>
-          <td>Sold</td>
-          <td><%= complete_transaction.buyer.company rescue 'N/A' %></td>
-        <% end %>
-        <td><%= get_status(complete_transaction) %></td>
-        <td><%= complete_transaction.created_at.strftime("%B, %d %Y")  %></td>
-        <% if complete_transaction.buyer_rejected %>
-          <td>Rejected</td>
-        <% elsif current_user.id == complete_transaction.buyer_id && complete_transaction.transaction_type == 'manual' && !complete_transaction.buyer_rejected && (complete_transaction.updated_at + 7.days > Time.now) %>
-          <td><%=link_to 'Reject', reject_transaction_path(complete_transaction) %></td>
-        <% else %>
-          <td></td>
-        <% end %>
-      </tr>
-
-      <% end %>
-      <%else%>
-      <% @overdue_transactions.each do |overdue_transaction| %>
-      <tr class='bg-normal'>
-        <td><%= get_description(overdue_transaction.trading_parcel) rescue 'N/A'  %></td>
-        <td><%= overdue_transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
-        <td><%= overdue_transaction.trading_parcel.weight rescue 'N/A'  %></td>
-        <td><%= overdue_transaction.trading_parcel.cost rescue 'N/A'  %></td>
-        <td><%= overdue_transaction.trading_parcel.box_value rescue 'N/A' %></td>
-        <td><%= overdue_transaction.trading_parcel.sight rescue 'N/A' %></td>
-        <td><%= overdue_transaction.price rescue 'N/A' %></td>
-        <td><%= overdue_transaction.credit rescue 'N/A' %></td>
-        <% if current_user.id == overdue_transaction.buyer_id %>
-          <td>Bought</td>
-          <td><%= overdue_transaction.supplier.company rescue 'N/A' %></td>
-        <% elsif current_user.id == overdue_transaction.supplier_id  %>
-          <td>Sold</td>
-          <td><%= overdue_transaction.buyer.company rescue 'N/A' %></td>
-        <% end %>
-        <td><%= get_status(complete_transaction) %></td>
-        <td><%= overdue_transaction.created_at.strftime("%B, %d %Y")  %></td>
-        <% if overdue_transaction.buyer_rejected %>
-          <td>Rejected</td>
-        <% elsif current_user.id == overdue_transaction.buyer_id && overdue_transaction.transaction_type == 'manual' && !overdue_transaction.buyer_rejected && (overdue_transaction.updated_at + 7.days > Time.now) %>
-          <td><%=link_to 'Reject', reject_transaction_path(overdue_transaction) %></td>
-        <% else %>
-          <td></td>
-        <% end %>
-      </tr>
-
-      <% end %>
+        </tr>
       <% end %>
     </tbody>
   </table>

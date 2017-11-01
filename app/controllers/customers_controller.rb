@@ -46,9 +46,18 @@ class CustomersController < ApplicationController
   end
 
   def transaction_list
-    @pending_transactions = Transaction.where("buyer_id = ? OR supplier_id = ? AND due_date >= ? AND paid = ?", current_customer.id, current_customer.id, Date.today, false)
-    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", current_customer.id,current_customer.id, Date.today, false)
-    @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", current_customer.id,current_customer.id,true)
+    customer = Customer.where(id: params[:id]).first
+    unless customer.nil?
+      if params[:type] == 'pending'
+        @transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ?", customer.id, customer.id, Date.today, false)
+      elsif params[:type] == "complete"
+        @transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", customer.id, customer.id,true)
+      elsif params[:type] == "overdue"
+        @transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND due_date < ? AND paid = ?", customer.id, customer.id, Date.today, false)
+      end
+    else
+      redirect_to root_path
+    end
   end
 
   def index
@@ -102,7 +111,7 @@ class CustomersController < ApplicationController
     else
       BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first.destroy
     end
-    @customers = Customer.unscoped.where.not(id: current_customer.id).order('created_at desc').page params[:page]
+    @customers = Customer.unscoped.where.not(id: current_customer.id).order(company: :asc).page params[:page]
     respond_to do |format|
       format.js { render 'block_unblock' }
       format.html { redirect_to credit_suppliers_path }

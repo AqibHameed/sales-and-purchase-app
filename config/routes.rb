@@ -78,6 +78,9 @@ Rails.application.routes.draw do
   end
 
   resources :customers do
+    member do
+      get :shared_info
+    end
     collection do
       get :profile
       patch :update_profile
@@ -88,6 +91,9 @@ Rails.application.routes.draw do
       get :search_trading
       get :transactions
       get :credit
+      get :info
+      post :shared
+      get :transaction_list
     end
     member do
       get :add_company

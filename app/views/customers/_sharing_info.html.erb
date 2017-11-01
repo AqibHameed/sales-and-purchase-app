@@ -1,11 +1,14 @@
-<table width="25%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
     <thead>
+      <th></th>
+      <th></th>
+      <th></th>
     </thead>
     <tbody>
       <% shared_table.each_with_index do |row, i|%>
         <tr>
           <td><%=i+1%></td>
-          <td><%=row.shared_to.first_name%></td>
+          <td><%= row.shared_to.company %></td>
           <td><%=link_to 'STOP',customer_path(row), method: :delete,remote: true, data: {confirm: "Are You Sure"}%></td>
         </tr>
       <%end%>
