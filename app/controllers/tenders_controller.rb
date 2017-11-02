@@ -312,9 +312,9 @@ class TendersController < ApplicationController
     #   @selling_price[w.lot_no.to_s + '_' + w.tender_id.to_s ] = w.selling_price
     # end
     if params[:search].present?
-      @tender_winners = TenderWinner.search_results(params[:search], @customer, true).page params[:page]
+      @tender_winners = TenderWinner.search_results(params[:search], @customer, true).page params[:page].per(100)
     else
-      @tender_winners = TenderWinner.all.page params[:page]
+      @tender_winners = TenderWinner.all.page params[:page].per(100)
     end
     respond_to do |format|
       format.html
