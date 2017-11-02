@@ -12,6 +12,9 @@
  *= require style.css
  *= require jquery.dataTables.css
  *= require jquery.fancybox-1.3.4
+ *= require bootstrap-datetimepicker
+ *= require dataTables/jquery.dataTables
+ *= require flipclock.css
  */
 
 .validation-error{
@@ -107,4 +110,167 @@ div.title1 {
 
 .vhigh {
 	background-color: #4D86BD;
+}
+
+.form-field{
+  margin: 5px 0px 0px 20px
+}
+.label{
+  margin-top: 5px;
+}
+.mt10{
+  margin-top: 10px !important;
+}
+.hide {
+  display: none;
+}
+.mr5{
+  margin-right: 5px;
+}
+.green {
+  background-color: #5cb85c;
+}
+.red{
+  background-color: #440001;
+}
+.disabled {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+.mt50{
+  margin-top: 50px;
+}
+
+#creditList thead th {
+  border-top: 1px solid #e8e8e8; 
+  border-right: 1px solid #e8e8e8;  
+  font-weight: bold ; 
+  background: #5f5f5f ; 
+  color: #ffffff ;  
+  padding: 8px ; 
+  text-align: left ; 
+}
+table.dataTable.no-footer{
+  border-bottom: 0px solid #111;
+}
+#limit{
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  color: #495057;
+  display: block;
+  font-size: 15px;
+  padding: 0.2rem 1rem;
+}
+
+.switch {
+  position: relative;
+  display: block;
+  vertical-align: top;
+  width: 70px;
+  height: 30px;
+  padding: 3px;
+  margin: 0 10px 10px 0;
+  background: linear-gradient(to bottom, #eeeeee, #FFFFFF 25px);
+  background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF 25px);
+  border-radius: 18px;
+  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+.switch-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+.switch-label {
+  position: relative;
+  display: block;
+  height: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #eceeef;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
+  color: #fefaf9;
+}
+.switch-label:before, .switch-label:after {
+  position: absolute;
+  top: 50%;
+  margin-top: -.5em;
+  line-height: 1;
+  -webkit-transition: inherit;
+  -moz-transition: inherit;
+  -o-transition: inherit;
+  transition: inherit;
+}
+.switch-label:before {
+  content: attr(data-off);
+  right: 11px;
+  color: #000;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+}
+.switch-label:after {
+  content: attr(data-on);
+  left: 11px;
+  color: #FFFFF;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+}
+.switch-input:checked ~ .switch-label {
+  background: #ED5A48;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.switch-input:checked ~ .switch-label:before {
+  opacity: 0;
+}
+.switch-input:checked ~ .switch-label:after {
+  opacity: 1;
+}
+.switch-handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(to bottom, #FFFFFF 40%, #f0f0f0);
+  background-image: -webkit-linear-gradient(top, #FFFFFF 40%, #f0f0f0);
+  border-radius: 100%;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+.switch-handle:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(to bottom, #eeeeee, #FFFFFF);
+  background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF);
+  border-radius: 6px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
+}
+.switch-input:checked ~ .switch-handle {
+  left: 44px;
+  box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+ 
+/* Transition
+========================== */
+.switch-label, .switch-handle {
+  transition: All 0.3s ease;
+  -webkit-transition: All 0.3s ease;
+  -moz-transition: All 0.3s ease;
+  -o-transition: All 0.3s ease;
+}
+.row-active{
+    background: #00CC33 !important;
+    /*background: #ED5A48 !important;*/
+}
+.stone-winner{
+    background: #e2e24e !important;
 }

@@ -74,7 +74,8 @@
         url: $('.login_form').attr('action'), //sumbits it to the given url of the form
         data: valuesToSubmit,
         type: 'post',
-        success: function(response){ window.location.href = response },
+        dataType: 'script',
+        // success: function(response){ window.location.href = response },
         error: function(response){
           $('.error_msg').html(response.responseText)
         }

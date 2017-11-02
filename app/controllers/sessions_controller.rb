@@ -1,4 +1,5 @@
 class SessionsController <  Devise::SessionsController
+
   def get_resource
     if Customer.find_by_email_and_status(params[resource_name][:email],true).present?
       return :customer
@@ -21,7 +22,7 @@ class SessionsController <  Devise::SessionsController
     end
     respond_to do |format|
       format.html { redirect_to after_sign_in_path_for(resource) }
-      format.js { redirect_to after_sign_in_path_for(resource), turbolinks: false }
+      format.js { render :js => "window.location.href = '#{after_sign_in_path_for(resource)}'", turbolinks: false}      
     end
 
   end

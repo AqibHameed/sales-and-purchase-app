@@ -4,7 +4,7 @@ class Tender < ApplicationRecord
   attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
                   :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
                   :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
-                  :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id
+                  :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id, :diamond_type, :bid_open, :round_duration, :rounds_between_duration, :sight_document, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field, :reserved_field
 
   attr_accessor :delete_stones, :delete_winner_list, :total_carat_value
 
@@ -21,8 +21,14 @@ class Tender < ApplicationRecord
   belongs_to :company
   has_many :reference, :class_name => "Tender", :foreign_key => "reference_id"
   belongs_to :parent_reference, :class_name => "Tender", :foreign_key => "reference_id", optional: true
+  has_many :sights
+  has_many :yes_no_buyer_winners
+  # has_many :tender_notifications
+  belongs_to :company, optional: true
+  has_many :yes_no_buyer_interests
 
   accepts_nested_attributes_for :stones
+  accepts_nested_attributes_for :sights
 
   validates_presence_of :name, :open_date, :close_date, :company_id
 
@@ -30,13 +36,18 @@ class Tender < ApplicationRecord
   do_not_validate_attachment_file_type :temp_document
   has_attached_file :document
   do_not_validate_attachment_file_type :document
+  has_attached_file :sight_document 
+  do_not_validate_attachment_file_type :sight_document
   has_attached_file :winner_list
   do_not_validate_attachment_file_type :winner_list
 
   after_save :create_stones_from_uploaded_file
+  after_save :create_sights_from_uploaded_file
   # after_save :create_temp_stones_from_uploaded_file #==> remove on Nov 15 2013
   after_save :update_winner_list_from_uploaded_file
 
+  after_create_commit :delayed_job_need_to_perform
+  
   scope :open_tenders, lambda{|date| where("close_date >= ?", date.beginning_of_day) }
 
   scope :closed_tenders, lambda{|date| where("close_date < ?", date.end_of_day) }
@@ -119,6 +130,21 @@ class Tender < ApplicationRecord
     end
   end
 
+  def sight_bid_count(customer = nil)
+    unless customer.blank?
+      Bid.where(:sight_id => self.sight_ids, :customer_id => customer.id).count
+    else
+      Bid.find_by_sql("
+        SELECT * FROM tenders t
+        INNER JOIN customers_tenders ct ON t.id = ct.tender_id
+        INNER JOIN customers c ON c.id = ct.customer_id
+        INNER JOIN bids b ON (b.customer_id = c.id AND b.tender_id = t.id)
+        where ct.confirmed = #{true}
+        AND b.tender_id = #{self.id}
+      ").count
+    end
+  end
+
   def sort_by_avg(tender1, tender2)
     TenderWinner.find_by_sql("
     select t1.* from tender_winners as t1, tender_winners as t2
@@ -134,6 +160,16 @@ class Tender < ApplicationRecord
     Bid.where(:stone_id => self.stone_ids, :customer_id => customer.id).map(&:total).sum.round(2) rescue 0
   end
 
+  def total_sight_bid_amount(customer)
+    Bid.where(:sight_id => self.sight_ids, :customer_id => customer.id).map(&:total).sum.round(2) rescue 0
+  end
+
+  def delayed_job_need_to_perform
+    if self.tender_type == "Yes/No"
+      Delayed::Job.enqueue YesNoBiddingJob.new(self.id), 0, (self.bid_close) 
+    end
+  end
+
   def create_stones_from_uploaded_file
     if self.document_updated_at_changed?
       data_file = Spreadsheet.open(self.document.path)
@@ -147,13 +183,78 @@ class Tender < ApplicationRecord
               stone.description = Tender.get_value(data_row[Tender.get_index(self.desc_field)]) unless self.desc_field.blank?
               stone.no_of_stones = Tender.get_value(data_row[Tender.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
               stone.weight = Tender.get_value(data_row[Tender.get_index(self.weight_field)]) unless self.weight_field.blank?
+              stone.reserved_price = Tender.get_value(data_row[Tender.get_index(self.reserved_field)]) unless self.reserved_field.blank?
               stone.stone_type = (data_row[Tender.get_index(self.no_of_stones_field)].to_i == 1 ? 'Stone' : 'Parcel' rescue 'Stone'  ) unless self.no_of_stones_field.blank?
               stone.save
+              if stone.save
+                tender = Tender.find(stone.tender_id)
+                if tender.tender_type == "Yes/No"
+                  id = tender.id
+                  stone_id = stone.id
+                  customer_id = tender.customers.ids
+                  customer_id.each do |c|
+                    yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, stone_id: stone_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
+                    yes_no_buyer_interests.save
+                  end
+                end
+              end
               puts stone.errors.inspect
             end
           end
         end
       end
+    end
+  end
+
+  def create_sights_from_uploaded_file
+    puts "----------sight-----------"
+    if self.sight_document_updated_at_changed?
+      data_file = Spreadsheet.open(self.sight_document.path)
+      puts "--------sight data_file---------"
+      puts "------=====#{data_file}"
+      worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
+      unless worksheet.nil?
+        worksheet.each_with_index do |data_row, i|
+          unless i == 0
+            unless data_row[('A'..'AZ').to_a.index(self.source_no_field)].nil?
+              sight = self.sights.new
+              sight.source = Tender.get_value(data_row[Tender.get_index(self.source_no_field)]) unless self.source_no_field.blank?
+              sight.box = Tender.get_value(data_row[Tender.get_index(self.box_no_field)]) unless self.box_no_field.blank? 
+              sight.carats = Tender.get_value(data_row[Tender.get_index(self.carats_no_field)]) unless self.carats_no_field.blank?
+              sight.cost = Tender.get_value(data_row[Tender.get_index(self.cost_no_field)]) unless self.cost_no_field.blank? 
+              box_value = Tender.get_value(data_row[Tender.get_index(self.boxvalue_no_field)]) unless self.boxvalue_no_field.blank? 
+              sight.box_value_from = box_value.present? ? box_value.to_s.split("-").first : 0
+              sight.box_value_to = box_value.present? ? box_value.to_s.split("-").last : 0
+              sight.sight = data_row[Tender.get_index(self.sight_no_field)] unless self.sight_no_field.blank?
+              sight.price = Tender.get_value(data_row[Tender.get_index(self.price_no_field)]) unless self.price_no_field.blank?
+              sight.credit = Tender.get_value(data_row[Tender.get_index(self.credit_no_field)]) unless self.credit_no_field.blank?
+              sight.sight_reserved_price = Tender.get_value(data_row[Tender.get_index(self.sight_reserved_field)]) unless self.sight_reserved_field.blank?
+              sight.save
+              if sight.save
+                puts "#{sight.inspect}"
+                tender = Tender.find(sight.tender_id)
+                if tender.tender_type == "Yes/No"
+                  id = tender.id
+                  sight_id = sight.id
+                  customer_id = tender.customers.ids
+                  customer_id.each do |c|
+                    yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, sight_id: sight_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
+                    yes_no_buyer_interests.save
+                    puts "-------------- Sight buyer saved --------------"
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  before_save do
+    if !self.round_duration.nil?
+      bid_close = self.bid_open+(self.round_duration*60)
+      self.bid_close = bid_close
     end
   end
 
@@ -311,6 +412,22 @@ class Tender < ApplicationRecord
     act_diff <<   per_diff.abs.to_s
   end
 
+   def remaining_time_in_secs
+    if self.bid_open.present? and self.bid_close.present?
+      if Time.current.between?(self.bid_open, self.bid_close) 
+        self.bid_close.to_i - Time.current.to_i
+      end
+    end  
+  end
+  
+  def round_duration_time
+    if self.bid_open.present?
+      if Time.current < self.bid_open.to_i
+        self.bid_open.to_i - Time.current.to_i
+      end
+    end  
+  end
+
   def self.tenders_for_calender(start_date, end_date)
     @open_data = Tender.active_open_for_dates(start_date, end_date)
     @close_data = Tender.active_close_for_dates(start_date, end_date)
@@ -438,10 +555,17 @@ class Tender < ApplicationRecord
   def Tender.total_carat_value(id)
     sum = 0.0
     tender = Tender.find(id)
-    tender.stones.each do |s|
-      sum = sum + s.weight.round(2) rescue 0.0
+    if tender.stones.present?
+      tender.stones.each do |s|
+        sum = sum + s.weight.round(2) rescue 0.0
+      end
+      return sum.round(2)
+    elsif tender.sights.present?
+      tender.sights.each do |s|
+        sum = sum + s.carats.round(2) rescue 0.0
+      end
+      return sum.round(2)
     end
-    return sum.round(2)
   end
 
   rails_admin do
@@ -471,6 +595,9 @@ class Tender < ApplicationRecord
       [:name].each do |field_name|
         field field_name
       end
+      field :tender_type do 
+        label "Tender Type"
+      end
       field :id do
         label "Total Carats"
       end
@@ -484,11 +611,25 @@ class Tender < ApplicationRecord
         strftime_format "%Y-%m-%d"
       end
       field :tender_open, :toggle
+      field :round_duration
+      field :rounds_between_duration
     end
     edit do
 
       field :company
       field :name
+      field :tender_type, :enum do
+        enum do
+          ['Blind', 'Yes/No']
+        end
+      end
+      field :diamond_type, :enum do
+        enum do
+          ['Rough', 'Sight']
+        end
+        default_value 'Rough'
+      end
+      
       #      field :description, :text do
       #        bootstrap_wysihtml5 true
       #      end
@@ -496,9 +637,16 @@ class Tender < ApplicationRecord
         default_value Date.today
       end
       field :close_date
+      field :bid_open
+      field :round_duration
+      field :rounds_between_duration
       field :stones
       field :delete_stones do
         partial :delete_stones
+      end
+      field :sights
+      field :delete_sights do
+        partial :delete_sights
       end
       field :reference_id, :enum do
         label "Add Reference"
@@ -514,11 +662,15 @@ class Tender < ApplicationRecord
       # help "Upload Temporary Stone detail file"
       # partial :upload_temp_document
       # end
+      field :sight_document do
+        label "Sight Document"
+        partial :slight_upload_document
+      end
       field :document do
         label "Stone Document"
         partial :upload_document
       end
-      [:deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field,:weight_field,:sheet_no, :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no].each do |f|
+      [:deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field,:weight_field,:sheet_no, :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reserved_field, :sheet_no, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field].each do |f|
         field f do
           partial :blank
         end

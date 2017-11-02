@@ -18,6 +18,16 @@ gem 'suggest-db-indices'
 gem 'httparty'
 gem "cancan"
 gem 'paper_trail'
+gem "nested_form"
+gem 'active_model_serializers'
+gem 'momentjs-rails', '>= 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
+
+gem 'countdown'
+
+# 31-10-2017 Oct adding delayed job starting
+gem 'delayed_job_active_record'
+# 31-10-2017 Oct adding delayed job ending 
 
 group :assets do
   gem 'sass-rails'
@@ -27,6 +37,7 @@ group :assets do
 end
 
 group :development do
+  gem 'pry-byebug'	
   gem "thin"
   gem 'listen', '>= 3.0.5', '< 3.2'
 end
@@ -35,3 +46,4 @@ gem 'protected_attributes_continued'
 gem 'turbolinks', '~> 5.0.0'
 gem 'rubocop', require: false
 gem 'puma',  '3.6.2'
+gem 'jquery-datatables-rails', '~> 3.4.0'

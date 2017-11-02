@@ -11,14 +11,22 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery_nested_form
 //= require jquery_ujs
+//= require dataTables/jquery.dataTables
 //= require fancybox
 //= require jquery.dataTables.min.js
 //= require jquery.raty.js
 //= require jquery.tablesorter.min.js
+//= require turbolinks
 //= require highcharts
 //= require jquery.fancybox-1.3.4
-//= require turbolinks
+//= require moment
+//= require bootstrap-datetimepicker
+//= require jquery-countdown
+// = require FlipClock/compiled/flipclock.min
+// = require FlipClock/compiled/flipclock
+
 
 
 //Admin Login

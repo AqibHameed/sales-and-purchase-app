@@ -19,6 +19,9 @@
 		Weight Column : <%= form.text_field :weight_field, :value => 'E' %>
 	</div>
 	<div class="column">
+		Reserve Price Column : <%= form.text_field :reserved_field, :value => 'F' %>
+	</div>
+	<div class="column">
 		Sheet Number : <%= form.select :sheet_no, (1..20).to_a %>
 	</div>
 </div>
@@ -41,7 +44,7 @@
 		float: right;
 	}
 
-	#tender_deec_no_field_field, #tender_lot_no_field_field, #tender_desc_field_field, #tender_weight_field_field, #tender_no_of_stones_field_field, #tender_sheet_no_field {
+	#tender_deec_no_field_field, #tender_lot_no_field_field, #tender_desc_field_field, #tender_weight_field_field, #tender_no_of_stones_field_field, #tender_sheet_no_field, #tender_reserved_field_field {
 		display: none;
 	}
 	

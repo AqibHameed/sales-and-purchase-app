@@ -4,7 +4,9 @@ class CustomersController < ApplicationController
   def profile
     @customer = current_customer
   end
-
+  def index
+    @customer = Customer.all
+  end
   def update_profile
     @customer = current_customer
     if @customer.update_attributes(params[:customer])

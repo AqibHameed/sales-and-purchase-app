@@ -1,12 +1,13 @@
 class Stone < ApplicationRecord
 
   attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
-                  :deec_no, :lot_no, :description, :tender_id
+                  :deec_no, :lot_no, :description, :tender_id, :reserved_price, :system_price, :yes_no_system_price, :stone_winning_price, :interest
 
   has_many :bids
   has_one :winner
+  has_one :yes_no_buyer_winner
   has_one :note
-
+  has_many :yes_no_buyer_interests
   validates_presence_of :lot_no, :tender_id, :description
 
   validates_numericality_of :no_of_stones, :weight, :carat, :allow_blank => true
@@ -91,7 +92,7 @@ class Stone < ApplicationRecord
   end
 
   rails_admin do
-    label "List"
+    label "Stone List"
     list do
       [:tender, :lot_no, :deec_no, :no_of_stones, :stone_type, :weight, :description].each do |field_name|
         field field_name

@@ -11,7 +11,9 @@ class Customer < ApplicationRecord
   has_many :bids
   has_many :winners
   has_many :notes
-
+  has_many :yes_no_buyer_winners
+  has_many :yes_no_buyer_interests
+  
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me,
                   :first_name, :last_name,

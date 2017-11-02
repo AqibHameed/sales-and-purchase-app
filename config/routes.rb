@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   get '/login', :to => 'home#login'
+  get '/signup', :to => 'home#registration'
 
   get '/calculator', :to => 'calculator#index', :ad => 'calculator'
   get "calculator/index1"
@@ -17,10 +18,12 @@ Rails.application.routes.draw do
 
       get :calendar
       get :calendar_data
-
+      post :yes_or_no_winners
+      get :yes_no_rounds
     end
     member do
       delete :delete_stones
+      delete :delete_sights
       delete :delete_winner_details
       get :confirm_bids
       put :undo_confirmation
@@ -37,7 +40,7 @@ Rails.application.routes.draw do
       get :admin_winner_details
       post :update_stone_desc
       post :update_winner_desc
-
+      get :show_stone
       #reports
       get :winner_list
       get :bidder_list
@@ -82,9 +85,19 @@ Rails.application.routes.draw do
       patch :update_profile
       get :change_password
       patch :update_password
+      get :list_company
+      get :trading
+      get :search_trading
+      get :transactions
+      get :credit
+    end
+    member do
+      get :add_company
+      get :block_unblock_user
+      post :create_sub_company
     end
   end
-
+  
   resources :stones do
     resources :bids do
       collection do
@@ -93,5 +106,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :sights do
+    resources :bids do
+      collection do
+        get :place_new
+      end
+    end
+  end
   root :to => 'tenders#index'
 end

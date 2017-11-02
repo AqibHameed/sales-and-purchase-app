@@ -4,22 +4,46 @@ class BidsController < ApplicationController
   before_action :authenticate_logged_in_user!
 
   def create
-    @stone = Stone.find(params[:stone_id])
-    @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
-    @tender = @stone.tender
-    @bid.total = params[:bid][:total]
-    @bid.price_per_carat = params[:bid][:price_per_carat]
-    @bid.stone_id = @stone.id
-    if @bid.save
-      respond_to do |format|
-        format.js { render 'tenders/refresh_data.js.erb'}
-        format.html {redirect_to @bid.stone.tender}
+    if params[:sight_id]
+      @sight = Sight.find(params[:sight_id])
+      @bid = Bid.find_or_initialize_by(sight_id: params[:sight_id], customer_id: current_customer.id)
+      @tender = @sight.tender
+      @bid.total = params[:bid][:total]
+      @bid.sight_id = @sight.id
+      @bid.tender_id = @tender.id
+      @bid.price_per_carat = params[:bid][:price_per_carat]
+      @bid.percentage_over_cost = params[:bid][:percentage_over_cost]
+      if @bid.save
+        respond_to do |format|
+          format.js { render 'tenders/refresh_sight_data.js.erb'}
+          format.html {redirect_to @bid.sight.tender}
+        end
+      else
+        puts @bid.errors.inspect
+        respond_to do |format|
+          format.js {render :text => 'Error'}
+          format.html {redirect_to @bid.sight.tender}
+        end
       end
     else
-      puts @bid.errors.inspect
-      respond_to do |format|
-        format.js {render :text => 'Error'}
-        format.html {redirect_to @bid.stone.tender}
+      @stone = Stone.find(params[:stone_id])
+      @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
+      @tender = @stone.tender
+      @bid.tender_id = @tender.id
+      @bid.total = params[:bid][:total]
+      @bid.price_per_carat = params[:bid][:price_per_carat]
+      @bid.stone_id = @stone.id
+      if @bid.save
+        respond_to do |format|
+          format.js { render 'tenders/refresh_data.js.erb'}
+          format.html {redirect_to @bid.stone.tender}
+        end
+      else
+        puts @bid.errors.inspect
+        respond_to do |format|
+          format.js {render :text => 'Error'}
+          format.html {redirect_to @bid.stone.tender}
+        end
       end
     end
 
@@ -106,53 +130,104 @@ class BidsController < ApplicationController
   end
 
   def update
-    @bid = Bid.find(params[:id])
-    @stone = @bid.stone
-    @tender = @bid.stone.tender
-    if @bid.update_attributes(params[:bid])
-      respond_to do |format|
-        format.js { render 'tenders/refresh_data.js.erb'}
-        format.html {redirect_to @bid.stone.tender}
+    
+    if params[:stone_id]
+
+      @bid = Bid.find(params[:id])
+      @stone = @bid.stone
+      @tender = @bid.stone.tender
+      
+      if @bid.update_attributes(params[:bid])
+        respond_to do |format|
+          format.js { render 'tenders/refresh_data.js.erb'}
+          format.html {redirect_to @bid.stone.tender}
+        end
+      else
+        puts @bid.errors.inspect
+        respond_to do |format|
+          format.js {render :text => 'Error'}
+          format.html {redirect_to @bid.stone.tender}
+        end
       end
     else
-      puts @bid.errors.inspect
-      respond_to do |format|
-        format.js {render :text => 'Error'}
-        format.html {redirect_to @bid.stone.tender}
+      @bid = Bid.find(params[:id])
+      @sight = @bid.sight
+      @tender = @bid.sight.tender
+      if @bid.update_attributes(params[:bid])
+        respond_to do |format|
+          format.js { render 'tenders/refresh_sight_data.js.erb'}
+          format.html {redirect_to @bid.sight.tender}
+        end
+      else
+        puts @bid.errors.inspect
+        respond_to do |format|
+          format.js {render :text => 'Error'}
+          format.html {redirect_to @bid.sight.tender}
+        end
       end
+
     end
+      
   end
 
   def place_new
-    @stone = Stone.find(params[:stone_id])
-    tender = @stone.tender
-    past_tenders = Tender.where("id != ? and company_id = ? and date(open_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
-    past_tender = past_tenders.first
-    @history = TenderWinner.where("tender_id in (?) and description = ?", past_tenders.collect(&:id), @stone.description).order("tender_id")
 
-    stones = Stone.where("description = ? and tender_id in (?)", @stone.description, past_tenders.collect(&:id))
-    bid_history = Bid.where("tender_id in (?) and customer_id = ? and stone_id in (?)", past_tenders.collect(&:id), current_customer.id, stones.collect(&:id)).order("tender_id")
-    my_list = {}
-    bid_history.each do |b|
-      my_list[b.tender_id] = b.price_per_carat
+     if params[:stone_id]
+      @stone = Stone.find(params[:stone_id])
+      tender = @stone.tender
+      past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+      past_tender = past_tenders.first
+      history_array = TenderWinner.includes(:tender).where(description: @stone.description, tender_id: past_tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
+      @history = []
+      history_array.each_pair do |ha|
+        @history << ha.try(:last).try(:first)
+      end
+      @history = @history.compact.sort_by{|e| e.tender.open_date}.reverse
+      stones = Stone.where("description = ? and tender_id in (?)", @stone.description, past_tenders.collect(&:id))
+      bid_history = Bid.where("tender_id in (?) and customer_id = ? and stone_id in (?)", past_tenders.collect(&:id), current_customer.id, stones.collect(&:id)).order("tender_id")
+      my_list = {}
+      bid_history.each do |b|
+        my_list[b.tender_id] = b.price_per_carat
+      end
+      @my_bid_list = []
+      @history.each do |h|
+        @my_bid_list << (my_list[h.tender_id].nil? ? 0 : my_list[h.tender_id])
+      end
+      @past_winner = @history.last
+      logger.info @my_bid_list
+      @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
+      render :partial => 'place_new'
+    else
+      @sight = Sight.find(params[:sight_id])
+      tender = @sight.tender
+      past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+      past_tender = past_tenders.first
+      history_array = TenderWinner.includes(:tender).where(description: @sight.source, tender_id: past_tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
+      @history = []
+      history_array.each_pair do |ha|
+        @history << ha.try(:last).try(:first)
+      end
+      @history = @history.compact.sort_by{|e| e.tender.open_date}.reverse
+      sights = Sight.where("source = ? and tender_id in (?)", @sight.source, past_tenders.collect(&:id))
+      bid_history = Bid.where("tender_id in (?) and customer_id = ? and sight_id in (?)", past_tenders.collect(&:id), current_customer.id, sights.collect(&:id)).order("tender_id")
+      my_list = {}
+       bid_history.each do |b|
+        my_list[b.tender_id] = b.price_per_carat
+      end
+      @my_bid_list = []
+
+      @history.each do |h|
+        @my_bid_list << (my_list[h.tender_id].nil? ? 0 : my_list[h.tender_id])
+      end
+      @past_winner = @history.last
+      logger.info @my_bid_list
+      @bid = Bid.find_or_initialize_by(sight_id: params[:sight_id], customer_id: current_customer.id)
+
+      render :partial => 'place_new_sight'
     end
-    @my_bid_list = []
-    @history.each do |h|
-      @my_bid_list << (my_list[h.tender_id].nil? ? 0 : my_list[h.tender_id])
-    end
-
-
-
-    @past_winner = @history.last
-
-
-    logger.info "---------------------------------"
-    logger.info @my_bid_list
-    logger.info "---------------------------------"
-
-    @bid = Bid.find_or_initialize_by(stone_id: params[:stone_id], customer_id: current_customer.id)
-    render :partial => 'place_new'
   end
+
+  
 
 end
 
