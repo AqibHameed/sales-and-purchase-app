@@ -15,7 +15,7 @@
     </div>
   <% end %>
 </div>
-<div class="clear10">
+<div class="clear10"></div>
 <div class="">
   <h2>Approve Customers</h2>
   <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path  %>: <%= overall_credit_given(current_customer) %></p>
@@ -73,10 +73,12 @@
       dataType: 'json',
       data: {limit: value, buyer_id: user_id},
       success:function(data){
-        $(self).parents('tr').find('td.credit_limit').removeClass('hide')
-        $(self).parents('tr').find('td.edit_field').addClass('hide')
-        $(self).parents('tr').find('td.credit_limit').html('<span class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></span><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')
-        $(self).parent('.edit_field').find('#limit').val('')
+
+        window.location.reload()
+        // $(self).parents('tr').find('td.credit_limit').removeClass('hide')
+        // $(self).parents('tr').find('td.edit_field').addClass('hide')
+        // $(self).parents('tr').find('td.credit_limit').html('<span class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></span><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')
+        // $(self).parent('.edit_field').find('#limit').val('')
       }
     })
   })

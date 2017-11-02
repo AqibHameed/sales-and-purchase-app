@@ -2,7 +2,9 @@
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="credit" class="tablesorter">
     <thead>
       <th>Buyer </th>
-      <th>Current Limit</th>
+      <th>Total Limit</th>
+      <th>Used Limit</th>
+      <th>Available Limit</th>
       <th>Current Day Limit</th>
       <th>Block</th>
     </thead>
@@ -12,6 +14,8 @@
         <td class="credit_limit">
           <span class="given_limit"><%= get_credit_limit(customer, current_customer) %><i class="fa fa-edit pull-right" id='credit_edit'></i></span><span class="edit_field hide"><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %><i class="fa fa-check-square-o save_btn_2"></i></span>
         </td>
+        <td><%= get_used_credit_limit(customer, current_customer) rescue 'N/A' %></td>
+        <td><%= get_available_credit_limit(customer, current_customer) rescue 'N/A' %></td>
         <td class="days_limit">
           <span class="given_days"><%= get_days_limit(customer, current_customer) %><i class="fa fa-edit pull-right" id='days_edit'></i></span><span class="edit_days hide"><%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days' %><i class="fa fa-check-square-o save_date_btn"></i></span>
         </td>

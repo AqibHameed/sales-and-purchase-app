@@ -45,10 +45,11 @@
       dataType: 'json',
       data: {limit: value, buyer_id: user_id},
       success:function(data){
-        $(self).parents('tr').find('td.given_limit').removeClass('hide')
-        $(self).parents('tr').find('td.edit_field').addClass('hide')
-        $(self).parents('tr').find('td.given_limit').html(data.value + '<i id="credit_edit" class="fa fa-edit pull-right"></i>')
-        $(self).parent('.edit_field').find('#limit').val('')
+        window.location.reload()
+        // $(self).parents('tr').find('td.given_limit').removeClass('hide')
+        // $(self).parents('tr').find('td.edit_field').addClass('hide')
+        // $(self).parents('tr').find('td.given_limit').html(data.value + '<i id="credit_edit" class="fa fa-edit pull-right"></i>')
+        // $(self).parent('.edit_field').find('#limit').val('')
       }
     })
   })
