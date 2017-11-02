@@ -225,6 +225,11 @@ end
     buyers.count
 
   end
+
+  def supplier_connected(buyer,customer)
+    count = CreditLimit.where("buyer_id =? and supplier_id !=?", buyer, customer.id).count
+  end
+
   def get_used_credit_limit(buyer, supplier)
     transactions = Transaction.where(buyer_id: buyer.id, supplier_id: supplier.id, paid: false)
     @amount = []
