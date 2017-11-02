@@ -19,17 +19,17 @@
     </thead>
     <tbody>
       <% @tender_winners.each do |winner| %>
-        <% stone = Stone.where(tender_id: winner.tender.id, lot_no: winner.lot_no).first %>
+        <% stone = Stone.where(tender_id: winner.tender.try(:id), lot_no: winner.lot_no).first %>
         <tr>
-          <td><%= link_to_if current_customer, winner.tender.name, winner.tender %></td>
-          <td><%= winner.description %></td>
-          <td><%= stone.weight %></td>
+          <td><%= link_to_if current_customer, winner.tender.try(:name), winner.tender rescue 'N/A' %></td>
+          <td><%= winner.description rescue 'N/A' %></td>
+          <td><%= stone.weight  rescue 'N/A' %></td>
           <% if current_customer %>
-            <td><%= stone.customer_bid_amount(current_customer) %></td>
+            <td><%= stone.customer_bid_amount(current_customer) rescue 'N/A' %></td>
           <% else %>
-            <td><%= number_to_currency stone.winning_bid.try(:total) %></td>
+            <td><%= number_to_currency stone.winning_bid.try(:total) rescue 'N/A' %></td>
           <% end %>
-          <td><%= number_to_currency(winner.selling_price) %></td>
+          <td><%= number_to_currency(winner.selling_price) rescue 'N/A' %></td>
           <% if current_customer %>
             <td><%= raw get_difference(stone.customer_bid_amount(current_customer), winner.selling_price) rescue 'N/A' %></td>
           <% end %>
