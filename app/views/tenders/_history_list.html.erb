@@ -21,7 +21,11 @@
       <% @tender_winners.each do |winner| %>
         <% stone = Stone.where(tender_id: winner.tender.try(:id), lot_no: winner.lot_no).first %>
         <tr>
-          <td><%= link_to_if current_customer, winner.tender.try(:name), winner.tender rescue 'N/A' %></td>
+          <% if winner.tender.nil? %>
+            <td>N/A</td>
+          <% else %>
+            <td><%= link_to winner.tender.name, tender_path(winner.tender.id) %></td>
+          <% end %>
           <td><%= winner.description rescue 'N/A' %></td>
           <td><%= stone.weight  rescue 'N/A' %></td>
           <% if current_customer %>
