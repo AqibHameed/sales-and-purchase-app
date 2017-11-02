@@ -89,7 +89,7 @@ class TendersController < ApplicationController
 
   def show
     if current_customer
-      @tender = current_customer.tenders.includes(:stones).find(params[:id])
+      @tender = Tender.includes(:stones).find(params[:id])
       # @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
       companies = current_customer.companies
       #@tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
@@ -298,20 +298,24 @@ class TendersController < ApplicationController
     @tenders = Tender.where('close_date < ?', Date.today)
     @supplier = Company.all
     @mine = SupplierMine.all
-    if current_customer
-      @customer = current_customer
-    elsif current_admin && !params[:search].blank? && !params[:search][:customer_id].blank?
-      @customer = Customer.find(params[:search][:customer_id])
+    # if current_customer
+    #   @customer = current_customer
+    # elsif current_admin && !params[:search].blank? && !params[:search][:customer_id].blank?
+    #   @customer = Customer.find(params[:search][:customer_id])
+    # end
+    # @stones = Tender.search_results(params[:search], @customer, true)
+    # @selling_price = {}
+
+    # winners = TenderWinner.where("lot_no in (?) or tender_id in (?)", @stones.collect(&:deec_no), @stones.collect(&:tender_id))
+
+    # winners.each do |w|
+    #   @selling_price[w.lot_no.to_s + '_' + w.tender_id.to_s ] = w.selling_price
+    # end
+    if params[:search].present?
+      @tender_winners = TenderWinner.search_results(params[:search], @customer, true)
+    else
+      @tender_winners = TenderWinner.all
     end
-    @stones = Tender.search_results(params[:search], @customer, true)
-    @selling_price = {}
-
-    winners = TenderWinner.where("lot_no in (?) or tender_id in (?)", @stones.collect(&:deec_no), @stones.collect(&:tender_id))
-
-    winners.each do |w|
-      @selling_price[w.lot_no.to_s + '_' + w.tender_id.to_s ] = w.selling_price
-    end
-
     respond_to do |format|
       format.html
       format.js {render 'history.js.erb'}

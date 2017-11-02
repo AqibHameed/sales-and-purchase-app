@@ -7,40 +7,33 @@
         <th>Stone Description</th>
         <th>Stone Weight</th>
         <% if current_customer %>
-        <th>Bid Amount</th>
+          <th>Bid Amount</th>
         <% elsif current_admin %>
-        <th>Winning Bid/Highest Bid</th>
-        <!-- <th>Winning Customer</th> -->
+          <th>Winning Bid/Highest Bid</th>
         <% end %>
         <th>Selling Price</th>
         <% if current_customer %>
-        <th>% Difference</th>
+          <th>% Difference</th>
         <% end %>
-
-
       </tr>
     </thead>
     <tbody>
-      <% @stones.each do |stone| %>
-
-      <tr>
-        <td><%= link_to_if current_customer, stone.tender.name, stone.tender %></td>
-        <td><%= stone.description %></td>
-        <td><%= stone.weight %></td>
-        <% if current_customer %>
-        <td><%= number_to_currency stone.customer_bid_amount(current_customer) %></td>
-        <% else %>
-        <td><%= number_to_currency stone.winning_bid.try(:total) %></td>
-        <!--<%#= stone.tender.winning_customer %></td>-->
-        <% end %>
-        <% amount = @selling_price[stone.deec_no.to_s + '_' + stone.tender_id.to_s] %>
-        <td><%= number_to_currency(amount)  unless amount.nil? %></td>
-        <% if current_customer %>
-        <td><%= raw get_difference(stone.customer_bid_amount(current_customer), @selling_price[stone.deec_no.to_s + '_' + stone.tender_id.to_s]) rescue 'N/A' %></td>
-        <% end %>
-
-
-      </tr>
+      <% @tender_winners.each do |winner| %>
+        <% stone = Stone.where(tender_id: winner.tender.id, lot_no: winner.lot_no).first %>
+        <tr>
+          <td><%= link_to_if current_customer, winner.tender.name, winner.tender %></td>
+          <td><%= winner.description %></td>
+          <td><%= stone.weight %></td>
+          <% if current_customer %>
+            <td><%= stone.customer_bid_amount(current_customer) %></td>
+          <% else %>
+            <td><%= number_to_currency stone.winning_bid.try(:total) %></td>
+          <% end %>
+          <td><%= number_to_currency(winner.selling_price) %></td>
+          <% if current_customer %>
+            <td><%= raw get_difference(stone.customer_bid_amount(current_customer), winner.selling_price) rescue 'N/A' %></td>
+          <% end %>
+        </tr>
       <% end %>
     </tbody>
   </table>

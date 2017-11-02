@@ -29,7 +29,12 @@ class Stone < ApplicationRecord
   end
 
   def customer_bid_amount(customer)
-    self.bids.find_by_customer_id(customer.id).total
+    bid = self.bids.where(customer_id: customer.id).first
+    if bid.nil?
+      'N/A'
+    else
+      number_to_currency bid.total
+    end
   end
 
   def winning_bid

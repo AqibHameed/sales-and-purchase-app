@@ -262,9 +262,6 @@ h4{
 .bg-red{
   background: #ee0000; 
 }
-.ui-datepicker-calendar {
-  display: none;
-}
 .save_btn {
   left: 50%;
   position: relative;
