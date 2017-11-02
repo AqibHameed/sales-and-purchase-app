@@ -24,6 +24,7 @@
 //= require bootstrap-datetimepicker
 //= require jquery-countdown
 //= require select2
+//= require jquery.ui.monthpicker
 
 
 //Admin Login

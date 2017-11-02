@@ -144,20 +144,11 @@
 </div>
 <% end %>
 <script>
-  $(".date").datepicker({
-    "dateFormat" : 'mm/yy',
-    changeMonth: true,
-        changeYear: true,
-        // showButtonPanel: true,
 
-        onClose: function(dateText, inst) {
-            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
-        }
-
-
-  });
+  $('.date').monthpicker({changeYear:true })
   $('.calendar').click(function(){
-    $(this).prev().datepicker('show');
+    $(this).prev().monthpicker('show');
+    // $('.date').monthpicker({changeYear:true, minDate: "-3 M", maxDate: "+2 Y" })
   })
 
 </script>

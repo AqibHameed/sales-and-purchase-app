@@ -29,7 +29,7 @@ gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
 
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
-
+gem "jquery-monthpicker-rails", "~> 1.0.0"
 gem 'countdown'
 
 gem 'momentjs-rails', '>= 2.9.0'
