@@ -50,9 +50,7 @@ class SuppliersController < ApplicationController
     if params[:name].present?
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
-    @customers = Customer.unscoped.where.not(id: current_customer.id)
-
-
+    @customers = Customer.unscoped.where.not(id: current_customer.id).page params[:page]
   end
 
   def change_limits
