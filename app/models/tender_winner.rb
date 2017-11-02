@@ -24,7 +24,7 @@ class TenderWinner < ApplicationRecord
       query << "stones.purity = '#{filters[:purity]}'" unless filters[:purity].blank?
     end
     query = query.join(' AND ')
-    TenderWinner.joins(:tender).where(query).limit 100
+    TenderWinner.joins(:tender).where(query)
   end
 
   rails_admin do
