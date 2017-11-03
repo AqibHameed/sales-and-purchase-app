@@ -69,12 +69,9 @@ class CustomersController < ApplicationController
     @shared_user = Shared.find(params[:id])
     @shared_user.destroy
     @shared_table = Shared.where(shared_by_id: current_customer.id)
-
     respond_to do |format|
       format.js { render 'shared_customer' }
-
     end
-
   end
 
   def update_profile
@@ -151,8 +148,8 @@ class CustomersController < ApplicationController
   end
 
   def credit
-    @credit_limit = CreditLimit.where(buyer_id: current_customer.id)
-    @customers = Customer.unscoped.where.not(id: current_customer.id)
+    @credit_limit = [] #CreditLimit.where(buyer_id: current_customer.id)
+    @customers = [] #Customer.unscoped.where.not(id: current_customer.id)
   end
 
   def check_for_sale

@@ -31,8 +31,7 @@
               <span><%=image_tag "down-arrow.png", width: '25%' %></span>
               <div id="myDropdown" class="list-dropdown-content">
                 <%= link_to 'Trade', trading_customers_path, data: { turbolinks: false } %>
-                <%= link_to 'Credit', credit_customers_path, data: { turbolinks: false } %>
-                <%#= link_to 'Transactions', transactions_customers_path, data: { turbolinks: false } %>
+                <%#= link_to 'Credit', credit_customers_path, data: { turbolinks: false } %>
               </div>
             </div>
           </li>
@@ -44,7 +43,6 @@
                 <%= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %>
                 <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
                 <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
-                <%#= link_to 'Transactions', transactions_suppliers_path, data: { turbolinks: false } %>
               </div>
             </div>
           </li>
@@ -79,7 +77,7 @@
       <span><%=image_tag "down-arrow.png", width: '4%' %></span>
       <div id="myDropdown" class="dropdown-content">
         <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
-        <%= link_to 'Info', info_customers_path, data: { turbolinks: false } %>
+        <%= link_to 'Info', info_customers_path, data: { turbolinks: false } unless current_admin %>
         <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
         <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
       </div>
