@@ -29,6 +29,7 @@ class CustomersController < ApplicationController
       else
         @shared.shared_by_id = current_customer.id
         if @shared.save
+          TenderMailer.shared_info_email(current_customer, @shared.shared_to_id).deliver_now
           redirect_to info_customers_path, notice: "shared successfully"
         end
       end
