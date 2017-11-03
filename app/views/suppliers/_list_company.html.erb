@@ -1,0 +1,42 @@
+  <div class="clear10"></div>
+  <hr/>
+  <div class="form-wrapper">
+    <% if @companies.present? %>
+      <% @companies.each do |buyer|%>
+        <table>
+          <tr>
+            <td width='40%'>
+            </td>
+            <td>
+              <h4><%= buyer.company %></h4>
+              <p>Credit Limit: <%= get_credit_limit(buyer, current_customer) %></p>
+              <p>Used Credit: <%= get_used_credit_limit(buyer, current_customer) %></p>
+              <p>Available Credit: <%= get_available_credit_limit(buyer, current_customer) %></p>
+              <br>
+              <div class="form-wrapper">
+                <%= form_for(CreditLimit.new, url: company_limits_companies_path) do |f|%>
+                  <div class="form-row">
+                    <%= f.label :credit_limit, 'Add to Existing Credit:', class: '' %>
+                    <%= hidden_field_tag 'credit_limit[buyer_id]', buyer.id %>
+                    <%= hidden_field_tag 'credit_limit[supplier_id]', current_customer.id %>
+                    <%= f.text_field :credit_limit, class: 'input' %><br><br>
+                    <%= f.submit "Set Limit", class: 'login-btn btn-02' %>
+                    <%if buyer.is_blocked_by_supplier(current_customer) %>
+                    <%= link_to 'Unblock', block_unblock_user_customer_path(id: current_customer, block_user_id: buyer.id, status: 'unblock'), class: 'login-btn btn-02'%>
+                    <% else %>
+                    <%= link_to 'Block', block_unblock_user_customer_path(id: current_customer, block_user_id: buyer.id, status: 'block'), class: 'login-btn btn-02'%>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div class="clear10"></div>
+      <% end %>
+    <% end %>
+  </div>
+  <%= link_to 'Back', credit_suppliers_path %>
+  <div class="clear10"></div>
+  <hr/>
+

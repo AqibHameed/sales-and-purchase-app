@@ -1,6 +1,6 @@
 <%#= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
 <div class="search-form form-wrapper">
-  <%= form_tag(list_company_companies_path, :method => "get", id: "search-form") do %>
+  <%= form_tag(credit_suppliers_path, :method => "get", id: "search-form") do %>
     <div class="form-row">
       <div class="label">Search</div>
       <div class="field">
@@ -15,6 +15,10 @@
     </div>
   <% end %>
 </div>
+
+<% if params[:name].present? %>
+  <%= render partial: 'list_company' %>
+<%end%>
 <div class="clear10"></div>
 <div class="">
   <h2>Approve Customers</h2>
