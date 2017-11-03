@@ -10,9 +10,9 @@ class CustomersTender < ApplicationRecord
   end
 
   def self.send_confirmation_mail(tender, customer, bid)
-     #if self.confirmed_changed?
-      TenderMailer.confirmation_mail(tender, customer, bid).deliver rescue logger.info "Error sending email"
-     #end
+     # #if self.confirmed_changed?
+     #  TenderMailer.confirmation_mail(tender, customer, bid).deliver rescue logger.info "Error sending email"
+     # #end
   end
 
   rails_admin do

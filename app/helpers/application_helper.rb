@@ -326,7 +326,7 @@ end
   def customer_list_options
     options = []
     customer_list(true).each do |customer|
-      options << [customer[0], customer[1], {'data-icon' => customer[2] ? "http://13.126.41.102/images/verified.png" : "http://13.126.41.102/images/unverified.png" }]
+      options << [customer[0], customer[1], {'data-icon' => customer[2] ? "http://35.154.233.15/images/verified.png" : "http://35.154.233.15/images/unverified.png" }]
     end
     options
   end

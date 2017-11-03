@@ -42,4 +42,10 @@ class TenderMailer < ApplicationMailer
     mail(:to => @customer.email, :subject => '[Dialuck] New Account Created' )
   end
 
+  def shared_info_email(current_customer, customer_id)
+    @shared_by_customer = current_customer
+    @shared_to_customer = Customer.find(customer_id)
+    mail(:to => @shared_to_customer.email, :subject => "[Dialuck] Information Shared by {@shared_by_customer.name}" )
+  end
+
 end

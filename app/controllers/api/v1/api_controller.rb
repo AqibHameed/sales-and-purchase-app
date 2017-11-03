@@ -81,6 +81,13 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+   def email_attachment
+    @attachment = EmailAttachment.new(attachment_params)
+    if @attachment.save
+      render json: { success: true, attachment: @attachment, response_code: 200 }
+    end
+  end
+
   private
   def device_params
     params.require(:customer).permit(:token, :device_type)
@@ -97,4 +104,9 @@ class Api::V1::ApiController < ApplicationController
     end
     @data
   end
+
+  def attachment_params
+    params.require(:email_attachment).permit(:file)
+  end
+
 end

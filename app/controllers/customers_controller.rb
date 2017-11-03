@@ -29,6 +29,7 @@ class CustomersController < ApplicationController
       else
         @shared.shared_by_id = current_customer.id
         if @shared.save
+          TenderMailer.shared_info_email(current_customer, @shared.shared_to_id).deliver_now
           redirect_to info_customers_path, notice: "shared successfully"
         end
       end
@@ -147,8 +148,8 @@ class CustomersController < ApplicationController
   end
 
   def credit
-    @credit_limit = CreditLimit.where(buyer_id: current_customer.id)
-    @customers = Customer.unscoped.where.not(id: current_customer.id)
+    @credit_limit = [] #CreditLimit.where(buyer_id: current_customer.id)
+    @customers = [] #Customer.unscoped.where.not(id: current_customer.id)
   end
 
   def check_for_sale

@@ -1,13 +1,13 @@
-ActionMailer::Base.delivery_method = :smtp
-ActionMailer::Base.smtp_settings = {
-  :address              => "smtp.live.com",
-  :port                 => 587,
-  :domain               => 'dialuck.net',
-  :user_name            => 'admin@dialuck.net',
-  :password             => 'Dialuck12345678',
-  :authentication       => :plain,
-  :enable_starttls_auto => true  
-}
+# ActionMailer::Base.delivery_method = :smtp
+# ActionMailer::Base.smtp_settings = {
+#   :address              => "smtp.live.com",
+#   :port                 => 587,
+#   :domain               => 'dialuck.net',
+#   :user_name            => 'admin@dialuck.net',
+#   :password             => 'Dialuck12345678',
+#   :authentication       => :plain,
+#   :enable_starttls_auto => true  
+# }
 # 
 # 
 # ActionMailer::Base.smtp_settings = {
