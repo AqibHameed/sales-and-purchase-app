@@ -11,6 +11,29 @@
 #   <<: *default
 #   database: dialuck_development
 
+# default: &default
+#   adapter: postgresql
+#   host: localhost
+#   encoding: unicode
+#   pool: 50
+#   port: 5432
+#   username: postgres
+#   password: postgres
+
+# development:
+#   <<: *default
+#   database: dialuck_development
+
+# october-31 2017 build source
+# development:
+#   adapter: mysql2
+#   encoding: utf8
+#   reconnect: false
+#   database: dialuck_development
+#   pool: 5
+#   username: admin
+#   password: root
+#   socket: /var/run/mysqld/mysqld.sock
 default: &default
   adapter: mysql2
   host: localhost

@@ -30,6 +30,8 @@
 		<% end %>
 	</div>
 
+	<strong class="fleft yes-no-round">Round : <%= @tender.yes_no_buyer_interests.present? ? @tender.yes_no_buyer_interests.order("round DESC").first.round : 1%></strong>
+
 	<input type="submit" value="Filter" name="commit" class="fright btn-00" onclick="return validateForm()" >
 	<input type="button" value="Reset" class="fright btn-00" onclick="window.location.href='/tenders/<%= @tender.id%>'" >
 	<div class="clear10"></div>

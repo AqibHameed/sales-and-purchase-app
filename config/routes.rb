@@ -19,9 +19,12 @@ Rails.application.routes.draw do
       get :history
       get :calendar
       get :calendar_data
+      post :yes_or_no_winners
+      get :yes_no_rounds
     end
     member do
       delete :delete_stones
+      delete :delete_sights
       delete :delete_winner_details
       get :confirm_bids
       put :undo_confirmation
@@ -39,7 +42,6 @@ Rails.application.routes.draw do
       post :update_stone_desc
       post :update_winner_desc
       get :show_stone
-
       #reports
       get :winner_list
       get :bidder_list
@@ -109,8 +111,16 @@ Rails.application.routes.draw do
       post :company_limits
     end
   end
-
+  
   resources :stones do
+    resources :bids do
+      collection do
+        get :place_new
+      end
+    end
+  end
+
+  resources :sights do
     resources :bids do
       collection do
         get :place_new
