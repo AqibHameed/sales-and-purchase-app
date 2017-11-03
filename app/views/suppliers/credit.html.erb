@@ -1,0 +1,112 @@
+<%#= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
+<div class="search-form form-wrapper">
+  <%= form_tag(credit_suppliers_path, :method => "get", id: "search-form") do %>
+    <div class="form-row">
+      <div class="label">Search</div>
+      <div class="field">
+        <%= text_field_tag :name, params[:search], placeholder: "Search Companies", class: 'input'%>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%= submit_tag "Search", :name => nil, class: 'login-btn btn-02' %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<% if params[:name].present? %>
+  <%= render partial: 'list_company' %>
+<%end%>
+<div class="clear10"></div>
+<div class="">
+  <h2>Approve Customers</h2>
+  <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path  %>: <%= overall_credit_given(current_customer) %></p>
+  <div class="approve_list">
+    <%= render partial: 'approve_customers_list' %>
+  </div>
+  <%= paginate @customers %>
+</div>
+
+
+<script type="text/javascript">
+  $(document).on('click', '.image_block', function(){
+    self = $(this)
+    id = $(this).data('id')
+    $.ajax({
+      url: '<%= block_unblock_user_customer_path(current_user)%>',
+      method: 'get',
+      data: {status: 'block', block_user_id: id},
+      success:function(){
+        // $(self).parents('tr').fadeOut( "slow" );
+      }
+    })
+  })
+
+  $(document).on('click', '.image_approve', function(){
+    self = $(this)
+    id = $(this).data('id')
+    $.ajax({
+      url: '<%= block_unblock_user_customer_path(current_user)%>',
+      method: 'get',
+      data: {status: 'unblock', block_user_id: id},
+      success:function(){
+        // $(self).parents('tr').fadeOut( "slow" );
+      }
+    })
+  })
+
+  $(document).on('click', '#credit_edit', function(){
+    $(this).parents('.credit_limit').find('.given_limit').addClass('hide')
+    $(this).parents('.credit_limit').find('.edit_field').removeClass('hide')
+  })
+
+  $(document).on('click', '#days_edit', function(){
+    $(this).parents('.days_limit').find('.given_days').addClass('hide')
+    $(this).parents('.days_limit').find('.edit_days').removeClass('hide')
+  })
+
+  $(document).on('click', '.save_btn_2', function(){
+    self = $(this)
+    value = $(this).parent('.edit_field').find('#limit').val()
+    user_id = $(this).parent('.edit_field').find('#limit').data('id')
+    $.ajax({
+      url: '<%=change_credit_limit_path %>',
+      method: 'get',
+      dataType: 'json',
+      data: {limit: value, buyer_id: user_id},
+      success:function(data){
+
+        window.location.reload()
+        // $(self).parents('tr').find('td.credit_limit').removeClass('hide')
+        // $(self).parents('tr').find('td.edit_field').addClass('hide')
+        // $(self).parents('tr').find('td.credit_limit').html('<span class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></span><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')
+        // $(self).parent('.edit_field').find('#limit').val('')
+      }
+    })
+  })
+
+  $(document).on('click', '.save_date_btn', function(){
+    self = $(this)
+    value = $(this).parent('.edit_days').find('#days_limit').val()
+    user_id = $(this).parent('.edit_days').find('#days_limit').data('id')
+    $.ajax({
+      url: '<%=change_days_limit_path %>',
+      method: 'get',
+      dataType: 'json',
+      data: {limit: value, buyer_id: user_id},
+      success:function(data){
+        $(self).parents('tr').find('td.days_limit').removeClass('hide')
+        $(self).parents('tr').find('td.edit_days').addClass('hide')
+        $(self).parents('tr').find('td.days_limit').html('<span class="given_days">'+ data.value +'<i class="fa fa-edit pull-right" id="days_edit"></i></span><span class="edit_days hide"><input name="days_limit" id="days_limit" value="" data-id="'+ user_id +'" placeholder="Enter days limit" type="text"><i class="fa fa-check-square-o save_date_btn"></i></span>')
+        $(self).parent('.edit_field').find('#limit').val('')
+      }
+    })
+  })
+
+  // $(document).on('click', '.search_link', function(){
+  //   $('.search-form').slideToggle();
+  // })
+
+</script>

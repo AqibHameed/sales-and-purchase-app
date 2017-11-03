@@ -1,0 +1,21 @@
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th></th>
+      <th>Buyer </th>
+      <th>Credit Limit</th>
+      <th>Unblock</th>
+    </tr>
+    <% if @blocked_users.try(:block_user_ids).present? %>
+      <% @blocked_users.try(:block_user_ids).each.with_index(1) do |u_id, i|%>
+        <% customer = Customer.where(:id => u_id.to_i).first %>
+        <tr>
+          <td></td>
+          <td><%= customer.company %></td>
+          <td><%= get_credit_limit(customer, current_customer) %></td>
+          <td><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
+        </tr>
+      <% end %>
+    <% end %>  
+  </table>
+</div>

@@ -46,7 +46,6 @@ class BidsController < ApplicationController
         end
       end
     end
-
   end
 
   def list
@@ -171,7 +170,6 @@ class BidsController < ApplicationController
   end
 
   def place_new
-
      if params[:stone_id]
       @stone = Stone.find(params[:stone_id])
       tender = @stone.tender
@@ -226,8 +224,5 @@ class BidsController < ApplicationController
       render :partial => 'place_new_sight'
     end
   end
-
-  
-
 end
 

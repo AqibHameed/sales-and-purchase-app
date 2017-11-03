@@ -1,0 +1,67 @@
+<div class="">
+  <h3>Filter</h3>
+
+  <div class="clear10"></div>
+  <%= form_tag(search_trading_customers_path, :method => :get, :remote => true) do %>
+    <div class="form-wrapper">
+      <div class='parcel_search'>
+        <div class="form-row">
+          <div class="label">
+            Description
+          </div>
+          <div class="field">
+            <%= text_field_tag "search[description]","", :class => "input"  %>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div class="form-row">
+          <div class="label">
+            Weight
+          </div>
+          <div class="field">
+            <%= text_field_tag "search[weight]","", :class => "input" %>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div class="form-row">
+          <div class="label">
+            No of stones
+          </div>
+          <div class="field">
+            <%= number_field_tag "search[no_of_stones]", "", :class => "input" %>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div class="form-row">
+          <div class="label">
+            Credit
+          </div>
+          <div class="field">
+            <%= number_field_tag "search[credit_period]", "", :class => "input" %>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <!-- <div class="form-row">
+          <div class="label">
+            Supplier
+          </div>
+          <div class="field">
+            <%#= select_tag "search[company_id]", options_for_select(Company.all.map { |e| [e.name, e.id]}), include_blank: true, :class => "input" %>
+          </div>
+          <div class="clear"></div>
+        </div> -->
+      </div>
+      <div class="form-row">
+        <div class="label">
+          &nbsp;
+        </div>
+        <div class="field">
+          <%= submit_tag 'Search', :class => 'btn-01' %>
+          <%= link_to 'Clear', trading_customers_path, :class => 'btn-01' %>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<div class="clear"></div>

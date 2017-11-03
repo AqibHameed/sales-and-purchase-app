@@ -1,14 +1,18 @@
 class Tender < ApplicationRecord
-  paginates_per 25
+  include DocumentUrl
+  paginates_per 50
 
   attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
                   :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
                   :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
                   :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id, :diamond_type, :bid_open, :round_duration, :rounds_between_duration, :sight_document, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field, :reserved_field
+  # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
+  #                 :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
+  #                 :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
+  #                 :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id,
+  #                 :country, :city
 
   attr_accessor :delete_stones, :delete_winner_list, :total_carat_value
-
-
 
 
   has_many :customers_tenders
@@ -18,7 +22,8 @@ class Tender < ApplicationRecord
   has_many :temp_stones, -> { order(:lot_no) }, :dependent => :destroy
   has_many :winners
   has_many :tender_winners
-  belongs_to :company
+  has_many :tender_notifications
+  belongs_to :company, optional: true
   has_many :reference, :class_name => "Tender", :foreign_key => "reference_id"
   belongs_to :parent_reference, :class_name => "Tender", :foreign_key => "reference_id", optional: true
   has_many :sights
@@ -30,7 +35,7 @@ class Tender < ApplicationRecord
   accepts_nested_attributes_for :stones
   accepts_nested_attributes_for :sights
 
-  validates_presence_of :name, :open_date, :close_date, :company_id
+  # validates_presence_of :name, :open_date, :close_date, :company_id, :country
 
   has_attached_file :temp_document
   do_not_validate_attachment_file_type :temp_document
@@ -47,7 +52,9 @@ class Tender < ApplicationRecord
   after_save :update_winner_list_from_uploaded_file
 
   after_create_commit :delayed_job_need_to_perform
-  
+  after_create :send_tender_create_push, :add_users_to_tender
+  after_update :send_tender_update_push
+
   scope :open_tenders, lambda{|date| where("close_date >= ?", date.beginning_of_day) }
 
   scope :closed_tenders, lambda{|date| where("close_date < ?", date.end_of_day) }
@@ -63,6 +70,10 @@ class Tender < ApplicationRecord
   scope :opening_today, -> { where("open_date <= ? AND open_date >= ?", DateTime.now.in_time_zone.end_of_day, DateTime.now.in_time_zone.beginning_of_day)}
 
   scope :closing_today, -> { where("close_date <= ? AND close_date >= ?", DateTime.now.in_time_zone.end_of_day, DateTime.now.in_time_zone.beginning_of_day)}
+
+  scope :active, -> { where("open_date <= ? AND close_date >= ?", Time.zone.now, Time.zone.now) }
+
+
   #  validates_attachment_content_type :document, :content_type => ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/excel"], :message => 'Only *.xls files allowed'
   def self.tenders_with_bid
     where(:id => Bid.all.map(&:tender_id).uniq)
@@ -156,7 +167,7 @@ class Tender < ApplicationRecord
   end
 
   def total_bid_amount(customer)
-    #    self.bids.map(&:total).sum rescue 0
+    # self.bids.map(&:total).sum rescue 0
     Bid.where(:stone_id => self.stone_ids, :customer_id => customer.id).map(&:total).sum.round(2) rescue 0
   end
 
@@ -171,20 +182,21 @@ class Tender < ApplicationRecord
   end
 
   def create_stones_from_uploaded_file
-    if self.document_updated_at_changed?
-      data_file = Spreadsheet.open(self.document.path)
+    if self.saved_change_to_document_updated_at?
+      file_path = document_url(self.document)
+      data_file = Spreadsheet.open(open(file_path))
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
-          unless i == 0
+          unless Tender.get_value(data_row[Tender.get_index(self.desc_field)]) == "Description"
             unless data_row[('A'..'AZ').to_a.index(self.lot_no_field)].nil?
               stone = self.stones.find_or_initialize_by(lot_no: Tender.get_value(data_row[Tender.get_index(self.lot_no_field)]))
               stone.deec_no = Tender.get_value(data_row[Tender.get_index(self.deec_no_field)]) unless self.deec_no_field.blank?
               stone.description = Tender.get_value(data_row[Tender.get_index(self.desc_field)]) unless self.desc_field.blank?
-              stone.no_of_stones = Tender.get_value(data_row[Tender.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
-              stone.weight = Tender.get_value(data_row[Tender.get_index(self.weight_field)]) unless self.weight_field.blank?
-              stone.reserved_price = Tender.get_value(data_row[Tender.get_index(self.reserved_field)]) unless self.reserved_field.blank?
+              stone.no_of_stones = Tender.get_value(data_row[Tender.get_index(self.no_of_stones_field)].to_i) unless self.no_of_stones_field.blank?
+              stone.weight = Tender.get_value(data_row[Tender.get_index(self.weight_field)].to_f) unless self.weight_field.blank?
               stone.stone_type = (data_row[Tender.get_index(self.no_of_stones_field)].to_i == 1 ? 'Stone' : 'Parcel' rescue 'Stone'  ) unless self.no_of_stones_field.blank?
+              stone.reserved_price = Tender.get_value(data_row[Tender.get_index(self.reserved_field)]) unless self.reserved_field.blank?
               stone.save
               if stone.save
                 tender = Tender.find(stone.tender_id)
@@ -197,8 +209,6 @@ class Tender < ApplicationRecord
                     yes_no_buyer_interests.save
                   end
                 end
-              end
-              puts stone.errors.inspect
             end
           end
         end
@@ -207,11 +217,8 @@ class Tender < ApplicationRecord
   end
 
   def create_sights_from_uploaded_file
-    puts "----------sight-----------"
     if self.sight_document_updated_at_changed?
       data_file = Spreadsheet.open(self.sight_document.path)
-      puts "--------sight data_file---------"
-      puts "------=====#{data_file}"
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
@@ -240,7 +247,6 @@ class Tender < ApplicationRecord
                   customer_id.each do |c|
                     yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, sight_id: sight_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
                     yes_no_buyer_interests.save
-                    puts "-------------- Sight buyer saved --------------"
                   end
                 end
               end
@@ -293,50 +299,54 @@ class Tender < ApplicationRecord
 
   #Determines if tender is open or not
   def open?
-    self.close_date > DateTime.now
+    self.close_date > DateTime.now rescue false
   end
 
   def update_winner_list_from_uploaded_file
-
     if self.winner_list_updated_at_changed?
-
       puts "==============file==============="
       unless self.winner_list.nil?
-        data_file = Spreadsheet.open(self.winner_list.path)
+        file_path = document_url(self.winner_list)
+        data_file = Spreadsheet.open(open(file_path))
         worksheet = data_file.worksheet(self.winner_sheet_no.to_i - 1)
         unless worksheet.nil?
           worksheet.each_with_index do |data_row, i|
             unless data_row[Tender.get_index(self.winner_lot_no_field)].nil?
               lot_no = Tender.get_value(data_row[Tender.get_index(self.winner_lot_no_field)])
-              win = self.tender_winners.find_or_initialize_by(lot_no: lot_no)
+              win = TenderWinner.where(tender_id: self.id, lot_no: lot_no).first_or_initialize
               win.description = data_row[Tender.get_index(self.winner_desc_field)]
               win.selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
+              # actual_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_selling_price_field)])
+              # check_selling_price(actual_selling_price)
               win.avg_selling_price = Tender.get_value(data_row[Tender.get_index(self.winner_carat_selling_price_field)])
-              #   win.save
-              #   puts data_row
+              win.save(validate: false)
+              puts win.errors.inspect
             end
           end
-          Tender.send_winner_list_uploaded_mail(self.id)
+          # Temprory stop
+          # Tender.send_winner_list_uploaded_mail(self.id)
         end
-
       end
 
     else
-
       puts "==============no file==============="
-
     end
-
   end
 
+  # def check_selling_price(actual_selling_price)
+  #   @stones = self.stones
+  #   @stones.each do |stone|
+  #     selling_price = stone.winner.try(:bid).try(:total)
+  #     customer = stone.winner.try(:bid).try(:customer)
+  #     TenderMailer.send_notify_winning_buyers_mail(self, customer).deliver rescue logger.info "Error sending email" if (actual_selling_price == selling_price && customer)
+  #   end
+  # end
 
   def Tender.send_winner_list_uploaded_mail(id)
-
     tender = Tender.find(id)
     tender.customers.each do |c|
-      TenderMailer.send_winner_list_uploaded_mail(tender, c).deliver
+      TenderMailer.send_winner_list_uploaded_mail(tender, c).deliver rescue logger.info "Error sending email"
     end
-
   end
 
   def customer_bid_amount(customer)
@@ -358,7 +368,6 @@ class Tender < ApplicationRecord
     end
     cust_arr = cust_arr.any?  ? cust_arr.flatten : []
   end
-
 
   def total_bids_amount
     #self.bids.pluck(:total).inject{|sum,x| sum + x}.round(2)
@@ -461,35 +470,38 @@ class Tender < ApplicationRecord
     @hash
   end
 
-  def self.search_results(filters, current_customer, history_page = false)
-    query = []
-    unless filters.blank?
-      query << "tenders.id in (#{Array(filters[:name]).join(',')})" unless filters[:name].blank?
-      query << "tenders.open_date >= '#{filters[:start_date].to_datetime.beginning_of_day}'" unless filters[:start_date].blank?
-      query << "tenders.close_date <= '#{filters[:end_date].to_datetime.end_of_day}'" unless filters[:end_date].blank?
-      query << "(tenders.open_date <= '#{filters[:specific_date].to_datetime.end_of_day}' AND tenders.open_date >= '#{filters[:specific_date].to_datetime.beginning_of_day}') OR (close_date <= '#{filters[:specific_date].to_datetime.end_of_day}' AND close_date >= '#{filters[:specific_date].to_datetime.beginning_of_day}')" unless filters[:specific_date].blank?
-      query << "stones.stone_type like '%#{filters[:type]}%'" unless filters[:type].blank?
-      query << "stones.description like '%#{filters[:description]}%'" unless filters[:description].blank?
-      query << "stones.weight like '%#{filters[:size]}%'" unless filters[:size].blank?
-      query << "stones.carat = '#{filters[:carat]}'" unless filters[:carat].blank?
-      query << "stones.color = '#{filters[:color]}'" unless filters[:color].blank?
-      query << "stones.purity = '#{filters[:purity]}'" unless filters[:purity].blank?
-    end
-    query = query.join(' AND ')
-    if history_page
-      if current_customer
-        Stone.joins(:tender, :bids => :customer).where("customer_id = #{current_customer.id}").where(query)
-      else
-        Stone.joins(:tender, :bids => :customer).where(query)
-      end
-    else
-      if current_customer.blank?
-        Tender.joins(:stones).where(query)
-      else
-        current_customer.tenders.joins(:stones).where(query)
-      end
-    end
-  end
+  # # Pewviously used in history page search
+  # def self.search_results(filters, current_customer, history_page = false)
+  #   query = []
+  #   unless filters.blank?
+  #     query << "tenders.id in (#{Array(filters[:name]).join(',')})" unless filters[:name].blank?
+  #     query << "tenders.company_id in (#{Array(filters[:supplier_name]).join(',')})" unless filters[:supplier_name].blank?
+  #     query << "tenders.supplier_mine_id in (#{Array(filters[:mine_name]).join(',')})" unless filters[:mine_name].blank?
+  #     query << "tenders.open_date >= '#{filters[:start_date].to_datetime.beginning_of_day}'" unless filters[:start_date].blank?
+  #     query << "tenders.close_date <= '#{filters[:end_date].to_datetime.end_of_month}'" unless filters[:end_date].blank?
+  #     query << "(tenders.open_date <= '#{filters[:specific_date].to_datetime.beginning_of_day}' AND tenders.open_date >= '#{filters[:specific_date].to_datetime.beginning_of_day}') OR (close_date <= '#{filters[:specific_date].to_datetime.end_of_month}' AND close_date >= '#{filters[:specific_date].to_datetime.end_of_month}')" unless filters[:specific_date].blank?
+  #     query << "stones.stone_type like '%#{filters[:type]}%'" unless filters[:type].blank?
+  #     query << "stones.description like '%#{filters[:description]}%'" unless filters[:description].blank?
+  #     query << "stones.weight like '%#{filters[:size]}%'" unless filters[:size].blank?
+  #     query << "stones.carat = '#{filters[:carat]}'" unless filters[:carat].blank?
+  #     query << "stones.color = '#{filters[:color]}'" unless filters[:color].blank?
+  #     query << "stones.purity = '#{filters[:purity]}'" unless filters[:purity].blank?
+  #   end
+  #   query = query.join(' AND ')
+  #   if history_page
+  #     if current_customer
+  #       Stone.joins(:tender, :bids => :customer).where("customer_id = #{current_customer.id}").where(query)
+  #     else
+  #       Stone.joins(:tender, :bids => :customer).where(query)
+  #     end
+  #   else
+  #     if current_customer.blank?
+  #       Tender.joins(:stones).where(query)
+  #     else
+  #       current_customer.tenders.joins(:stones).where(query)
+  #     end
+  #   end
+  # end
 
   def self.send_open_notification
     @tenders = Tender.opening_today
@@ -568,9 +580,79 @@ class Tender < ApplicationRecord
     end
   end
 
+  def check_notification(customer)
+    tender = TenderNotification.where(customer_id: customer.id, tender_id: self.id, notify: true).first
+    if tender.nil?
+      false
+    else
+      true
+    end
+  end
+
+  def send_tender_create_push
+    message = "New Tender Alert: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}" 
+    # Cusetomers
+    customers_to_notify = SupplierNotification.where(supplier_id: self.company_id, notify: true).map { |e| e.customer_id }
+    android_devices = Device.where(device_type: 'android', customer_id: customers_to_notify)
+    # android_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
+    # ios_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'ios'")
+    ios_devices = Device.where(device_type: 'ios', customer_id: customers_to_notify)
+    
+    # Added notification
+    notification = Notification.create(title: 'new tender', description: message, tender_id: self.id)
+
+    # send android notification
+    android_registration_ids = android_devices.map { |e| e.token }
+    Notification.send_android_notifications(android_registration_ids, message, self.id)
+
+    # # send iOS notification
+    # ios_registration_ids = ios_devices.map { |e| e.token }
+    # Notification.send_ios_notifications(ios_registration_ids, message, self.id)
+    
+    # Add customer notification for history
+    CustomerNotification.add_notification_history(android_devices, ios_devices, notification)
+  end
+
+  def send_tender_update_push
+    if self.saved_change_to_open_date? || self.saved_change_to_close_date?
+      tender_notifications = TenderNotification.where(tender_id: self.id, notify: true)
+      unless tender_notifications.empty?
+        message = "Tender Dates Changed: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+        customer_ids = tender_notifications.map { |e| e.customer_id }
+        # Cusetomers devices 
+        android_devices = Device.where(customer_id: customer_ids, device_type: 'android')
+        ios_devices = Device.where(customer_id: customer_ids, device_type: 'ios')
+        
+        # Added notification
+        notification = Notification.create(title: 'tender date change', description: message, tender_id: self.id)
+
+        # send android notification
+        android_registration_ids = android_devices.map { |e| e.token }
+        Notification.send_android_notifications(android_registration_ids, message, self.id)
+
+        # # send iOS notification
+        # ios_registration_ids = ios_devices.map { |e| e.token }
+        # Notification.send_ios_notifications(ios_registration_ids, message, self.id)
+        
+        # Add customer notification for history
+        CustomerNotification.add_notification_history(android_devices, ios_devices, notification)
+      end
+    end
+  end
+
+  def add_users_to_tender
+    customer_tenders = []
+    Customer.all.each do |c|
+      customer_tenders << {
+        customer_id: c.id,
+        tender_id: self.id,
+        confirmed: false
+      }
+    end
+    CustomersTender.create(customer_tenders)
+  end
+
   rails_admin do
-
-
     configure :id do
       pretty_value do
         util = bindings[:object]
@@ -579,8 +661,6 @@ class Tender < ApplicationRecord
         %{<a data-toggle="modal" onclick="$(this).modal('hide')" href="/tenders/#{self.value}/admin_details"  data-target="#modal_#{self.value.to_i}" >#{Tender.total_carat_value(self.value)}</a><div class="modal fade" id="modal_#{self.value.to_i}" role="dialog" aria-labelledby="Tender Details" aria-hidden="true" >#{head}<div class="modal-body"></div>#{foot}</div>}.html_safe
       end
     end
-
-
     configure :winner_details do
       pretty_value do
         util = bindings[:object]
@@ -589,14 +669,9 @@ class Tender < ApplicationRecord
         %{<a data-toggle="modal" onclick="$(this).modal('hide')" href="/tenders/#{self.value}/admin_winner_details"  data-target="#winner_#{self.value.to_i}" >#{Tender.total_winner_value(self.value)}</a><div class="modal fade" id="winner_#{self.value.to_i}" role="dialog" aria-labelledby="Tender Details" aria-hidden="true" >#{head}<div class="modal-body"></div>#{foot}</div>}.html_safe
       end
     end
-
     list do
-
       [:name].each do |field_name|
         field field_name
-      end
-      field :tender_type do 
-        label "Tender Type"
       end
       field :id do
         label "Total Carats"
@@ -615,8 +690,15 @@ class Tender < ApplicationRecord
       field :rounds_between_duration
     end
     edit do
-
-      field :company
+      field :company do
+        label "Supplier"
+      end
+      field :supplier_mine_id, :enum do
+        label "Mine"
+        enum do
+          SupplierMine.all.map { |c| [ c.name, c.id ] }
+        end
+      end
       field :name
       field :tender_type, :enum do
         enum do
@@ -629,7 +711,10 @@ class Tender < ApplicationRecord
         end
         default_value 'Rough'
       end
-      
+      field :country do
+        partial :country_list
+      end
+      field :city
       #      field :description, :text do
       #        bootstrap_wysihtml5 true
       #      end
@@ -640,6 +725,9 @@ class Tender < ApplicationRecord
       field :bid_open
       field :round_duration
       field :rounds_between_duration
+      field :timezone do
+        partial :timezone_list
+      end
       field :stones
       field :delete_stones do
         partial :delete_stones
@@ -682,9 +770,7 @@ class Tender < ApplicationRecord
       field :delete_winner_list do
         partial :delete_winner_list
       end
-      field :customers
+      # field :customers
     end
-
   end
-
 end

@@ -1,0 +1,53 @@
+<% @customer.where('id NOT IN (?)', current_customer.id).each do |f|%>
+  <table>
+    <tr>
+	    <td width='100px'>
+	    	<p id="<%=f.id %>"><%= f.name%></p>
+	    </td>
+	    <td>
+	    	<% if current_user.block_user.present? && (current_user.block_user.block_user_ids.include? f.id.to_s) %>
+	    		<%= image_tag("/assets/wrong.png", width: "15", class: 'image_right')%>
+	    	<% else %>
+	    		<%= image_tag("/assets/right.jpg", width: "35", class: 'image_right')%>
+	    	<% end %>
+	    </td>
+    </tr>
+  </table>
+<% end %>
+<%= link_to 'Back', root_path ,:class => 'btn-01'%>
+<%= link_to 'Set Credit limit', list_company_companies_path ,:class => 'btn-01'%>
+<script type="text/javascript">
+  $(document).ready(function(){
+  	$(".image_right").click(function(){
+  		if($(this).attr('src') == '/assets/right.jpg'){
+  			$(this).attr({src:'/assets/wrong.png',width: '15'});
+  			id = $(this).parent().prev().find('p').attr('id')
+  			block_user('block',id)
+  		}else{
+  			$(this).attr({src:'/assets/right.jpg',width: '35'})
+  			id = $(this).parent().prev().find('p').attr('id')
+  			block_user('unblock',id)
+  	  }
+  	})
+  })
+
+  function block_user(that,id)
+  {
+  	$.ajax({
+  		url: '<%= block_unblock_user_customer_path(current_user)%>',
+  		method: 'get',
+  		dataType: 'json',
+  		data: {status: that, block_user_id: id},
+  		success:function(){
+
+  		}
+  	})
+  }
+</script>
+
+<style type="text/css">
+/*	.image_right {
+		width: 40px;
+		height: auto;
+	}*/
+</style>

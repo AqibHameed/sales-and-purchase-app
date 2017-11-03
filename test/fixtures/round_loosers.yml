@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  stone_id: 1
+  customer_id: 1
+  bid_id: 1
+
+two:
+  stone_id: 1
+  customer_id: 1
+  bid_id: 1

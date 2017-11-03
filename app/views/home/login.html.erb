@@ -21,8 +21,8 @@
           <div class="c_user">
            <strong><%= @c_user.try(:name) %></strong><br/>
            <%= @c_user.try(:email) %>
-           <%= hidden_field_tag 'customer[email]', @c_user.try(:email) %>
-           <%= hidden_field_tag 'admin[email]', @c_user.try(:email) %>
+           <%= hidden_field_tag 'customer[login]', @c_user.try(:email) %>
+           <%= hidden_field_tag 'admin[login]', @c_user.try(:email) %>
           </div>
           <div class="clear10"></div>
           <div class="field">
@@ -30,10 +30,10 @@
             <%= hidden_field_tag 'admin[password]' %>
           </div>
         <% else %>
-          <div class="label">Username</div>
+          <div class="label">Email/Mobile No.</div>
           <div class="field">
-            <%= f.text_field :email %>
-             <%= hidden_field_tag 'admin[email]' %>
+            <%= f.text_field :login %>
+             <%= hidden_field_tag 'admin[login]' %>
           </div>
           <div class="clear10"></div>
           <div class="label">Password</div>
@@ -49,8 +49,9 @@
           <!-- <a href="tender-dashboard.html" class="btn-02">Login</a> -->
         </div>
         <div class="clear10"></div>
-        <div>
-          <%= f.submit 'Login', :class => 'btn-02 login_submit' %>
+        <div class="btns-groups">
+          <%= f.submit 'Login', :class => 'btn-02 login-btn login_submit' %>
+          <%= link_to('Register', new_customer_registration_path, :class => 'btn-02 login-btn registration_submit')  %>
         </div>
         <% end %>
      </div>
@@ -65,7 +66,7 @@
       e.preventDefault();
       $('.error_msg').html('')
 
-      $('#admin_email').val($('#customer_email').val())
+      $('#admin_login').val($('#customer_login').val())
       $('#admin_password').val($('#customer_password').val())
 
 
@@ -76,8 +77,12 @@
         type: 'post',
         dataType: 'script',
         // success: function(response){ window.location.href = response },
-        error: function(response){
-          $('.error_msg').html(response.responseText)
+        complete: function(response){ 
+          if(response.status==200){
+            window.location.href = response.responseText
+          }else{
+            $('.error_msg').html(response.responseText)
+          }
         }
       });
 
@@ -87,4 +92,5 @@
   })
 
 </script>
+
 

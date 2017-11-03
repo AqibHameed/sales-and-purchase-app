@@ -1,0 +1,2 @@
+<%#=time_zone_select("tender",  form.object.timezone, { prompt: 'Select timezone' }) %>
+<%=form.select :timezone, options_for_select(ActiveSupport::TimeZone.all.map { |z| z.name }, form.object.timezone), {}, class: 'form-control' %>

@@ -1,0 +1,60 @@
+<div class="table">
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>No. of Stones</th>
+        <th>Carats</th>
+        <th>Cost</th>
+        <th>Box Value</th>
+        <th>Sight</th>
+        <th>Price</th>
+        <th>Credit</th>
+        <th>Activity</th>
+        <th>Counterparty</th>
+        <th>Status</th>
+        <th>Invoice Date</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @transactions.each do |transaction| %>
+      <% if get_status(transaction) == 'Overdue' %>
+        <% color = 'bg-red' %>
+      <% else %>
+         <% color = 'bg-normal'%>
+      <% end %>
+      <tr class="<%= color %>">
+        <td><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
+        <td><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
+        <td><%= transaction.trading_parcel.weight rescue 'N/A'  %></td>
+        <td><%= transaction.trading_parcel.cost rescue 'N/A'  %></td>
+        <td><%= transaction.trading_parcel.box_value rescue 'N/A' %></td>
+        <td><%= transaction.trading_parcel.sight rescue 'N/A' %></td>
+        <td><%= transaction.price rescue 'N/A' %></td>
+        <td><%= transaction.credit rescue 'N/A' %></td>
+        <% if current_user.id == transaction.buyer_id %>
+          <td>Bought</td>
+          <td><%= transaction.supplier.company rescue 'N/A' %></td>
+        <% elsif current_user.id == transaction.supplier_id  %>
+          <td>Sold</td>
+          <td><%= transaction.buyer.company rescue 'N/A' %></td>
+        <% end %>
+        <td><%= get_status(transaction) %></td>
+        <td><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
+        <% if transaction.buyer_rejected %>
+          <td>Rejected</td>
+        <% elsif current_user.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_rejected && (transaction.updated_at + 7.days > Time.now) %>
+          <td><%=link_to 'Reject', reject_transaction_path(transaction) %></td>
+        <% else %>
+          <td></td>
+        <% end %>
+        <td><%=link_to 'view' , transaction_path(transaction) %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<script>$("#myTable").tablesorter();</script>

@@ -15,6 +15,8 @@
  *= require bootstrap-datetimepicker
  *= require dataTables/jquery.dataTables
  *= require flipclock.css
+ *= require select2
+ *= require font-awesome
  */
 
 .validation-error{
@@ -22,7 +24,7 @@
 }
 
 tr.winner {
-	background: #00D812;
+  background: #00D812;
 }
 
 
@@ -32,13 +34,13 @@ a.add{background:url(../assets/add.png) no-repeat;padding:5px 12px 9px;text-inde
 a.remove{background:url(../assets/remove.png) no-repeat;padding:5px 12px 9px;text-indent:-9999px;margin-left:5px;}
 
 .filter input,.filter select {
-	width:110px;
-	border: 1px solid #B8B8B8;
+  width:110px;
+  border: 1px solid #B8B8B8;
 }
 
 .input1.error {
 
-	border: 1px solid #FF0000;
+  border: 1px solid #FF0000;
 }
 
 
@@ -60,17 +62,17 @@ a.remove{background:url(../assets/remove.png) no-repeat;padding:5px 12px 9px;tex
 }
 
 .bid_form{
-	z-index:9999;
-	position:fixed;
-	left:10%;
-	top:10%;
-	box-shadow: 0px 0px 10px #000;
+  z-index:9999;
+  position:fixed;
+  left:10%;
+  top:10%;
+  box-shadow: 0px 0px 10px #000;
 }
 
 .close_bid {
-	position:absolute;
-	right:-32px;
-	top:-16px;
+  position:absolute;
+  right:-32px;
+  top:-16px;
 }
 
 #screenMask {
@@ -85,27 +87,27 @@ a.remove{background:url(../assets/remove.png) no-repeat;padding:5px 12px 9px;tex
 }
 
 div.title1 {
-	padding:0 0 10px;
-	font-weight:bold;
-	clear:both;
-	cursor:pointer;
-	color:#ED5A48;
+  padding:0 0 10px;
+  font-weight:bold;
+  clear:both;
+  cursor:pointer;
+  color:#ED5A48;
 }
 
 .border {
-	border:1px solid #999;
+  border:1px solid #999;
 }
 
 .low {
-	background-color:#A0D9FF;
+  background-color:#A0D9FF;
 }
 
 .mid {
-	background-color: #7CB5EC;
+  background-color: #7CB5EC;
 }
 
 .high {
-	background-color:#71AAE1;
+  background-color:#71AAE1;
 }
 
 .vhigh {
@@ -155,7 +157,7 @@ div.title1 {
 table.dataTable.no-footer{
   border-bottom: 0px solid #111;
 }
-#limit{
+#limit, #days_limit{
   background-color: #fff;
   background-image: none;
   border: 1px solid rgba(0, 0, 0, 0.15);
@@ -273,4 +275,105 @@ table.dataTable.no-footer{
 }
 .stone-winner{
     background: #e2e24e !important;
+}
+ /* Dropdown Button */
+.dropbtn {
+  background-color: #ed5a48;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #ed5a48;
+}
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  margin-left: 41%;
+  margin-top: 13px;
+}
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {
+  background-color: #ed5a48
+}
+.show { 
+  display:block; 
+}
+.nav-dropdown{
+  float:left; 
+  width:22%; 
+  text-align:right; 
+  font-size:12px; 
+  color:#ffffff; 
+  padding:12px 0;
+}
+.no-border{
+  border: medium none !important;
+  margin-top: -5px;
+}
+.list_dropdown{
+  display: inline-block;
+  padding: 0 0 0 7px;
+  position: relative;
+  width: 43px;
+}
+
+.header .c1 .nav li .list-dropdown-content a{
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+}
+
+.list-dropdown-content{
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  margin-top: 13px;
+}
+.list-dropdown-content a:hover {
+  background-color: #ed5a48
+}
+
+h4{
+  color: #ed5a48;
+  font-size: 18px;
+  font-weight: normal;
+  margin: 15px 0 5px;
+}
+
+.customer_list_verified_icon {
+  vertical-align: middle;
+  width: 12px;
+}
+
+.bg-red{
+  background: #ee0000; 
+}
+.save_btn {
+  left: 50%;
+  position: relative;
+  top: -18px;
 }

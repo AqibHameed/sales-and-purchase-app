@@ -1,123 +1,158 @@
 <div class="header">
-	<div class="c1">
-		<nav class="nav">
-			<ul>
-				<li class="first" onClick=" window.location.href = '/' ">
-					<%= link_to 'Home', root_path, :class => 'home', data: { turbolinks: false } %>
-					<!-- <a class="home" href="#">Home</a> -->
-				</li>
-				<li>
-					<%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
-					<!-- <a href="tender-dashboard.html">Tenders</a> -->
-				</li>
-				<li>
-					<%= link_to 'History', history_tenders_path, data: { turbolinks: false } %>
-					<!-- <a href="tender-history.html">History</a> -->
-				</li>
-				<% if current_customer %>
-				<li>
-					<%= link_to 'Database', new_search_path, data: { turbolinks: false } %>
-				</li>
-				<li>
-					<%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
-				</li>
-				<li>
-					<%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
-				</li>
-				<% end %>
-				<!-- <li>
-				<a href="#">Reports</a>
-				</li> -->
-				<% if current_admin %>
-				<li>
-					<%= link_to 'Winners List', list_winners_path, data: { turbolinks: false } %>
-				</li>
-				<li class="bids_list">
-					<%= link_to 'Bids List', list_bids_path, data: { turbolinks: false } %>
-				</li>
-				<li>
-					<%= link_to 'Admin Panel', '/admins', data: { turbolinks: false } %>
-				</li>
-				<% end %>
-				<li>
-					<%= link_to 'Calculator', calculator_path, data: { turbolinks: false } %>
-				</li>
-			</ul>
-
-		</nav>
-	</div>
-	<% if current_user %>
-	<div class="c2">
-		Welcome <a href="#"><%= current_user.name %></a>
-		| <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
-	</div>
-	<% end %>
-	<div class="clear"></div>
+  <div class="c1">
+    <nav class="nav">
+      <ul>
+        <li class="first" onClick=" window.location.href = '/' ">
+          <%= link_to 'Home', root_path, :class => 'home', data: { turbolinks: false } %>
+        </li>
+        <li>
+          <%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
+        </li>
+        <li>
+          <div class="dropdown list_dropdown" style="width: 68px;">
+            <a id="dropbtn" class="dropbtn"> History </a>
+            <span><%=image_tag "down-arrow.png", width: '18%' %></span>
+            <div id="myDropdown" class="list-dropdown-content">
+              <%= link_to 'Auction', history_tenders_path, data: { turbolinks: false } %>
+              <%= link_to 'Trading', trading_history_path, data: { turbolinks: false } %>
+            </div>
+          </div>
+        </li>
+        <% if current_customer %>
+          <li>
+            <%= link_to 'Inbox', proposals_path, data: { turbolinks: false } %>
+          </li>
+          <!-- <li>
+            <%#= link_to 'Auctions', auctions_path, data: { turbolinks: false } %>
+          </li> -->
+          <li>
+            <div class="dropdown list_dropdown">
+              <a id="dropbtn" class="dropbtn"> Buy </a>
+              <span><%=image_tag "down-arrow.png", width: '25%' %></span>
+              <div id="myDropdown" class="list-dropdown-content">
+                <%= link_to 'Trade', trading_customers_path, data: { turbolinks: false } %>
+                <%= link_to 'Credit', credit_customers_path, data: { turbolinks: false } %>
+                <%#= link_to 'Transactions', transactions_customers_path, data: { turbolinks: false } %>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="dropdown list_dropdown">
+              <a id="dropbtn" class="dropbtn"> Sell </a>
+              <span><%=image_tag "down-arrow.png", width: '25%' %></span>
+              <div id="myDropdown" class="list-dropdown-content">
+                <%= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %>
+                <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
+                <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
+                <%#= link_to 'Transactions', transactions_suppliers_path, data: { turbolinks: false } %>
+              </div>
+            </div>
+          </li>
+        <% end %>
+        <!-- <li>
+        <a href="#">Reports</a>
+        </li> -->
+        <% if current_admin %>
+          <!-- <li>
+            <%#= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
+          </li> -->
+          <li>
+            <%= link_to 'Winners List', list_winners_path, data: { turbolinks: false } %>
+          </li>
+          <li class="bids_list">
+            <%= link_to 'Bids List', list_bids_path, data: { turbolinks: false } %>
+          </li>
+          <li>
+            <%= link_to 'Admin Panel', '/admins', data: { turbolinks: false } %>
+          </li>
+         <!--  <li>
+            <%#= link_to 'Invite', new_customer_invitation_path, data: { turbolinks: false } %>
+          </li> -->
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+  <% if current_user %>
+  <div class="">
+    <div class="dropdown nav-dropdown">
+      <a id="dropbtn" class="dropbtn">Welcome <%= current_user.name %></a>
+      <span><%=image_tag "down-arrow.png", width: '4%' %></span>
+      <div id="myDropdown" class="dropdown-content">
+        <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
+        <%= link_to 'Info', info_customers_path, data: { turbolinks: false } %>
+        <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
+        <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
+      </div>
+    </div>
+  </div>
+  <% end %>
+  <div class="clear"></div>
 </div>
 <% if controller.controller_name == "calculator" %>
 <div class="mobile-header">
-	<div class="profile-top">
-		<span>Welcome Admin </span>
-		<a href="#">Logout</a>
-	</div>
-	<a class="mobile-menu-icon" href="javascript:void(0);"></a>
-	<div class="clear"></div>
-
+  <div class="profile-top">
+    <span>Welcome Admin </span>
+    <a href="#">Logout</a>
+  </div>
+  <a class="mobile-menu-icon" href="javascript:void(0);"></a>
+  <div class="clear"></div>
 </div>
 
 <div class="mobilemenu">
-	<ul>
-		<li class="first">
-			<a href="#">Home</a>
-		</li>
-		<li>
-			<a href="tender-dashboard.html">Tenders</a>
-		</li>
-		<li>
-			<a href="tender-history.html">History</a>
-		</li>
-		<li>
-			<a href="database.html">Database</a>
-		</li>
-		<li>
-			<a href="profile.html">Profile</a>
-		</li>
-		<li>
-			<a href="calendar.html">Calendar</a>
-		</li>
-		<li class="active">
-			<a href="reports.html">Calculator</a>
-		</li>
-	</ul>
+  <ul>
+    <li class="first">
+      <a href="#">Home</a>
+    </li>
+    <li>
+      <a href="tender-dashboard.html">Tenders</a>
+    </li>
+    <li>
+      <a href="tender-history.html">History</a>
+    </li>
+    <li>
+      <a href="database.html">Database</a>
+    </li>
+    <li>
+      <a href="profile.html">Profile</a>
+    </li>
+    <li>
+      <a href="calendar.html">Calendar</a>
+    </li>
+    <li class="active">
+      <a href="reports.html">Calculator</a>
+    </li>
+    <li>
+      <a href="<%= auctions_path %>">Auctions</a>
+    </li>
+  </ul>
 </div>
 <% end %>
 <script>
-	$(document).ready(function() {
-		$('nav.nav ul li a').each(function() {
-			var href = $(this).attr('href');
-			//alert(href)
-			//alert(window.location.pathname)
-			if (window.location.pathname == href) {
-				$(this).parent().addClass('active')
-			}
-			else
-				if((window.location.pathname == "/bids/tender_unsuccess") || (window.location.pathname == "/bids/tender_success") || (window.location.pathname == "/bids/tender_total")) {
-			    $(".bids_list").addClass('active')
-		 }
-		})
+  $(document).ready(function() {
+    $('nav.nav ul li a').each(function() {
+      var href = $(this).attr('href');
+      //alert(href)
+      //alert(window.location.pathname)
+      if (window.location.pathname == href) {
+        $(this).parent().addClass('active')
+      }
+      else
+        if((window.location.pathname == "/bids/tender_unsuccess") || (window.location.pathname == "/bids/tender_success") || (window.location.pathname == "/bids/tender_total")) {
+          $(".bids_list").addClass('active')
+     }
+    })
 
-		$(".mobile-menu-icon").click(function() {
-			var pos = parseInt($('.mobilemenu').css('top'));
-			if (pos < 0) {
-				$('.mobilemenu').animate({
-					'top' : '38px'
-				}, 'slow');
-			} else {
-				$('.mobilemenu').animate({
-					'top' : '-260px'
-				}, 'slow');
-			}
-		});
-
-	});
+    $(".mobile-menu-icon").click(function() {
+      var pos = parseInt($('.mobilemenu').css('top'));
+      if (pos < 0) {
+        $('.mobilemenu').animate({
+          'top' : '38px'
+        }, 'slow');
+      } else {
+        $('.mobilemenu').animate({
+          'top' : '-260px'
+        }, 'slow');
+      }
+    });
+  });
 </script>

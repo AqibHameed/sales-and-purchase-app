@@ -1,0 +1,105 @@
+<div class="c1 dashboard">
+  <div class="clear10"></div>
+  <div class="company">
+    <h3>Transaction</h3>
+    <div class="clear10"></div>
+    <h1><%=@customer.company %> have <%=@total_transaction%> transactions registered</h1>
+    <ul>
+      <li>
+        <h1><%=@pending_transactions%> pending transaction<%=link_to 'view',transaction_list_customers_path(type: "pending", id: @customer.id) %></h1>
+      </li>
+      <li>
+        <h1><%=@complete_transactions%> complete transaction<%=link_to 'view',transaction_list_customers_path(type: "complete", id: @customer.id) %></h1>
+      </li>
+      <li>
+        <h1><%=@overdue_transactions%> overdue transaction<%=link_to 'view',transaction_list_customers_path(type: 'overdue', id: @customer.id) %></h1>
+      </li>
+    </ul>
+    <div class="clear20"></div>
+    <h3>Purchase</h3>
+    <div class="clear10"></div>
+    <h1>Total Credit Received = <%=overall_credit_received(@customer)%></h1>
+    <h1>Credit Providers = <%=@credit_recieved.count%></h1>
+    <div class="table">
+      <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
+        <thead>
+          <th>Terms</th>
+          <th>#</th>
+          <th>value</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cash</td>
+            <td><%=count_value('0', @credit_recieved.count,'count', @customer)%></td>
+            <td><%=count_value('0', @credit_recieved.count,'value', @customer)%></td>
+          </tr>
+          <tr>
+            <td><=30</td>
+            <td><%=count_value('less_30', @credit_recieved.count,'count', @customer)%></td>
+            <td><%=count_value('less_30', @credit_recieved.count,'value', @customer)%></td>
+          </tr>
+          <tr>
+            <td>30<=60</th>
+            <td><%=count_value('60', @credit_recieved.count,'count', @customer)%></td>
+            <td><%=count_value('60', @credit_recieved.count,'value', @customer)%></td>
+          </tr>
+          <tr>
+            <td>60<=90</td>
+            <td><%=count_value('90', @credit_recieved.count,'count', @customer)%></td>
+            <td><%=count_value('90', @credit_recieved.count,'value', @customer)%></td>
+          </tr>
+          <tr>
+            <td>90<</td>
+            <td><%=count_value('more_90', @credit_recieved.count,'count', @customer)%></td>
+            <td><%=count_value('more_90', @credit_recieved.count,'value', @customer)%></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="clear20"></div>
+    <h3>Sales</h3>
+    <div class="clear10"></div>
+    <h1>Credit given to = <%=@credit_given.count%> </h1>
+    <h1>Total Credit Given = <%=overall_credit_given(@customer)%></h1>
+    <h1>Total Credit Used = <%=overall_credit_spent_by_customer(@customer)%></h1>
+    <h1>Total Credit Available = <%=credit_available(@customer)%></h1>
+    <div class="table">
+      <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
+        <thead>
+          <th>Terms</th>
+          <th>#</th>
+          <th>value</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cash</td>
+            <td><%=sale_count_value('0', @credit_given.count,'count', @customer)%></td>
+            <td><%=sale_count_value('0', @credit_given.count,'value', @customer)%></td>
+          </tr>
+          <tr>
+            <td><=30</td>
+            <td><%=sale_count_value('less_30', @credit_given.count,'count', @customer)%></td>
+            <td><%=sale_count_value('less_30', @credit_given.count,'value', @customer)%></td>
+          </tr>
+          <tr>
+            <td>30<=60</td>
+            <td><%=sale_count_value('60', @credit_given.count,'count', @customer)%></td>
+            <td><%=sale_count_value('60', @credit_given.count,'value', @customer)%></td>
+          </tr>
+          <tr>
+            <td>60<=90</td>
+            <td><%=sale_count_value('90', @credit_given.count,'count', @customer)%></td>
+            <td><%=sale_count_value('90', @credit_given.count,'value', @customer)%></td>
+          </tr>
+          <tr>
+            <td>90<</td>
+            <td><%=sale_count_value('more_90', @credit_given.count,'count', @customer)%></td>
+            <td><%=sale_count_value('more_90', @credit_given.count,'value', @customer)%></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="clear"></div>

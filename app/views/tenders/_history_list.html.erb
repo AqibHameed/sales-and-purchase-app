@@ -1,50 +1,47 @@
 <div class="table">
 
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
-		<thead>
-			<tr>
-				<th>Tender Name</th>
-				<th>Stone Description</th>
-				<th>DEEC No</th>
-				<th>Stone Weight</th>
-				<% if current_customer %>
-				<th>Bid Amount</th>
-				<% elsif current_admin %>
-				<th>Winning Bid/Highest Bid</th>
-				<!-- <th>Winning Customer</th> -->
-				<% end %>
-				<th>Selling Price</th>
-				<% if current_customer %>
-				<th>% Difference</th>
-				<% end %>
-				<th>Status</th>
-				
-			</tr>
-		</thead>
-		<tbody>
-			<% @stones.each do |stone| %>
-
-			<tr>
-				<td><%= link_to_if current_customer, stone.tender.name, stone.tender %></td>
-				<td><%= stone.description %></td>
-				<td><%= stone.deec_no %></td>
-				<td><%= stone.weight %></td>
-				<% if current_customer %>
-				<td><%= number_to_currency stone.customer_bid_amount(current_customer) %></td>
-				<% else %>
-				<td><%= number_to_currency stone.winning_bid.try(:total) %></td>
-				<!--<%#= stone.tender.winning_customer %></td>-->
-				<% end %>
-				<% amount = @selling_price[stone.deec_no.to_s + '_' + stone.tender_id.to_s] %>
-				<td><%= number_to_currency(amount)  unless amount.nil? %></td>
-				<% if current_customer %>
-				<td><%= raw get_difference(stone.customer_bid_amount(current_customer), @selling_price[stone.deec_no.to_s + '_' + stone.tender_id.to_s]) unless @selling_price[stone.deec_no.to_s + '_' + stone.tender_id.to_s].nil? %></td>
-				<% end %>
-				<td><%= stone.tender.open? ? 'Open' : 'Closed' %></td>
-				
-			</tr>
-			<% end %>
-		</tbody>
-	</table>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
+    <thead>
+      <tr>
+        <th>Tender Name</th>
+        <th>Stone Description</th>
+        <th>Stone Weight</th>
+        <% if current_customer %>
+          <th>Bid Amount</th>
+        <% elsif current_admin %>
+          <th>Winning Bid/Highest Bid</th>
+        <% end %>
+        <th>Selling Price</th>
+        <% if current_customer %>
+          <th>% Difference</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @tender_winners.each do |winner| %>
+        <% stone = Stone.where(tender_id: winner.tender.try(:id), lot_no: winner.lot_no).first %>
+        <tr>
+          <% if winner.tender.nil? %>
+            <td>N/A</td>
+          <% else %>
+            <td><%= link_to winner.tender.name, tender_path(winner.tender.id) %></td>
+          <% end %>
+          <td><%= winner.description rescue 'N/A' %></td>
+          <td><%= stone.weight  rescue 'N/A' %></td>
+          <% if current_customer %>
+            <td><%= stone.customer_bid_amount(current_customer) rescue 'N/A' %></td>
+          <% else %>
+            <td><%= number_to_currency stone.winning_bid.try(:total) rescue 'N/A' %></td>
+          <% end %>
+          <td><%= number_to_currency(winner.selling_price) rescue 'N/A' %></td>
+          <% if current_customer %>
+            <td><%= raw get_difference(stone.customer_bid_amount(current_customer), winner.selling_price) rescue 'N/A' %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
+
+<%= paginate @tender_winners %>
 <script>$("#myTable").tablesorter();</script>

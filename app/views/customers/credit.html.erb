@@ -1,0 +1,27 @@
+<div class="">
+  <h2>Credit Limits</h2>
+  <p>Total Credit Received = <%= overall_credit_received(current_customer) %></p>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter">
+      <thead>
+        <th>Supplier Name</th>
+        <th>Total Credits</th>
+        <th>Used Credits</th>
+        <th>Available Credits</th>
+        <th></th>
+      </thead>
+      <% @credit_limit.each.with_index(1) do |limit, i|%>
+        <% if limit.supplier.present? && !current_customer.is_blocked_by_supplier(limit.supplier.id) %>
+          <tr>
+            <td><%= limit.supplier.company %></td>
+            <td><%= get_credit_limit(current_customer, limit.supplier) %></td>
+            <td><%= get_used_credit_limit(current_customer, limit.supplier) %></td>
+            <td><%= get_available_credit_limit(current_customer, limit.supplier) %></td>
+            <td></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
+  </div>
+  <%#= paginate @customers %>
+</div>

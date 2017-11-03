@@ -1,0 +1,81 @@
+<%= stylesheet_link_tag "application" %>
+<%= javascript_include_tag 'application' %>
+<title>Dialuck</title>
+<div class="wrapper">
+  <h6>Welcome to Tender Program</h6>
+    <div class="sub-heading">
+      <p>By</p>
+      <p>Dialuck Trading Pvt. Ltd.</p>
+    </div>
+    <div class="clear20"></div>
+    <div class="clear20"></div>
+    <div class="heading">Sign up</div>
+    <div class="clear20"></div>
+    <div class="login-box">
+      <p style="color:red; font-size:13px;" class='error_msg'></p>
+      <p class="clear10"></p>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= devise_error_messages! %>
+        <div class="field">
+          <%= f.label :first_name %><br />
+          <%= f.text_field :first_name, autofocus: true  %>
+        </div>
+
+        <div class="field">
+          <%= f.label :last_name %><br />
+          <%= f.text_field :last_name, autocomplete: "off" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :company %><br />
+          <%= f.text_field :company %>
+          <%#= f.select :company, options_for_select(PreRegistration.all.map { |e| e.company_name }), {},  prompt: 'Please select', class: 'input' %>
+        </div>
+        <div class="field">
+          <%= f.label :email %><br />
+          <%= f.email_field :email %>
+        </div>
+        <div class="field">
+          <%= f.label :mobile_no %><br />
+          <%= f.number_field :mobile_no %>
+        </div>
+        <div class="field">
+          <%= f.label :password %>
+          <% if @minimum_password_length %>
+          <em>(<%= @minimum_password_length %> characters minimum)</em>
+          <% end %><br />
+          <%= f.password_field :password, autocomplete: "off" %>
+        </div>
+        <div class="field">
+          <%= f.label :password_confirmation %><br />
+          <%= f.password_field :password_confirmation, autocomplete: "off" %>
+        </div>
+  
+        <div class="btns-groups">
+          <%= f.submit "Sign up", class: "btn-02 login-btn" %>
+        </div>
+      <% end %>
+    </div>
+
+<%= render "devise/shared/links" %>
+
+<style type="text/css">
+  .btns-groups {
+    margin: 15px auto 0;
+    text-align: center;
+  }
+  .btn-02.login-btn  {
+    margin-left: 0;
+    border: 0;
+    margin-right: 10px;
+  }
+</style>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".tender-house7, .tender-house0").prop("checked", false);
+  })
+  $('.tender-house0').on('click',function () {
+    $(".tender-house0").is(':checked') ? $('.tender-house7').attr('disabled', true).prop('checked', false) : $('.tender-house7').prop('checked', false).attr('disabled', false)   
+  })
+</script>

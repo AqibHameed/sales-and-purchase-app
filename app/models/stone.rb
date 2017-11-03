@@ -2,8 +2,11 @@ class Stone < ApplicationRecord
 
   attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
                   :deec_no, :lot_no, :description, :tender_id, :reserved_price, :system_price, :yes_no_system_price, :stone_winning_price, :interest
+  # attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
+  #                 :deec_no, :lot_no, :description, :tender_id
 
   has_many :bids
+  has_many :parcel_images, :foreign_key => "parcel_id", :class_name => "ParcelImage"
   has_one :winner
   has_one :yes_no_buyer_winner
   has_one :note
@@ -29,7 +32,12 @@ class Stone < ApplicationRecord
   end
 
   def customer_bid_amount(customer)
-    self.bids.find_by_customer_id(customer.id).total
+    bid = self.bids.where(customer_id: customer.id).first
+    if bid.nil?
+      'N/A'
+    else
+      number_to_currency bid.total
+    end
   end
 
   def winning_bid
@@ -89,6 +97,26 @@ class Stone < ApplicationRecord
 
   def key
     "#{self.description}##{ self.weight.to_s}"
+  end
+
+  def self.active_parcels term
+    # mysql
+    Tender.find_by_sql(
+      "SELECT tenders.name, s.* FROM tenders 
+      left join stones s on s.tender_id = tenders.id
+      WHERE (open_date <= '#{Time.now.utc}'
+      AND close_date >= '#{Time.now.utc}')
+      AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term.to_i})"
+    )
+
+    # # pg
+    # Tender.find_by_sql(
+    #   "SELECT tenders.name, s.* FROM tenders 
+    #   left join stones s on s.tender_id = tenders.id
+    #   WHERE (open_date <= '#{Time.now.utc}'
+    #   AND close_date >= '#{Time.now.utc}')
+    #   AND (s.weight = #{term} OR s.lot_no = #{term.to_i})"
+    # )
   end
 
   rails_admin do

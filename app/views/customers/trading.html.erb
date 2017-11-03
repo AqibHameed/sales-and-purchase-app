@@ -1,0 +1,8 @@
+<%= render partial: 'customers/trading/search_trading' %>
+<div class="dashboard">
+  <h3>Recently Added</h3>
+  <div class="clear10"></div>
+  <div class="table trading-parcel-table">
+    <%= render partial: 'customers/trading/trading_parcels', locals: { parcels: @parcels } %>
+  </div>
+</div>

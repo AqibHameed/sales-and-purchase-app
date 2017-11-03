@@ -1,9 +1,10 @@
 class SessionsController <  Devise::SessionsController
 
   def get_resource
-    if Customer.find_by_email_and_status(params[resource_name][:email],true).present?
+
+    if customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login]).present?
       return :customer
-    elsif Admin.find_by_email(params[resource_name][:email]).present?
+    elsif Admin.find_by_email(params[resource_name][:login]).present?
       return :admin
     end
   end
@@ -13,18 +14,31 @@ class SessionsController <  Devise::SessionsController
   end
 
   def create
-    scope = get_resource
-    resource = warden.authenticate!(:scope => scope )
-    if resource.sign_in_count == 1
-      session[:show_popup] = true
-    else
-      session[:show_popup] = false
+    customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login])
+    admin = Admin.where(email: params[:customer][:login])
+    if !customer.blank? 
+      resource = warden.authenticate!(auth_options)
+      sign_in(resource_name, resource)
+      if resource.sign_in_count == 1
+        path = 'login'
+      else
+        path = '/'
+      end
+      respond_to do |format|
+        format.js{ render json: path }
+      end
+    elsif !admin.blank?
+      scope = get_resource
+      resource = warden.authenticate!(:scope => scope )
+      if resource.sign_in_count == 1
+        path = 'login'
+      else
+        path = '/admins'
+      end
+      respond_to do |format|
+        format.js{ render json: path }
+      end
     end
-    respond_to do |format|
-      format.html { redirect_to after_sign_in_path_for(resource) }
-      format.js { render :js => "window.location.href = '#{after_sign_in_path_for(resource)}'", turbolinks: false}      
-    end
-
   end
 
 end

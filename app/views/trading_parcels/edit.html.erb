@@ -1,0 +1,93 @@
+<div class="">
+  <h3> Edit Parcel </h3>
+  <div class="clear10"></div>
+  <div class="form-wrapper">
+    <%= form_for @parcel do |f| %>
+      <div class="form-row">
+        <div class="label">Source</div>
+        <div class='field'>
+          <%=f.text_field :source, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Description</div>
+        <div class='field'>
+          <%=f.text_field :description, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Box</div>
+        <div class='field'>
+          <%=f.text_field :box, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Lot No</div>
+        <div class='field'>
+          <%=f.number_field :lot_no, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">No of stones</div>
+        <div class='field'>
+          <%=f.number_field :no_of_stones, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Carats</div>
+        <div class='field'>
+          <%=f.text_field :weight, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Box value</div>
+        <div class='field'>
+          <%=f.text_field :box_value, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Sight</div>
+        <div class='field'>
+          <%=f.text_field :sight, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Cost</div>
+        <div class='field'>
+          <%=f.text_field :cost, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Price</div>
+        <div class='field'>
+          <%=f.text_field :price, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Credit</div>
+        <div class='field'>
+          <%=f.number_field :credit_period, class: 'input' %>
+        </div>
+      </div>
+
+       <div class="form-row">
+        <div class="label"></div>
+        <div class='field'>
+          <%=f.submit 'Update', class: 'btn-01 login_btn' %>
+          <%=link_to 'Back', suppliers_path, class: 'btn-01 login_btn' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="clear"></div>

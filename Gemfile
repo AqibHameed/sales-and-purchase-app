@@ -1,14 +1,18 @@
 source 'https://rubygems.org'
 
-# gem 'rails', '3.2.13'
-gem 'rails', '5.1.0'
+ruby '2.3.1'
 
+gem 'rails', '5.1.0'
+# gem 'pg', '~> 0.18.4'
 
 gem "mysql2"
 gem "devise"
+gem 'devise_invitable'
 # gem 'rails_admin_example_theme', :git => 'git://github.com/bbenezech/rails_admin_example_theme.git'
 gem "rails_admin"
 gem "paperclip"
+# For S3
+gem 'aws-sdk', '~> 2.3'
 gem 'bootstrap-wysihtml5-rails'
 gem 'rails_admin_toggleable'
 gem 'spreadsheet'
@@ -23,11 +27,13 @@ gem 'active_model_serializers'
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
 
+
+gem 'delayed_job_active_record'
+gem 'momentjs-rails', '>= 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
+gem "jquery-monthpicker-rails", "~> 1.0.0"
 gem 'countdown'
 
-# 31-10-2017 Oct adding delayed job starting
-gem 'delayed_job_active_record'
-# 31-10-2017 Oct adding delayed job ending 
 
 group :assets do
   gem 'sass-rails'
@@ -37,13 +43,19 @@ group :assets do
 end
 
 group :development do
-  gem 'pry-byebug'	
+  gem 'pry-byebug'
   gem "thin"
   gem 'listen', '>= 3.0.5', '< 3.2'
 end
+
 gem "whenever"
 gem 'protected_attributes_continued'
 gem 'turbolinks', '~> 5.0.0'
 gem 'rubocop', require: false
 gem 'puma',  '3.6.2'
+gem 'country_select', git: 'https://github.com/alibabajan/country_select.git'
 gem 'jquery-datatables-rails', '~> 3.4.0'
+gem 'fcm'
+gem 'figaro'
+gem 'houston'
+gem "select2-rails"

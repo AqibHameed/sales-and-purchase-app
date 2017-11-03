@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  round_no: 1
+  min_bid: 1.5
+  max_bid: 1.5
+
+two:
+  round_no: 1
+  min_bid: 1.5
+  max_bid: 1.5

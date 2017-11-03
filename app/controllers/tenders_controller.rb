@@ -8,6 +8,33 @@ class TendersController < ApplicationController
 
   layout :false, :only => [:admin_details, :admin_winner_details]
 
+  def new
+    @tender = Tender.new
+  end
+
+  def create
+    @company= Company.find(params[:search_company])
+    @tender = @company.tenders.new(tender_params)
+    if @tender.save
+      @stone = @tender.stones.create(stone_type: params[:stone_type], no_of_stones: params[:no_of_stones], size: params[:size], weight: params[:weight], carat: params[:carat], deec_no: params[:deec_no], lot_no: params[:lot_no], description: params[:description], system_price: params[:system_price],lot_permission: params[:lot_permission])
+      redirect_to root_path
+    else
+      render 'new'
+    end
+  end
+
+  def block_lot
+    stone = Stone.find(params[:id])
+    a=params[:lot_permission]
+    if( a=="YES")
+      stone.lot_permission = true
+      stone.save!
+    else
+      stone.lot_permission = false
+      stone.save!
+    end
+  end
+
   def customer_bid_detail
     @tender = Tender.find(params[:id])
     @bids = Bid.where(["tender_id = ? and customer_id = ?",@tender.id, params[:customer_id]]).includes(:customer, :stone)
@@ -44,16 +71,18 @@ class TendersController < ApplicationController
 
   def index
     col_str = ""
+    upcomimg_str = "open_date > '#{Time.zone.now}'"
     if params[:comapany] || params[:tender] || params[:status]
       col_str =  "tenders.name LIKE '%#{params[:tender]}%'"  unless params[:tender].blank?
       col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:company]}" : " AND tenders.company_id = #{params[:company]}" unless params[:company].blank?
       col_str += (col_str.blank?) ? ((params[:status] == '0') ? ("tenders.close_date < DATE(NOW())") : ("close_date > DATE(NOW())")) : ((params[:status] == '0') ? (" AND tenders.close_date < DATE(NOW())") : (" AND close_date > DATE(NOW())")) unless params[:status].blank?
     end
     if current_customer
-      @tenders = current_customer.tenders.where(col_str).order("created_at desc")
-      @tenders = @tenders.page params[:page]
+      @tenders = current_customer.tenders.active.where(col_str).order("open_date").page params[:page]
+      @upcoming_tenders = current_customer.tenders.where(upcomimg_str).where(col_str).order("open_date").page params[:page]
     else
-      @tenders = Tender.where(col_str).order("created_at desc").page params[:page]
+      @tenders = Tender.active.where(col_str).order("open_date").page params[:page]
+      @upcoming_tenders = Tender.where(upcomimg_str).where(col_str).order("open_date").page params[:page]  
     end
     @news = News.first(10)
   end
@@ -61,12 +90,24 @@ class TendersController < ApplicationController
   def show
 
     if current_customer
+<<<<<<< HEAD
       @tender = current_customer.tenders.includes(:stones).find(params[:id])
       if @tender.open_date < Time.now && Time.now < @tender.close_date
         @round = 1
       end
       @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
+=======
+      @tender = Tender.includes(:stones).find(params[:id])
+      # @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
+      companies = current_customer.companies
+      #@tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
+      if @tender.open_date < Time.now && Time.now < @tender.close_date
+        @round = 1
+      end
+      @notes = current_customer.notes.where(tender_id: @tender.try(:id)).collect(&:key)
+>>>>>>> c63bd0159674845be22e08741e6003f1e02a910e
       flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)
+      # => Check for conflicts
       @important = []
       @read = []
       flags.each do |f|
@@ -230,7 +271,6 @@ class TendersController < ApplicationController
   end
 
   def temp_filter
-
     query = []
     if params[:filter]
       params[:filter].each do |f|
@@ -242,9 +282,7 @@ class TendersController < ApplicationController
           query << "(carat >= '#{f['from'].to_f}' and  carat <= '#{f['to'].to_f}')" if (f['from'] != "" && f['to'] != "")
         else
         end
-
       end
-
     end
 
     q = query.join(' or ')
@@ -268,24 +306,35 @@ class TendersController < ApplicationController
   end
 
   def history
-    if current_customer
-      @customer = current_customer
-    elsif current_admin && !params[:search].blank? && !params[:search][:customer_id].blank?
-      @customer = Customer.find(params[:search][:customer_id])
+    @tenders = Tender.where('close_date < ?', Date.today)
+    @supplier = Company.all
+    @mine = SupplierMine.all
+    # if current_customer
+    #   @customer = current_customer
+    # elsif current_admin && !params[:search].blank? && !params[:search][:customer_id].blank?
+    #   @customer = Customer.find(params[:search][:customer_id])
+    # end
+    # @stones = Tender.search_results(params[:search], @customer, true)
+    # @selling_price = {}
+
+    # winners = TenderWinner.where("lot_no in (?) or tender_id in (?)", @stones.collect(&:deec_no), @stones.collect(&:tender_id))
+
+    # winners.each do |w|
+    #   @selling_price[w.lot_no.to_s + '_' + w.tender_id.to_s ] = w.selling_price
+    # end
+    if params[:search].present?
+      @tender_winners = TenderWinner.search_results(params[:search], @customer, true).page(params[:page]).per(100)
+    else
+      @tender_winners = TenderWinner.all.page(params[:page]).per(100)
     end
-    @stones = Tender.search_results(params[:search], @customer, true)
-    @selling_price = {}
-
-    winners = TenderWinner.where("lot_no in (?) or tender_id in (?)", @stones.collect(&:deec_no), @stones.collect(&:tender_id))
-
-    winners.each do |w|
-      @selling_price[w.lot_no.to_s + '_' + w.tender_id.to_s ] = w.selling_price
-    end
-
     respond_to do |format|
       format.html
       format.js {render 'history.js.erb'}
     end
+  end
+
+  def trading_history
+    @transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? or supplier_id = ?", current_customer.id, current_customer.id)
   end
 
   def calendar
@@ -339,10 +388,12 @@ class TendersController < ApplicationController
 
   def send_confirmation
     if params[:tender_id]
-      @customer_tender = CustomersTender.where(tender_id: params[:tender_id], customer_id: current_customer.id)
-      @customer_tender.update_attribute(:confirmed, true)
+
+      @customer_tender = CustomersTender.where(tender_id: params[:tender_id], customer_id: current_customer.id).first
+      @customer_tender.confirmed = true
+      @customer_tender.save!
       @bid = Bid.where(tender_id: @customer_tender.tender_id, customer_id: current_customer.id)
-      TenderMailer.confirmation_mail(@customer_tender.tender, current_customer, @bid).deliver
+      TenderMailer.confirmation_mail(@customer_tender.tender, current_customer, @bid).deliver rescue logger.info "Error sending email"
       @message = "success"
     else
       @bid = Bid.find_or_initialize_by(id: params[:bid_id], customer_id: current_customer.id)
@@ -368,10 +419,20 @@ class TendersController < ApplicationController
 
   def view_past_result
     # get last 3 tender details
-    @tender = current_customer.tenders.find(params[:id]) rescue Tender.find(params[:id])
-    @desc = params[:key]
-    tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and created_at < ?", @tender.id, @tender.company_id, @tender.created_at).order("close_date DESC").limit(5)
-    @winners = TenderWinner.includes(:tender).where("tender_id in (?) and tender_winners.description = ?", tenders.collect(&:id), @desc)
+    if params[:stone_count] == "1"
+      @winners = []
+    else
+      @tender = current_customer.tenders.find(params[:id]) rescue Tender.find(params[:id])
+      @desc = params[:key]
+      tenders = Tender.includes(:tender_winners).where("id != ? and supplier_mine_id = ? and date(close_date) < ?", @tender.id, @tender.supplier_mine_id, @tender.open_date.to_date).order("open_date DESC").limit(5)
+      # @winners = TenderWinner.includes(:tender).where("tender_id in (?) and tender_winners.description = ?", tenders.collect(&:id), @desc)
+      tender_winner_array = TenderWinner.includes(:tender).where(description: @desc, tender_id: tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
+      @winners = []
+      tender_winner_array.each_pair do |tender_winner|
+        @winners << tender_winner.try(:last).try(:first)
+      end
+      @winners = @winners.compact.sort_by{|e| e.tender.open_date}.reverse
+    end
     render :partial => 'view_past_result'
   end
 
@@ -398,6 +459,7 @@ class TendersController < ApplicationController
     @bids.order(:total).first.delete if @bids.count > 10
   end
 
+<<<<<<< HEAD
   def yes_or_no_winners
     data = params[:data]
     if data[:interest] == "Yes" 
@@ -417,10 +479,21 @@ class TendersController < ApplicationController
     end
   end
   
+=======
+>>>>>>> c63bd0159674845be22e08741e6003f1e02a910e
   private
 
   def get_value(data)
     return ((data.class == Fixnum or data.class == Float)  ? data : (data.class == String ? data : data.nil? ? nil : data.value))
   end
 
+  def tender_params
+    params.require(:tender).permit(:name, :description, :open_date, :close_date, :tender_open, :document_file_name, :document_content_type, :document_file_size, :winner_list_file_name, :winner_list_content_type, :winner_list_file_size, :temp_document_file_name, :temp_document_file_type, :temp_document_file_size, :deec_no_field, :lot_no_field, :desc_field, :sheet_no,:no_of_stones_field,:weight_field,:winner_lot_no_field,:reference_id)
+  end
+
+  def stone_params
+    params.require(:stone).permit(:stone_type, :no_of_stones,:size,:weight,:carat,:tender_id,:deec_no,:lot_no,:description)
+  end
+
 end
+

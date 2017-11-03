@@ -1,5 +1,7 @@
-<div class="table">
-<table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+
+<h4>Active</h4>
+<div class="table active_table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
     <tr>
       <th>Tender</th>
       <th>Tender Type</th>
@@ -32,5 +34,27 @@
     <% end %>
   </table>
 </div>
-
 <%= paginate @tenders %>
+
+<h4>Upcoming</h4>
+<div class="table upcoming_table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+      <tr>
+        <th>Tender</th>
+        <th>Total Parcels</th>
+        <th>Total Carats</th>
+        <th>Start Date</th>
+        <th>Days Untill Start</th>
+      </tr>
+      <% @upcoming_tenders.each do |tender| %>
+        <tr id="<%= tender.id %>">
+          <td><%= link_to tender.name, tender %></td>
+          <td><%= tender.stones.count %></td>
+          <td><%= tender.stones.sum(:weight) %></td>
+          <td><%= tender.open_date.strftime("%B, %d %Y") %></td>
+          <td><%= time_remaining(tender.close_date) if !tender.close_date.nil? %></td>
+        </tr>
+      <% end %>
+  </table>
+</div>
+<%= paginate @upcoming_tenders %>

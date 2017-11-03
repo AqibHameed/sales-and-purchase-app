@@ -1,0 +1,45 @@
+<% if @proposal.new_record? %>
+  <% price = @parcel.price %>
+  <% credit =  @parcel.credit_period %>
+<% else %>
+  <% price = @proposal.price %>
+  <% credit =  @proposal.credit %>
+<% end %>
+<% if @proposal.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@proposal.errors.count, "error") %> prohibited this proposal from being saved:</h2>
+    <ul>
+      <% @proposal.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+<div class="form-row">
+  <div class="label">Price</div>
+  <div class='field'>
+    <%=f.text_field :price, value: price, class: 'input' %>
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="label">Credit</div>
+  <div class='field'>
+    <%=f.number_field :credit, value: credit, class: 'input' %>
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="label">Notes</div>
+  <div class='field'>
+    <%=f.text_area :notes, class: 'input' %>
+  </div>
+</div>
+
+ <div class="form-row">
+  <div class="label"></div>
+  <div class='field'>
+    <%=f.submit 'Submit', class: 'btn-01 login_btn' %>
+    <%=link_to 'Back', trading_customers_path, class: 'btn-01 login_btn' %>
+  </div>
+</div>

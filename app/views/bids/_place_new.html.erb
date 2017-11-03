@@ -1,11 +1,13 @@
-<% past_history = @history.collect{ |t| t.avg_selling_price }.last(5)  %>
+<% past_history = @history.collect{ |t| t.avg_selling_price }.first(3)  %>
 <div class=''>
   <%= link_to "X", "javascript:void(0)", :class => 'btn-01 close_bid fright', :onclick => "$('tr').removeClass('current_bid');$('.bid_form').html('').hide();removeMask();" %>
   <div class=''>
     <table>
       <tr>
-        <td  >
-          <div id="container"></div>
+        <td>
+
+            <div id="container"></div>
+
         </td>
         <td style="width:330px !important;" >
         <div class='tender-detail'>
@@ -14,6 +16,7 @@
           <div class="form-wrapper tend-detail">
             <%= form_for [@stone, @bid], :remote => true do |f| %>
             <%= f.hidden_field :customer_id %>
+            <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
             <div class='form-row'>
               <div class='label'>
                 Tender
@@ -59,29 +62,31 @@
               </div>
               <div class='clear'></div>
             </div>
-            <div class="form-row">
-              <div class="label">
-                Last Tender Avg. selling Price
+            <% if @stone.no_of_stones > 2 %>
+              <div class="form-row">
+                <div class="label">
+                  Last Tender Avg. selling Price
+                </div>
+                <div class="field">
+                  <%= @past_winner.nil? ? 'N/A' : @past_winner.avg_selling_price  %>
+                  <br>
+                  <span class='amount_error' style="color:red; font-size:13px"></span>
+                </div>
+                <div class="clear"></div>
               </div>
-              <div class="field">
-                <%= @past_winner.nil? ? 'N/A' : @past_winner.avg_selling_price  %>
-                <br>
-                <span class='amount_error' style="color:red; font-size:13px"></span>
-              </div>
-              <div class="clear"></div>
-            </div>
-            <% unless past_history.length == 0 %>
-            <div class="form-row">
-              <div class="label">
-                Avg. selling Price for last <%= past_history.length %> tenders
-              </div>
-              <div class="field">
-                <%= (past_history.sum / past_history.length).round(2) rescue ''  %>
-                <br>
-                <span class='amount_error' style="color:red; font-size:13px"></span>
-              </div>
-              <div class="clear"></div>
-            </div>
+              <% unless past_history.length == 0 %>
+                <div class="form-row">
+                  <div class="label">
+                    Avg. selling Price for last <%= past_history.length %> tenders
+                  </div>
+                  <div class="field">
+                    <%= (past_history.sum / past_history.length).round(2) rescue ''  %>
+                    <br>
+                    <span class='amount_error' style="color:red; font-size:13px"></span>
+                  </div>
+                  <div class="clear"></div>
+                </div>
+              <% end %>
             <% end %>
             <div class="form-row">
               <div class="label">
@@ -254,54 +259,56 @@
   showDiff()
 
   $(function() {
-    $('#container').highcharts({
-      chart : {
-        type : 'column',
-        width: $(document).width() / 2
-      },
-      title : {
-        text : 'Past Tender History'
-      },
-      // subtitle : {
-        // text : 'Source: WorldClimate.com'
-      // },
-      xAxis : {
-        categories : <%= raw @history.collect{ |t| t.tender.name }.last(5) %>
-      },
-      yAxis : {
-        min : 0,
+    <% unless @stone.no_of_stones.to_i == 1 %>
+      $('#container').highcharts({
+        chart : {
+          type : 'column',
+          width: $(document).width() / 2
+        },
         title : {
-          text : 'Price in $'
-        }
-      },
-      tooltip : {
-        headerFormat : '<span style="font-size:10px">{point.key}</span><table>',
-        pointFormat : '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>${point.y:.2f}</b></td></tr>',
-        footerFormat : '</table>',
-        shared : true,
-        useHTML : true
-      },
-      plotOptions : {
-        column : {
-          pointPadding : 0.2,
-          borderWidth : 0
-        }
-      },
-      series : [{
-        name : 'Avg. Selling Price',
-        data : <%= raw @history.collect{ |t| t.avg_selling_price }.last(5) %>
+          text : 'Past Tender History'
+        },
+        // subtitle : {
+          // text : 'Source: WorldClimate.com'
+        // },
+        xAxis : {
+          categories : <%= raw @history.collect{ |t| t.tender.name }.last(5) %>
+        },
+        yAxis : {
+          min : 0,
+          title : {
+            text : 'Price in $'
+          }
+        },
+        tooltip : {
+          headerFormat : '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat : '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>${point.y:.2f}</b></td></tr>',
+          footerFormat : '</table>',
+          shared : true,
+          useHTML : true
+        },
+        plotOptions : {
+          column : {
+            pointPadding : 0.2,
+            borderWidth : 0
+          }
+        },
+        series : [{
+          name : 'Avg. Selling Price',
+          data : <%= raw @history.collect{ |t| t.avg_selling_price }.last(5) %>
 
-      }, {
-                type: 'spline',
-                name: 'My Bid',
-                data: <%= raw @my_bid_list %>,
-                marker: {
-                  lineWidth: 2,
-                  lineColor: Highcharts.getOptions().colors[3],
-                  fillColor: 'white'
-                }
-            }]
-    });
+        }, {
+                  type: 'spline',
+                  name: 'My Bid',
+                  data: <%= raw @my_bid_list %>,
+                  marker: {
+                    lineWidth: 2,
+                    lineColor: Highcharts.getOptions().colors[3],
+                    fillColor: 'white'
+                  }
+              }]
+      });
+    <% end %>
   });
 
 </script>

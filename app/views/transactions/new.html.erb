@@ -1,0 +1,256 @@
+<%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
+<%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
+<h3>Transaction </h3>
+
+<div class="transaction-form">
+  <div class="clear10"></div>
+  <div class="form-wrapper">
+    <%= nested_form_for @parcel, url: transactions_path do |p| %>
+      <% if @parcel.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@parcel.errors.count, "error") %> prohibited this transaction from being saved:</h2>
+          <ul>
+            <% @parcel.errors.each do |atr, msg| %>
+              <li>
+                <% if atr.to_s.include? "base" %>
+                  <%= msg %>
+                <% else %>
+                  <%= @parcel.errors.full_message(atr, msg) %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="clear20"></div>
+      <div class="form-row">
+        <div class="label">Diamond Type: </div>
+        <div class="field">
+          <%= select_tag "trading_document_diamond_type", options_for_select(['Rough', 'Sight', 'Finance']),  { class: 'input', include_blank: true } %>
+        </div>
+      </div>
+
+      <div class="rough_diamond hide">
+        <div class="form-row">
+          <div class="label">Description: </div>
+          <div class="field">
+            <%= p.text_field :description,  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">No of Stones: </div>
+          <div class="field">
+            <%= p.number_field :no_of_stones,  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Lot No: </div>
+          <div class="field">
+            <%= p.number_field :lot_no,  class: 'input' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="sight_diamond hide">
+        <div class="form-row">
+          <div class="label"> Source: </div>
+          <div class="field">
+            <%= p.text_field :source, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Box: </div>
+          <div class="field">
+            <%= p.text_field :box, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Cost:</div>
+          <div class="field">
+            <%= p.text_field :cost, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Box Value:</div>
+          <div class="field">
+            <%= p.text_field :box_value, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Sight:</div>
+          <div class="field">
+            <%= p.text_field :sight, class: 'input' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="common hide">
+        <div class="form-row">
+          <div class="label">Credit: </div>
+          <div class="field">
+            <%= p.number_field :credit_period, class: 'input' %>
+            <%= p.hidden_field :customer_id, value: current_customer.id %>
+            <%= p.hidden_field :sold, value: true %>
+          </div>
+        </div>
+
+        <div class="form-row carat-field">
+          <div class="label">Carats:</div>
+          <div class="field">
+            <%= p.text_field :weight, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Price:</div>
+          <div class="field">
+            <%= p.text_field :price, class: 'input' %>
+          </div>
+        </div>
+      
+        <%= p.fields_for :my_transaction do |f| %>
+          <div class="form-row">
+            <div class="label">Buyer:</div>
+            <div class='field'>
+              <%= f.select :buyer_id, customer_list_options, { include_blank: true }, class: 'input no-border' %>
+            </div>
+          </div>
+          <%= f.hidden_field :supplier_id, value: current_customer.id %>
+          <%= f.hidden_field :price, class: 'transactions-price' %>
+          <%= f.hidden_field :credit, class: 'transactions-credit' %>
+          <%= f.hidden_field :transaction_type, value: 'manual' %>
+          <%= f.hidden_field :weight, class: 'transactions-weight' %>
+          <div class="form-row">
+            <div class="label">Invoice Date:</div>
+            <div class='field'>
+              <%=f.text_field :created_at,  class: 'input date' %>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="label">Paid:</div>
+            <div class='field'>
+              <%=f.select :paid, options_for_select([[true, 1],[false, 0]]), { include_blank: true },  class: 'input' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="clear"></div>
+      <div class="idt_terms_text"></div>
+      <div class="form-row">
+        <div class="label"></div>
+        <div class='field'>
+          <%=p.submit 'Submit', class: 'btn-01 login_btn disabled', id: 'transaction_submit' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="clear"></div>
+
+<script type="text/javascript">
+  $(".date").datepicker({
+    "dateFormat" : 'dd/mm/yy'
+  });
+
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $(this).val()
+    if(val == "Rough"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
+      $('.transactions-weight').val('')
+      $('#trading_parcel_weight').val('')
+    }else if(val == "Sight"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').removeClass('hide')
+      $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
+      $('.transactions-weight').val('')
+      $('#trading_parcel_weight').val('')
+    }else if(val == "Finance"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.carat-field').addClass('hide')
+      $('#trading_parcel_description').val('Finance Transaction')
+      $('.transactions-weight').val(1)
+      $('#trading_parcel_weight').val(1)
+    }else{
+      $('.common').addClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
+      $('.transactions-weight').val('')
+      $('#trading_parcel_weight').val('')
+    }
+  })
+
+  $(document).on('input', '#trading_parcel_credit_period', function() {
+    val = $(this).val()
+    $('.transactions-credit').val(val)
+  });
+
+  $(document).on('input', '#trading_parcel_price', function() {
+    val = $(this).val()
+    $('.transactions-price').val(val)
+  });
+
+  $(document).on('input', '#trading_parcel_weight', function() {
+    val = $(this).val()
+    $('.transactions-weight').val(val)
+  });
+
+  function add_icons_to_select(state) {
+    var originalOption = state.element;
+
+    if (!state.id) return state.text; // optgroup
+    return "<img class='customer_list_verified_icon' src='" + $(originalOption).data('icon') +"'/>" + " " + state.text;
+  }
+
+  $(document).ready(function(){
+    $("#trading_parcel_my_transaction_attributes_buyer_id").select2({
+      formatResult: add_icons_to_select,
+      formatSelection: add_icons_to_select
+    });
+
+    $('#transaction_submit').prop('disabled', true);
+  })
+
+  $(document.body).on("change", "#trading_parcel_my_transaction_attributes_buyer_id", function(){
+    id = $(this).val()
+    $.ajax({
+      url: '/verified_unverified',
+      type: 'GET',
+      data: {id: id},
+      success: function(data){
+        text = data.text
+        $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
+        toggle_checkbox()
+      }
+    })
+  });
+
+  function toggle_checkbox() {
+    $('#read').click(function () {
+      //check if checkbox is checked
+      if ($(this).is(':checked')) {
+        $('#transaction_submit').removeClass('disabled');
+        $('#transaction_submit').prop('disabled', false);
+      } else {
+        $('#transaction_submit').addClass('disabled');
+        $('#transaction_submit').prop('disabled', true);
+      }
+    });
+  }
+
+  
+
+</script>

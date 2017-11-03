@@ -1,0 +1,29 @@
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th></th>
+      <th>Buyer</th>
+      <th>Description</th>
+      <th>Carats</th>
+      <th>Price</th>
+      <th>Credit</th>
+      <th>Due Date</th>
+      <th>Invoice Date</th>
+      <th></th>
+    </tr>
+    <% transactions.each.with_index(1) do |transaction, i|%>
+      <tr>
+        <td><%= index_count(params[:page].to_i) + i %></td>
+        <td><%= transaction.try(:buyer).try(:company) rescue 'N/A' %></td>
+        <td><%= get_description(transaction.trading_parcel) if transaction %></td>
+        <td><%= transaction.trading_parcel.weight rescue 'N/A' %></td>
+        <td><%= transaction.price.nil? ? 'N/A' : number_with_precision(transaction.price, precision: 2) %></td>
+        <td><%= transaction.credit.nil? ? 'N/A' : transaction.credit %></td>
+        <td><%= transaction.due_date.try(:strftime, "%B, %d %Y") %></td>
+        <td><%= transaction.created_at.try(:strftime, "%B, %d %Y") %></td>
+        <td><%= link_to 'Mark as paid', paid_proposal_path(id: transaction.id), remote: true, method: :put unless transaction.paid? %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+<%= paginate transactions %>
