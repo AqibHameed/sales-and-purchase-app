@@ -209,6 +209,7 @@ class Tender < ApplicationRecord
                     yes_no_buyer_interests.save
                   end
                 end
+              end
             end
           end
         end
@@ -421,7 +422,7 @@ class Tender < ApplicationRecord
     act_diff <<   per_diff.abs.to_s
   end
 
-   def remaining_time_in_secs
+  def remaining_time_in_secs
     if self.bid_open.present? and self.bid_close.present?
       if Time.current.between?(self.bid_open, self.bid_close) 
         self.bid_close.to_i - Time.current.to_i
