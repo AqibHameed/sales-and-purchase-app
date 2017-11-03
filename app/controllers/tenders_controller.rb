@@ -382,7 +382,8 @@ class TendersController < ApplicationController
       @customer_tender.confirmed = true
       @customer_tender.save!
       @bid = Bid.where(tender_id: @customer_tender.tender_id, customer_id: current_customer.id)
-      TenderMailer.confirmation_mail(@customer_tender.tender, current_customer, @bid).deliver rescue logger.info "Error sending email"
+      # # Temp Removed
+      # TenderMailer.confirmation_mail(@customer_tender.tender, current_customer, @bid).deliver rescue logger.info "Error sending email"
       @message = "success"
     else
       @bid = Bid.find_or_initialize_by(id: params[:bid_id], customer_id: current_customer.id)

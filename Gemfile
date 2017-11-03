@@ -61,3 +61,4 @@ gem 'fcm'
 gem 'figaro'
 gem 'houston'
 gem "select2-rails"
+gem 'sendgrid', '1.2.0'

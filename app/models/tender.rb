@@ -247,7 +247,7 @@ class Tender < ApplicationRecord
   def Tender.send_winner_list_uploaded_mail(id)
     tender = Tender.find(id)
     tender.customers.each do |c|
-      TenderMailer.send_winner_list_uploaded_mail(tender, c).deliver rescue logger.info "Error sending email"
+      # TenderMailer.send_winner_list_uploaded_mail(tender, c).deliver rescue logger.info "Error sending email"
     end
   end
 
@@ -394,7 +394,7 @@ class Tender < ApplicationRecord
     @tenders.each do |tender|
       unless tender.created_at.beginning_of_day <= tender.open_date && tender.open_date <= tender.created_at.end_of_day
         tender.customers.each do |customer|
-          TenderMailer.send_tender_open_notification(tender, customer).deliver rescue logger.info "Error sending email"
+          # TenderMailer.send_tender_open_notification(tender, customer).deliver rescue logger.info "Error sending email"
         end
       end
     end
@@ -404,10 +404,10 @@ class Tender < ApplicationRecord
     @tenders = Tender.closing_today
     @tenders.each do |tender|
       Admin.all.each do |admin|
-        TenderMailer.send_tender_close_notification(tender, admin).deliver rescue logger.info "Error sending email"
+        # TenderMailer.send_tender_close_notification(tender, admin).deliver rescue logger.info "Error sending email"
       end
       tender.customers.each do |customer|
-        TenderMailer.send_tender_close_notification(tender, customer).deliver rescue logger.info "Error sending email"
+        # TenderMailer.send_tender_close_notification(tender, customer).deliver rescue logger.info "Error sending email"
       end
     end
 
