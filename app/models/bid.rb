@@ -23,7 +23,7 @@ class Bid < ApplicationRecord
   end
 
   def set_tender_id
-    # self.tender_id = self.stone.tender_id
+    self.tender_id = self.stone.tender_id
   end
 
   def stone_description

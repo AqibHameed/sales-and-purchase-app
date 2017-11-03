@@ -88,15 +88,7 @@ class TendersController < ApplicationController
   end
 
   def show
-
     if current_customer
-<<<<<<< HEAD
-      @tender = current_customer.tenders.includes(:stones).find(params[:id])
-      if @tender.open_date < Time.now && Time.now < @tender.close_date
-        @round = 1
-      end
-      @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
-=======
       @tender = Tender.includes(:stones).find(params[:id])
       # @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
       companies = current_customer.companies
@@ -105,7 +97,6 @@ class TendersController < ApplicationController
         @round = 1
       end
       @notes = current_customer.notes.where(tender_id: @tender.try(:id)).collect(&:key)
->>>>>>> c63bd0159674845be22e08741e6003f1e02a910e
       flags = Rating.where(tender_id: @tender.id, customer_id: current_customer.id)
       # => Check for conflicts
       @important = []
@@ -460,7 +451,6 @@ class TendersController < ApplicationController
     @bids.order(:total).first.delete if @bids.count > 10
   end
 
-<<<<<<< HEAD
   def yes_or_no_winners
     data = params[:data]
     if data[:interest] == "Yes" 
@@ -480,8 +470,6 @@ class TendersController < ApplicationController
     end
   end
   
-=======
->>>>>>> c63bd0159674845be22e08741e6003f1e02a910e
   private
 
   def get_value(data)
