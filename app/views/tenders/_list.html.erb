@@ -16,7 +16,7 @@
     </tr>
     <% @tenders.each do |tender| %>
     <tr id="<%= tender.id %>">
-      <td><%= link_to tender.name, tender %></td>
+      <td><%= link_to tender.name, tender, data: {turbolinks: false} %></td>
       <td><%= tender.tender_type %></td>
       <td><%= tender.bid_count(current_customer) > 0 ? tender.bid_count(current_customer) : (tender.sight_bid_count(current_customer) > 0 ? tender.sight_bid_count(current_customer) : 0) %></td>
       <td><%= tender.total_bid_amount(current_customer) > 0 ? tender.total_bid_amount(current_customer) : (tender.total_sight_bid_amount(current_customer)> 0 ? tender.total_sight_bid_amount(current_customer) : 0.0)%></td>
@@ -48,7 +48,7 @@
       </tr>
       <% @upcoming_tenders.each do |tender| %>
         <tr id="<%= tender.id %>">
-          <td><%= link_to tender.name, tender %></td>
+          <td><%= link_to tender.name, tender, data: {turbolinks: false} %></td>
           <td><%= tender.stones.count %></td>
           <td><%= tender.stones.sum(:weight) %></td>
           <td><%= tender.open_date.strftime("%B, %d %Y") %></td>
