@@ -22,12 +22,15 @@ class TransactionsController < ApplicationController
   def payment
     @payment = PartialPayment.new(partial_payment_params)
     @payment.customer_id = current_customer.id
-    @payment.transaction_id = params[:partial_payment][:transaction_id]
+
     if @payment.save
       @transaction = Transaction.find(@payment.transaction_id)
       amount = @transaction.amount
       Transaction.update(@payment.transaction_id, :amount => amount-@payment.amount)
       redirect_to trading_history_path
+    else
+      error = @payment.errors.full_messages.first
+      redirect_to trading_history_path, notice: error
     end
 
   end
@@ -68,6 +71,6 @@ class TransactionsController < ApplicationController
   end
 
    def partial_payment_params
-    params.require(:partial_payment).permit(:amount)
+    params.require(:partial_payment).permit(:amount,:transaction_id)
   end
 end
