@@ -7,7 +7,7 @@ class Transaction < ApplicationRecord
   validate :credit_validation, :validate_invoice_date
   after_create :update_credit_limit, :generate_and_add_uid, :generate_and_add_amount
 
-  attr_accessor :weight
+  attr_accessor :weight, :diamond_type
 
   def credit_validation
     limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
@@ -17,18 +17,27 @@ class Transaction < ApplicationRecord
       credit_limit = limit.credit_limit
       transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false)
       @amount = []
-      transactions.each do |t|
-        weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
-        price = t.price
-        @amount << (weight.to_f * price.to_f)
-      end
-      used_amt = @amount.sum
-      get_weight = weight.blank? ? 1 : weight
-      total_price = price.to_f * weight.to_f
-      available_limit = credit_limit.to_f - used_amt.to_f
-      if total_price.to_f > available_limit
-        errors[:base] << "Customer has available credit limit of #{available_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
-      end
+        transactions.each do |t|
+          if t.diamond_type == 'Rough'
+            @amount << t.price
+          else
+            weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
+            price = t.price
+            @amount << (weight.to_f * price.to_f)
+          end
+        end
+        used_amt = @amount.sum
+        get_weight = weight.blank? ? 1 : weight
+        if diamond_type == 'Rough'
+          total_price = price.to_f
+          puts total_price.inspect
+        else
+          total_price = price.to_f * weight.to_f
+        end
+        available_limit = credit_limit.to_f - used_amt.to_f
+        if total_price.to_f > available_limit
+          errors[:base] << "Customer has available credit limit of #{available_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
+        end
     end
   end
 
@@ -62,7 +71,11 @@ class Transaction < ApplicationRecord
   end
 
   def generate_and_add_amount
-    amount = trading_parcel.price*trading_parcel.weight
+    if diamond_type == 'Rough'
+      amount =  trading_parcel.price
+    else
+      amount = trading_parcel.price*trading_parcel.weight
+    end
     self.amount = amount
     self.save(validate: false)
   end
