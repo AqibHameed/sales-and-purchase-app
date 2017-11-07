@@ -179,6 +179,5 @@ class CustomersController < ApplicationController
     params.require(:shared).permit(:shared_to_id)
   end
 
-
 end
 

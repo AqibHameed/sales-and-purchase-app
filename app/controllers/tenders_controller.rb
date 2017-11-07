@@ -151,6 +151,7 @@ class TendersController < ApplicationController
       @tender = Tender.includes(:stones).find(params[:id])
     end
     @stones = @tender.stones
+    @sights = @tender.sights
   end
 
   def add_note
@@ -166,8 +167,9 @@ class TendersController < ApplicationController
     @tender = current_customer.tenders.find(params[:id])
     @note = Note.find_or_initialize_by(tender_id: @tender.id, key: params[:key], customer_id: current_customer.id)
     @note.note = params[:note]
-    @note.stone_id = params[:stone_id]
-    @note.deec_no = params[:deec_no]
+    @note.stone_id = params[:stone_id].present? ? params[:stone_id] : nil 
+    @note.sight_id = params[:sight_id].present? ? params[:sight_id] : nil 
+    @note.deec_no = params[:deec_no].present? ? params[:deec_no] : nil
     @note.save
 
     respond_to do |format|
@@ -449,6 +451,25 @@ class TendersController < ApplicationController
     @bids.order(:total).first.delete if @bids.count > 10
   end
 
+  def yes_or_no_winners
+    data = params[:data]
+    if data[:interest] == "Yes" 
+      if data[:stone_id].present? 
+        @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer]).first.update_attributes(interest: true, buyer_left: false, reserved_price: data[:reserved_price])
+      elsif data[:sight_id].present? 
+        @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer]).first.update_attributes(interest: true, buyer_left: false, reserved_price: data[:reserved_price])
+      end
+    render 'show'
+    else
+      if data[:stone_id].present?
+        @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer]).first.update_attributes(interest: false, buyer_left: true)
+      elsif data[:sight_id].present?
+        @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer]).first.update_attributes(interest: false, buyer_left: true)
+      end
+      render 'show'
+    end
+  end
+  
   private
 
   def get_value(data)

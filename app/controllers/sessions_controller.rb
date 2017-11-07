@@ -1,4 +1,5 @@
 class SessionsController <  Devise::SessionsController
+
   def get_resource
 
     if customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login]).present?
@@ -26,7 +27,6 @@ class SessionsController <  Devise::SessionsController
       respond_to do |format|
         format.js{ render json: path }
       end
-
     elsif !admin.blank?
       scope = get_resource
       resource = warden.authenticate!(:scope => scope )

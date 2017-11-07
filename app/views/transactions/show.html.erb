@@ -2,6 +2,10 @@
   <h3>Transaction Detail</h3>
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
     <tr>
+      <td> UID</td>
+      <td><%= @transaction.transaction_uid %></td>
+    </tr>
+    <tr>
       <td> Description</td>
       <td><%= @transaction.trading_parcel.description %></td>
     </tr>
@@ -32,6 +36,10 @@
     <tr class="parcel-details">
       <td> Credit</td>
       <td><%= @transaction.trading_parcel.credit_period %> days (<%= (Date.today + (@transaction.trading_parcel.credit_period.to_i).days).strftime("%B %d, %Y") %>)</td>
+    </tr>
+    <tr>
+      <td> Amount To Be paid</td>
+      <td><%= @transaction.amount %></td>
     </tr>
   </table>
   <div class="clear20"></div>

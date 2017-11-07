@@ -5,7 +5,7 @@ class Note < ApplicationRecord
   belongs_to :customer
   belongs_to :tender
   belongs_to :stone
-
+  belongs_to :sight
   before_save :update_deec_no, :if => Proc.new { |m| !m.stone_id.blank? && m.deec_no.blank?}
 
   def update_deec_no
@@ -35,7 +35,7 @@ class Note < ApplicationRecord
       end
     end
     edit do
-      [:customer, :tender, :key, :note, :stone].each do |field_name|
+      [:customer, :tender, :key, :note, :stone, :sight].each do |field_name|
         field field_name
       end
     end

@@ -1,0 +1,69 @@
+<div>
+	<%= form.file_field :sight_document %>
+	<%= link_to 'Click here', '/files/sample_sight.xls' %> to download sight sample xls file.
+</div>
+
+<div>
+	<div class="column">
+		Sno : <%= form.text_field :s_no_field, :value => 'A'%>
+	</div>
+	<div class="column">
+		Source Column : <%= form.text_field :source_no_field, :value => 'B'%>
+	</div>
+	<div class="column">
+		Box Column : <%= form.text_field :box_no_field, :value => 'C' %>
+	</div>
+	<div class="column">
+		Carats Column : <%= form.text_field :carats_no_field, :value => 'D' %>
+	</div>
+	<div class="column">
+		Cost Column : <%= form.text_field :cost_no_field, :value => 'E' %>
+	</div>
+	<div class="column">
+		Box value Column : <%= form.text_field :boxvalue_no_field, :value => 'F' %>
+	</div>
+	<div class="column">
+		Slight Column : <%= form.text_field :sight_no_field, :value => 'G' %>
+	</div>
+	<div class="column">
+		Price Column : <%= form.text_field :price_no_field, :value => 'H' %>
+	</div>
+	<div class="column">
+		Credit Column : <%= form.text_field :credit_no_field, :value => 'I' %>
+	</div>
+	<div class="column">
+		Reserve Column : <%= form.text_field :sight_reserved_field, :value => 'J' %>
+	</div>
+	<div class="column">
+		Sheet Number : <%= form.select :sheet_no, (1..20).to_a %>
+	</div>
+</div>
+<style>
+	.column {
+		float: left;
+		width: 35%;
+		clear: both;
+		margin-top: 10px;
+	}
+
+	.column input {
+		width: 30px !important;
+		float: right;
+	}
+
+	.column select {
+
+		width: 45px !important;
+		float: right;
+	}
+
+	#tender_s_no_field_field, #tender_source_no_field_field, #tender_box_no_field_field, #tender_carats_no_field_field, #tender_cost_no_field_field, #tender_boxvalue_no_field_field, #tender_sight_no_field_field, #tender_price_no_field_field, #tender_credit_no_field_field, #tender_sight_reserved_field_field{
+		display: none;	
+	}
+	
+
+	
+	
+
+</style>
+

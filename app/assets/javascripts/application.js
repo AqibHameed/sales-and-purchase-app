@@ -18,11 +18,14 @@
 //= require jquery.dataTables.min.js
 //= require jquery.raty.js
 //= require jquery.tablesorter.min.js
+//= require turbolinks
 //= require highcharts
 //= require jquery.fancybox-1.3.4
 //= require moment
 //= require bootstrap-datetimepicker
 //= require jquery-countdown
+// = require FlipClock/compiled/flipclock.min
+// = require FlipClock/compiled/flipclock
 //= require select2
 //= require jquery.ui.monthpicker
 

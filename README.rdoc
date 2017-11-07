@@ -259,3 +259,11 @@ vendor
   External libraries that the application depends on. Also includes the plugins
   subdirectory. If the app has frozen rails, those gems also go here, under
   vendor/rails/. This directory is in the load path.
+
+
+
+Delayed_job start in development
+  bin/delayed_job start
+
+Delayed_job start in production
+  RAILS_ENV=production bin/delayed_job start
