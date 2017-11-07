@@ -30,28 +30,28 @@
         <tbody>
           <tr>
             <td>Cash</td>
-            <td><%=count_value('0', @credit_recieved.count,'count', @customer)%></td>
-            <td><%=count_value('0', @credit_recieved.count,'value', @customer)%></td>
+            <td><%=count_value('0', @credit_recieved_transaction.count,'count', @customer)%></td>
+            <td><%=count_value('0', @total_received_value,'value', @customer)%></td>
           </tr>
           <tr>
             <td><=30</td>
-            <td><%=count_value('less_30', @credit_recieved.count,'count', @customer)%></td>
-            <td><%=count_value('less_30', @credit_recieved.count,'value', @customer)%></td>
+            <td><%=count_value('less_30', @credit_recieved_transaction.count,'count', @customer)%></td>
+            <td><%=count_value('less_30', @total_received_value,'value', @customer)%></td>
           </tr>
           <tr>
             <td>30<=60</th>
-            <td><%=count_value('60', @credit_recieved.count,'count', @customer)%></td>
-            <td><%=count_value('60', @credit_recieved.count,'value', @customer)%></td>
+            <td><%=count_value('60', @credit_recieved_transaction.count,'count', @customer)%></td>
+            <td><%=count_value('60', @total_received_value,'value', @customer)%></td>
           </tr>
           <tr>
             <td>60<=90</td>
-            <td><%=count_value('90', @credit_recieved.count,'count', @customer)%></td>
-            <td><%=count_value('90', @credit_recieved.count,'value', @customer)%></td>
+            <td><%=count_value('90', @credit_recieved_transaction.count,'count', @customer)%></td>
+            <td><%=count_value('90', @total_received_value,'value', @customer)%></td>
           </tr>
           <tr>
             <td>90<</td>
-            <td><%=count_value('more_90', @credit_recieved.count,'count', @customer)%></td>
-            <td><%=count_value('more_90', @credit_recieved.count,'value', @customer)%></td>
+            <td><%=count_value('more_90', @credit_recieved_transaction.count,'count', @customer)%></td>
+            <td><%=count_value('more_90', @total_received_value,'value', @customer)%></td>
           </tr>
         </tbody>
       </table>
@@ -74,28 +74,28 @@
         <tbody>
           <tr>
             <td>Cash</td>
-            <td><%=sale_count_value('0', @credit_given.count,'count', @customer)%></td>
-            <td><%=sale_count_value('0', @credit_given.count,'value', @customer)%></td>
+            <td><%=sale_count_value('0', @credit_given_transaction.count,'count', @customer)%></td>
+            <td><%=sale_count_value('0',  @total_sent_value,'value', @customer)%></td>
           </tr>
           <tr>
             <td><=30</td>
-            <td><%=sale_count_value('less_30', @credit_given.count,'count', @customer)%></td>
-            <td><%=sale_count_value('less_30', @credit_given.count,'value', @customer)%></td>
+            <td><%=sale_count_value('less_30', @credit_given_transaction.count,'count', @customer)%></td>
+            <td><%=sale_count_value('less_30', @total_sent_value,'value', @customer)%></td>
           </tr>
           <tr>
             <td>30<=60</td>
-            <td><%=sale_count_value('60', @credit_given.count,'count', @customer)%></td>
-            <td><%=sale_count_value('60', @credit_given.count,'value', @customer)%></td>
+            <td><%=sale_count_value('60', @credit_given_transaction.count,'count', @customer)%></td>
+            <td><%=sale_count_value('60', @total_sent_value,'value', @customer)%></td>
           </tr>
           <tr>
             <td>60<=90</td>
-            <td><%=sale_count_value('90', @credit_given.count,'count', @customer)%></td>
-            <td><%=sale_count_value('90', @credit_given.count,'value', @customer)%></td>
+            <td><%=sale_count_value('90', @credit_given_transaction.count,'count', @customer)%></td>
+            <td><%=sale_count_value('90', @total_sent_value,'value', @customer)%></td>
           </tr>
           <tr>
             <td>90<</td>
-            <td><%=sale_count_value('more_90', @credit_given.count,'count', @customer)%></td>
-            <td><%=sale_count_value('more_90', @credit_given.count,'value', @customer)%></td>
+            <td><%=sale_count_value('more_90', @credit_given_transaction.count,'count', @customer)%></td>
+            <td><%=sale_count_value('more_90', @total_sent_value,'value', @customer)%></td>
           </tr>
         </tbody>
       </table>

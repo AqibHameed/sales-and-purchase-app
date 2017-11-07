@@ -16,6 +16,13 @@ class CustomersController < ApplicationController
     @credit_given = CreditLimit.where('supplier_id =?',current_customer.id)
     @shared = Shared.new
     @shared_table = Shared.where(shared_by_id: current_customer.id)
+    @total_sent_value = Transaction.where(supplier_id: current_customer.id).sum(:amount)
+    @total_received_value = Transaction.where(buyer_id: current_customer.id).sum(:amount)
+
+
+    @credit_recieved_transaction = Transaction.where('buyer_id =?',current_customer.id)
+    @credit_given_transaction = Transaction.where('supplier_id =?',current_customer.id)
+
   end
 
   def shared
@@ -44,6 +51,12 @@ class CustomersController < ApplicationController
     @credit_recieved = CreditLimit.where('buyer_id =?',params[:id])
     @credit_given = CreditLimit.where('supplier_id =?',params[:id])
     @customer = Customer.find(params[:id])
+    @total_sent_value = Transaction.where(supplier_id: params[:id]).sum(:amount)
+    @total_received_value = Transaction.where(buyer_id: params[:id]).sum(:amount)
+
+
+    @credit_recieved_transaction = Transaction.where('buyer_id =?',params[:id])
+    @credit_given_transaction = Transaction.where('supplier_id =?',params[:id])
   end
 
   def transaction_list
