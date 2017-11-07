@@ -219,7 +219,8 @@ class Tender < ApplicationRecord
 
   def create_sights_from_uploaded_file
     if self.sight_document_updated_at_changed?
-      data_file = Spreadsheet.open(self.sight_document.path)
+      # data_file = Spreadsheet.open(self.sight_document.path)
+      file_path = document_url(self.sight_document)
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
       unless worksheet.nil?
         worksheet.each_with_index do |data_row, i|
