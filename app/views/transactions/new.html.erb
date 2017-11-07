@@ -152,9 +152,12 @@
 <div class="clear"></div>
 
 <script type="text/javascript">
+
+$(document).ready(function (){
   $(".date").datepicker({
     "dateFormat" : 'dd/mm/yy'
   });
+})
 
   $(document).on('change', '#trading_document_diamond_type', function(){
     val = $(this).val()
