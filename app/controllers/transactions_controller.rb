@@ -67,7 +67,7 @@ class TransactionsController < ApplicationController
   private
   def parcel_transaction_params
     params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :sold,
-                                        my_transaction_attributes: [:buyer_id, :supplier_id, :trading_parcel_id, :price, :credit, :paid, :created_at, :transaction_type, :weight ])
+                                        my_transaction_attributes: [:buyer_id, :supplier_id, :trading_parcel_id, :price, :credit, :paid, :created_at, :transaction_type, :weight,:diamond_type ])
   end
 
    def partial_payment_params

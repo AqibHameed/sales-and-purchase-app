@@ -124,6 +124,7 @@
           <%= f.hidden_field :credit, class: 'transactions-credit' %>
           <%= f.hidden_field :transaction_type, value: 'manual' %>
           <%= f.hidden_field :weight, class: 'transactions-weight' %>
+          <%= f.hidden_field :diamond_type, class: 'diamond_type_value' %>
           <div class="form-row">
             <div class="label">Invoice Date:</div>
             <div class='field'>
@@ -169,6 +170,7 @@ $(document).ready(function (){
       $('#trading_parcel_description').val('')
       $('.transactions-weight').val('')
       $('#trading_parcel_weight').val('')
+      $('.diamond_type_value').val('Rough')
     }else if(val == "Sight"){
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
@@ -177,6 +179,7 @@ $(document).ready(function (){
       $('#trading_parcel_description').val('')
       $('.transactions-weight').val('')
       $('#trading_parcel_weight').val('')
+      $('.diamond_type_value').val('Sight')
     }else if(val == "Finance"){
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
@@ -185,6 +188,7 @@ $(document).ready(function (){
       $('#trading_parcel_description').val('Finance Transaction')
       $('.transactions-weight').val(1)
       $('#trading_parcel_weight').val(1)
+      $('.diamond_type_value').val('Finance')
     }else{
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
