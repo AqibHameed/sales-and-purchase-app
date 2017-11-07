@@ -39,14 +39,14 @@
     </tr>
     <tr>
       <td> Amount To Be paid</td>
-      <td><%= @transaction.amount %></td>
+      <td><%= number_with_precision(@transaction.amount, precision: 2) %></td>
     </tr>
   </table>
   <div class="clear20"></div>
   <h3>Payment Details</h3>
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
     <thead>
-      <th></th>
+      <th>#</th>
       <th>Amount</th>
       <th>Paid Date</th>
     </thead>
@@ -54,7 +54,7 @@
       <%@payment_details.each_with_index do |payment_detail,i|%>
         <tr>
           <td><%=i+1%></td>
-          <td><%=payment_detail.amount%></td>
+          <td><%=number_with_precision(payment_detail.amount, precision: 2) %></td>
           <td><%=payment_detail.created_at.strftime("%b, %d %Y")%></td>
         </tr>
       <% end %>

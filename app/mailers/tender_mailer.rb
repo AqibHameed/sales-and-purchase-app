@@ -39,7 +39,7 @@ class TenderMailer < ApplicationMailer
 
   def account_creation_mail(customer)
     @customer = customer
-    mail(:to => @customer.email, :subject => '[Dialuck] New Account Created' )
+    mail(:to => @customer.email, :subject => '[Dialuck] New Account Created')
   end
 
   def shared_info_email(current_customer, customer_id)
@@ -48,4 +48,9 @@ class TenderMailer < ApplicationMailer
     mail(:to => @shared_to_customer.email, :subject => "[Dialuck] Information Shared by {@shared_by_customer.name}" )
   end
 
+  def send_attachment_to_admin(attachment, customer)
+    @customer = customer
+    @attachment = attachment
+    mail(:to => 'admin@dialuck.net', :subject => '[Dialuck] New Attachment' )
+  end
 end

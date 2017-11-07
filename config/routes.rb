@@ -175,7 +175,7 @@ Rails.application.routes.draw do
       get '/find_active_parcels', to: 'tenders#find_active_parcels'
       get '/tender_winners', to: 'tenders#tender_winners'
       get '/bid_history', to: 'stones#last_3_bids'
-      get '/attachment', to: 'api#email_attachment'
+      post '/attachment', to: 'api#email_attachment'
       resources :tenders do
         collection do
           get :upcoming

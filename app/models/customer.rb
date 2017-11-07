@@ -23,6 +23,7 @@ class Customer < ApplicationRecord
   has_one :block_user
   has_many :shared_to_users, :class_name => 'Shared', :foreign_key => 'shared_to_id'
   has_many :shared_by_users, :class_name => 'Shared', :foreign_key => 'shared_by_id'
+  has_many :email_attachments
 
   # accepts_nested_attributes_for :companies
 

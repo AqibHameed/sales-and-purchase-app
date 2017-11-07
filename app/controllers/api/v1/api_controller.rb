@@ -1,5 +1,5 @@
 class Api::V1::ApiController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:device_token, :supplier_notification]
+  skip_before_action :verify_authenticity_token, only: [:device_token, :supplier_notification, :email_attachment]
   before_action :current_customer, only: [:device_token, :supplier_notification]
 
   def current_customer
@@ -81,14 +81,24 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
-   def email_attachment
-    @attachment = EmailAttachment.new(attachment_params)
-    if @attachment.save
-      render json: { success: true, attachment: @attachment, response_code: 200 }
+  def email_attachment
+    if current_customer
+      attachment = EmailAttachment.new(attachment_params)
+      attachment.customer_id = current_customer.id
+      if attachment.save
+        # need to send an email to admin
+        TenderMailer.send_attachment_to_admin(attachment, attachment.customer).deliver
+        render json: { success: true, attachment: attachment, response_code: 200 }
+      else
+        render json: {success: false, message: attachment.errors.full_messages, response_code: 201 }
+      end
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
   end
 
   private
+
   def device_params
     params.require(:customer).permit(:token, :device_type)
   end
@@ -108,5 +118,4 @@ class Api::V1::ApiController < ApplicationController
   def attachment_params
     params.require(:email_attachment).permit(:file)
   end
-
 end
