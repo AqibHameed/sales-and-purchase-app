@@ -193,7 +193,7 @@ end
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
        number_to_currency(0.00)
     else
-       number_to_currency(number_with_precision((cl.credit_limit), precision: 2))
+       number_with_precision((cl.credit_limit), precision: 2)
     end
   end
 
@@ -252,12 +252,12 @@ end
       @amount << (weight.to_f * price.to_f)
     end
     transaction_amt = @amount.sum
-     number_to_currency(number_with_precision(transaction_amt, precision: 2))
+     number_with_precision(transaction_amt, precision: 2)
   end
 
   def overall_credit_received(customer)
     current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)
-    number_to_currency(number_with_precision((current_limit), precision: 2))
+    number_with_precision((current_limit), precision: 2)
   end
 
   def overall_credit_spent(customer)
@@ -269,7 +269,7 @@ end
       @amount << (weight.to_f * price.to_f)
     end
     transaction_amt = @amount.sum
-    number_to_currency(number_with_precision(transaction_amt, precision: 2))
+    number_with_precision(transaction_amt, precision: 2)
   end
 
   def credit_available_by_customer
@@ -278,7 +278,7 @@ end
 
   def overall_credit_given(customer)
     current_limit = CreditLimit.where(supplier_id: customer.id).sum(:credit_limit)
-    number_to_currency(number_with_precision((current_limit), precision: 2))
+    number_with_precision((current_limit), precision: 2)
   end
 
    def overall_credit_spent_by_customer(customer)
@@ -291,7 +291,7 @@ end
 
     end
     transaction_amt = @amount.sum
-    number_to_currency(number_with_precision(transaction_amt, precision: 2))
+    number_with_precision(transaction_amt, precision: 2)
   end
 
   def credit_available(customer)
