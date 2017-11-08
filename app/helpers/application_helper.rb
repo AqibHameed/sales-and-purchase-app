@@ -82,47 +82,47 @@ module ApplicationHelper
   #  return (count/total)*100
   # end
 
-  def count_value(condition, total, option,customer)
-    if condition == '0'
-      transactions = Transaction.where('credit = ? and buyer_id =?', 0, customer.id)
-      count = transactions.count
-      buyers = transactions.sum(:amount)
-      value = number_to_currency(buyers,precision: 2)
-      # number_with_precision((buyers), precision: 2)
-    elsif condition =='less_30'
-      transactions = Transaction.where('credit >= ? and credit <= ? and buyer_id =?',1, 30, customer.id)
-      count = transactions.count
-      buyers = transactions.sum(:amount)
-      value = number_to_currency(buyers,precision: 2)
-      # number_with_precision((buyers), precision: 2)
-    elsif condition =='60'
-      transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 30, 60, customer.id)
-      count = transactions.count
-      buyers = transactions.sum(:amount)
-      value = number_to_currency(buyers,precision: 2)
-      # number_with_precision((buyers), precision: 2)
-    elsif condition =='90'
-      transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 30, 60, customer.id)
-      count = transactions.count
-      buyers = transactions.sum(:amount)
-      value = number_to_currency(buyers,precision: 2)
-      # number_with_precision((buyers), precision: 2)
-    else
-      transactions = Transaction.where('credit > ? and buyer_id =?', 90,customer.id)
-      count = transactions.count
-      buyers = transactions.sum(:amount)
-      value = number_to_currency(buyers,precision: 2)
-      # number_with_precision((buyers), precision: 2)
-    end
-    count_percent=((count/total.to_f)*100).to_i rescue 0
-    # value_total=overall_credit_received(customer).to_f
-    value_percent=((buyers/total.to_f)*100).to_i rescue 0
-    if option == 'count'
-    return "#{count}(#{count_percent}%)"
-    else
-      return "#{value}(#{value_percent}%)"
-    end
+def count_value(condition, total, option,customer)
+  if condition == '0'
+    transactions = Transaction.where('credit = ? and buyer_id =?', 0, customer.id)
+    count = transactions.count
+    buyers = transactions.sum(:amount)
+    value = number_to_currency(buyers,precision: 2)
+    # number_with_precision((buyers), precision: 2)
+  elsif condition =='less_30'
+    transactions = Transaction.where('credit >= ? and credit <= ? and buyer_id =?',1, 30, customer.id)
+    count = transactions.count
+    buyers = transactions.sum(:amount)
+    value = number_to_currency(buyers,precision: 2)
+    # number_with_precision((buyers), precision: 2)
+  elsif condition =='60'
+    transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 30, 60, customer.id)
+    count = transactions.count
+    buyers = transactions.sum(:amount)
+    value = number_to_currency(buyers,precision: 2)
+    # number_with_precision((buyers), precision: 2)
+  elsif condition =='90'
+    transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 60, 90, customer.id)
+    count = transactions.count
+    buyers = transactions.sum(:amount)
+    value = number_to_currency(buyers,precision: 2)
+    # number_with_precision((buyers), precision: 2)
+  else
+    transactions = Transaction.where('credit > ? and buyer_id =?', 90,customer.id)
+    count = transactions.count
+    buyers = transactions.sum(:amount)
+    value = number_to_currency(buyers,precision: 2)
+    # number_with_precision((buyers), precision: 2)
   end
+  count_percent=((count/total.to_f)*100).to_i rescue 0
+  # value_total=overall_credit_received(customer).to_f
+  value_percent=((buyers/total.to_f)*100).to_i rescue 0
+  if option == 'count'
+  return "#{count}(#{count_percent}%)"
+  else
+    return "#{value}(#{value_percent}%)"
+  end
+end
 
   def sale_count_value(condition,total,option,customer)
     if condition == '0'

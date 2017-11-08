@@ -19,7 +19,7 @@ class TradingParcel < ApplicationRecord
     parcels = parcels.where(no_of_stones: params[:no_of_stones]) unless params[:no_of_stones].blank?
     parcels = parcels.where(weight: params[:weight]) unless params[:weight].blank?
     parcels = parcels.where(credit_period: params[:credit_period]) unless params[:credit_period].blank?
-    parcels
+
   end
 
   def generate_and_add_uid

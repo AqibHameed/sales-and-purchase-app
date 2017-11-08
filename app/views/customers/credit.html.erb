@@ -1,6 +1,6 @@
 <div class="">
   <h2>Credit Limits</h2>
-  <p>Total Credit Received = <%= overall_credit_received(current_customer) %></p>
+  <p>Total Credit Received = <%= number_to_currency(overall_credit_received(current_customer)) %></p>
   <div class="table">
     <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter">
       <thead>
