@@ -82,47 +82,47 @@ module ApplicationHelper
   #  return (count/total)*100
   # end
 
-def count_value(condition, total, option,customer)
-  if condition == '0'
-    transactions = Transaction.where('credit = ? and buyer_id =?', 0, customer.id)
-    count = transactions.count
-    buyers = transactions.sum(:amount)
-    value = number_to_currency(buyers,precision: 2)
-    # number_with_precision((buyers), precision: 2)
-  elsif condition =='less_30'
-    transactions = Transaction.where('credit >= ? and credit <= ? and buyer_id =?',1, 30, customer.id)
-    count = transactions.count
-    buyers = transactions.sum(:amount)
-    value = number_to_currency(buyers,precision: 2)
-    # number_with_precision((buyers), precision: 2)
-  elsif condition =='60'
-    transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 30, 60, customer.id)
-    count = transactions.count
-    buyers = transactions.sum(:amount)
-    value = number_to_currency(buyers,precision: 2)
-    # number_with_precision((buyers), precision: 2)
-  elsif condition =='90'
-    transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 60, 90, customer.id)
-    count = transactions.count
-    buyers = transactions.sum(:amount)
-    value = number_to_currency(buyers,precision: 2)
-    # number_with_precision((buyers), precision: 2)
-  else
-    transactions = Transaction.where('credit > ? and buyer_id =?', 90,customer.id)
-    count = transactions.count
-    buyers = transactions.sum(:amount)
-    value = number_to_currency(buyers,precision: 2)
-    # number_with_precision((buyers), precision: 2)
+  def count_value(condition, total, option,customer)
+    if condition == '0'
+      transactions = Transaction.where('credit = ? and buyer_id =?', 0, customer.id)
+      count = transactions.count
+      buyers = transactions.sum(:amount)
+      value = number_to_currency(buyers,precision: 2)
+      # number_with_precision((buyers), precision: 2)
+    elsif condition =='less_30'
+      transactions = Transaction.where('credit >= ? and credit <= ? and buyer_id =?',1, 30, customer.id)
+      count = transactions.count
+      buyers = transactions.sum(:amount)
+      value = number_to_currency(buyers,precision: 2)
+      # number_with_precision((buyers), precision: 2)
+    elsif condition =='60'
+      transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 30, 60, customer.id)
+      count = transactions.count
+      buyers = transactions.sum(:amount)
+      value = number_to_currency(buyers,precision: 2)
+      # number_with_precision((buyers), precision: 2)
+    elsif condition =='90'
+      transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 60, 90, customer.id)
+      count = transactions.count
+      buyers = transactions.sum(:amount)
+      value = number_to_currency(buyers,precision: 2)
+      # number_with_precision((buyers), precision: 2)
+    else
+      transactions = Transaction.where('credit > ? and buyer_id =?', 90,customer.id)
+      count = transactions.count
+      buyers = transactions.sum(:amount)
+      value = number_to_currency(buyers,precision: 2)
+      # number_with_precision((buyers), precision: 2)
+    end
+    count_percent=((count/total.to_f)*100).to_i rescue 0
+    # value_total=overall_credit_received(customer).to_f
+    value_percent=((buyers/total.to_f)*100).to_i rescue 0
+    if option == 'count'
+    return "#{count}(#{count_percent}%)"
+    else
+      return "#{value}(#{value_percent}%)"
+    end
   end
-  count_percent=((count/total.to_f)*100).to_i rescue 0
-  # value_total=overall_credit_received(customer).to_f
-  value_percent=((buyers/total.to_f)*100).to_i rescue 0
-  if option == 'count'
-  return "#{count}(#{count_percent}%)"
-  else
-    return "#{value}(#{value_percent}%)"
-  end
-end
 
   def sale_count_value(condition,total,option,customer)
     if condition == '0'
@@ -188,9 +188,9 @@ end
   def get_credit_limit(buyer, supplier)
     cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
-       number_to_currency(0.00)
+      0.00
     else
-       number_with_precision((cl.credit_limit), precision: 2)
+      number_with_precision((cl.credit_limit), precision: 2)
     end
   end
 
@@ -210,8 +210,8 @@ end
   end
 
   def get_number_of_customers(supplier, amount,check)
-    count=0
-    count1=0
+    count = 0
+    count1 = 0
     buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
     buyers = Customer.where(id: buyer_ids)
     buyers.each do |b|
@@ -248,7 +248,7 @@ end
       @amount << (weight.to_f * price.to_f)
     end
     transaction_amt = @amount.sum
-     number_with_precision(transaction_amt, precision: 2)
+    number_with_precision(transaction_amt, precision: 2)
   end
 
   def overall_credit_received(customer)
