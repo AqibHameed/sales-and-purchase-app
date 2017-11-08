@@ -9,16 +9,16 @@ class CustomersController < ApplicationController
 
   def info
     @total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?',current_customer.id, current_customer.id).count
-    @pending_transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ?", current_customer.id, current_customer.id, Date.today, false).count
-    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", current_customer.id,current_customer.id, Date.today, false).count
-    @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", current_customer.id,current_customer.id,true).count
+    @pending_transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ? AND buyer_rejected = ?", current_customer.id, current_customer.id, Date.today, false, false).count
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ? AND buyer_rejected = ?", current_customer.id, current_customer.id, Date.today, false, false).count
+    @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ? AND buyer_rejected = ?", current_customer.id, current_customer.id, true, false).count
+    # @rejected_transactions = Transaction.where(buyer_rejected: true).count
     @credit_recieved = CreditLimit.where('buyer_id =?',current_customer.id)
     @credit_given = CreditLimit.where('supplier_id =?',current_customer.id)
     @shared = Shared.new
     @shared_table = Shared.where(shared_by_id: current_customer.id)
     @total_sent_value = Transaction.where(supplier_id: current_customer.id).sum(:amount)
     @total_received_value = Transaction.where(buyer_id: current_customer.id).sum(:amount)
-
 
     @credit_recieved_transaction = Transaction.where('buyer_id =?',current_customer.id)
     @credit_given_transaction = Transaction.where('supplier_id =?',current_customer.id)
@@ -45,15 +45,15 @@ class CustomersController < ApplicationController
 
   def shared_info
     @total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?', params[:id], params[:id]).count
-    @pending_transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ?", params[:id], params[:id], Date.today, false).count
-    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ?", params[:id], params[:id], Date.today, false).count
-    @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", params[:id],params[:id],true).count
+    @pending_transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ? AND buyer_rejected = ?", params[:id], params[:id], Date.today, false, false).count
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id =?) AND due_date < ? AND paid = ? AND buyer_rejected = ?", params[:id], params[:id], Date.today, false, false).count
+    @complete_transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ? AND buyer_rejected = ?", params[:id], params[:id], true, false).count
+    # @rejected_transactions = Transaction.where(buyer_rejected: true).count
     @credit_recieved = CreditLimit.where('buyer_id =?',params[:id])
     @credit_given = CreditLimit.where('supplier_id =?',params[:id])
     @customer = Customer.find(params[:id])
     @total_sent_value = Transaction.where(supplier_id: params[:id]).sum(:amount)
     @total_received_value = Transaction.where(buyer_id: params[:id]).sum(:amount)
-
 
     @credit_recieved_transaction = Transaction.where('buyer_id =?',params[:id])
     @credit_given_transaction = Transaction.where('supplier_id =?',params[:id])
@@ -63,11 +63,11 @@ class CustomersController < ApplicationController
     customer = Customer.where(id: params[:id]).first
     unless customer.nil?
       if params[:type] == 'pending'
-        @transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ?", customer.id, customer.id, Date.today, false)
+        @transactions = Transaction.where("(buyer_id = ? OR supplier_id = ?) AND due_date >= ? AND paid = ? AND buyer_rejected = ?", customer.id, customer.id, Date.today, false, false)
       elsif params[:type] == "complete"
-        @transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ?", customer.id, customer.id,true)
+        @transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND paid = ? AND buyer_rejected = ?", customer.id, customer.id, true, false)
       elsif params[:type] == "overdue"
-        @transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND due_date < ? AND paid = ?", customer.id, customer.id, Date.today, false)
+        @transactions = Transaction.includes(:trading_parcel).where("(buyer_id = ? OR supplier_id = ?) AND due_date < ? AND paid = ? AND buyer_rejected = ?", customer.id, customer.id, Date.today, false, false)
       end
     else
       redirect_to root_path

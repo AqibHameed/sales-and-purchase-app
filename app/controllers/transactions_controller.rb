@@ -57,7 +57,7 @@ class TransactionsController < ApplicationController
     @transaction.reject_reason = params[:transaction][:reject_reason]
     @transaction.buyer_rejected = true
     @transaction.reject_date = Time.now
-    if @transaction.save
+    if @transaction.save(validate: false)
       redirect_to trading_history_path, notice: 'Transaction rejected successfully'
     else
       redirect_to trading_history_path, notice: 'Not rejected now. Please try again.'

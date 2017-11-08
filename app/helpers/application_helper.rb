@@ -191,9 +191,9 @@ end
   def get_credit_limit(buyer, supplier)
     cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
-      0.00
+       number_to_currency(0.00)
     else
-      number_with_precision((cl.credit_limit), precision: 2)
+       number_to_currency(number_with_precision((cl.credit_limit), precision: 2))
     end
   end
 
@@ -209,7 +209,7 @@ end
   def get_available_credit_limit(buyer, supplier)
     total = get_credit_limit(buyer, supplier)
     used  =  get_used_credit_limit(buyer, supplier)
-    number_with_precision((total.to_f - used.to_f), precision: 2)
+    number_to_currency(number_with_precision((total.to_f - used.to_f), precision: 2))
   end
 
   def get_number_of_customers(supplier, amount,check)
@@ -231,6 +231,7 @@ end
       return count1
     end
   end
+
   def get_count_no_credit(supplier)
     buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
     buyers = Customer.where.not(id: buyer_ids)
@@ -251,12 +252,12 @@ end
       @amount << (weight.to_f * price.to_f)
     end
     transaction_amt = @amount.sum
-    number_with_precision(transaction_amt, precision: 2)
+     number_to_currency(number_with_precision(transaction_amt, precision: 2))
   end
 
   def overall_credit_received(customer)
     current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)
-    number_with_precision((current_limit), precision: 2)
+    number_to_currency(number_with_precision((current_limit), precision: 2))
   end
 
   def overall_credit_spent(customer)
@@ -268,16 +269,16 @@ end
       @amount << (weight.to_f * price.to_f)
     end
     transaction_amt = @amount.sum
-    number_with_precision(transaction_amt, precision: 2)
+    number_to_currency(number_with_precision(transaction_amt, precision: 2))
   end
 
   def credit_available_by_customer
-    overall_credit_received(current_customer).to_f - overall_credit_spent(current_customer).to_f
+    number_to_currency(overall_credit_received(current_customer).to_f - overall_credit_spent(current_customer).to_f)
   end
 
   def overall_credit_given(customer)
     current_limit = CreditLimit.where(supplier_id: customer.id).sum(:credit_limit)
-    number_with_precision((current_limit), precision: 2)
+    number_to_currency(number_with_precision((current_limit), precision: 2))
   end
 
    def overall_credit_spent_by_customer(customer)
@@ -287,13 +288,14 @@ end
       weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
       price = t.price
       @amount << (weight.to_f * price.to_f)
+
     end
     transaction_amt = @amount.sum
-    number_with_precision(transaction_amt, precision: 2)
+    number_to_currency(number_with_precision(transaction_amt, precision: 2))
   end
 
   def credit_available(customer)
-    overall_credit_given(customer).to_f-overall_credit_spent_by_customer(customer).to_f
+    number_to_currency(overall_credit_given(customer).to_f-overall_credit_spent_by_customer(customer).to_f)
   end
 
   def get_status transaction
