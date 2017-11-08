@@ -1,5 +1,9 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
   <tr>
+    <td> UID</td>
+    <td><%= @parcel.uid %></td>
+  </tr>
+  <tr>
     <td> Supplier</td>
     <td><%= @parcel.try(:customer).try(:company) %></td>
   </tr>
