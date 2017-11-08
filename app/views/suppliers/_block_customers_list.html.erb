@@ -12,7 +12,7 @@
         <tr>
           <td></td>
           <td><%= customer.company %></td>
-          <td><%= get_credit_limit(customer, current_customer) %></td>
+          <td><%= number_to_currency(get_credit_limit(customer, current_customer)) %></td>
           <td><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
         </tr>
       <% end %>

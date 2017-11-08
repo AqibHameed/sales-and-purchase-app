@@ -17,7 +17,7 @@
     <div class="clear20"></div>
     <h3>Purchase</h3>
     <div class="clear10"></div>
-    <h1>Total Credit Received = <%= overall_credit_received(current_customer) %></h1>
+    <h1>Total Credit Received = <%= number_to_currency(overall_credit_received(current_customer)) %></h1>
     <h1>Credit Providers = <%= @credit_recieved.count %></h1>
     <div class="table">
       <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
@@ -59,8 +59,8 @@
     <h3>Sales</h3>
     <div class="clear10"></div>
     <h1>Credit given to = <%=@credit_given.count%> </h1>
-    <h1>Total Credit Given = <%=overall_credit_given(current_customer)%></h1>
-    <h1>Total Credit Used = <%=overall_credit_spent_by_customer(current_customer)%></h1>
+    <h1>Total Credit Given = <%=number_to_currency(overall_credit_given(current_customer))%></h1>
+    <h1>Total Credit Used = <%=number_to_currency(overall_credit_spent_by_customer(current_customer))%></h1>
     <h1>Total Credit Available = <%=credit_available(current_customer)%></h1>
     <div class="table">
       <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
