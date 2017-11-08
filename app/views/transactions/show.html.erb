@@ -68,31 +68,35 @@
 <div class="clear20"></div>
 <div class="form-wrapper">
       <div id = 'show_form' class="hidden">
-        <% if @transaction.amount.nil? || @transaction.amount.blank? %>
-          <p>No dues are left</p>
-        <% else %>
-          <%= form_for @payment, url: payment_transactions_path do |f|%>
-            <div class="form-row">
-              <div class="label" style='width:33%!important'>
-                Amount
-              </div>
-              <div class="field" style='width:60%!important'>
-                <%= f.text_field :amount, :style => 'width:200px;', :placeholder => 'Amount', :class => "input-1" %>
-                <%= f.hidden_field :transaction_id, value: @transaction.id %>
-                <div class="clear"></div>
-                <div class="idt_terms_text"></div>
-                <div class="form-row">
-                  <div class="label"></div>
-                  <div class='field'>
-                   <%=f.submit 'Pay', class: 'btn-02 login_btn ', id: 'transaction_submit' %>
-                  </div>
+        <%if @transaction.paid? %>
+          <p>Already Paid</p>
+        <%else%>
+          <% if @transaction.amount.nil? || @transaction.amount.blank? %>
+            <p>No dues are left</p>
+          <% else %>
+            <%= form_for @payment, url: payment_transactions_path do |f|%>
+              <div class="form-row">
+                <div class="label" style='width:33%!important'>
+                  Amount
                 </div>
+                <div class="field" style='width:60%!important'>
+                  <%= f.text_field :amount, :style => 'width:200px;', :placeholder => 'Amount', :class => "input-1" %><%=link_to 'Full Payment','javascript:void(0)',class: 'full_payment' %>
+                  <%= f.hidden_field :transaction_id, value: @transaction.id %>
+                  <div class="clear"></div>
+                  <div class="idt_terms_text"></div>
+                  <div class="form-row">
+                    <div class="label"></div>
+                    <div class='field'>
+                     <%=f.submit 'Pay', class: 'btn-02 login_btn ', id: 'transaction_submit' %>
+                    </div>
+                  </div>
 
+                </div>
+                <div class="clear"></div>
               </div>
-              <div class="clear"></div>
-            </div>
+            <% end %>
           <% end %>
-        <% end %>
+        <%end%>
       </div>
 </div>
 
@@ -103,5 +107,9 @@
       e.preventDefault();
       $('#show_form').toggle();
     });
+    $('.full_payment').click(function(e){
+        e.preventDefault();
+        $('.input-1').val('<%=@transaction.amount%>')
+      });
   });
 </script>

@@ -26,7 +26,10 @@ class TransactionsController < ApplicationController
     if @payment.save
       @transaction = Transaction.find(@payment.transaction_id)
       amount = @transaction.amount
-      Transaction.update(@payment.transaction_id, :amount => amount-@payment.amount)
+      @transaction.update_column(:amount, amount - @payment.amount)
+      if @transaction.amount == 0
+        @transaction.update_column(:paid, true)
+      end
       redirect_to trading_history_path
     else
       error = @payment.errors.full_messages.first
