@@ -26,14 +26,23 @@ class Proposal < ApplicationRecord
       credit_limit = limit.credit_limit
       transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false)
       @amount = []
-      transactions.each do |t|
-        weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
-        price = t.price
-        @amount << (weight.to_f * price.to_f)
+     transactions.each do |t|
+        if t.diamond_type == 'Rough'
+          @amount << t.price
+        else
+          weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
+          price = t.price
+          @amount << (weight.to_f * price.to_f)
+        end
       end
       used_amt = @amount.sum
       get_weight = self.trading_parcel.weight.blank? ? 1 : self.trading_parcel.weight
-      total_price = self.trading_parcel.price.to_f * self.trading_parcel.weight.to_f
+      if self.trading_parcel.diamond_type == 'Rough'
+        total_price = price.to_f
+        puts total_price.inspect
+      else
+        total_price = price.to_f * weight.to_f
+      end
       available_limit = credit_limit.to_f - used_amt.to_f
       if total_price.to_f > available_limit
         errors[:base] << "You have available credit limit of #{available_limit}. So you can't buy more than this limit"

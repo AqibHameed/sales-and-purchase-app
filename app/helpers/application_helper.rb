@@ -243,9 +243,13 @@ module ApplicationHelper
     transactions = Transaction.where(buyer_id: buyer.id, supplier_id: supplier.id, paid: false, buyer_rejected: false)
     @amount = []
     transactions.each do |t|
-      weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
-      price = t.price
-      @amount << (weight.to_f * price.to_f)
+      if t.diamond_type == 'Rough'
+        @amount << t.price
+      else
+        weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
+        price = t.price
+        @amount << (weight.to_f * price.to_f)
+      end
     end
     transaction_amt = @amount.sum
     number_with_precision(transaction_amt, precision: 2)
@@ -260,9 +264,13 @@ module ApplicationHelper
     transactions = Transaction.where(buyer_id: customer.id)
     @amount = []
     transactions.each do |t|
-      weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
-      price = t.price
-      @amount << (weight.to_f * price.to_f)
+      if t.diamond_type == 'Rough'
+        @amount << t.price
+      else
+        weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
+        price = t.price
+        @amount << (weight.to_f * price.to_f)
+      end
     end
     transaction_amt = @amount.sum
     number_with_precision(transaction_amt, precision: 2)
@@ -281,9 +289,13 @@ module ApplicationHelper
     transactions = Transaction.where(supplier_id: customer.id)
     @amount = []
     transactions.each do |t|
-      weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
-      price = t.price
-      @amount << (weight.to_f * price.to_f)
+      if t.diamond_type == 'Rough'
+        @amount << t.price
+      else
+        weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
+        price = t.price
+        @amount << (weight.to_f * price.to_f)
+      end
     end
     transaction_amt = @amount.sum
     number_with_precision(transaction_amt, precision: 2)

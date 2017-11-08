@@ -7,7 +7,7 @@ class Transaction < ApplicationRecord
   validate :credit_validation, :validate_invoice_date
   after_create :update_credit_limit, :generate_and_add_uid, :generate_and_add_amount
 
-  attr_accessor :weight, :diamond_type
+  attr_accessor :weight
 
   def credit_validation
     limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
@@ -46,10 +46,11 @@ class Transaction < ApplicationRecord
   end
 
   def self.create_new(proposal)
+    trading_parcel = proposal.trading_parcel
     Transaction.create(buyer_id: proposal.buyer_id, supplier_id: proposal.supplier_id,
                       trading_parcel_id: proposal.trading_parcel_id, price: proposal.price,
                       credit: proposal.credit, due_date: Date.today + (proposal.credit).days,
-                      paid: false, created_at: Time.now)
+                      paid: false, created_at: Time.now, diamond_type: trading_parcel.diamond_type)
   end
 
   def update_credit_limit
@@ -72,9 +73,9 @@ class Transaction < ApplicationRecord
 
   def generate_and_add_amount
     if diamond_type == 'Rough'
-      amount =  trading_parcel.price
+      amount =  price
     else
-      amount = trading_parcel.price*trading_parcel.weight
+      amount = price*trading_parcel.weight
     end
     self.amount = amount
     self.save(validate: false)
