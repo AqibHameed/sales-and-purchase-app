@@ -13,6 +13,7 @@ class TradingParcelsController < ApplicationController
   def create
     @parcel = TradingParcel.new(trading_parcel_params)
     if @parcel.save
+      @parcel.update_column(:diamond_type, params[:trading_document_diamond_type])
       if params[:trading_parcel][:single_parcel].present?
         redirect_to single_parcel_supplier_path(@parcel), notice: 'Parcel created successfully'
       else

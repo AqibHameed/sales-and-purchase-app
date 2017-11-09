@@ -48,13 +48,25 @@
   <tr>
     <td> Available Credit Buyers</td>
     <td>
-	   	<%= get_number_of_customers(current_customer, (@parcel.weight.to_f * @parcel.price.to_f),'available')%>
+      <%amount = 0 %>
+      <% if @parcel.diamond_type == "Rough" %>
+        <% amount = @parcel.price.to_f %>
+      <% else %>
+        <% amount = @parcel.weight.to_f * @parcel.price.to_f%>
+      <% end %>
+	   	<%= get_number_of_customers(current_customer, amount, 'available')%>
     </td>
   </tr>
   <tr>
     <td> Unavailable Credit Buyers</td>
     <td>
-	   	<%= get_number_of_customers(current_customer, (@parcel.weight.to_f * @parcel.price.to_f),'unavailable')%>
+      <%amount = 0 %>
+      <% if @parcel.diamond_type == "Rough" %>
+        <% amount = @parcel.price.to_f %>
+      <% else %>
+        <% amount = @parcel.weight.to_f * @parcel.price.to_f%>
+      <% end %>
+	   	<%= get_number_of_customers(current_customer, amount, 'unavailable')%>
     </td>
   </tr>
    <tr>
