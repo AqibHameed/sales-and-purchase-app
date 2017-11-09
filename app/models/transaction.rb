@@ -81,6 +81,34 @@ class Transaction < ApplicationRecord
     self.save(validate: false)
   end
 
+  def self.total_transaction(customer_id)
+    total_transaction = Transaction.where('buyer_id = ? or supplier_id = ?',customer_id, customer_id)
+  end
+
+  def self.pending_sent_transaction(customer_id)
+    total_pending_sent = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_rejected = ?", customer_id, Date.today, false, false)
+  end
+
+  def self.pending_received_transaction(customer_id)
+    total_pending_received = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_rejected = ?", customer_id, Date.today, false, false)
+  end
+
+  def self.overdue_received_transaction(customer_id)
+    total_overdue_received = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_rejected = ?", customer_id, Date.today, false, false)
+  end
+
+  def self.overdue_sent_transaction(customer_id)
+    total_overdue_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date < ? AND paid = ? AND buyer_rejected = ?", customer_id, Date.today, false, false)
+  end
+
+  def self.complete_received_transaction(customer_id)
+    total_complete_received = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ? AND buyer_rejected = ?", customer_id, true, false)
+  end
+
+  def self.complete_sent_transaction(customer_id)
+    total_complete_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND paid = ? AND buyer_rejected = ?", customer_id, true, false)
+  end
+
   # def release_credits
   #   cl = CreditLimit.where(buyer_id: self.buyer_id, supplier_id: self.supplier_id).first
   #   if cl

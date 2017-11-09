@@ -31,6 +31,7 @@ class TradingDocument < ApplicationRecord
                 parcel.lot_no = TradingDocument.get_value(data_row[TradingDocument.get_index(self.lot_no_field)]) unless self.lot_no_field.blank?
                 parcel.description = TradingDocument.get_value(data_row[TradingDocument.get_index(self.desc_field)]) unless self.desc_field.blank?
                 parcel.no_of_stones = TradingDocument.get_value(data_row[TradingDocument.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
+                parcel.diamond_type = self.diamond_type
               end
               if self.diamond_type == 'Sight'
                 parcel.source = TradingDocument.get_value(data_row[TradingDocument.get_index(self.source_field)]) unless self.source_field.blank?
@@ -38,6 +39,7 @@ class TradingDocument < ApplicationRecord
                 parcel.box_value = TradingDocument.get_value(data_row[TradingDocument.get_index(self.box_value_field)]) unless self.box_value_field.blank?
                 parcel.sight = TradingDocument.get_value(data_row[TradingDocument.get_index(self.sight_field)]) unless self.sight_field.blank?
                 parcel.cost = TradingDocument.get_value(data_row[TradingDocument.get_index(self.cost_field)]) unless self.cost_field.blank?
+                parcel.diamond_type = self.diamond_type
               end
               parcel.customer_id = self.customer_id
               parcel.save

@@ -24,33 +24,52 @@
         <thead>
           <th>Terms</th>
           <th>#</th>
-          <th>value</th>
+          <th>Pending Transaction</th>
+          <th>Overdue Transaction</th>
+          <th>Complete Transaction</th>
         </thead>
         <tbody>
           <tr>
             <td>Cash</td>
             <td><%=count_value('0', @credit_recieved_transaction.count, 'count', current_customer)%></td>
-            <td><%=count_value('0', @total_received_value, 'value', current_customer)%></td>
+            <td><%=count_value('0', @total_pending_received, 'pending', current_customer)%></td>
+            <td><%=count_value('0', @total_overdue_received, 'overdue', current_customer)%></td>
+            <td><%=count_value('0', @total_complete_received, 'complete', current_customer)%></td>
           </tr>
           <tr>
             <td>1<=30</td>
             <td><%=count_value('less_30', @credit_recieved_transaction.count,'count', current_customer)%></td>
-            <td><%=count_value('less_30',@total_received_value,'value', current_customer)%></td>
+            <td><%=count_value('less_30',@total_pending_received,'pending', current_customer)%></td>
+            <td><%=count_value('less_30', @total_overdue_received, 'overdue', current_customer)%></td>
+            <td><%=count_value('less_30', @total_complete_received, 'complete', current_customer)%></td>
           </tr>
           <tr>
-            <td>31<=60 </th>
+            <td>31<=60</th>
             <td><%=count_value('60', @credit_recieved_transaction.count,'count', current_customer)%></td>
-            <td><%=count_value('60', @total_received_value,'value', current_customer)%></td>
+            <td><%=count_value('60', @total_pending_received,'pending', current_customer)%></td>
+            <td><%=count_value('60', @total_overdue_received, 'overdue', current_customer)%></td>
+            <td><%=count_value('60', @total_complete_received, 'complete', current_customer)%></td>
           </tr>
           <tr>
             <td>61<=90</td>
             <td><%=count_value('90', @credit_recieved_transaction.count,'count', current_customer)%></td>
-            <td><%=count_value('90',@total_received_value,'value', current_customer)%></td>
+            <td><%=count_value('90',@total_pending_received,'pending', current_customer)%></td>
+            <td><%=count_value('90', @total_overdue_received, 'overdue', current_customer)%></td>
+            <td><%=count_value('90', @total_complete_received, 'complete', current_customer)%></td>
           </tr>
           <tr>
             <td>91<</td>
             <td><%=count_value('more_90', @credit_recieved_transaction.count,'count', current_customer)%></td>
-            <td><%=count_value('more_90',@total_received_value,'value', current_customer)%></td>
+            <td><%=count_value('more_90',@total_pending_received,'pending', current_customer)%></td>
+            <td><%=count_value('more_90', @total_overdue_received, 'overdue', current_customer)%></td>
+            <td><%=count_value('more_90', @total_complete_received, 'complete', current_customer)%></td>
+          </tr>
+          <tr>
+            <th>Total</th>
+            <th><%=@credit_recieved_transaction.count%></th>
+            <th><%=number_to_currency(@total_pending_received)%></th>
+            <th><%=number_to_currency(@total_overdue_received)%></th>
+            <th><%=number_to_currency(@total_complete_received)%></th>
           </tr>
         </tbody>
       </table>
@@ -67,33 +86,52 @@
         <thead>
           <th>Terms</th>
           <th>#</th>
-          <th>value</th>
+          <th>Pending Transaction</th>
+          <th>Overdue Transaction</th>
+          <th>Complete Transaction</th>
         </thead>
         <tbody>
           <tr>
             <td>Cash</td>
             <td><%=sale_count_value('0', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><%=sale_count_value('0', @total_sent_value ,'value', current_customer)%></td>
+            <td><%=sale_count_value('0', @total_pending_sent, 'pending', current_customer)%></td>
+            <td><%=sale_count_value('0', @total_overdue_sent, 'overdue', current_customer)%></td>
+            <td><%=sale_count_value('0', @total_complete_sent, 'complete', current_customer)%></td>
           </tr>
           <tr>
             <td>1<=30</td>
             <td><%=sale_count_value('less_30', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><%=sale_count_value('less_30',@total_sent_value ,'value', current_customer)%></td>
+            <td><%=sale_count_value('less_30', @total_pending_sent, 'pending', current_customer)%></td>
+            <td><%=sale_count_value('less_30', @total_overdue_sent, 'overdue', current_customer)%></td>
+            <td><%=sale_count_value('less_30', @total_complete_sent, 'complete', current_customer)%></td>
           </tr>
           <tr>
             <td>31<=60</td>
             <td><%=sale_count_value('60', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><%=sale_count_value('60', @total_sent_value ,'value', current_customer)%></td>
+            <td><%=sale_count_value('60', @total_pending_sent, 'pending', current_customer)%></td>
+            <td><%=sale_count_value('60', @total_overdue_sent, 'overdue', current_customer)%></td>
+            <td><%=sale_count_value('60', @total_complete_sent, 'complete', current_customer)%></td>
           </tr>
           <tr>
             <td>61<=90</td>
             <td><%=sale_count_value('90', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><%=sale_count_value('90', @total_sent_value ,'value', current_customer)%></td>
+            <td><%=sale_count_value('90', @total_pending_sent, 'pending', current_customer)%></td>
+            <td><%=sale_count_value('90', @total_overdue_sent, 'overdue', current_customer)%></td>
+            <td><%=sale_count_value('90', @total_complete_sent, 'complete', current_customer)%></td>
           </tr>
           <tr>
             <td>91<</td>
             <td><%=sale_count_value('more_90', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><%=sale_count_value('more_90', @total_sent_value ,'value', current_customer)%></td>
+            <td><%=sale_count_value('more_90', @total_pending_sent, 'pending', current_customer)%></td>
+            <td><%=sale_count_value('more_90', @total_overdue_sent, 'overdue', current_customer)%></td>
+            <td><%=sale_count_value('more_90', @total_complete_sent, 'complete', current_customer)%></td>
+          </tr>
+          <tr>
+            <th>Total</th>
+            <th><%=@credit_given_transaction.count%></th>
+            <th><%=number_to_currency(@total_pending_sent)%></th>
+            <th><%=number_to_currency(@total_overdue_sent)%></th>
+            <th><%=number_to_currency(@total_complete_sent)%></th>
           </tr>
         </tbody>
       </table>
