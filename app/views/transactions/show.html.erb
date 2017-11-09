@@ -115,7 +115,7 @@
     });
     $('.full_payment').click(function(e){
         e.preventDefault();
-        $('.input-1').val('<%=@transaction.amount%>')
+        $('.input-1').val('<%=@transaction.remaining_amount%>')
       });
   });
 </script>
