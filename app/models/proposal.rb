@@ -26,14 +26,8 @@ class Proposal < ApplicationRecord
       credit_limit = limit.credit_limit
       transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false)
       @amount = []
-     transactions.each do |t|
-        if t.diamond_type == 'Rough'
-          @amount << t.price
-        else
-          weight = (t.trading_parcel.weight.blank? || t.trading_parcel.weight.nil?) ? 1 : t.trading_parcel.weight
-          price = t.price
-          @amount << (weight.to_f * price.to_f)
-        end
+      transactions.each do |t|
+        @amount << t.amount
       end
       used_amt = @amount.sum
       get_weight = self.trading_parcel.weight.blank? ? 1 : self.trading_parcel.weight

@@ -46,7 +46,7 @@
         <td><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
         <% if transaction.buyer_rejected %>
           <td>Rejected</td>
-        <% elsif current_user.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_rejected && (transaction.updated_at + 7.days > Time.now) %>
+        <% elsif current_user.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_rejected && (transaction.updated_at + 7.days > Time.now) && get_status(transaction) != 'Completed'%>
           <td><%=link_to 'Reject', reject_transaction_path(transaction) %></td>
         <% else %>
           <td></td>
