@@ -29,12 +29,15 @@
           <td><%= transaction.trading_parcel.sight rescue 'N/A' %></td>
           <td><%= transaction.price rescue 'N/A' %></td>
           <td><%= transaction.credit rescue 'N/A' %></td>
-          <% if current_user.id == transaction.buyer_id %>
+          <% if @customer.id == transaction.buyer_id %>
             <td>Bought</td>
             <td><%= transaction.supplier.company rescue 'N/A' %></td>
-          <% elsif current_user.id == transaction.supplier_id  %>
+          <% elsif @customer.id == transaction.supplier_id  %>
             <td>Sold</td>
             <td><%= transaction.buyer.company rescue 'N/A' %></td>
+          <%else%>
+            <td></td>
+            <td></td>
           <% end %>
           <td><%= get_status(transaction) %></td>
           <td><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
