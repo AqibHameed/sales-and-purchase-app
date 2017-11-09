@@ -64,9 +64,9 @@
   </table>
   <div class="clear20"></div>
   <% if @transaction.buyer_rejected? %>
-    <p><%= @transaction.reject_reason %></p>
+    <p>Reject reason : <%= @transaction.reject_reason %></p>
   <%else%>
-    <%if (!@transaction.amount.paid? && @transaction.supplier_id == current_customer.id) %>
+    <%if (!@transaction.paid? && @transaction.supplier_id == current_customer.id) %>
       <%=link_to 'Enter Payment','#', id: 'place_amount', class: 'login-btn btn-02',data: {turbolinks: false} %>
     <%end%>
   <%end%>
@@ -77,7 +77,7 @@
         <%if @transaction.paid? %>
           <p>Already Paid</p>
         <%else%>
-          <% if @transaction.amount.nil? || @transaction.amount.blank? %>
+          <% if @transaction.remaining_amount.nil? || @transaction.remaining_amount.blank? %>
             <p>No dues are left</p>
           <% else %>
             <%= form_for @payment, url: payment_transactions_path do |f|%>
