@@ -51,7 +51,7 @@
         <% else %>
           <td></td>
         <% end %>
-        <td><%=link_to 'view' , transaction_path(transaction) %></td>
+        <td><%=link_to 'view' , transaction_path(transaction), data: {turbolinks: false} %></td>
       </tr>
       <% end %>
     </tbody>
