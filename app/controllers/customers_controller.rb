@@ -13,12 +13,12 @@ class CustomersController < ApplicationController
     @pending_transactions = Transaction.pending_received_transaction(current_customer.id).count + Transaction.pending_sent_transaction(current_customer.id).count
     @overdue_transactions = Transaction.overdue_received_transaction(current_customer.id).count + Transaction.overdue_sent_transaction(current_customer.id).count
     @complete_transactions = Transaction.complete_received_transaction(current_customer.id).count + Transaction.complete_sent_transaction(current_customer.id).count
-    @total_pending_received = Transaction.pending_received_transaction(current_customer.id).sum(:amount)
-    @total_pending_sent = Transaction.pending_sent_transaction(current_customer.id).sum(:amount)
-    @total_overdue_received = Transaction.overdue_received_transaction(current_customer.id).sum(:amount)
-    @total_overdue_sent = Transaction.overdue_sent_transaction(current_customer.id).sum(:amount)
-    @total_complete_received = Transaction.complete_received_transaction(current_customer.id).sum(:amount)
-    @total_complete_sent = Transaction.complete_sent_transaction(current_customer.id).sum(:amount)
+    @total_pending_received = Transaction.pending_received_transaction(current_customer.id).sum(:total_amount)
+    @total_pending_sent = Transaction.pending_sent_transaction(current_customer.id).sum(:total_amount)
+    @total_overdue_received = Transaction.overdue_received_transaction(current_customer.id).sum(:total_amount)
+    @total_overdue_sent = Transaction.overdue_sent_transaction(current_customer.id).sum(:total_amount)
+    @total_complete_received = Transaction.complete_received_transaction(current_customer.id).sum(:total_amount)
+    @total_complete_sent = Transaction.complete_sent_transaction(current_customer.id).sum(:total_amount)
     @credit_recieved = CreditLimit.where('buyer_id =?',current_customer.id)
     @credit_given = CreditLimit.where('supplier_id =?',current_customer.id)
     @shared = Shared.new
@@ -51,12 +51,12 @@ class CustomersController < ApplicationController
     @pending_transactions = Transaction.pending_received_transaction(params[:id]).count + Transaction.pending_sent_transaction(params[:id]).count
     @overdue_transactions = Transaction.overdue_received_transaction(params[:id]).count + Transaction.overdue_sent_transaction(params[:id]).count
     @complete_transactions = Transaction.complete_received_transaction(params[:id]).count + Transaction.complete_sent_transaction(params[:id]).count
-    @total_pending_received = Transaction.pending_received_transaction(params[:id]).sum(:amount)
-    @total_pending_sent = Transaction.pending_sent_transaction(params[:id]).sum(:amount)
-    @total_overdue_received = Transaction.overdue_received_transaction(params[:id]).sum(:amount)
-    @total_overdue_sent = Transaction.overdue_sent_transaction(params[:id]).sum(:amount)
-    @total_complete_received = Transaction.complete_received_transaction(params[:id]).sum(:amount)
-    @total_complete_sent = Transaction.complete_sent_transaction(params[:id]).sum(:amount)
+    @total_pending_received = Transaction.pending_received_transaction(params[:id]).sum(:total_amount)
+    @total_pending_sent = Transaction.pending_sent_transaction(params[:id]).sum(:total_amount)
+    @total_overdue_received = Transaction.overdue_received_transaction(params[:id]).sum(:total_amount)
+    @total_overdue_sent = Transaction.overdue_sent_transaction(params[:id]).sum(:total_amount)
+    @total_complete_received = Transaction.complete_received_transaction(params[:id]).sum(:total_amount)
+    @total_complete_sent = Transaction.complete_sent_transaction(params[:id]).sum(:total_amount)
     @credit_recieved = CreditLimit.where('buyer_id =?',params[:id])
     @credit_given = CreditLimit.where('supplier_id =?',params[:id])
     @customer = Customer.find(params[:id])

@@ -18,7 +18,7 @@ class Transaction < ApplicationRecord
       transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false)
       @amount = []
       transactions.each do |t|
-        @amount << t.amount
+        @amount << t.remaining_amount
       end
       used_amt = @amount.sum
       get_weight = weight.blank? ? 1 : weight
@@ -70,7 +70,8 @@ class Transaction < ApplicationRecord
     else
       amount = price*trading_parcel.weight
     end
-    self.amount = amount
+    self.remaining_amount = amount
+    self.total_amount = amount
     self.save(validate: false)
   end
 

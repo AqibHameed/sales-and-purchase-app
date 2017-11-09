@@ -25,8 +25,8 @@ class TransactionsController < ApplicationController
 
     if @payment.save
       @transaction = Transaction.find(@payment.transaction_id)
-      amount = @transaction.amount
-      @transaction.update_column(:amount, amount - @payment.amount)
+      amount = @transaction.remaining_amount
+      @transaction.update_column(:remaining_amount, amount - @payment.amount)
       if @transaction.amount == 0
         @transaction.update_column(:paid, true)
       end
