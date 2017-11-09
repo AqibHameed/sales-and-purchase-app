@@ -1,0 +1,23 @@
+<div class="dashboard">
+  <h3> Inbox</h3>
+  <div class="clear10"></div>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th></th>
+      <th>From</th>
+      <th>Subject</th>
+      <th></th>
+    </tr>
+    <% @messages.each.with_index(1) do |message, i|%>
+      <tr>
+        <td><%= index_count(params[:page].to_i) + i %></td>
+        <td><%= message.sender.first_name %></td>
+        <td><%= message.subject %></td>
+        <td><%= link_to 'view', message_path(message), data: {turbolinks: false}%></td>
+
+      </tr>
+    <% end %>
+</table>
+  </div>
+</div>

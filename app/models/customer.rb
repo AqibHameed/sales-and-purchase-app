@@ -24,6 +24,8 @@ class Customer < ApplicationRecord
   has_many :shared_to_users, :class_name => 'Shared', :foreign_key => 'shared_to_id'
   has_many :shared_by_users, :class_name => 'Shared', :foreign_key => 'shared_by_id'
   has_many :email_attachments
+  has_many :sender, :class_name => 'Message', :foreign_key => 'sender_id'
+  has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
 
   # accepts_nested_attributes_for :companies
 

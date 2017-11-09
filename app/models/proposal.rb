@@ -27,7 +27,7 @@ class Proposal < ApplicationRecord
       transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false)
       @amount = []
       transactions.each do |t|
-        @amount << t.amount
+        @amount << t.remaining_amount
       end
       used_amt = @amount.sum
       get_weight = self.trading_parcel.weight.blank? ? 1 : self.trading_parcel.weight

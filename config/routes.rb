@@ -141,7 +141,13 @@ Rails.application.routes.draw do
       get :single_parcel_form
     end
   end
-  resources :trading_parcels
+  resources :messages
+  resources :trading_parcels do
+    member do
+      get :message
+      post :message_create
+    end
+  end
   resources :transactions do
     collection do 
       get :customer
