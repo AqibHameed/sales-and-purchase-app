@@ -39,7 +39,7 @@
     </tr>
     <tr>
       <td> Amount To Be paid</td>
-      <td><%= number_with_precision(@transaction.amount, precision: 2) %></td>
+      <td><%= number_with_precision(@transaction.remaining_amount, precision: 2) %></td>
     </tr>
   </table>
   <div class="clear20"></div>
@@ -63,8 +63,12 @@
     </tr>
   </table>
   <div class="clear20"></div>
-  <%if @transaction.amount != 0%>
-    <%=link_to 'Enter Payment','#', id: 'place_amount', class: 'login-btn btn-02',data: {turbolinks: false} %>
+  <% if @transaction.buyer_rejected? %>
+    <p><%= @transaction.reject_reason %></p>
+  <%else%>
+    <%if (!@transaction.amount.paid? && @transaction.supplier_id == current_customer.id) %>
+      <%=link_to 'Enter Payment','#', id: 'place_amount', class: 'login-btn btn-02',data: {turbolinks: false} %>
+    <%end%>
   <%end%>
 </div>
 <div class="clear20"></div>
