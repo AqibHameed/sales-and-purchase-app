@@ -63,8 +63,8 @@
     </tr>
   </table>
   <div class="clear20"></div>
-  <%=@transaction.buyer_id%>
-  <%= link_to 'Send Request', new_message_path(id: @transaction.buyer_id), class: 'login-btn btn-02', data: {turbolinks: false}%>
+
+  <%= link_to 'Message', new_message_path(id: @transaction.buyer_id), class: 'login-btn btn-02', data: {turbolinks: false}%>
   <% if @transaction.buyer_rejected? %>
     <p>Reject reason : <%= @transaction.reject_reason %></p>
   <%else%>
