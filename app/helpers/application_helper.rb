@@ -205,7 +205,7 @@ module ApplicationHelper
   def get_available_credit_limit(buyer, supplier)
     total = get_credit_limit(buyer, supplier)
     used  =  get_used_credit_limit(buyer, supplier)
-    number_to_currency(number_with_precision((total.to_f - used.to_f), precision: 2))
+    number_with_precision((total.to_f - used.to_f), precision: 2)
   end
 
   def get_number_of_customers(supplier, amount,check)
@@ -213,9 +213,10 @@ module ApplicationHelper
     count1 = 0
     buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
     buyers = Customer.where(id: buyer_ids)
+    amount =  number_with_precision(amount, precision: 2)
     buyers.each do |b|
       available_credit = get_available_credit_limit(b, supplier)
-      if amount <= available_credit.to_f
+      if  amount.to_f <= available_credit.to_f
         count += 1
       else
         count1 += 1
@@ -231,7 +232,7 @@ module ApplicationHelper
   def get_count_no_credit(supplier)
     buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
     buyers = Customer.where.not(id: buyer_ids)
-    buyers.count
+    buyers.count-1
   end
 
   def supplier_connected(buyer,customer)

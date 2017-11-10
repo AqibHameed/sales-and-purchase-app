@@ -27,7 +27,7 @@
             <td>
               <p>Credit Limit: <%= number_to_currency(get_credit_limit(buyer, current_customer)) %></p>
               <p>Used Credit: <%= number_to_currency(get_used_credit_limit(buyer, current_customer)) %></p>
-              <p>Available Credit: <%= get_available_credit_limit(buyer, current_customer) %></p>
+              <p>Available Credit: <%= number_to_currency(get_available_credit_limit(buyer, current_customer)) %></p>
               <br>
               <div class="form-wrapper">
                 <%= form_for(CreditLimit.new, url: company_limits_companies_path) do |f|%>

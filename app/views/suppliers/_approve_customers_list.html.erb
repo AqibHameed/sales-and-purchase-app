@@ -16,7 +16,7 @@
           <span class="given_limit"><%= number_to_currency(get_credit_limit(customer, current_customer)) %><i class="fa fa-edit pull-right" id='credit_edit'></i></span><span class="edit_field hide"><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %><%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false }%></span>
         </td>
         <td><%= number_to_currency(get_used_credit_limit(customer, current_customer)) rescue 'N/A' %></td>
-        <td><%= get_available_credit_limit(customer, current_customer) rescue 'N/A' %></td>
+        <td><%= number_to_currency(get_available_credit_limit(customer, current_customer)) rescue 'N/A' %></td>
         <td class="days_limit">
           <span class="given_days"><%= get_days_limit(customer, current_customer) %><i class="fa fa-edit pull-right" id='days_edit'></i></span><span class="edit_days hide"><%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days' %><i class="fa fa-check-square-o save_date_btn"></i></span>
         </td>

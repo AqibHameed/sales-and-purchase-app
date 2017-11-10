@@ -20,7 +20,7 @@
               <i class="fa fa-edit pull-right" id='credit_edit'></i></td>
               <td class="edit_field hide"><%=text_field_tag "limit", '', 'data-id'=> cl.buyer.id, placeholder: 'Enter limit' %><i class="fa fa-check-square-o save_btn"></i></td>
               <td><%= number_to_currency(get_used_credit_limit(cl.buyer, current_customer)) rescue 'N/A' %></td>
-              <td><%= get_available_credit_limit(cl.buyer, current_customer) rescue 'N/A' %></td>
+              <td><%= number_to_currency(get_available_credit_limit(cl.buyer, current_customer))rescue 'N/A' %></td>
             </tr>
           <% end %>
         <% end %>
