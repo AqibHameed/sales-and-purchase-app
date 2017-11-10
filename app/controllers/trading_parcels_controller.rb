@@ -37,14 +37,7 @@ class TradingParcelsController < ApplicationController
     @customer = Customer.find(params[:id])
   end
 
-  def message_create
-    @message = Message.new(message_params)
-    @message.sender_id = current_customer.id
-    @message.receiver_id = params[:id]
-    if @message.save
-      redirect_to trading_parcel_path
-    end
-  end
+
 
   def update
     if @parcel.update_attributes(trading_parcel_params)
@@ -66,10 +59,8 @@ class TradingParcelsController < ApplicationController
     params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight)
   end
 
-  def message_params
-    params.require(:message).permit(:subject, :message, :message_type)
-  end
-  
+
+
   def set_trading_parcel
     @parcel = TradingParcel.find(params[:id])
   end

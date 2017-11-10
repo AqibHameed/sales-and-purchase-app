@@ -2,7 +2,7 @@
   <h3> Compose </h3>
   <div class="clear10"></div>
   <div class="form-wrapper">
-    <%= form_for @message, url: message_create_trading_parcel_path do |f| %>
+    <%= form_for @message do |f| %>
     <div class="form-row">
         <div class="label">To</div>
         <div class='field'>
@@ -25,13 +25,14 @@
         <div class='field'>
           <%=f.text_area :message, class: 'input' %>
           <%=f.hidden_field :message_type, value: 'Request' %>
+          <%=f.hidden_field :receiver_id, value: @customer.id%>
         </div>
       </div>
        <div class="form-row">
         <div class="label"></div>
         <div class='field'>
           <%=f.submit 'Send', class: 'btn-01 login_btn' %>
-          <%=link_to 'Back', trading_parcel_path, class: 'btn-01 login_btn',data: {turbolinks: false} %>
+          <%=link_to 'Back', :back, class: 'btn-01 login_btn',data: {turbolinks: false} %>
         </div>
       </div>
     <% end %>
