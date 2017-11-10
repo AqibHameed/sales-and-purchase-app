@@ -69,6 +69,7 @@ class TradingParcelsController < ApplicationController
   def message_params
     params.require(:message).permit(:subject, :message, :message_type)
   end
+  
   def set_trading_parcel
     @parcel = TradingParcel.find(params[:id])
   end
