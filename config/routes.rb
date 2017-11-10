@@ -182,6 +182,9 @@ Rails.application.routes.draw do
       get '/tender_winners', to: 'tenders#tender_winners'
       get '/bid_history', to: 'stones#last_3_bids'
       post '/attachment', to: 'api#email_attachment'
+      get '/old_tenders', to: 'tenders#old_tenders'
+      get '/old_upcoming', to: 'tenders#old_upcoming'
+      get '/old_tender_parcel', to: 'tenders#old_tender_parcel'
       resources :tenders do
         collection do
           get :upcoming
