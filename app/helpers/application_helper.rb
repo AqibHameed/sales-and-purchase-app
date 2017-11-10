@@ -354,5 +354,10 @@ module ApplicationHelper
     end
     return "You are trading with an unregistered buyer. Kindly ask your buyer to register. For your protection, we are informing you regarding the unregistered buyer's credit status. This buyer's overdue status is: #{status}. Clear means this buyer does not have any overdues pending for 30 days or more. Restricted means this buyer has overdues of 30 days or more. Please be cautious when trading with Restricted buyers for your financial protection."
   end
+
+  def view_proposal proposal
+    "#{link_to('Click Here', Rails.application.routes.url_helpers.proposal_path(proposal))}"
+  end
+
 end
 
