@@ -27,7 +27,7 @@ class TransactionsController < ApplicationController
       @transaction = Transaction.find(@payment.transaction_id)
       amount = @transaction.remaining_amount
       @transaction.update_column(:remaining_amount, amount - @payment.amount)
-      if @transaction.amount == 0
+      if @transaction.remaining_amount == 0
         @transaction.update_column(:paid, true)
       end
       redirect_to trading_history_path

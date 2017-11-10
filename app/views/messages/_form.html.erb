@@ -1,0 +1,40 @@
+<div class="">
+  <h3> Compose </h3>
+  <div class="clear10"></div>
+  <div class="form-wrapper">
+    <%= form_for @message, url: message_create_trading_parcel_path do |f| %>
+    <div class="form-row">
+        <div class="label">To</div>
+        <div class='field'>
+          <% if @customer.present?%>
+            <%=f.text_field :sender_id, value: @customer.first_name, class: 'input',disabled: true %>
+          <%else%>
+            <%=f.text_field :sender_id,  class: 'input' %>
+          <%end%>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label">Subject</div>
+        <div class='field'>
+          <%=f.text_field :subject, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Message</div>
+        <div class='field'>
+          <%=f.text_area :message, class: 'input' %>
+          <%=f.hidden_field :message_type, value: 'Request' %>
+        </div>
+      </div>
+       <div class="form-row">
+        <div class="label"></div>
+        <div class='field'>
+          <%=f.submit 'Send', class: 'btn-01 login_btn' %>
+          <%=link_to 'Back', trading_parcel_path, class: 'btn-01 login_btn',data: {turbolinks: false} %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="clear"></div>
