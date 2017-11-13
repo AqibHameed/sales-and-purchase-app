@@ -62,6 +62,7 @@ class ProposalsController < ApplicationController
       @trading_parcel = @proposal.trading_parcel.dup
       @trading_parcel.customer_id = @proposal.buyer_id
       @trading_parcel.sold = false
+      @trading_parcel.for_sale = false
       @trading_parcel.save
     end
   end
