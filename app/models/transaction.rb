@@ -76,7 +76,7 @@ class Transaction < ApplicationRecord
   end
 
   def self.total_transaction(customer_id)
-    total_transaction = Transaction.where('(buyer_id = ? or supplier_id = ?) and buyer_rejected = ?',customer_id, customer_id, true)
+    total_transaction = Transaction.where('(buyer_id = ? or supplier_id = ?) and buyer_rejected = ?',customer_id, customer_id, false)
   end
 
   def self.pending_sent_transaction(customer_id)
