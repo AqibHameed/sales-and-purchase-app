@@ -116,6 +116,6 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def attachment_params
-    params.require(:email_attachment).permit(:file)
+    params.require(:email_attachment).permit(:file,:tender_id)
   end
 end
