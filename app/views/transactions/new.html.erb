@@ -119,6 +119,8 @@
             <div class='field'>
               <%= f.select :buyer_id, customer_list_options, { include_blank: true }, class: 'input no-border' %>
             </div>
+
+            <%= link_to 'invite', invite_transactions_path, :class => 'invite', :style=> "margin-right: 12px !important;" %>
           </div>
           <%= f.hidden_field :supplier_id, value: current_customer.id %>
           <%= f.hidden_field :price, class: 'transactions-price' %>
@@ -151,6 +153,7 @@
     <% end %>
   </div>
 </div>
+<div class="bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
 <div class="clear"></div>
 
 <script type="text/javascript">
@@ -160,6 +163,20 @@ $(document).ready(function (){
     "dateFormat" : 'dd/mm/yy'
   });
 })
+$(document).on('click', '.invite', function(e) {
+      e.preventDefault()
+      var _this = $(this);
+      var top = $(this).position()['top'] - 300;
+      $.ajax({
+        url : '/transactions/invite',
+        type : 'GET',
+        success : function(response) {
+          console.log(response)
+          $('.bid_form').html(response).show()
+
+        }
+      })
+    });
 
   $(document).on('change', '#trading_document_diamond_type', function(){
     val = $(this).val()
@@ -199,7 +216,7 @@ $(document).ready(function (){
       $('.transactions-weight').val('')
       $('#trading_parcel_weight').val('')
     }
-  })
+  });
 
   $(document).on('input', '#trading_parcel_credit_period', function() {
     val = $(this).val()
@@ -258,7 +275,10 @@ $(document).ready(function (){
       }
     });
   }
-
-  
-
 </script>
+<style>
+  .current_bid {
+    background-color: #E4E4E4 !important;
+  }
+
+</style>

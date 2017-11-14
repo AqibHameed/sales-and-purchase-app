@@ -1,5 +1,6 @@
 class SuppliersController < ApplicationController
-  layout 'supplier'
+  layout 'supplier', :except => [:profile]
+  layout 'application', :except => [:profile]
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
 
@@ -10,6 +11,14 @@ class SuppliersController < ApplicationController
   end
 
   def trading
+  end
+
+  def profile
+    @customer = Customer.find(params[:id])
+    render :partial => 'profile'
+    # respond_to do |format|
+    #   format.html { render :layout => false}
+    # end
   end
 
   def parcels

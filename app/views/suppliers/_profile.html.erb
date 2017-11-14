@@ -1,0 +1,30 @@
+<div class="table">
+  <div class = "container">
+  <h3 >Profile</h3>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+      <tr>
+        <td> Name </td>
+        <td><%= @customer.name %></td>
+      </tr>
+      <tr>
+        <td> Email</td>
+        <td><%= @customer.email %></td>
+      </tr>
+      <tr>
+        <td> Company</td>
+        <td><%= @customer.company %></td>
+      </tr>
+      <tr>
+        <td> Address</td>
+        <td><%= @customer.address %></td>
+      </tr>
+      <tr>
+        <td> Mobile</td>
+        <td><%= @customer.mobile_no %></td>
+      </tr>
+    </table>
+    <div class="clear20"></div>
+    <%=link_to 'Close', :back, class: "btn-02 login-btn"%>
+  </div>
+</div>
+<script>addMask();</script>

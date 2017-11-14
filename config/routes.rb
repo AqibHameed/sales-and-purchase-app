@@ -136,6 +136,7 @@ Rails.application.routes.draw do
       get :trading
       post :parcels
       get :transactions
+      get :profile
       get :credit
       get :credit_given_list
       get :single_parcel_form
@@ -149,8 +150,10 @@ Rails.application.routes.draw do
     end
   end
   resources :transactions do
-    collection do 
+    collection do
       get :customer
+      get :invite
+      post :invite_send
       post :payment
     end
     member do
@@ -197,7 +200,7 @@ Rails.application.routes.draw do
         end
       end
       resources :stones, path: '/parcels' do
-        collection do 
+        collection do
           post :upload
         end
       end

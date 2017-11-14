@@ -19,6 +19,15 @@ class TransactionsController < ApplicationController
     end
   end
 
+  def invite
+    @customer = Customer.new
+    render :partial=> 'invite'
+  end
+
+  def invite_send
+    Customer.invite!(email: params[:customer][:email], first_name: params[:customer][:first_name],company: params[:customer][:company],mobile_no: params[:customer][:mobile_no] )
+  end
+
   def payment
     @payment = PartialPayment.new(partial_payment_params)
     @payment.customer_id = current_customer.id
@@ -76,5 +85,10 @@ class TransactionsController < ApplicationController
 
    def partial_payment_params
     params.require(:partial_payment).permit(:amount,:transaction_id)
+  end
+
+  def invite_params
+    params.require(:customer).permit(:first_name,:company,:mobile_no,:email)
+
   end
 end

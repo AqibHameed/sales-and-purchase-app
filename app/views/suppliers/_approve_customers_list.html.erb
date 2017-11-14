@@ -11,7 +11,9 @@
     </thead>
     <% @customers.each.with_index(1) do |customer, i|%>
       <tr>
-        <td><%= customer.company %></td>
+        <td><%= link_to customer.company, profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
+
+
         <td class="credit_limit">
           <span class="given_limit"><%= number_to_currency(get_credit_limit(customer, current_customer)) %><i class="fa fa-edit pull-right" id='credit_edit'></i></span><span class="edit_field hide"><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %><%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false }%></span>
         </td>
@@ -30,3 +32,30 @@
     <% end %>
   </table>
 </div>
+
+<script type="text/javascript">
+ $(document).on('click', '.company_profile', function(e) {
+      e.preventDefault()
+      var _this = $(this);
+      id = $(this).data('id')
+      var top = $(this).position()['top'] - 300;
+      $.ajax({
+        url : '/suppliers/profile',
+        type : 'GET',
+        data: {id: id},
+        success : function(response) {
+          console.log(response)
+          $('.bid_form').html(response).show()
+          // $('.bid_form').css('margin-top', top + 'px' )
+          $('tr').removeClass('current_bid');
+          $(_this).parents('tr').addClass('current_bid');
+        }
+      })
+    });
+</script>
+<style>
+  .current_bid {
+    background-color: #E4E4E4 !important;
+  }
+
+</style>
