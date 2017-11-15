@@ -173,6 +173,8 @@ $(document).on('click', '.invite', function(e) {
         success : function(response) {
           console.log(response)
           $('.bid_form').html(response).show()
+          $('tr').removeClass('current_bid');
+          $(_this).parents('tr').addClass('current_bid');
 
         }
       })
