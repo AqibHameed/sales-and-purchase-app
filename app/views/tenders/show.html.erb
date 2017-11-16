@@ -39,65 +39,29 @@
 					<span class="stat-close">Closed</span>
 					<% end %>
 				</div>
-				<div class="form-row">
-					<%if @tender.bid_open.present? && @tender.bid_close.present? %>	
-						<div class="label">
-							Time Remaining
-						</div>
-						<div class="field">
-							<%unless DateTime.now.nil? %>
-								<% if DateTime.now.to_i > @tender.bid_open.to_i and DateTime.now.to_i < @tender.bid_close.to_i %>
-									<div class="clock"></div>
-								<%elsif DateTime.now.to_i < (@tender.bid_open.to_i and @tender.bid_close.to_i) and @tender.yes_no_buyer_interests.first.round == 1 %>
-									<div class="clock1" hidden></div>
-									Bidding start time <b><%= @tender.bid_open.strftime('%b %e, %l:%M %p')%></b>
-								<%elsif DateTime.now.to_i < (@tender.bid_open.to_i and @tender.bid_close.to_i) and @tender.yes_no_buyer_interests.first.round > 1 %>
-									 <div class="clock1"></div>
-									 Next round will be start on <b><%= @tender.bid_open.strftime('%b %e, %l:%M %p')%></b>
-								<%elsif DateTime.now.to_i > @tender.bid_close.to_i %>
-									Bidding is completed
-								<%end%>	
-							<%end%>	
-						</div>
-					<%end%>	
-					<div class="clear"></div>
-				</div>
 				<div class="clear"></div>
 			</div>
 		</div>
 	</form>
 	<div class="clear"></div>
 	<% if @tender.open? or current_admin %>
+	
 	<div class="table">
 		<h2>Stone details :</h2>
 		<div class="form-wrapper bid-info">
+
  			<div class='stone_filter'>
 				<%= render 'stone_filter' %>
 			</div> 
-			<% unless @tender.stones.length == 0 && !@tender.sights.present? %>
-				<div class='stone_list'>
-					<%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
-					<% if @tender.tender_type == "Blind" %>
-						<%= render 'stone_bids' if @stones.present? %>
-					<%elsif @tender.tender_type == "Yes/No" && Date.new < @tender.bid_close %>
-						<%= render 'stone_yes_no_bid' if @stones.present? %>
-					<%end%>
-				</div>
-			<% else %>
-				<p class="center">Tender details not uploaded.</p>
-			<% end %>
-			<% unless @tender.sights.length == 0 && !@tender.stones.present? %>
+			<% unless @tender.stones.length == 0%>
 			<div class='stone_list'>
 				<%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
-				<% if @tender.tender_type == "Blind" %>
-					<%= render 'sights_bids' if @sights.present? %>
-				<%elsif @tender.tender_type == "Yes/No" && Date.new < @tender.bid_close %>
-					<%= render 'sight_yes_no_bid' if @sights.present? %>
-				<%end%>
+				<%= render 'stone_bids' %>
 			</div>
-			<% else @tender.sights.length > 0 %>
-				<p class="center">Tender details not uploaded.</p>
+			<% else %>
+			<p class="center">Tender details not uploaded.</p>
 			<% end %>
+
 			<%# if @tender.open? %>
 			<%#= render 'bids/form' %>
 			<%# else %>
@@ -121,41 +85,6 @@
 <script>
 	$(document).ready(function() {
 		$("#myTable").tablesorter();
-		var buyer_left = $(this).find('.yes-no-round').html();
-		function yes_no_rounds(tender, bidclosetime) {
-			var data = {"tender_id": tender}
-			setTimeout(function () { location.reload(true); }, 13000);
-		}
-		if (<%=@tender.remaining_time_in_secs.to_i%> > 0) {
-			var clock = $('.clock').FlipClock(<%=@tender.remaining_time_in_secs.to_i%>, {
-				clockFace: 'MinuteCounter',
-				countdown: true,
-				callbacks: {
-	                stop: function() {
-	                    yes_no_rounds("<%= @tender.id %>", "<%= @tender.bid_close %>");
-	                }
-	            }
-						
-			});
-		}else if (<%=@tender.round_duration_time%> > 0) {
-			var clock1 = $('.clock1').FlipClock(<%=@tender.round_duration_time.to_i%>, {
-				clockFace: 'MinuteCounter',
-				countdown: true,
-				callbacks: {
-	                stop: function() {
-	                    console.log('The clock has stopped!');
-	                    yes_no_rounds_show();
-	                }
-	            }
-						
-			});
-		}else{
-			console.log("time up")
-		}
-
-		function yes_no_rounds_show(){
-			setTimeout(function () { location.reload(true); }, 1000);
-		}
 	});
 
 </script>
