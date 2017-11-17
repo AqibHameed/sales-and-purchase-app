@@ -39,6 +39,29 @@
 					<span class="stat-close">Closed</span>
 					<% end %>
 				</div>
+          <div class="form-row">
+          <%if @tender.bid_open.present? && @tender.bid_close.present? %>
+            <div class="label">
+              Time Remaining
+            </div>
+            <div class="field">
+              <%unless DateTime.now.nil? %>
+                <% if DateTime.now.to_i > @tender.bid_open.to_i and DateTime.now.to_i < @tender.bid_close.to_i %>
+                  <div class="clock"></div>
+                <%elsif DateTime.now.to_i < (@tender.bid_open.to_i and @tender.bid_close.to_i) and @tender.yes_no_buyer_interests.first.round == 1 %>
+                  <div class="clock1" hidden></div>
+                  Bidding start time <b><%= @tender.bid_open.strftime('%b %e, %l:%M %p')%></b>
+                <%elsif DateTime.now.to_i < (@tender.bid_open.to_i and @tender.bid_close.to_i) and @tender.yes_no_buyer_interests.first.round > 1 %>
+                   <div class="clock1"></div>
+                   Next round will be start on <b><%= @tender.bid_open.strftime('%b %e, %l:%M %p')%></b>
+                <%elsif DateTime.now.to_i > @tender.bid_close.to_i %>
+                  Bidding is completed
+                <%end%>
+              <%end%>
+            </div>
+          <%end%>
+          <div class="clear"></div>
+        </div
 				<div class="clear"></div>
 			</div>
 		</div>
