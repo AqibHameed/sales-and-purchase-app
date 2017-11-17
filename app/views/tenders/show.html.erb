@@ -129,5 +129,43 @@
 	$(document).ready(function() {
 		$("#myTable").tablesorter();
 	});
+  $(document).ready(function() {
+    $("#myTable").tablesorter();
+    var buyer_left = $(this).find('.yes-no-round').html();
+    function yes_no_rounds(tender, bidclosetime) {
+      var data = {"tender_id": tender}
+      setTimeout(function () { location.reload(true); }, 13000);
+    }
+    if (<%=@tender.remaining_time_in_secs.to_i%> > 0) {
+      var clock = $('.clock').FlipClock(<%=@tender.remaining_time_in_secs.to_i%>, {
+        clockFace: 'MinuteCounter',
+        countdown: true,
+        callbacks: {
+                  stop: function() {
+                      yes_no_rounds("<%= @tender.id %>", "<%= @tender.bid_close %>");
+                  }
+              }
+
+      });
+    }else if (<%=@tender.round_duration_time%> > 0) {
+      var clock1 = $('.clock1').FlipClock(<%=@tender.round_duration_time.to_i%>, {
+        clockFace: 'MinuteCounter',
+        countdown: true,
+        callbacks: {
+                  stop: function() {
+                      console.log('The clock has stopped!');
+                      yes_no_rounds_show();
+                  }
+              }
+
+      });
+    }else{
+      console.log("time up")
+    }
+
+    function yes_no_rounds_show(){
+      setTimeout(function () { location.reload(true); }, 1000);
+    }
+  });
 
 </script>
