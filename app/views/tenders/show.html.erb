@@ -45,35 +45,55 @@
 	</form>
 	<div class="clear"></div>
 	<% if @tender.open? or current_admin %>
-	
+
 	<div class="table">
 		<h2>Stone details :</h2>
-		<div class="form-wrapper bid-info">
 
- 			<div class='stone_filter'>
-				<%= render 'stone_filter' %>
-			</div> 
-			<% unless @tender.stones.length == 0%>
-			<div class='stone_list'>
-				<%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
-				<%= render 'stone_bids' %>
-			</div>
-			<% else %>
-			<p class="center">Tender details not uploaded.</p>
-			<% end %>
 
-			<%# if @tender.open? %>
-			<%#= render 'bids/form' %>
-			<%# else %>
-			<%#= render 'bids/details' %>
-			<%# end %>
 
-		</div>
+    <div class="form-wrapper bid-info">
+      <div class='stone_filter'>
+        <%= render 'stone_filter' %>
+      </div>
+      <%if @tender.diamond_type == "Rough"%>
+        <% unless @tender.stones.length == 0 && !@tender.sights.present? %>
+          <div class='stone_list'>
+            <%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
+            <% if @tender.tender_type == "Blind" %>
+              <%= render 'stone_bids' if @stones.present? %>
+            <%elsif @tender.tender_type == "Yes/No" %>
+              <%= render 'stone_yes_no_bid' if @stones.present? %>
+            <%end%>
+          </div>
+        <% else %>
+          <p class="center">Tender details not uploaded.</p>
+        <% end %>
+      <%else%>
+        <% unless @tender.sights.length == 0 && !@tender.stones.present? %>
+        <div class='stone_list'>
+          <%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
+          <% if @tender.tender_type == "Blind" %>
+            <%= render 'sights_bids' if @sights.present? %>
+          <%elsif @tender.tender_type == "Yes/No"  %>
+            <%= render 'sight_yes_no_bid' if @sights.present? %>
+          <%end%>
+        </div>
+        <% else @tender.sights.length > 0 %>
+          <p class="center">Tender details not uploaded.</p>
+        <% end %>
+      <%end%>
+      <%# if @tender.open? %>
+      <%#= render 'bids/form' %>
+      <%# else %>
+      <%#= render 'bids/details' %>
+      <%# end %>
+
+    </div>
 
 		<div class="bid-info bid_form" style="width:80%!important; margin-left:-10px; display:none">
 
 		</div>
-		
+
 		<div class="bid-info past_result" style="width:40%!important; margin-left:20px; display:none">
 
 		</div>
