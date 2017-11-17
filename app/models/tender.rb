@@ -5,7 +5,8 @@ class Tender < ApplicationRecord
   attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
                   :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
                   :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
-                  :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id, :diamond_type, :bid_open, :round_duration, :rounds_between_duration, :sight_document, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field, :reserved_field
+                  :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id, :diamond_type, :bid_open, :round_duration, :rounds_between_duration, :sight_document, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field, :reserved_field,
+                  :supplier_mine_id, :country, :city, :timezone, :sights_attributes
   # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
   #                 :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
   #                 :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
@@ -41,7 +42,7 @@ class Tender < ApplicationRecord
   do_not_validate_attachment_file_type :temp_document
   has_attached_file :document
   do_not_validate_attachment_file_type :document
-  has_attached_file :sight_document 
+  has_attached_file :sight_document
   do_not_validate_attachment_file_type :sight_document
   has_attached_file :winner_list
   do_not_validate_attachment_file_type :winner_list
@@ -177,7 +178,7 @@ class Tender < ApplicationRecord
 
   def delayed_job_need_to_perform
     if self.tender_type == "Yes/No"
-      Delayed::Job.enqueue YesNoBiddingJob.new(self.id), 0, (self.bid_close) 
+      Delayed::Job.enqueue YesNoBiddingJob.new(self.id), 0, (self.bid_close)
     end
   end
 
@@ -229,10 +230,10 @@ class Tender < ApplicationRecord
             unless data_row[('A'..'AZ').to_a.index(self.source_no_field)].nil?
               sight = self.sights.new
               sight.source = Tender.get_value(data_row[Tender.get_index(self.source_no_field)]) unless self.source_no_field.blank?
-              sight.box = Tender.get_value(data_row[Tender.get_index(self.box_no_field)]) unless self.box_no_field.blank? 
+              sight.box = Tender.get_value(data_row[Tender.get_index(self.box_no_field)]) unless self.box_no_field.blank?
               sight.carats = Tender.get_value(data_row[Tender.get_index(self.carats_no_field)]) unless self.carats_no_field.blank?
-              sight.cost = Tender.get_value(data_row[Tender.get_index(self.cost_no_field)]) unless self.cost_no_field.blank? 
-              box_value = Tender.get_value(data_row[Tender.get_index(self.boxvalue_no_field)]) unless self.boxvalue_no_field.blank? 
+              sight.cost = Tender.get_value(data_row[Tender.get_index(self.cost_no_field)]) unless self.cost_no_field.blank?
+              box_value = Tender.get_value(data_row[Tender.get_index(self.boxvalue_no_field)]) unless self.boxvalue_no_field.blank?
               sight.box_value_from = box_value.present? ? box_value.to_s.split("-").first : 0
               sight.box_value_to = box_value.present? ? box_value.to_s.split("-").last : 0
               sight.sight = data_row[Tender.get_index(self.sight_no_field)] unless self.sight_no_field.blank?
@@ -426,18 +427,18 @@ class Tender < ApplicationRecord
 
   def remaining_time_in_secs
     if self.bid_open.present? and self.bid_close.present?
-      if Time.current.between?(self.bid_open, self.bid_close) 
+      if Time.current.between?(self.bid_open, self.bid_close)
         self.bid_close.to_i - Time.current.to_i
       end
-    end  
+    end
   end
-  
+
   def round_duration_time
     if self.bid_open.present?
       if Time.current < self.bid_open.to_i
         self.bid_open.to_i - Time.current.to_i
       end
-    end  
+    end
   end
 
   def self.tenders_for_calender(start_date, end_date)
@@ -593,14 +594,14 @@ class Tender < ApplicationRecord
   end
 
   def send_tender_create_push
-    message = "New Tender Alert: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}" 
+    message = "New Tender Alert: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
     # Cusetomers
     customers_to_notify = SupplierNotification.where(supplier_id: self.company_id, notify: true).map { |e| e.customer_id }
     android_devices = Device.where(device_type: 'android', customer_id: customers_to_notify)
     # android_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
     # ios_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'ios'")
     ios_devices = Device.where(device_type: 'ios', customer_id: customers_to_notify)
-    
+
     # Added notification
     notification = Notification.create(title: 'new tender', description: message, tender_id: self.id)
 
@@ -611,7 +612,7 @@ class Tender < ApplicationRecord
     # # send iOS notification
     # ios_registration_ids = ios_devices.map { |e| e.token }
     # Notification.send_ios_notifications(ios_registration_ids, message, self.id)
-    
+
     # Add customer notification for history
     CustomerNotification.add_notification_history(android_devices, ios_devices, notification)
   end
@@ -622,10 +623,10 @@ class Tender < ApplicationRecord
       unless tender_notifications.empty?
         message = "Tender Dates Changed: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
         customer_ids = tender_notifications.map { |e| e.customer_id }
-        # Cusetomers devices 
+        # Cusetomers devices
         android_devices = Device.where(customer_id: customer_ids, device_type: 'android')
         ios_devices = Device.where(customer_id: customer_ids, device_type: 'ios')
-        
+
         # Added notification
         notification = Notification.create(title: 'tender date change', description: message, tender_id: self.id)
 
@@ -636,7 +637,7 @@ class Tender < ApplicationRecord
         # # send iOS notification
         # ios_registration_ids = ios_devices.map { |e| e.token }
         # Notification.send_ios_notifications(ios_registration_ids, message, self.id)
-        
+
         # Add customer notification for history
         CustomerNotification.add_notification_history(android_devices, ios_devices, notification)
       end
