@@ -6,7 +6,7 @@ class Tender < ApplicationRecord
                   :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
                   :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
                   :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id, :diamond_type, :bid_open, :round_duration, :rounds_between_duration, :sight_document, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field, :reserved_field,
-                  :supplier_mine_id, :country, :city, :timezone, :sights_attributes
+                  :supplier_mine_id, :country, :city, :timezone, :sights_attributes, :bid_close
   # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
   #                 :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
   #                 :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
