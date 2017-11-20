@@ -23,6 +23,7 @@
 		</thead>
 		<tbody>
 			<% @sights.each_with_index do |sight,i| %>
+         <% unless sight.source == "Description" || sight.source == "DESCRIPTION"%>
 		    <% sight_check = sight.yes_no_buyer_interests.where(customer_id: current_customer) %>
 			<tr>
 				<% if current_customer %>

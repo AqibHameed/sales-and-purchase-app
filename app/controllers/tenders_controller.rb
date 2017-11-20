@@ -150,8 +150,8 @@ class TendersController < ApplicationController
     else
       @tender = Tender.includes(:stones).find(params[:id])
     end
-    @stones = @tender.stones.all[1..-1]
-    @sights = @tender.sights.all[1..-1]
+    @stones = @tender.stones
+    @sights = @tender.sights
 
   end
 

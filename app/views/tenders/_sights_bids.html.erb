@@ -1,68 +1,71 @@
 <div class="table">
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
-		<thead>
-			<tr>
-				<% if current_customer %>
-		          <th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
-		          <th>Read&nbsp;&nbsp;&nbsp;&nbsp;</th>
-		        <% end %>
-				<th>Source</th>
-				<th>Box</th>
-				<th>Carats</th>
-				<th>Cost&nbsp;&nbsp;&nbsp;&nbsp;</th>
-				<th>Box Value</th>
-				<th>Sight&nbsp;&nbsp;&nbsp;&nbsp;</th>
-				<th>Price</th>
-				<th>Credit</th>
-				<% if current_customer %>
-					<th>Price per carat</th>
-          			<th>Total Bid</th>
-		        	<th>My Note</th>
-		        <% end %>
-		         <th>History&nbsp;&nbsp;&nbsp;&nbsp;</th>
-		        <% if current_customer %>
-		          <th>Bid&nbsp;&nbsp;&nbsp;&nbsp;</th>
-		        <% end %>
-			</tr>
-		</thead>
-		<tbody>
-			<% @sights.each_with_index do |sight,i| %>
-			<tr>
-				<% if current_customer %>
-		          <td><div id_key="<%= sight.id %>" key="<%= sight.key %>" score='<%= @important.include?(sight.key) ? 1 : 0%>' id="star_<%= sight.id %>" class="star" ></div><span class="score"><%= @important.include?(sight.key) ? 1 : 0%></span></td>
-		        <td><%= check_box_tag "read",1,@read.include?(sight.key) ,{:id => "read_" + sight.id.to_s, :class => "read", :key => sight.key} %><span class="score"><%= @read.include?(sight.key) ? 1 : 0%></span></td>
-		        <% end %>
-				<td><%= sight.source %></td>
-				<td><%= sight.box %></td>
-				<td><%= sight.carats %></td>	
-				<td><%= sight.cost %></td>
-				<td><%= sight.box_value_from %> - <%= sight.box_value_to %></td>
-				<td><%= sight.sight %></td>
-				<td><%= sight.price %>%</td>	
-				<td><%= sight.credit %></td>
-				<% if current_customer %>
-					<% bid = sight.per_carat_bid(current_customer) %>
-			        <td id="pcb_<%= sight.id %>" >
-			        	<%= number_to_currency(bid) unless bid.class == String %>
-			        </td>
-			        <% total_bid = sight.total_bid(current_customer) %>
-			        <td id="tb_<%= sight.id %>" >
-			        	<%= number_to_currency(total_bid) unless total_bid.class == String %>
-			        </td>
-			        <td>
-		            	<span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(sight.key) %></span>
-             			<%= link_to 'Note', add_note_tender_path(@tender.id, :key => sight.key, :sight_id => sight.id, :index => i), :class => 'add_note' %>
-		          	</td>
-		        <% end %>
-		        <td><%= link_to "View", view_past_result_tender_path(@tender.id, :sight_id => sight.id, :key => sight.source, stone_count: (sight.box_value_to - sight.box_value_from)), :class => "past_result_link" %></td>
-		        <% if current_customer %>
-		          <td><%= link_to 'Bid', place_new_sight_bids_path(sight.id), :class => 'place_bid' %></td>
-		        <% end %>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+    <thead>
+      <tr>
+        <% if current_customer %>
+              <th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
+              <th>Read&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <% end %>
+        <th>Source</th>
+        <th>Box</th>
+        <th>Carats</th>
+        <th>Cost&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <th>Box Value</th>
+        <th>Sight&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <th>Price</th>
+        <th>Credit</th>
+        <% if current_customer %>
+          <th>Price per carat</th>
+                <th>Total Bid</th>
+              <th>My Note</th>
+            <% end %>
+             <th>History&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <% if current_customer %>
+              <th>Bid&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <% end %>
+      </tr>
+    </thead>
+    <tbody>
 
-			</tr>
-			<% end %>
-		
-	</table>
+      <% @sights.each_with_index do |sight,i| %>
+         <% unless sight.source == "Description" || sight.source == "DESCRIPTION"%>
+          <tr>
+            <% if current_customer %>
+                  <td><div id_key="<%= sight.id %>" key="<%= sight.key %>" score='<%= @important.include?(sight.key) ? 1 : 0%>' id="star_<%= sight.id %>" class="star" ></div><span class="score"><%= @important.include?(sight.key) ? 1 : 0%></span></td>
+                <td><%= check_box_tag "read",1,@read.include?(sight.key) ,{:id => "read_" + sight.id.to_s, :class => "read", :key => sight.key} %><span class="score"><%= @read.include?(sight.key) ? 1 : 0%></span></td>
+                <% end %>
+            <td><%= sight.source %></td>
+            <td><%= sight.box %></td>
+            <td><%= sight.carats %></td>
+            <td><%= sight.cost %></td>
+            <td><%= sight.box_value_from %> - <%= sight.box_value_to %></td>
+            <td><%= sight.sight %></td>
+            <td><%= sight.price %>%</td>
+            <td><%= sight.credit %></td>
+            <% if current_customer %>
+              <% bid = sight.per_carat_bid(current_customer) %>
+                  <td id="pcb_<%= sight.id %>" >
+                    <%= number_to_currency(bid) unless bid.class == String %>
+                  </td>
+                  <% total_bid = sight.total_bid(current_customer) %>
+                  <td id="tb_<%= sight.id %>" >
+                    <%= number_to_currency(total_bid) unless total_bid.class == String %>
+                  </td>
+                  <td>
+                      <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(sight.key) %></span>
+                      <%= link_to 'Note', add_note_tender_path(@tender.id, :key => sight.key, :sight_id => sight.id, :index => i), :class => 'add_note' %>
+                    </td>
+                <% end %>
+                <td><%= link_to "View", view_past_result_tender_path(@tender.id, :sight_id => sight.id, :key => sight.source, stone_count: (sight.box_value_to - sight.box_value_from)), :class => "past_result_link" %></td>
+                <% if current_customer %>
+                  <td><%= link_to 'Bid', place_new_sight_bids_path(sight.id), :class => 'place_bid' %></td>
+                <% end %>
+
+          </tr>
+        <%end%>
+      <% end %>
+
+  </table>
 </div>
 
 

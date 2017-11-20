@@ -20,83 +20,88 @@
       </tr>
     </thead>
     <tbody>
+
       <% @stones.each_with_index do |stone,i| %>
-        <% is_checked = stone.yes_no_buyer_interests.where(customer_id: current_customer) %>
-      <tr class="<%= get_color(@diff, stone.description) %> ">
-        <% if current_customer %>
-          <td><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
-          <td><%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
+         <% unless stone.description == "Description" || stone.description == "DESCRIPTION"%>
+            <% is_checked = stone.yes_no_buyer_interests.where(customer_id: current_customer) %>
+              <% unless is_checked.empty? %>
+              <tr class="<%= get_color(@diff, stone.description) %> ">
+                <% if current_customer %>
+                  <td><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
+                  <td><%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
+                <% end %>
+                <td><%= stone.lot_no %></td>
+                <td><%= stone.description %></td>
+                <td><%= stone.no_of_stones %></td>
+                <td><%= stone.weight %></td>
+                <td class = "yes_no_reserved_price" >
+                <% if is_checked.first.round == 1 %>
+                  <%= stone.reserved_price.present? ? stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price) : "empty price" %>
+                <%else%>
+                  <%= stone.stone_winning_price.present? ? stone.stone_winning_price : (stone.yes_no_system_price.present? ? stone.yes_no_system_price : stone.reserved_price.to_f - ((20.to_f/100.to_f)*stone.reserved_price.to_f)) %>
+                <%end%>
+                </td>
+                <% if current_customer %>
+                <td><%= !is_checked.first.buyer_left.present? && stone.stone_winning_price.present? ? stone.stone_winning_price : "" %></td>
+                <td>
+                  <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(stone.key) %></span>
+                   <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>
+                </td>
+                <% end %>
+                <td><%= link_to "View", view_past_result_tender_path(@tender.id, :stone_id => stone.id, :key => stone.description, stone_count: stone.no_of_stones), :class => "past_result_link" %></td>
+                <td>
+                    <% if is_checked.first.round == 1 && DateTime.now.to_i < @tender.bid_open.to_i %>
+                    Pending
+                    <% elsif is_checked.first.round > 1 && DateTime.now.to_i < @tender.bid_open.to_i && is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == false && !stone.stone_winning_price.present?%>
+                    pending
+                    <% elsif is_checked.first.round > 1 && DateTime.now.to_i < @tender.bid_open.to_i && is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true && stone.stone_winning_price.present?%>
+                    <b>winner</b>
+                    <% elsif is_checked.first.round > 1 && is_checked.first.buyer_left == true && is_checked.first.interest == true && stone.stone_winning_price.present?%>
+                    Withdrawn
+                    <% elsif is_checked.first.round == 1 && is_checked.first.buyer_left == false && is_checked.first.interest == false %>
+                      <label class="switch">
+                      <input class="switch-input" type="checkbox" />
+                      <span class="switch-label" data-on="Yes" data-off="No"></span>
+                      <span class="switch-handle"></span>
+                      </label>
+                    <%elsif is_checked.first.round == 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true %>
+                      <label class="switch">
+                      <input class="switch-input" type="checkbox" checked />
+                      <span class="switch-label" data-on="Yes" data-off="No"></span>
+                      <span class="switch-handle"></span>
+                      </label>
+                    <%elsif is_checked.first.round == 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true && stone.stone_winning_price.present? %>
+                      <label class="switch">
+                      <input class="switch-input" type="checkbox" checked disabled />
+                      <span class="switch-label" data-on="Yes" data-off="No"></span>
+                      <span class="switch-handle"></span>
+                      </label>
+                    <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == true && is_checked.first.interest == false %>
+                      Withdrawn
+                    <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true && !stone.stone_winning_price.present? %>
+                      <label class="switch">
+                      <input class="switch-input" type="checkbox" checked/>
+                      <span class="switch-label" data-on="Yes" data-off="No"></span>
+                      <span class="switch-handle"></span>
+                      </label>
+                    <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true && stone.stone_winning_price.present? %>
+                     <b>Winner</b>
+                    <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == true && is_checked.first.interest == true && stone.stone_winning_price.present? %>
+                     Withdrawn
+                    <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == false %>
+                      <label class="switch">
+                      <input class="switch-input" type="checkbox" />
+                      <span class="switch-label" data-on="Yes" data-off="No"></span>
+                      <span class="switch-handle"></span>
+                      </label>
+                    <%end%>
+                  <input type="hidden" class="yes_no_stone_id" value="<%= stone.id %>">
+                  <input type="hidden" class="yes_no_tender_id" value="<%= stone.tender.id %>">
+                  <input type="hidden" class="yes_no_buyer_left" value="<%= is_checked.first.buyer_left %>">
+                </td>
+              </tr>
         <% end %>
-        <td><%= stone.lot_no %></td>
-        <td><%= stone.description %></td>
-        <td><%= stone.no_of_stones %></td>
-        <td><%= stone.weight %></td>
-        <td class = "yes_no_reserved_price" >
-        <% if is_checked.first.round == 1 %>
-          <%= stone.reserved_price.present? ? stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price) : "empty price" %>
-        <%else%>
-          <%= stone.stone_winning_price.present? ? stone.stone_winning_price : (stone.yes_no_system_price.present? ? stone.yes_no_system_price : stone.reserved_price.to_f - ((20.to_f/100.to_f)*stone.reserved_price.to_f)) %>
         <%end%>
-        </td>
-        <% if current_customer %>
-        <td><%= !is_checked.first.buyer_left.present? && stone.stone_winning_price.present? ? stone.stone_winning_price : "" %></td>
-        <td>
-          <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(stone.key) %></span>
-           <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>
-        </td>
-        <% end %>
-        <td><%= link_to "View", view_past_result_tender_path(@tender.id, :stone_id => stone.id, :key => stone.description, stone_count: stone.no_of_stones), :class => "past_result_link" %></td>
-        <td>
-            <% if is_checked.first.round == 1 && DateTime.now.to_i < @tender.bid_open.to_i %>
-            Pending
-            <% elsif is_checked.first.round > 1 && DateTime.now.to_i < @tender.bid_open.to_i && is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == false && !stone.stone_winning_price.present?%>
-            pending
-            <% elsif is_checked.first.round > 1 && DateTime.now.to_i < @tender.bid_open.to_i && is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true && stone.stone_winning_price.present?%>
-            <b>winner</b>
-            <% elsif is_checked.first.round > 1 && is_checked.first.buyer_left == true && is_checked.first.interest == true && stone.stone_winning_price.present?%>
-            Withdrawn
-            <% elsif is_checked.first.round == 1 && is_checked.first.buyer_left == false && is_checked.first.interest == false %>
-              <label class="switch">
-              <input class="switch-input" type="checkbox" />
-              <span class="switch-label" data-on="Yes" data-off="No"></span> 
-              <span class="switch-handle"></span>
-              </label>
-            <%elsif is_checked.first.round == 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true %>
-              <label class="switch">
-              <input class="switch-input" type="checkbox" checked />
-              <span class="switch-label" data-on="Yes" data-off="No"></span> 
-              <span class="switch-handle"></span>
-              </label>
-            <%elsif is_checked.first.round == 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true && stone.stone_winning_price.present? %>
-              <label class="switch">
-              <input class="switch-input" type="checkbox" checked disabled /> 
-              <span class="switch-label" data-on="Yes" data-off="No"></span> 
-              <span class="switch-handle"></span>
-              </label>
-            <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == true && is_checked.first.interest == false %>
-              Withdrawn
-            <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true && !stone.stone_winning_price.present? %>
-              <label class="switch">
-              <input class="switch-input" type="checkbox" checked/>
-              <span class="switch-label" data-on="Yes" data-off="No"></span> 
-              <span class="switch-handle"></span>
-              </label>
-            <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == true && stone.stone_winning_price.present? %>
-             <b>Winner</b>
-            <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == true && is_checked.first.interest == true && stone.stone_winning_price.present? %>
-             Withdrawn
-            <%elsif is_checked.first.round > 1 && is_checked.first.buyer_left == false && is_checked.first.interest == false %>  
-              <label class="switch">
-              <input class="switch-input" type="checkbox" />
-              <span class="switch-label" data-on="Yes" data-off="No"></span> 
-              <span class="switch-handle"></span>
-              </label>
-            <%end%>
-          <input type="hidden" class="yes_no_stone_id" value="<%= stone.id %>">
-          <input type="hidden" class="yes_no_tender_id" value="<%= stone.tender.id %>">
-          <input type="hidden" class="yes_no_buyer_left" value="<%= is_checked.first.buyer_left %>">
-        </td>        
-      </tr>
       <% end %>
     </tbody>
     
