@@ -116,7 +116,6 @@ module Api
         render json: { success: true, tender_parcels: winners_stone_data(stones), response_code: 200 }
       end
 
-
       def tender_parcel
         stones = Stone.where(tender_id: params[:tender_id])
         render json: { success: true, tender_parcels: stone_data(stones), response_code: 200 }
@@ -250,6 +249,7 @@ module Api
       def winners_stone_data(stones)
         @stones = []
         stones.each do |stone|
+          stone_rating = StoneRating.where(customer_id: current_customer.try(:id), stone_id: stone.id).first
           @stones << {
             id: stone.id,
             stone_type: stone.stone_type,
@@ -262,9 +262,9 @@ module Api
             :deec_no => stone.deec_no,
             :lot_no => stone.lot_no,
             :description => stone.description,
-            :comments => stone.comments,
-            :valuation => stone.valuation,
-            :parcel_rating => stone.parcel_rating,
+            :comments => stone_rating.try(:comments),
+            :valuation => stone_rating.try(:valuation), 
+            :parcel_rating => stone_rating.try(:parcel_rating), 
             :winners_data => historical_data(stone.try(:tender).try(:id), stone)
           }
         end
@@ -274,6 +274,7 @@ module Api
       def stone_data(stones)
         @stones = []
         stones.each do |stone|
+          stone_rating = StoneRating.where(customer_id: current_customer.try(:id), stone_id: stone.id).first
           @stones << {
             id: stone.id,
             stone_type: stone.stone_type,
@@ -286,9 +287,9 @@ module Api
             :deec_no => stone.deec_no,
             :lot_no => stone.lot_no,
             :description => stone.description,
-            :comments => stone.comments,
-            :valuation => stone.valuation,
-            :parcel_rating => stone.parcel_rating,
+            :comments => stone_rating.try(:comments), 
+            :valuation => stone_rating.try(:valuation),
+            :parcel_rating => stone_rating.try(:parcel_rating),
             :winners_data => historical_data(stone.try(:tender).try(:id), stone)
           }
         end
@@ -335,6 +336,7 @@ module Api
           stones = duplicate_stones
         end
         stones.each do |stone|
+          stone_rating = StoneRating.where(customer_id: current_customer.try(:id), stone_id: stone.id).first
           @stones << {
             id: stone.id,
             :description => stone.description,
@@ -349,9 +351,9 @@ module Api
             :polished => stone.polished,
             :deec_no => stone.deec_no,
             :lot_no => stone.lot_no,
-            :comments => stone.comments,
-            :valuation => stone.valuation,
-            :parcel_rating => stone.parcel_rating,
+            :comments => stone_rating.try(:comments),
+            :valuation => stone_rating.try(:valuation),
+            :parcel_rating => stone_rating.try(:parcel_rating),
             :tender_name => stone.name
           }
         end
