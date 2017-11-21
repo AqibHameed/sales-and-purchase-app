@@ -123,16 +123,28 @@ module Api
       end
 
       def stone_parcel
-        stone_parcel = Stone.where(id: params[:id]).first
-        if stone_parcel.nil?
-          errors = ['Parcel not found']
-          render :json => { :errors => errors, response_code: 201 }
-        else
-          if stone_parcel.update(comments: params[:comments], valuation:  params[:valuation], parcel_rating:  params[:parcel_rating])
-            render :json => { stone_parcel: stone_parcel, response_code: 200 }
+        if current_customer
+          stone_parcel = Stone.where(id: params[:id]).first
+          if stone_parcel.nil?
+            errors = ['Parcel not found']
+            render :json => { :errors => errors, response_code: 201 }
           else
-            render :json => {:errors => stone_parcel.errors.full_messages, response_code: 201 }
+            stone_rating = StoneRating.where(stone_id: stone_parcel.id, customer_id: current_customer.id).first
+            if stone_rating.nil?
+              stone_rating = StoneRating.new(comments: params[:comments], valuation:  params[:valuation], parcel_rating:  params[:parcel_rating], stone_id: stone_parcel.id, customer_id: current_customer.id)
+            else
+              stone_rating.comments = params[:comments]
+              stone_rating.parcel_rating = params[:parcel_rating]
+              stone_rating.valuation = params[:valuation]
+            end
+            if stone_rating.save
+              render :json => { stone_parcel: rating_stone_parcel(stone_rating), response_code: 200 }
+            else
+              render :json => {:errors => stone_rating.errors.full_messages, response_code: 201 }
+            end
           end
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
         end
       end
 
@@ -405,6 +417,35 @@ module Api
           end
           @data
         end
+      end
+
+      def rating_stone_parcel(stone_rating)
+        stone = stone_rating.stone
+        {
+          id: stone.id,
+          comments: stone_rating.comments,
+          valuation: stone_rating.valuation,
+          parcel_rating: stone_rating.parcel_rating,
+          lot_no: stone.lot_no,
+          tender_id: stone.tender_id,
+          description: stone.description,
+          no_of_stones: stone.no_of_stones,
+          weight: stone.weight,
+          carat: stone.carat,
+          stone_type: stone.stone_type,
+          size: stone.size,
+          purity: stone.purity,
+          color: stone.color,
+          polished: stone.polished,
+          created_at: stone.created_at,
+          updated_at: stone.updated_at,
+          deec_no: stone.deec_no,
+          system_price: stone.system_price,
+          lot_permission: stone.lot_permission,
+          reserved_price: stone.reserved_price,
+          yes_no_system_price: stone.yes_no_system_price,
+          stone_winning_price: stone.stone_winning_price
+        }
       end
     end
   end
