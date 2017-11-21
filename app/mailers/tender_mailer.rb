@@ -51,6 +51,6 @@ class TenderMailer < ApplicationMailer
   def send_attachment_to_admin(attachment, customer)
     @customer = customer
     @attachment = attachment
-    mail(:to => 'admin@dialuck.net', :subject => '[Dialuck] New Attachment' )
+    mail(:to => 'info@idtonline.co', :subject => '[Dialuck] New Attachment' )
   end
 end
