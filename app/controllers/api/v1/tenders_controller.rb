@@ -264,7 +264,8 @@ module Api
             :description => stone.description,
             :comments => stone_rating.try(:comments),
             :valuation => stone_rating.try(:valuation), 
-            :parcel_rating => stone_rating.try(:parcel_rating), 
+            :parcel_rating => stone_rating.try(:parcel_rating),
+            images: stone.parcel_images.map { |e| e.try(:image).try(:url) },
             :winners_data => historical_data(stone.try(:tender).try(:id), stone)
           }
         end

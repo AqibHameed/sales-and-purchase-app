@@ -197,6 +197,7 @@ Rails.application.routes.draw do
       resources :tender_notifications do
         collection do
           get :notifications
+          get :clear
         end
       end
       resources :stones, path: '/parcels' do

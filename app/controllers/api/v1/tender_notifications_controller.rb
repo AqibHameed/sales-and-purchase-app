@@ -9,7 +9,7 @@ module Api
           if tender_notification.nil?
             tender_notification = TenderNotification.create(customer_id: current_customer.id, tender_id: params[:tender_id], notify: params[:notify])
           else
-            tender_notification.update(notify: params[:notify])  
+            tender_notification.update(notify: params[:notify])
           end   
           if tender_notification.valid?
             render json: {success: true, tender_notification: tender_notification.as_json(only: [:tender_id, :notify]), response_code: 200 }
@@ -25,6 +25,16 @@ module Api
         if current_customer
           notifications = CustomerNotification.where(customer_id: current_customer.id)
           render json: { success: true, notifications: notification_history_data(notifications) }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
+        end
+      end
+
+      def clear
+        if current_customer
+          notifications = CustomerNotification.where(customer_id: current_customer.id)
+          notifications.destroy_all
+          render json: { success: true, response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
         end
