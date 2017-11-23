@@ -265,7 +265,7 @@ module Api
             :comments => stone_rating.try(:comments),
             :valuation => stone_rating.try(:valuation), 
             :parcel_rating => stone_rating.try(:parcel_rating),
-            images: stone.parcel_images.map { |e| e.try(:image).try(:url) },
+            :images => parcel_images(stone),
             :winners_data => historical_data(stone.try(:tender).try(:id), stone)
           }
         end
@@ -449,6 +449,14 @@ module Api
           yes_no_system_price: stone.yes_no_system_price,
           stone_winning_price: stone.stone_winning_price
         }
+      end
+
+      def parcel_images(stone)
+        if current_customer
+          stone.parcel_images.where(customer_id: current_customer.id).map { |e| e.try(:image).try(:url)}
+        else
+          []
+        end
       end
     end
   end
