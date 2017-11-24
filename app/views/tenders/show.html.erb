@@ -45,16 +45,17 @@
               Time Remaining
             </div>
             <div class="field">
-              <%unless DateTime.now.nil? %>
-                <% if DateTime.now.to_i > @tender.bid_open.to_i and DateTime.now.to_i < @tender.bid_close.to_i %>
+              <%unless DateTime.now.nil? || @yes_no_buyer_interest.nil? %>
+
+                <% if @yes_no_buyer_interest.bidding_start%>
                   <div class="clock"></div>
-                <%elsif DateTime.now.to_i < (@tender.bid_open.to_i and @tender.bid_close.to_i) and @tender.yes_no_buyer_interests.first.round == 1 %>
-                  <div class="clock1" hidden></div>
-                  Bidding start time <b><%= @tender.bid_open.strftime('%b %e, %l:%M %p')%></b>
-                <%elsif DateTime.now.to_i < (@tender.bid_open.to_i and @tender.bid_close.to_i) and @tender.yes_no_buyer_interests.first.round > 1 %>
-                   <div class="clock1"></div>
-                   Next round will be start on <b><%= @tender.bid_open.strftime('%b %e, %l:%M %p')%></b>
-                <%elsif DateTime.now.to_i > @tender.bid_close.to_i %>
+                <%elsif @yes_no_buyer_interest.before_bidding_start%>
+                  <div class="clock1" ></div>
+                  Bidding start time <b><%= @yes_no_buyer_interest.bid_open_time%></b>
+                <%elsif @yes_no_buyer_interest.break_time%>
+                  <div class="clock2" ></div>
+                  Next Round will be start at <b><%=(@yes_no_buyer_interest.bid_open_time + @tender.round_duration.minutes+ @tender.rounds_between_duration.minutes) %></b>
+                <%elsif DateTime.now > @tender.close_date %>
                   Bidding is completed
                 <%end%>
               <%end%>
@@ -78,8 +79,8 @@
       <div class='stone_filter'>
         <%= render 'stone_filter' %>
       </div>
-      <%if @tender.diamond_type == "Rough"%>
-        <% unless @tender.stones.length == 0 && !@tender.sights.present? %>
+      <%if @tender.diamond_type == "Rough" %>
+        <% if @tender.stones.length > 0 %>
           <div class='stone_list'>
             <%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
             <% if @tender.tender_type == "Blind" %>
@@ -91,17 +92,18 @@
         <% else %>
           <p class="center">Tender details not uploaded.</p>
         <% end %>
-      <%else%>
-        <% unless @tender.sights.length == 0 && !@tender.stones.present? %>
-        <div class='stone_list'>
-          <%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
-          <% if @tender.tender_type == "Blind" %>
-            <%= render 'sights_bids' if @sights.present? %>
-          <%elsif @tender.tender_type == "Yes/No"  %>
-            <%= render 'sight_yes_no_bid' if @sights.present? %>
-          <%end%>
-        </div>
-        <% else @tender.sights.length > 0 %>
+      <% else %>
+
+        <% if @tender.sights.length > 0 %>
+          <div class='stone_list'>
+            <%= render :partial => "graph" unless @last_tender.nil? or @diff.length == 0 %>
+            <% if @tender.tender_type == "Blind" %>
+              <%= render 'sights_bids' if @sights.present? %>
+            <%elsif @tender.tender_type == "Yes/No"  %>
+              <%= render 'sight_yes_no_bid' if @sights.present? %>
+            <%end%>
+          </div>
+        <% else %>
           <p class="center">Tender details not uploaded.</p>
         <% end %>
       <%end%>
@@ -126,46 +128,78 @@
 </div>
 <div class="clear"></div>
 <script>
-	$(document).ready(function() {
-		$("#myTable").tablesorter();
-	});
+<% unless @yes_no_buyer_interest.nil? %>
   $(document).ready(function() {
     $("#myTable").tablesorter();
     var buyer_left = $(this).find('.yes-no-round').html();
-    function yes_no_rounds(tender, bidclosetime) {
-      var data = {"tender_id": tender}
-      setTimeout(function () { location.reload(true); }, 13000);
-    }
-    if (<%=@tender.remaining_time_in_secs.to_i%> > 0) {
-      var clock = $('.clock').FlipClock(<%=@tender.remaining_time_in_secs.to_i%>, {
+
+    if ('<%=@yes_no_buyer_interest.bidding_start%>' == 'true') {
+      console.log("kkkkkkkkkkkkkkkkkkkkkkkk")
+      var clock = $('.clock').FlipClock('<%=@yes_no_buyer_interest.bidding_time.to_i%>', {
         clockFace: 'MinuteCounter',
         countdown: true,
         callbacks: {
-                  stop: function() {
-                      yes_no_rounds("<%= @tender.id %>", "<%= @tender.bid_close %>");
-                  }
-              }
-
+          stop: function() {
+            console.log('342432423432345245453543')
+            yes_no_rounds("<%= @tender.id %>", "<%= (@yes_no_buyer_interest.bid_open_time.to_i + @tender.round_duration) %>");
+          }
+        }
       });
-    }else if (<%=@tender.round_duration_time%> > 0) {
-      var clock1 = $('.clock1').FlipClock(<%=@tender.round_duration_time.to_i%>, {
+    } else if ('<%=@yes_no_buyer_interest.before_bidding_start%>' == 'true') {
+      console.log("hHHHHHHHHHHHHHHH")
+      var clock1 = $('.clock1').FlipClock('<%=@yes_no_buyer_interest.round_duration_time.to_i%>', {
         clockFace: 'MinuteCounter',
         countdown: true,
         callbacks: {
-                  stop: function() {
-                      console.log('The clock has stopped!');
-                      yes_no_rounds_show();
-                  }
-              }
-
+          stop: function() {
+            console.log('The clock has stopped!');
+            yes_no_rounds_show();
+          }
+        }
       });
-    }else{
+    } else if ('<%=@yes_no_buyer_interest.break_time%>' == 'true') {
+      console.log("LLLLLLLLLLLLLLLLLLLLLLLLLL")
+      $.ajax({
+              url : '/change_system_price',
+              type : 'GET',
+              data : { tender_id: '<%=@tender.id%>', customer_id: '<%=current_customer.id%>'},
+              success: function (data) {
+                console.log(data)
+              }
+            })
+      var clock2 = $('.clock2').FlipClock('<%=@yes_no_buyer_interest.break_duration.to_i%>',{
+        clockFace: 'MinuteCounter',
+        countdown: true,
+        callbacks: {
+          stop: function() {
+            console.log('The clock has stopped!3');
+            yes_no_rounds_show();
+            $.ajax({
+              url : '/change_tender_open_time',
+              type : 'GET',
+              data : { tender_id: '<%=@tender.id%>', customer_id: '<%=current_customer.id%>'},
+              success: function (data) {
+                console.log(data)
+              }
+            })
+          }
+        }
+      });
+    } else {
       console.log("time up")
     }
 
     function yes_no_rounds_show(){
+      console.log('in yes no')
       setTimeout(function () { location.reload(true); }, 1000);
     }
+
+    function yes_no_rounds(tender, bidclosetime) {
+      console.log('in yes no rounds')
+      var data = {"tender_id": tender}
+      setTimeout(function () { location.reload(true); }, 3000);
+    }
   });
+<% end %>
 
 </script>

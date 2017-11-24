@@ -9,7 +9,8 @@ Rails.application.routes.draw do
   get "calculator/get_parcels"
   get "calculator/get_prices"
   get "/verified_unverified", to: 'home#verified_unverified'
-
+  get "/change_tender_open_time", to: 'tenders#update_time'
+  get '/change_system_price', to: 'tenders#update_system_price'
   devise_for :admins, :controllers => {:sessions => 'sessions'}
   mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
   devise_for :customers, :controllers => {:sessions => 'sessions',:registrations => "registrations", :invitations => 'invitations'}
