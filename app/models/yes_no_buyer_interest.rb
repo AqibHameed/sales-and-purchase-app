@@ -28,7 +28,7 @@ class YesNoBuyerInterest < ApplicationRecord
 end
 
   def break_time
-    if (DateTime.now.to_i <  (self.bid_open_time.to_i + self.tender.round_duration.minutes)) && (DateTime.now.to_i >  (self.bid_open_time.to_i + self.tender.round_duration.minutes + self.tender.rounds_between_duration.minutes))
+    if (DateTime.now.to_i >  (self.bid_open_time.to_i + self.tender.round_duration.minutes)) && (DateTime.now.to_i < (self.bid_open_time.to_i + self.tender.round_duration.minutes + self.tender.rounds_between_duration.minutes))
       return true
     else
       return false
