@@ -547,8 +547,10 @@ class TendersController < ApplicationController
                 winning_price = sight.yes_no_system_price.present? ? sight.yes_no_system_price : sight.sight_reserved_price.to_f - ((20.to_f/100.to_f)*sight.sight_reserved_price.to_f)
                   sight.update_attributes(stone_winning_price: winning_price)
                   if !sight.yes_no_buyer_winner.present?
+                    puts "jjjjjjjjjjjjjjjjjjjjjjjjjjjj"
                     winner = sight.yes_no_buyer_interests.where(buyer_left: false)
                     winner = YesNoBuyerWinner.find_or_initialize_by(yes_no_buyer_interest_id: winner.first.id, tender_id: winner.first.tender_id, sight_id: winner.first.sight_id, sight_id: winner.first.sight_id, customer_id: winner.first.customer_id, bid_open_time: winner.first.bid_open_time, round: winner.first.round-1, winning_price: sight.yes_no_system_price, bid_close_time: winner.first.bid_close_time)
+                    puts winner.inspect
                     winner.save
                 end
 
