@@ -110,7 +110,7 @@
         var isChecked = $(this).is(':checked');
         var selectedData;
         var $switchLabel = $('.switch-label');
-        console.log('isChecked: ' + isChecked); 
+        console.log('isChecked: ' + isChecked);
         if(isChecked) {
           selectedData = $switchLabel.attr('data-on');
           var sight_id = $(this).closest('tr').find('.yes_no_sight_id').val();
@@ -131,7 +131,7 @@
               error:function(data){
                   console.log("error")
               }
-            });    
+            });
         } else {
           selectedData = $switchLabel.attr('data-off');
           var sight_id = $(this).closest('tr').find('.yes_no_sight_id').val();
@@ -152,18 +152,18 @@
               error:function(data){
                   console.log("error")
               }
-            });    
+            });
         }
         console.log('Selected data: ' + selectedData);
       });
-      
+
       // Params ($selector, boolean)
       function setSwitchState(el, flag) {
         el.attr('unchecked', flag);
       }
-      
+
       // Usage
-      setSwitchState($('.switch-input'), true);    
+      setSwitchState($('.switch-input'), true);
     });
 
     $(document).on('click', '.add_note', function(e) {

@@ -249,7 +249,9 @@ class Tender < ApplicationRecord
                   sight_id = sight.id
                   customer_id = tender.customers.ids
                   customer_id.each do |c|
+                    puts "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
                     yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, sight_id: sight_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
+                    puts yes_no_buyer_interests.inspect
                     yes_no_buyer_interests.save
                   end
                 end
