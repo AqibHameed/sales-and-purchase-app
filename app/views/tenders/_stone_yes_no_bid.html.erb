@@ -53,23 +53,24 @@
                 <td>
                   <% if is_checked.round >= 1 && DateTime.now.to_i < @yes_no_buyer_interest.bid_open_time.to_i %>
                     Pending
+
                   <% elsif is_checked.round >= 1 && @yes_no_buyer_interest.break_time%>
                     break
                   <%elsif is_checked.round > 1 && is_checked.interest == false && is_checked.place_bid != is_checked.round && !stone.stone_winning_price.present?%>
 
-                  <% elsif is_checked.round == 1  && is_checked.interest == false && !stone.stone_winning_price.present? && @yes_no_buyer_interest.bidding_start%>
+                  <% elsif is_checked.round == 1  && is_checked.interest == false && !stone.stone_winning_price.present? %>
                     <label class="switch">
                       <input class="switch-input" type="checkbox" />
                       <span class="switch-label" data-on="Yes" data-off="No"></span>
                       <span class="switch-handle"></span>
                     </label>
-                  <% elsif is_checked.round == 1  && is_checked.interest == true && !stone.stone_winning_price.present? && @yes_no_buyer_interest.bidding_start%>
+                  <% elsif is_checked.round == 1  && is_checked.interest == true && !stone.stone_winning_price.present? %>
                     <label class="switch">
                       <input class="switch-input" type="checkbox" />
                       <span class="switch-label" data-on="Yes" data-off="No"></span>
                       <span class="switch-handle"></span>
                     </label>
-                  <% elsif is_checked.round > 1  && is_checked.interest == false  && is_checked.place_bid == is_checked.round && !stone.stone_winning_price.present? && @yes_no_buyer_interest.bidding_start%>
+                  <% elsif is_checked.round > 1  && is_checked.interest == false  && is_checked.place_bid == is_checked.round && !stone.stone_winning_price.present? %>
                     <label class="switch">
                       <input class="switch-input" type="checkbox" />
                       <span class="switch-label" data-on="Yes" data-off="No"></span>
