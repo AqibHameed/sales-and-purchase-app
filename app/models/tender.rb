@@ -194,7 +194,7 @@ class Tender < ApplicationRecord
               stone = self.stones.find_or_initialize_by(lot_no: Tender.get_value(data_row[Tender.get_index(self.lot_no_field)]))
               stone.deec_no = Tender.get_value(data_row[Tender.get_index(self.deec_no_field)]) unless self.deec_no_field.blank?
               stone.description = Tender.get_value(data_row[Tender.get_index(self.desc_field)]) unless self.desc_field.blank?
-              stone.no_of_stones = Tender.get_value(data_row[Tender.get_index(self.no_of_stones_field)].to_i) unless self.no_of_stones_field.blank?
+              stone.no_of_stones = Tender.get_value(data_row[Tender.get_index(self.no_of_stones_field)]) unless self.no_of_stones_field.blank?
               stone.weight = Tender.get_value(data_row[Tender.get_index(self.weight_field)].to_f) unless self.weight_field.blank?
               stone.stone_type = (data_row[Tender.get_index(self.no_of_stones_field)].to_i == 1 ? 'Stone' : 'Parcel' rescue 'Stone'  ) unless self.no_of_stones_field.blank?
               stone.reserved_price = Tender.get_value(data_row[Tender.get_index(self.reserved_field)]) unless self.reserved_field.blank?
