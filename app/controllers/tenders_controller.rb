@@ -505,12 +505,14 @@ class TendersController < ApplicationController
             reserved_price = stone.yes_no_system_price.present? ? stone.yes_no_system_price : stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price)
             if reserved_price.to_f < stone.reserved_price.to_f
               system_price_percentage = (remaining_customers.to_f/3.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
-              system_price = system_price_percentage.to_f/100.to_f*reserved_price.to_f
-              @yes_no_system_price = reserved_price.to_f+system_price.to_f
+              # system_price = system_price_percentage.to_f/100.to_f*reserved_price.to_f
+
+              @yes_no_system_price = reserved_price.to_f+system_price_percentage.to_f
             else
               system_price_percentage = (remaining_customers.to_f/5.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
-              system_price = system_price_percentage.to_f/100.to_f*reserved_price.to_f
-              @yes_no_system_price = reserved_price.to_f+system_price.to_f
+              # system_price = system_price_percentage.to_f/100.to_f*reserved_price.to_f
+
+              @yes_no_system_price = reserved_price.to_f+system_price_percentage.to_f
 
             end
             stone.update_attributes(yes_no_system_price: @yes_no_system_price)
@@ -535,12 +537,14 @@ class TendersController < ApplicationController
                   reserved_price = sight.yes_no_system_price.present? ? sight.yes_no_system_price : sight.sight_reserved_price.to_f - ((20.to_f/100.to_f)*sight.sight_reserved_price.to_f)
                   if reserved_price.to_f < sight.sight_reserved_price.to_f
                     system_price_percentage = (remaining_customers.to_f/3.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
-                    system_price = system_price_percentage.to_f/100.to_f*reserved_price.to_f
-                    @yes_no_system_price = reserved_price.to_f+system_price.to_f
+                    # system_price = system_price_percentage.to_f/100.to_f*reserved_price.to_f
+
+                    @yes_no_system_price = reserved_price.to_f + system_price_percentage.to_f
                 else
                   system_price_percentage = (remaining_customers.to_f/5.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
-                    system_price = system_price_percentage.to_f/100.to_f*reserved_price.to_f
-                    @yes_no_system_price = reserved_price.to_f+system_price.to_f
+                    # system_price = system_price_percentage.to_f/100.to_f*reserved_price.to_f
+
+                    @yes_no_system_price = reserved_price.to_f+system_price_percentage.to_f
                   end
                   sight.update_attributes(yes_no_system_price: @yes_no_system_price)
               elsif sight.present? && sight.yes_no_buyer_interests.where(buyer_left: false).length == 1
