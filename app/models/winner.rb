@@ -1,6 +1,6 @@
 class Winner < ApplicationRecord
 
-  attr_accessible :stone_id, :customer_id, :bid_id, :tender_id
+  attr_accessible :stone_id, :customer_id, :bid_id, :tender_id, :sight_id
 
   validates_uniqueness_of :bid_id, :scope => [:stone_id,:customer_id]
 

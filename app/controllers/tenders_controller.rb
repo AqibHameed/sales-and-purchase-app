@@ -521,8 +521,12 @@ class TendersController < ApplicationController
                   stone.update_attributes(stone_winning_price: winning_price)
                   if !stone.yes_no_buyer_winner.present?
                     winner = stone.yes_no_buyer_interests.where(buyer_left: false)
-                  winner = YesNoBuyerWinner.find_or_initialize_by(yes_no_buyer_interest_id: winner.first.id, tender_id: winner.first.tender_id, stone_id: winner.first.stone_id, sight_id: winner.first.sight_id, customer_id: winner.first.customer_id, bid_open_time: winner.first.bid_open_time, round: winner.first.round-1, winning_price: stone.yes_no_system_price, bid_close_time: winner.first.bid_close_time)
-                    winner.save
+                  winner = YesNoBuyerWinner.find_or_initialize_by(yes_no_buyer_interest_id: winner.first.id, tender_id: winner.first.tender_id, stone_id: winner.first.stone_id, sight_id: winner.first.sight_id, customer_id: winner.first.customer_id, bid_open_time: winner.first.bid_open_time, round: winner.first.round-1, winning_price: stone.stone_winning_price, bid_close_time: winner.first.bid_close_time)
+                   winner.save
+                    winner_table = Winner.find_or_initialize_by(tender_id: winner.tender_id,customer_id:winner.customer_id,stone_id: winner.stone_id)
+                    puts winner_table.inspect
+                    puts "00000000000000000000000000000000"
+                    winner_table.save(validate: false)
                   end
 
               end
@@ -553,9 +557,13 @@ class TendersController < ApplicationController
                   if !sight.yes_no_buyer_winner.present?
                     puts "jjjjjjjjjjjjjjjjjjjjjjjjjjjj"
                     winner = sight.yes_no_buyer_interests.where(buyer_left: false)
-                    winner = YesNoBuyerWinner.find_or_initialize_by(yes_no_buyer_interest_id: winner.first.id, tender_id: winner.first.tender_id, sight_id: winner.first.sight_id, sight_id: winner.first.sight_id, customer_id: winner.first.customer_id, bid_open_time: winner.first.bid_open_time, round: winner.first.round-1, winning_price: sight.yes_no_system_price, bid_close_time: winner.first.bid_close_time)
-                    puts winner.inspect
+                    winner = YesNoBuyerWinner.find_or_initialize_by(yes_no_buyer_interest_id: winner.first.id, tender_id: winner.first.tender_id, sight_id: winner.first.sight_id, sight_id: winner.first.sight_id, customer_id: winner.first.customer_id, bid_open_time: winner.first.bid_open_time, round: winner.first.round-1, winning_price: sight.stone_winning_price, bid_close_time: winner.first.bid_close_time)
                     winner.save
+                    winner_table = Winner.find_or_initialize_by(tender_id: winner.tender_id,customer_id:winner.customer_id,sight_id: winner.sight_id)
+                    puts winner_table.inspect
+                    puts "00000000000000000000000000000000"
+                    winner_table.save(validate: false)
+
                 end
 
                 end
