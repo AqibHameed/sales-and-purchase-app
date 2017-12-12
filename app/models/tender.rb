@@ -250,7 +250,6 @@ class Tender < ApplicationRecord
                   sight_id = sight.id
                   customer_id = tender.customers.ids
                   customer_id.each do |c|
-                    puts "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
                     yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, sight_id: sight_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
                     yes_no_buyer_interests.reserved_price = stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price)
                     puts yes_no_buyer_interests.inspect
@@ -437,7 +436,61 @@ class Tender < ApplicationRecord
     end
   end
 
+  def stone_list(stones)
+    @read_tick_stones =[]
+    @read_stones=[]
+    @tick_stones=[]
+    @rest_stones=[]
+    @stones=[]
+    stones.each_with_index do |stone,i|
+      key="#{stone.description}##{stone.weight}"
+      read = Rating.where(key: key, flag_type: 'Read' ,tender_id: params[:id],customer_id: current_customer.id)
+      tick = Rating.where(key: key,flag_type: 'Imp',tender_id: params[:id],customer_id: current_customer.id)
+      if tick.present? && read.present?
+        @read_tick_stones << stone
+      elsif read.present?
+        @read_stones << stone
+      elsif tick.present?
+        @tick_stones << stone
+      else
+        @rest_stones << stone
+      end
+    end
+    @stones << @read_tick_stones
+    @stones << @read_stones
+    @stones << @tick_stones
+    @stones << @rest_stones
+    @stones = @stones.flatten
+    return @stones
+  end
 
+  def sight_list(sights)
+    @read_tick_sights =[]
+    @read_sights=[]
+    @tick_sights=[]
+    @rest_sights=[]
+    @sights=[]
+    sights.each_with_index do |sight,i|
+      key="#{sight.source}##{sight.carats}"
+      read = Rating.where(key: key, flag_type: 'Read' ,tender_id: params[:id],customer_id: current_customer.id)
+      tick = Rating.where(key: key,flag_type: 'Imp',tender_id: params[:id],customer_id: current_customer.id)
+      if tick.present? && read.present?
+        @read_tick_sights << sight
+      elsif read.present?
+        @read_sights << sight
+      elsif tick.present?
+        @tick_sights << sight
+      else
+        @rest_sights << sight
+      end
+    end
+    @sights << @read_tick_sights
+    @sights << @read_sights
+    @sights << @tick_sights
+    @sights << @rest_sights
+    @sights = @sights.flatten
+    return @sights
+  end
 
   def self.tenders_for_calender(start_date, end_date)
     @open_data = Tender.active_open_for_dates(start_date, end_date)
