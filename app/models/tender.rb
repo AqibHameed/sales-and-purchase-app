@@ -251,7 +251,7 @@ class Tender < ApplicationRecord
                   customer_id = tender.customers.ids
                   customer_id.each do |c|
                     yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, sight_id: sight_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
-                    yes_no_buyer_interests.reserved_price = stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price)
+                    yes_no_buyer_interests.reserved_price = sight.sight_reserved_price - ((20.to_f/100.to_f)*sight.sight_reserved_price)
                     puts yes_no_buyer_interests.inspect
                     yes_no_buyer_interests.save
                   end
@@ -436,7 +436,7 @@ class Tender < ApplicationRecord
     end
   end
 
-  def stone_list(stones)
+  def self.stone_list(stones, id, current_customer)
     @read_tick_stones =[]
     @read_stones=[]
     @tick_stones=[]
@@ -444,8 +444,8 @@ class Tender < ApplicationRecord
     @stones=[]
     stones.each_with_index do |stone,i|
       key="#{stone.description}##{stone.weight}"
-      read = Rating.where(key: key, flag_type: 'Read' ,tender_id: params[:id],customer_id: current_customer.id)
-      tick = Rating.where(key: key,flag_type: 'Imp',tender_id: params[:id],customer_id: current_customer.id)
+      read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
+      tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
       if tick.present? && read.present?
         @read_tick_stones << stone
       elsif read.present?
@@ -464,7 +464,7 @@ class Tender < ApplicationRecord
     return @stones
   end
 
-  def sight_list(sights)
+  def self.sight_list(sights, id, current_customer)
     @read_tick_sights =[]
     @read_sights=[]
     @tick_sights=[]
@@ -472,8 +472,8 @@ class Tender < ApplicationRecord
     @sights=[]
     sights.each_with_index do |sight,i|
       key="#{sight.source}##{sight.carats}"
-      read = Rating.where(key: key, flag_type: 'Read' ,tender_id: params[:id],customer_id: current_customer.id)
-      tick = Rating.where(key: key,flag_type: 'Imp',tender_id: params[:id],customer_id: current_customer.id)
+      read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
+      tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
       if tick.present? && read.present?
         @read_tick_sights << sight
       elsif read.present?

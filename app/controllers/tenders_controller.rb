@@ -151,8 +151,8 @@ class TendersController < ApplicationController
     else
       @tender = Tender.includes(:stones).find(params[:id])
     end
-    @stones=Tender.stone_list(@tender.stones)
-    @sights =Tender.sight_list(@tender.sights)
+    @stones = Tender.stone_list(@tender.stones,params[:id], current_customer)
+    @sights =Tender.sight_list(@tender.sights, params[:id], current_customer)
 
   end
 
@@ -434,7 +434,6 @@ class TendersController < ApplicationController
     stone = Stone.find(params[:pk])
     stone.description = params[:value]
     stone.save
-
     render :text => ""
   end
 
@@ -442,7 +441,6 @@ class TendersController < ApplicationController
     winner = TenderWinner.find(params[:pk])
     winner.description = params[:value]
     winner.save
-
     render :text => ""
   end
 
@@ -464,7 +462,6 @@ class TendersController < ApplicationController
         @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer])
         place_bid = @yes_no_buyer_interest.first.place_bid + 1
         @yes_no_buyer_interest = @yes_no_buyer_interest.first.update_attributes(interest: true, buyer_left: false, reserved_price: data[:reserved_price], place_bid: place_bid )
-
       end
       render :json => { success: true }
     else

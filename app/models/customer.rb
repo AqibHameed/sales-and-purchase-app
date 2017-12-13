@@ -56,9 +56,9 @@ class Customer < ApplicationRecord
   #           :format => {:with => /^\d{10}$/, multiline: true},
   #           :unless => proc{|obj| obj.phone_2.blank?} , :reduce => true
 
-  validates :mobile_no, uniqueness: true,
-            :format => {:with => /^\d{10}$/, multiline: true},
-            :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
+  validates :mobile_no, uniqueness: true
+            # :format => {:with => /^\d{10}$/, multiline: true},
+            # :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
 
   # validates :email,
   #           :format => {:with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, multiline: true },
@@ -152,6 +152,23 @@ class Customer < ApplicationRecord
         tender_id: t.id,
         confirmed: false
       }
+      if t.tender_type == "Yes/No"
+        if t.diamond_type == "Rough"
+          parcels = t.stones
+          parcels.each do |p|
+            yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: t.id, stone_id: p.id, customer_id: self.id, bid_open_time: t.bid_open, bid_close_time: t.bid_close, round: 1)
+            yes_no_buyer_interests.reserved_price = p.reserved_price - ((20.to_f/100.to_f)*p.reserved_price) rescue 0
+            yes_no_buyer_interests.save
+          end
+        else
+          parcels = t.sights
+          parcels.each do |p|
+            yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: t.id, sight_id: p.id, customer_id: self.id, bid_open_time: t.bid_open, bid_close_time: t.bid_close, round: 1)
+            yes_no_buyer_interests.reserved_price = p.sight_reserved_price - ((20.to_f/100.to_f)*p.sight_reserved_price) rescue 0
+            yes_no_buyer_interests.save
+          end
+        end
+      end
     end
     CustomersTender.create(customer_tenders)
   end

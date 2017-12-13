@@ -60,3 +60,4 @@ gem 'figaro'
 gem 'houston'
 gem "select2-rails"
 gem 'sendgrid', '1.2.0'
+gem 'intl-tel-input-rails'

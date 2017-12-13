@@ -17,6 +17,7 @@
  *= require flipclock.css
  *= require select2
  *= require font-awesome
+ *= require intlTelInput
  */
 
 .validation-error{

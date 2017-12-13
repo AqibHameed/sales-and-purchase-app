@@ -28,10 +28,18 @@
 // = require FlipClock/compiled/flipclock
 //= require select2
 //= require jquery.ui.monthpicker
+//= require intlTelInput
+//= require libphonenumber/utils
 
 
 //Admin Login
 $(document).ready(function() {
+  $("#mobile_no").intlTelInput({
+    formatOnInit: true,
+    separateDialCode: true,
+    autoHideDialCode: false
+  });
+
   $('.tender-house4').on('click',function () {
     $(".tender-house4").is(':checked') ? $('.tender-house3').attr('disabled', true).prop('checked', false) : $('.tender-house3').prop('checked', false).attr('disabled', false)   
   })
@@ -103,6 +111,10 @@ $(document).ready(function() {
     $(this).parent().find('#myDropdown').stop(true, true).delay(200).fadeOut(500);
   });
 });
+
+$(document).on('click', '.signup-btn', function(){
+  $("#customer_mobile_no").val($("#mobile_no").intlTelInput("getNumber"))
+})
 
 // function myFunction() {
 //   $("#myDropdown").toggleClass("show");
