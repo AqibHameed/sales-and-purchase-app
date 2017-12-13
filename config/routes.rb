@@ -91,6 +91,8 @@ Rails.application.routes.draw do
       get :list_company
       patch :update_password
       get :trading
+      get :demanding
+      post :demanding_create
       get :search_trading
       get :transactions
       get :credit
@@ -132,6 +134,7 @@ Rails.application.routes.draw do
   resources :suppliers do
     member do
       get :single_parcel
+      get :demand
     end
     collection do
       get :trading
