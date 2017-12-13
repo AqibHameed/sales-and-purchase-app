@@ -1,0 +1,37 @@
+
+<div class="form-wrapper">
+  <%= form_for @demanding_parcel, :url =>  demanding_create_customers_path , method: :post  do |f| %>
+    <div class="form-row">
+      <div class="label">Diamond Type: </div>
+      <div class="field">
+        <%= f.select :diamond_type, options_for_select(['Rough', 'Sight','Finance']), {include_blank: true}, {class: 'input'} %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label">Description: </div>
+      <div class="field">
+        <%= f.text_field :description,  class: 'input' %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label">Carats:</div>
+      <div class="field">
+        <%= f.text_field :weight, class: 'input' %>
+      </div>
+    </div>
+     <div class="form-row">
+      <div class="label">Price:</div>
+      <div class="field">
+        <%= f.text_field :price, class: 'input' %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%=f.submit 'Save', class: 'login-btn btn-02' %>
+      </div>
+    </div>
+  <% end %>
+</div>
+<div class="clear10"></div>
+

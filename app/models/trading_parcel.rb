@@ -27,4 +27,11 @@ class TradingParcel < ApplicationRecord
     self.uid = uid
     self.save(validate: false)
   end
+
+  def demand_count(parcel,customer)
+    description = parcel.description
+    count = Demand.where(description: description).where.not(customer_id: customer.id).count
+    return count
+  end
+
 end

@@ -151,6 +151,25 @@ class CustomersController < ApplicationController
     @parcels = TradingParcel.where(sold: false, for_sale: true).where.not(customer_id: customer_id).order(created_at: :desc).page params[:page]
   end
 
+  def demanding
+    @demanding_parcel = Demand.new
+  end
+
+  def demanding_create
+    @demanding_parcel = Demand.where(description: params[:demand][:description]).first_or_create do |demand|
+      demand.weight = params[:demand][:weight]
+      demand.price = params[:demand][:price]
+      demand.diamond_type = params[:demand][:diamond_type]
+      demand.customer_id = current_customer.id
+    end
+    if @demanding_parcel.save
+
+      redirect_to root_path
+    else
+      redirect_to root_path
+    end
+  end
+
   def search_trading
     @parcels = TradingParcel.search_by_filters(params[:search], current_customer).page params[:page]
     respond_to do |format|
@@ -195,6 +214,10 @@ class CustomersController < ApplicationController
 
   def shared_params
     params.require(:shared).permit(:shared_to_id)
+  end
+
+  def demanding_params
+    params.require(:demand).permit(:description,:weight,:price,:diamond_type)
   end
 
 end

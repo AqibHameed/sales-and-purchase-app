@@ -12,6 +12,7 @@
     <th>Credit</th>
     <th>Supplier</th>
     <th>UID</th>
+    <th>Demand</th>
     <% unless params[:controller] == 'customers' %>
       <th>For Sale</th>
     <% end %>
@@ -33,6 +34,7 @@
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
         <td><%= parcel.uid %></td>
+        <td><%=parcel.demand_count(parcel)%></td>
         <% if parcel.customer_id == current_customer.id %>
           <% if params[:controller] == 'customers' %>
             <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
@@ -60,6 +62,10 @@
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
         <td><%= parcel.uid %></td>
+        <td>
+          <%= link_to parcel.demand_count(parcel,current_customer),  demand_supplier_path(id: parcel.id)%>
+
+        </td>
         <% if parcel.customer_id == current_customer.id %>
           <% if params[:controller] == 'customers' %>
             <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>

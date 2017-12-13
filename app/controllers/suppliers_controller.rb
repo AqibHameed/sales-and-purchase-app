@@ -21,6 +21,12 @@ class SuppliersController < ApplicationController
     # end
   end
 
+  def demand
+    @parcel = TradingParcel.find(params[:id])
+    @demand = Demand.where(description: @parcel.description).where.not(customer_id: current_customer.id)
+    @customers = Customer.unscoped.where(id: @demand.map(&:customer_id)).page params[:page]
+  end
+
   def parcels
     if params[:trading_document][:document].present?
       if params[:trading_document][:diamond_type] == 'Rough'

@@ -16,6 +16,7 @@ class Customer < ApplicationRecord
   has_many :bids
   has_many :winners
   has_many :notes
+  has_many :demands
   has_many :yes_no_buyer_winners
   has_many :yes_no_buyer_interests
   has_many :devices
