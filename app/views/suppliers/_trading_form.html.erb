@@ -230,14 +230,21 @@
         <div class="form-row">
           <div class="label">Carats:</div>
           <div class="field">
-            <%= f.text_field :weight, class: 'input' %>
+            <%= f.text_field :weight, class: 'input', id: 'carat' %>
           </div>
         </div>
 
         <div class="form-row">
-          <div class="label"> Price:</div>
+          <div class="label">Avg Price:</div>
           <div class="field">
-            <%= f.text_field :price, class: 'input' %>
+            <%= f.text_field :price, class: 'input', id: 'price' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">Amount:</div>
+          <div class="field">
+            <%= text_field_tag "amount", '', class: 'input' %>
           </div>
         </div>
 
@@ -251,3 +258,19 @@
     <% end %>
   </div>
 </div>
+<script>
+
+
+  $(document).on('focusout','#price', function(){
+    var carat = $('#carat').val();
+    var price = $('#price').val();
+    var amount = carat*price;
+    $('#amount').val(amount);
+  });
+  $(document).on('focusout','#carat', function(){
+    var carat = $('#carat').val();
+    var price = $('#price').val();
+    var amount = carat*price;
+    $('#amount').val(amount);
+  });
+</script>

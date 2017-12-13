@@ -6,6 +6,7 @@
     <th>Carats</th>
     <th>Cost</th>
     <th>Box Value</th>
+    <th>Avg Price</th>
     <th>Sight</th>
     <th>Price</th>
     <th>Credit</th>
@@ -25,8 +26,10 @@
         <td><%= parcel.weight %></td>
         <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
         <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
         <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
+        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
+         <td><%= parcel.price*parcel.weight %></td>
+
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
         <td><%= parcel.uid %></td>
@@ -51,8 +54,9 @@
         <td><%= parcel.weight %></td>
         <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
         <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
         <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
+        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
+        <td><%= parcel.price*parcel.weight %></td>
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.try(:customer).try(:company) %></td>
         <td><%= parcel.uid %></td>
