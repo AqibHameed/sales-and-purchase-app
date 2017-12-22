@@ -123,7 +123,7 @@
 </div>
 <div class="clear"></div>
 <script>
-<% unless @tender.nil? %>
+<% unless @tender.nil? || @tender.tender_type == 'Blind' %>
   $(document).ready(function() {
     $("#myTable").tablesorter();
     var buyer_left = $(this).find('.yes-no-round').html();
