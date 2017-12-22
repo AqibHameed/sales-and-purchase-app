@@ -178,6 +178,16 @@ class Customer < ApplicationRecord
     SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false
   end
 
+  ## YES/NO ##
+  def can_bid_on_parcel(type, round, tender, stone)
+    if type == 'stone'
+      YesNoBuyerInterest.where(tender_id: tender.id, stone_id: stone.id, round: round - 1 , customer_id: self.id).first.present?
+    elsif type == 'sight'
+      YesNoBuyerInterest.where(tender_id: tender.id, sight_id: stone.id, round: round - 1, customer_id: self.id).first.present?
+    end
+  end
+  ############
+
   rails_admin do
     list do
       field :verified, :toggle

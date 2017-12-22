@@ -2,7 +2,7 @@ class Stone < ApplicationRecord
 
   attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
                   :deec_no, :lot_no, :description, :tender_id, :reserved_price, :system_price, :yes_no_system_price, :stone_winning_price, :interest,
-                  :comments, :valuation, :parcel_rating
+                  :comments, :valuation, :parcel_rating, :status
   # attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
   #                 :deec_no, :lot_no, :description, :tender_id
 
@@ -22,6 +22,9 @@ class Stone < ApplicationRecord
   before_save{|stone|
     stone.no_of_stones = 1 if stone.no_of_stones.blank?
   }
+
+  enum status: [:unsold, :withdrawn, :sold]
+
 
   def per_carat_bid(customer)
     bid = self.bids.find_by_customer_id(customer.id)

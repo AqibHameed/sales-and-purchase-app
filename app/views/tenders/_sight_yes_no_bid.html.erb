@@ -24,7 +24,7 @@
 		<tbody>
       <% @sights.each_with_index do |sight,i| %>
         <% unless sight.source == "Description" || sight.source == "DESCRIPTION" %>
-          <% sight_check = sight.yes_no_buyer_interests.where(customer_id: current_customer).first %>
+          <% current_round = @tender.round %>
           <% sight_winner = sight.yes_no_buyer_winner %>
 
           <tr>
@@ -39,7 +39,7 @@
             <td><%= sight.box_value_from %> - <%= sight.box_value_to %></td>
             <td><%= sight.sight %></td>
             <td class = "yes_no_reserved_price">
-            <% if sight_check.round == 1 %>
+            <% if current_round == 1 %>
 
               <%= sight.sight_reserved_price.present? ? sight.sight_reserved_price.to_f - ((20.to_f/100.to_f)*sight.sight_reserved_price.to_f) : "empty price" %>
             <%else%>
@@ -56,37 +56,28 @@
             <td><%= link_to "View", view_past_result_tender_path(@tender.id, :sight_id => sight.id, :key => sight.source, stone_count: (sight.box_value_to - sight.box_value_from)), :class => "past_result_link" %></td>
 
             <td>
-              <% if sight_check.round >= 1 && DateTime.now.to_i < @yes_no_buyer_interest.bid_open_time.to_i %>
+              <% if current_round == 1 && DateTime.now.to_i < @tender.round_open_time.to_i %>
                 Pending
-
-              <% elsif sight_check.round >= 1 && @yes_no_buyer_interest.break_time%>
+              <% elsif @tender.break_time %>
                 break
-              <%elsif sight_check.round > 1 && sight_check.interest == false && sight_check.place_bid != sight_check.round && !sight.stone_winning_price.present?%>
-                <%@yes_no_buyer_interest.set_buyer_left(sight_check)%>
-              <% elsif sight_check.round == 1  && sight_check.interest == false && !sight.stone_winning_price.present? && @yes_no_buyer_interest.bidding_start%>
-                <label class="switch">
-                  <input class="switch-input" type="checkbox" />
-                  <span class="switch-label" data-on="Yes" data-off="No"></span>
-                  <span class="switch-handle"></span>
-                </label>
-              <% elsif sight_check.round == 1  && sight_check.interest == true && !sight.stone_winning_price.present? && @yes_no_buyer_interest.bidding_start %>
-                <label class="switch">
-                  <input class="switch-input" type="checkbox" />
-                  <span class="switch-label" data-on="Yes" data-off="No"></span>
-                  <span class="switch-handle"></span>
-                </label>
-              <% elsif sight_check.round > 1  && sight_check.interest == false  && sight_check.place_bid == sight_check.round && !sight.stone_winning_price.present? && @yes_no_buyer_interest.bidding_start%>
-                <label class="switch">
-                  <input class="switch-input" type="checkbox" />
-                  <span class="switch-label" data-on="Yes" data-off="No"></span>
-                  <span class="switch-handle"></span>
-                </label>
-
-              <%elsif sight.stone_winning_price.present? && sight_winner.customer_id == current_customer.id%>
+              <% elsif sight.stone_winning_price.present? && sight_winner.try(:customer_id) == current_customer.id %>
                 winner
-              <%end%>
-
-
+              <% elsif sight.stone_winning_price.present? && sight_winner.try(:customer_id) != current_customer.id %>
+              <% elsif DateTime.now.to_i > @tender.round_open_time.to_i && current_round == 1 %>
+                <label class="switch">
+                  <input class="switch-input" type="checkbox" />
+                  <span class="switch-label" data-on="Yes" data-off="No"></span>
+                  <span class="switch-handle"></span>
+                </label>
+              <% elsif current_round > 1 && current_customer.can_bid_on_parcel('sight', current_round, @tender, sight) %>
+                <label class="switch">
+                  <input class="switch-input" type="checkbox" />
+                  <span class="switch-label" data-on="Yes" data-off="No"></span>
+                  <span class="switch-handle"></span>
+                </label>
+              <% else %>
+                Withdrawn
+              <% end %>
               <input type="hidden" class="yes_no_sight_id" value="<%= sight.id %>">
               <input type="hidden" class="yes_no_tender_id" value="<%= @tender.id %>">
               <input type="hidden" class="yes_no_buyer_left" value="<%= sight_check.buyer_left %>">

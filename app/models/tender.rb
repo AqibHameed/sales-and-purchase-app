@@ -51,6 +51,7 @@ class Tender < ApplicationRecord
   after_save :create_sights_from_uploaded_file
   # after_save :create_temp_stones_from_uploaded_file #==> remove on Nov 15 2013
   after_save :update_winner_list_from_uploaded_file
+  after_update :update_round_open_time,  :if => :bid_open_changed?
 
   after_create_commit :delayed_job_need_to_perform
   after_create :send_tender_create_push, :add_users_to_tender
@@ -199,19 +200,19 @@ class Tender < ApplicationRecord
               stone.stone_type = (data_row[Tender.get_index(self.no_of_stones_field)].to_i == 1 ? 'Stone' : 'Parcel' rescue 'Stone'  ) unless self.no_of_stones_field.blank?
               stone.reserved_price = Tender.get_value(data_row[Tender.get_index(self.reserved_field)]) unless self.reserved_field.blank?
               stone.save
-              if stone.save
-                tender = Tender.find(stone.tender_id)
-                if tender.tender_type == "Yes/No"
-                  id = tender.id
-                  stone_id = stone.id
-                  customer_id = tender.customers.ids
-                  customer_id.each do |c|
-                    yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, stone_id: stone_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
-                    yes_no_buyer_interests.reserved_price = stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price)
-                    yes_no_buyer_interests.save
-                  end
-                end
-              end
+              # if stone.save
+              #   tender = Tender.find(stone.tender_id)
+              #   if tender.tender_type == "Yes/No"
+              #     id = tender.id
+              #     stone_id = stone.id
+              #     customer_id = tender.customers.ids
+              #     customer_id.each do |c|
+              #       yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, stone_id: stone_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
+              #       yes_no_buyer_interests.reserved_price = stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price)
+              #       yes_no_buyer_interests.save
+              #     end
+              #   end
+              # end
             end
           end
         end
@@ -242,21 +243,21 @@ class Tender < ApplicationRecord
               sight.credit = Tender.get_value(data_row[Tender.get_index(self.credit_no_field)]) unless self.credit_no_field.blank?
               sight.sight_reserved_price = Tender.get_value(data_row[Tender.get_index(self.sight_reserved_field)]) unless self.sight_reserved_field.blank?
               sight.save
-              if sight.save
-                puts "#{sight.inspect}"
-                tender = Tender.find(sight.tender_id)
-                if tender.tender_type == "Yes/No"
-                  id = tender.id
-                  sight_id = sight.id
-                  customer_id = tender.customers.ids
-                  customer_id.each do |c|
-                    yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, sight_id: sight_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
-                    yes_no_buyer_interests.reserved_price = sight.sight_reserved_price - ((20.to_f/100.to_f)*sight.sight_reserved_price)
-                    puts yes_no_buyer_interests.inspect
-                    yes_no_buyer_interests.save
-                  end
-                end
-              end
+              # if sight.save
+              #   puts "#{sight.inspect}"
+              #   tender = Tender.find(sight.tender_id)
+              #   if tender.tender_type == "Yes/No"
+              #     id = tender.id
+              #     sight_id = sight.id
+              #     customer_id = tender.customers.ids
+              #     customer_id.each do |c|
+              #       yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: id, sight_id: sight_id, customer_id: c, bid_open_time: tender.bid_open, bid_close_time: tender.bid_close, round: 1)
+              #       yes_no_buyer_interests.reserved_price = sight.sight_reserved_price - ((20.to_f/100.to_f)*sight.sight_reserved_price)
+              #       puts yes_no_buyer_interests.inspect
+              #       yes_no_buyer_interests.save
+              #     end
+              #   end
+              # end
             end
           end
         end
@@ -696,6 +697,8 @@ class Tender < ApplicationRecord
   end
 
   def add_users_to_tender
+    self.round_open_time = self.bid_open
+    self.save(validate: false)
     customer_tenders = []
     Customer.all.each do |c|
       customer_tenders << {
@@ -706,6 +709,186 @@ class Tender < ApplicationRecord
     end
     CustomersTender.create(customer_tenders)
   end
+
+  # YES/NO Bidding #
+  def before_bidding_start
+   if DateTime.now.to_i < self.round_open_time.to_i
+    return true
+  else
+    return false
+    end
+  end
+
+  def bidding_start
+    if DateTime.now.to_i >  self.round_open_time.to_i  && (DateTime.now.to_i <  (self.round_open_time.to_i + self.round_duration.minutes))
+      return true
+    else
+      return false
+    end
+  end
+
+  def break_time
+    if (DateTime.now.to_i >  (self.round_open_time.to_i + self.round_duration.minutes)) && (DateTime.now.to_i < (self.round_open_time.to_i + self.round_duration.minutes + self.rounds_between_duration.minutes))
+      return true
+    else
+      return false
+    end
+  end
+
+  def break_duration
+    if self.round_open_time.present?
+      if Time.current < (self.round_open_time.to_i + self.round_duration.minutes + self.rounds_between_duration.minutes)
+        (self.round_open_time.to_i + self.round_duration.minutes + self.rounds_between_duration.minutes) - Time.current.to_i
+      end
+    end
+  end
+
+  def before_bidding_start
+   if DateTime.now.to_i < self.round_open_time.to_i
+    return true
+  else
+    return false
+    end
+  end
+
+  def round_duration_time
+    if self.round_open_time.present?
+      if Time.current < self.round_open_time.to_i
+        self.round_open_time.to_i  - Time.current.to_i
+      end
+    end
+  end
+
+  def bidding_time
+    if self.round_open_time.present?
+      if Time.current < (self.round_open_time.to_i + self.round_duration.minutes)
+        (self.round_open_time.to_i + self.round_duration.minutes) - Time.current.to_i
+      end
+    end
+  end
+
+  def update_round_open_time
+    self.update_column(:round_open_time, self.bid_open)
+  end
+
+  def check_if_bid_placed?
+    if self.diamond_type == 'Rough'
+      parcels = self.stones.map { |e| e.id  }
+      bids = YesNoBuyerInterest.where(stone_id: parcels, tender_id: self.id, round: self.round)
+      if bids.empty?
+        return false
+      else
+        return true
+      end
+    elsif self.diamond_type == 'Sight'
+      parcels = self.sight.map { |e| e.id  }
+      bids = YesNoBuyerInterest.where(sight_id: parcels, tender_id: self.id, round: self.round)
+      if bids.empty?
+        return false
+      else
+        return true
+      end
+    end
+  end
+
+  def need_to_update_time?
+    if self.diamond_type == 'Rough'
+      parcels = self.stones
+    elsif self.diamond_type == 'Sight'
+      parcels = self.sights
+    end
+    @count_array = []
+    parcels.each_with_index do |parcel, index|
+      if self.diamond_type == 'Rough'
+        yes_no_buyer_interests = YesNoBuyerInterest.where(tender_id: self.id, stone_id: parcel.id, round: round - 1)
+        puts yes_no_buyer_interests.count
+      elsif self.diamond_type == 'Sight'
+        yes_no_buyer_interests = YesNoBuyerInterest.where(tender_id: self.id, sight_id: parcel.id, round: round - 1)
+      end
+      if yes_no_buyer_interests.count == 1 || yes_no_buyer_interests.count == 0
+        @count_array << true
+      else
+        @count_array << false
+      end
+    end
+    if @count_array.include?(false)
+      true
+    else
+      false
+    end
+  end
+
+  def check_for_winners(round, current_customer)
+    if self.diamond_type == 'Rough'
+      parcels = self.stones
+    elsif self.diamond_type == 'Sight'
+      parcels = self.sight
+    end
+    parcels.each_with_index do |parcel, index|
+      if self.diamond_type == 'Rough'
+        yes_no_buyer_interests = YesNoBuyerInterest.where(tender_id: self.id, stone_id: parcel.id, round: round)
+      elsif self.diamond_type == 'Sight'
+        yes_no_buyer_interests = YesNoBuyerInterest.where(tender_id: self.id, sight_id: parcel.id, round: round)
+      end
+      if yes_no_buyer_interests.count == 1
+        winning_price = parcel.yes_no_system_price.present? ? parcel.yes_no_system_price : parcel.reserved_price - ((20.to_f/100.to_f)*parcel.reserved_price)
+        parcel.update_attributes(stone_winning_price: winning_price)
+        if !parcel.yes_no_buyer_winner.present?
+          winner = yes_no_buyer_interests.last
+          winner = YesNoBuyerWinner.find_or_initialize_by(yes_no_buyer_interest_id: winner.id, tender_id: winner.tender_id, stone_id: winner.stone_id, sight_id: winner.sight_id, customer_id: winner.customer_id, round: winner.round, winning_price: parcel.stone_winning_price)
+          winner.save
+          winner_table = Winner.find_or_initialize_by(tender_id: winner.tender_id, customer_id: winner.customer_id, stone_id: winner.stone_id, sight_id: winner.sight_id)
+          winner_table.save(validate: false)
+        end
+      elsif yes_no_buyer_interests.count > 1
+        if !self.updated_after_round
+          if self.diamond_type == 'Rough'
+            total_customers = YesNoBuyerInterest.where(stone_id: parcel.id, round: round - 1).count
+            puts "total = #{total_customers}"
+            system_price,system_price_percentage = 0.0
+            remaining_customers = YesNoBuyerInterest.where(stone_id: parcel.id, round: round).count
+            puts "Remaining = #{remaining_customers}"
+          elsif self.diamond_type == 'Sight'
+            total_customers = YesNoBuyerInterest.where(sight_id: parcel.id, round: round - 1).count
+            puts "total = #{total_customers}"
+            system_price,system_price_percentage = 0.0
+            remaining_customers = YesNoBuyerInterest.where(sight_id: parcel.id, round: round).count
+            puts "Remaining = #{remaining_customers}"
+          end
+          left_customers = total_customers - remaining_customers
+          puts "LEft = #{left_customers}"
+
+          customer_yes_no_bid = parcel.yes_no_buyer_interests.where(customer_id: current_customer.id).last
+          if customer_yes_no_bid.present?
+            reserved_price = customer_yes_no_bid.reserved_price
+            if reserved_price.to_f < parcel.reserved_price.to_f
+              system_percentage = (remaining_customers.to_f/3.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
+              if system_percentage < 2
+                system_price_percentage = 2
+              else
+                system_price_percentage = system_percentage
+              end
+              puts "system_percentage = #{system_percentage}"
+              puts "system_price_percentage = #{system_price_percentage}"
+              @yes_no_system_price = ( 100 + system_price_percentage.to_f)/100.to_f*reserved_price.to_f
+              puts "new price = #{@yes_no_system_price}"
+            else
+              system_percentage = (remaining_customers.to_f/5.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
+              if system_percentage < 2
+                system_price_percentage = 2
+              else
+                system_price_percentage = system_percentage
+              end
+              @yes_no_system_price = ( 100 + system_price_percentage.to_f)/100.to_f*reserved_price.to_f
+            end
+            parcel.update_attributes(yes_no_system_price: @yes_no_system_price)
+            customer_yes_no_bid.update_attributes(reserved_price: @yes_no_system_price)
+          end
+        end
+      end
+    end
+  end
+  ##################
 
   rails_admin do
     configure :id do

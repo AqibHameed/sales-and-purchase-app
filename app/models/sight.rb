@@ -6,6 +6,8 @@ class Sight < ApplicationRecord
 	has_one :note
 	belongs_to :tender
   has_many :yes_no_buyer_interests
+
+  enum status: [:unsold, :withdrawn, :sold]
   
   def per_carat_bid(customer)
     bid = self.bids.find_by_customer_id(customer.id)
