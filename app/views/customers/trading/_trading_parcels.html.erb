@@ -53,7 +53,7 @@
         <td><%= index_count(params[:page].to_i) + i %></td>
         <td><%= get_description(parcel) if parcel %></td>
         <td><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
-        <td><%= parcel.weight %></td>
+        <td><%= number_with_precision(parcel.weight, precision: 2) %></td>
         <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
         <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
         <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
