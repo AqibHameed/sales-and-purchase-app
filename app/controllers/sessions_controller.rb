@@ -2,7 +2,7 @@ class SessionsController <  Devise::SessionsController
 
   def get_resource
 
-    if customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login]).present?
+    if customer = Customer.where("(email = ? OR mobile_no = ?) AND verified = ?", params[:customer][:login], params[:customer][:login], true).present?
       return :customer
     elsif Admin.find_by_email(params[resource_name][:login]).present?
       return :admin
@@ -16,11 +16,15 @@ class SessionsController <  Devise::SessionsController
   def create
     customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login])
     admin = Admin.where(email: params[:customer][:login])
-    if !customer.blank? 
-      resource = warden.authenticate!(auth_options)
-      sign_in(resource_name, resource)
-      if resource.sign_in_count == 1
-        path = 'login'
+    if !customer.blank?
+      if customer.first.verified
+        resource = warden.authenticate!(auth_options)
+        sign_in(resource_name, resource)
+        if resource.sign_in_count == 1
+          path = 'login'
+        else
+          path = '/'
+        end
       else
         path = '/'
       end

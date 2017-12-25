@@ -59,14 +59,12 @@
                     <% elsif stone.stone_winning_price.present? && stone_winner.try(:customer_id) != current_customer.id %>
 
                     <% elsif DateTime.now.to_i > @tender.round_open_time.to_i && current_round == 1 %>
-                      uper
                       <label class="switch">
                         <input class="switch-input" type="checkbox" />
                         <span class="switch-label" data-on="Yes" data-off="No"></span>
                         <span class="switch-handle"></span>
                       </label>
                     <% elsif current_round > 1 && current_customer.can_bid_on_parcel('stone', current_round, @tender, stone) %>
-                      here
                       <%#=current_customer.can_bid_on_parcel('stone', current_round, @tender, stone).inspect %>
                       <%#=@tender.round_open_time.to_i %>
                       <%#= Time.now.to_i %>
