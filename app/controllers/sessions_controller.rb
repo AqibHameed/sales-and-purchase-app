@@ -1,7 +1,6 @@
 class SessionsController <  Devise::SessionsController
 
   def get_resource
-
     if customer = Customer.where("(email = ? OR mobile_no = ?) AND verified = ?", params[:customer][:login], params[:customer][:login], true).present?
       return :customer
     elsif Admin.find_by_email(params[resource_name][:login]).present?
@@ -16,22 +15,24 @@ class SessionsController <  Devise::SessionsController
   def create
     customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login])
     admin = Admin.where(email: params[:customer][:login])
-    if !customer.blank?
+    if customer.present?
       if customer.first.verified
-        resource = warden.authenticate!(auth_options)
-        sign_in(resource_name, resource)
-        if resource.sign_in_count == 1
-          path = 'login'
+        resource = warden.authenticate(auth_options)
+        if resource
+          set_flash_message(:notice, :signed_in) if is_flashing_format?
+          sign_in(resource_name, resource)
+          if resource.sign_in_count == 1
+            redirect_to login_path, notice: 'Signed in successfully.'
+          else
+            redirect_to '/', notice: 'Signed in successfully.'
+          end
         else
-          path = '/'
+          redirect_to login_path, notice: 'Invalid email or password'
         end
       else
-        path = '/'
+        redirect_to '/', notice: 'You are not verified. Please contact admin.'
       end
-      respond_to do |format|
-        format.js{ render json: path }
-      end
-    elsif !admin.blank?
+    elsif admin.present?
       scope = get_resource
       resource = warden.authenticate!(:scope => scope )
       if resource.sign_in_count == 1
@@ -40,9 +41,11 @@ class SessionsController <  Devise::SessionsController
         path = '/admins'
       end
       respond_to do |format|
-        format.js{ render json: path }
+        format.html { redirect_to path }
+        format.js { render json: path }
       end
+    else
+      redirect_to login_path, notice: "Incorrect Email or Mobile no."
     end
   end
-
 end

@@ -11,8 +11,11 @@ Rails.application.routes.draw do
   get "/verified_unverified", to: 'home#verified_unverified'
   get "/change_tender_open_time", to: 'tenders#update_time'
   get '/change_system_price', to: 'tenders#update_system_price'
+  
+  get '/admins/sign_up', to: redirect('/')
   devise_for :admins, :controllers => {:sessions => 'sessions'}
   mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
+
   devise_for :customers, :controllers => {:sessions => 'sessions',:registrations => "registrations", :invitations => 'invitations'}
 
   resources :tenders do

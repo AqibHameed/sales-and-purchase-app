@@ -13,16 +13,17 @@
      <div class="clear20"></div>
      <div class="login-box">
         <p style="color:red; font-size:13px;" class='error_msg'>
+          <%= render partial:  'layouts/supplier/flash' %>
         </p>
-        <p class=clear10></p>
+        <p class="clear10"></p>
       <% customer = Customer.new %>
       <%= form_for(customer, :url => session_path(customer), :html => {:class => 'login_form'} ) do |f| %>
        <% if @c_user  %>
           <div class="c_user">
-           <strong><%= @c_user.try(:name) %></strong><br/>
-           <%= @c_user.try(:email) %>
-           <%= hidden_field_tag 'customer[login]', @c_user.try(:email) %>
-           <%= hidden_field_tag 'admin[login]', @c_user.try(:email) %>
+            <strong><%= @c_user.try(:name) %></strong><br/>
+            <%= @c_user.try(:email) %>
+            <%= hidden_field_tag 'customer[login]', @c_user.try(:email) %>
+            <%= hidden_field_tag 'admin[login]', @c_user.try(:email) %>
           </div>
           <div class="clear10"></div>
           <div class="field">
@@ -60,36 +61,36 @@
 
 <script type='text/javascript'>
 
-  $(document).ready(function(){
+  // $(document).ready(function(){
 
-    $(document).on('click', '.login_submit', function(e){
-      e.preventDefault();
-      $('.error_msg').html('')
+  //   $(document).on('click', '.login_submit', function(e){
+  //     e.preventDefault();
+  //     $('.error_msg').html('')
 
-      $('#admin_login').val($('#customer_login').val())
-      $('#admin_password').val($('#customer_password').val())
-
-
-      var valuesToSubmit = $('.login_form').serialize();
-      $.ajax({
-        url: $('.login_form').attr('action'), //sumbits it to the given url of the form
-        data: valuesToSubmit,
-        type: 'post',
-        dataType: 'script',
-        // success: function(response){ window.location.href = response },
-        complete: function(response){
-          if(response.status==200){
-            window.location.href = response.responseText
-          }else{
-            $('.error_msg').html(response.responseText)
-          }
-        }
-      });
+  //     $('#admin_login').val($('#customer_login').val())
+  //     $('#admin_password').val($('#customer_password').val())
 
 
-    })
+  //     var valuesToSubmit = $('.login_form').serialize();
+  //     $.ajax({
+  //       url: $('.login_form').attr('action'), //sumbits it to the given url of the form
+  //       data: valuesToSubmit,
+  //       type: 'post',
+  //       dataType: 'script',
+  //       // success: function(response){ window.location.href = response },
+  //       complete: function(response){
+  //         if(response.status==200){
+  //           window.location.href = response.responseText
+  //         }else{
+  //           $('.error_msg').html(response.responseText)
+  //         }
+  //       }
+  //     });
 
-  })
+
+  //   })
+
+  // })
 
 </script>
 
