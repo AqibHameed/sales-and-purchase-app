@@ -3,7 +3,7 @@ class SessionsController <  Devise::SessionsController
   def get_resource
     if customer = Customer.where("(email = ? OR mobile_no = ?) AND verified = ?", params[:customer][:login], params[:customer][:login], true).present?
       return :customer
-    elsif Admin.find_by_email(params[resource_name][:login]).present?
+    elsif Admin.where(email: params[:customer][:login]).present?
       return :admin
     end
   end
@@ -33,16 +33,12 @@ class SessionsController <  Devise::SessionsController
         redirect_to '/', notice: 'You are not verified. Please contact admin.'
       end
     elsif admin.present?
-      scope = get_resource
-      resource = warden.authenticate!(:scope => scope )
-      if resource.sign_in_count == 1
-        path = 'login'
+      resource = admin.first
+      if resource and resource.valid_password?(params[:customer][:password])
+        sign_in(:admin, resource)
+        redirect_to '/admins', notice: 'Signed in successfully.' 
       else
-        path = '/admins'
-      end
-      respond_to do |format|
-        format.html { redirect_to path }
-        format.js { render json: path }
+        redirect_to login_path, notice: 'Invalid email or password'
       end
     else
       redirect_to login_path, notice: "Incorrect Email or Mobile no."
