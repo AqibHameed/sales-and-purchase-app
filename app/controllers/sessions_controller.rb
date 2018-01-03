@@ -16,7 +16,7 @@ class SessionsController <  Devise::SessionsController
     customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:login], params[:customer][:login])
     admin = Admin.where(email: params[:customer][:login])
     if customer.present?
-      if customer.first.verified
+      # if customer.first.verified
         resource = warden.authenticate(auth_options)
         if resource
           set_flash_message(:notice, :signed_in) if is_flashing_format?
@@ -29,9 +29,9 @@ class SessionsController <  Devise::SessionsController
         else
           redirect_to login_path, notice: 'Invalid email or password'
         end
-      else
-        redirect_to '/', notice: 'You are not verified. Please contact admin.'
-      end
+      # else
+      #   redirect_to '/', notice: 'You are not verified. Please contact admin.'
+      # end
     elsif admin.present?
       resource = admin.first
       if resource and resource.valid_password?(params[:customer][:password])

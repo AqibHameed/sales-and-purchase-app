@@ -147,7 +147,7 @@
       <div class="form-row">
         <div class="label"></div>
         <div class='field'>
-          <%=p.submit 'Submit', class: 'btn-01 login_btn disabled', id: 'transaction_submit' %>
+          <%=p.submit 'Submit', class: 'btn-01 login_btn', id: 'transaction_submit' %>
         </div>
       </div>
     <% end %>
@@ -248,35 +248,36 @@ $(document).on('click', '.invite', function(e) {
       formatSelection: add_icons_to_select
     });
 
-    $('#transaction_submit').prop('disabled', true);
+    // $('#transaction_submit').prop('disabled', true);
   })
 
-  $(document.body).on("change", "#trading_parcel_my_transaction_attributes_buyer_id", function(){
-    id = $(this).val()
-    $.ajax({
-      url: '/verified_unverified',
-      type: 'GET',
-      data: {id: id},
-      success: function(data){
-        text = data.text
-        $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
-        toggle_checkbox()
-      }
-    })
-  });
+  // $(document.body).on("change", "#trading_parcel_my_transaction_attributes_buyer_id", function(){
+  //   id = $(this).val()
+  //   $.ajax({
+  //     url: '/verified_unverified',
+  //     type: 'GET',
+  //     data: {id: id},
+  //     success: function(data){
+  //       text = data.text
+  //       $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
+  //       toggle_checkbox()
+  //     }
+  //   })
+  // });
 
-  function toggle_checkbox() {
-    $('#read').click(function () {
-      //check if checkbox is checked
-      if ($(this).is(':checked')) {
-        $('#transaction_submit').removeClass('disabled');
-        $('#transaction_submit').prop('disabled', false);
-      } else {
-        $('#transaction_submit').addClass('disabled');
-        $('#transaction_submit').prop('disabled', true);
-      }
-    });
-  }
+  // function toggle_checkbox() {
+  //   $('#read').click(function () {
+  //     //check if checkbox is checked
+  //     if ($(this).is(':checked')) {
+  //       $('#transaction_submit').removeClass('disabled');
+  //       $('#transaction_submit').prop('disabled', false);
+  //     } else {
+  //       $('#transaction_submit').addClass('disabled');
+  //       $('#transaction_submit').prop('disabled', true);
+  //     }
+  //   });
+  // }
+
 </script>
 <style>
   .current_bid {

@@ -190,7 +190,7 @@ class Customer < ApplicationRecord
 
   rails_admin do
     list do
-      field :verified, :toggle
+      # field :verified, :toggle
       [:email, :first_name, :last_name, :mobile_no, :city, :company, :company_address].each do |field_name|
         field field_name
       end
