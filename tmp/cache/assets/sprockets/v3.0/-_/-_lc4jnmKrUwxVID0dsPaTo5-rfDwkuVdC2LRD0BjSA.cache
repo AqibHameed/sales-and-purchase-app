@@ -1,30 +1,0 @@
-{:uriI"Žfile://app/assets/javascripts/FlipClock/package.json?type=application/json&id=f818cdda4f5308c04d845ec9d42ec4f7e5654d50d9e9a4cc90662ef29f5b0f6c:ET:load_pathI"app/assets/javascripts;T:filenameI"2app/assets/javascripts/FlipClock/package.json;T:	nameI"FlipClock/package;T:logical_pathI"FlipClock/package.json;T:content_typeI"application/json;T:sourceI"x{
-  "name": "flipclock",
-  "version": "0.7.8",
-  "email": "support@objectivehtml.com",
-  "author": "Objective HTML, LLC <support@objectivehtml.com>",
-  "license": "MIT",
-  "main": "compiled/flipclock.js",
-  "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-jshint": "~0.6.3",
-    "grunt-contrib-uglify": "~0.2.7",
-    "grunt-contrib-watch": "^0.6.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/objectivehtml/FlipClock"
-  },
-  "bugs": {
-    "url": "https://github.com/nodejitsu/browsenpm.org/issues"
-  },
-  "dependencies": {
-    "jquery": ">=1.7"
-  }
-}
-;T:metadata{	:dependencieso:Set:
-@hash}
-I"environment-version;TTI"environment-paths;TTI"rails-env;TTI"@processors:type=application/json&file_type=application/json;TTI"@file-digest://app/assets/javascripts/FlipClock/package.json;TTF:charsetI"
-utf-8;F:digest"%2èÖ)Šùfº)™+§´}›™W@´…vÌü¨36tâ˜:lengthix:dependencies_digest"%h†ÅU`<é@Úa…Õ›‹?!&Wa0ˆ‘¬½úéOÓú.{:idI"Ef818cdda4f5308c04d845ec9d42ec4f7e5654d50d9e9a4cc90662ef29f5b0f6c;F:
-mtimel+CæúY
