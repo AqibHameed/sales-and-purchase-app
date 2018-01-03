@@ -33,7 +33,7 @@
 #   socket: /var/run/mysqld/mysqld.sock
 default: &default
   adapter: mysql2
-  host: localhost
+  host: mysql56
   pool: 50
   port: 3306
   username: root
@@ -41,7 +41,7 @@ default: &default
 
 development:
   <<: *default
-  database: dialuck_production_1
+  database: dialuck_production_2
 
 production:
   <<: *default
