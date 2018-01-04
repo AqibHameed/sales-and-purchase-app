@@ -44,10 +44,10 @@
         <% end %>
         <td><%= get_status(transaction) %></td>
         <td><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
-        <% if transaction.buyer_rejected %>
-          <td>Rejected</td>
-        <% elsif current_user.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_rejected && (transaction.updated_at + 7.days > Time.now) && get_status(transaction) != 'Completed'%>
-          <td><%=link_to 'Reject', reject_transaction_path(transaction) %></td>
+        <% if transaction.buyer_confirmed %>
+          <td>Confirmed</td>
+        <% elsif current_user.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && (transaction.updated_at + 7.days > Time.now) && get_status(transaction) != 'Completed' %>
+          <td><%=link_to 'Confirm', confirm_transaction_path(transaction), data: {turbolinks: false} %></td>
         <% else %>
           <td></td>
         <% end %>

@@ -164,7 +164,7 @@ Rails.application.routes.draw do
       post :payment
     end
     member do
-      get :reject
+      get :confirm
       patch :reject_reason
     end
   end

@@ -54,8 +54,14 @@ class TransactionsController < ApplicationController
     # @complete_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND supplier_id = ? AND paid = ?", params[:buyer_id], current_customer.id, true).page params[:page]
   end
 
-  def reject
+  def confirm
     @transaction = Transaction.find(params[:id])
+    @transaction.buyer_confirmed = true
+    if @transaction.save
+      redirect_to trading_history_path, notice: 'Transaction confirm successfully'
+    else
+      redirect_to trading_history_path, notice: 'Not confirm now. Please try again.'
+    end
   end
 
   def show
@@ -64,23 +70,23 @@ class TransactionsController < ApplicationController
     @payment_details = PartialPayment.where(transaction_id: params[:id])
   end
 
-  def reject_reason
-    @transaction = Transaction.find(params[:id])
-    @transaction.reject_reason = params[:transaction][:reject_reason]
-    @transaction.buyer_rejected = true
-    @transaction.reject_date = Time.now
-    if @transaction.save(validate: false)
-      Message.create_message(@transaction)
-      redirect_to trading_history_path, notice: 'Transaction rejected successfully'
-    else
-      redirect_to trading_history_path, notice: 'Not rejected now. Please try again.'
-    end
-  end
+  # def reject_reason
+  #   @transaction = Transaction.find(params[:id])
+  #   @transaction.reject_reason = params[:transaction][:reject_reason]
+  #   @transaction.buyer_rejected = true
+  #   @transaction.reject_date = Time.now
+  #   if @transaction.save(validate: false)
+  #     Message.create_message(@transaction)
+  #     redirect_to trading_history_path, notice: 'Transaction rejected successfully'
+  #   else
+  #     redirect_to trading_history_path, notice: 'Not rejected now. Please try again.'
+  #   end
+  # end
 
   private
   def parcel_transaction_params
     params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :sold, :diamond_type,
-                                        my_transaction_attributes: [:buyer_id, :supplier_id, :trading_parcel_id, :price, :credit, :paid, :created_at, :transaction_type, :weight, :diamond_type ])
+                                        my_transaction_attributes: [:buyer_id, :supplier_id, :trading_parcel_id, :price, :credit, :paid, :created_at, :transaction_type, :weight, :diamond_type, :buyer_confirmed ])
   end
 
    def partial_payment_params

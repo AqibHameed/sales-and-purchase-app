@@ -58,7 +58,7 @@
           <td><%= tender.stones.count %></td>
           <td><%= tender.stones.sum(:weight) %></td>
           <td><%= tender.open_date.strftime("%B, %d %Y") %></td>
-          <td><%= time_remaining(tender.close_date) if !tender.close_date.nil? %></td>
+          <td><%= time_remaining(tender.open_date) if !tender.close_date.nil? %></td>
         </tr>
       <% end %>
   </table>

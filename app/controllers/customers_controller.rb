@@ -8,7 +8,6 @@ class CustomersController < ApplicationController
   end
 
   def info
-
     @total_transaction = Transaction.total_transaction(current_customer.id).count
     @pending_transactions = Transaction.pending_received_transaction(current_customer.id).count + Transaction.pending_sent_transaction(current_customer.id).count
     @overdue_transactions = Transaction.overdue_received_transaction(current_customer.id).count + Transaction.overdue_sent_transaction(current_customer.id).count
@@ -25,7 +24,6 @@ class CustomersController < ApplicationController
     @shared_table = Shared.where(shared_by_id: current_customer.id)
     @credit_recieved_transaction = Transaction.where('buyer_id =?',current_customer.id)
     @credit_given_transaction = Transaction.where('supplier_id =?',current_customer.id)
-
   end
 
   def shared

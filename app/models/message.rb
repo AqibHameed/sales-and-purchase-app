@@ -7,7 +7,7 @@ class Message < ApplicationRecord
   end
 
   def self.create_new(proposal)
-    @message  = "#{proposal.notes}"
+    @message  = "#{proposal.notes} </br>"
     @message << "For more Details about proposal, #{ApplicationController.helpers.view_proposal(proposal)}"
 
     Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.supplier_id, message_type: "Proposal")

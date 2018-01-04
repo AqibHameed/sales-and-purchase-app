@@ -43,7 +43,7 @@ class Transaction < ApplicationRecord
     Transaction.create(buyer_id: proposal.buyer_id, supplier_id: proposal.supplier_id,
                       trading_parcel_id: proposal.trading_parcel_id, price: proposal.price,
                       credit: proposal.credit, due_date: Date.today + (proposal.credit).days,
-                      paid: false, created_at: Time.now, diamond_type: trading_parcel.diamond_type)
+                      paid: false, buyer_confirmed: true, created_at: Time.now, diamond_type: trading_parcel.diamond_type)
   end
 
   def update_credit_limit
@@ -76,31 +76,31 @@ class Transaction < ApplicationRecord
   end
 
   def self.total_transaction(customer_id)
-    total_transaction = Transaction.where('(buyer_id = ? or supplier_id = ?) and buyer_rejected = ?',customer_id, customer_id, false)
+    total_transaction = Transaction.where('(buyer_id = ? or supplier_id = ?) and buyer_confirmed = ?',customer_id, customer_id, true)
   end
 
   def self.pending_sent_transaction(customer_id)
-    total_pending_sent = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_rejected = ?", customer_id, Date.today, false, false)
+    total_pending_sent = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", customer_id, Date.today, false, true)
   end
 
   def self.pending_received_transaction(customer_id)
-    total_pending_received = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_rejected = ?", customer_id, Date.today, false, false)
+    total_pending_received = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", customer_id, Date.today, false, true)
   end
 
   def self.overdue_received_transaction(customer_id)
-    total_overdue_received = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_rejected = ?", customer_id, Date.today, false, false)
+    total_overdue_received = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?", customer_id, Date.today, false, true)
   end
 
   def self.overdue_sent_transaction(customer_id)
-    total_overdue_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date < ? AND paid = ? AND buyer_rejected = ?", customer_id, Date.today, false, false)
+    total_overdue_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?", customer_id, Date.today, false, true)
   end
 
   def self.complete_received_transaction(customer_id)
-    total_complete_received = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ? AND buyer_rejected = ?", customer_id, true, false)
+    total_complete_received = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ? AND buyer_confirmed = ?", customer_id, true, true)
   end
 
   def self.complete_sent_transaction(customer_id)
-    total_complete_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND paid = ? AND buyer_rejected = ?", customer_id, true, false)
+    total_complete_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND paid = ? AND buyer_confirmed = ?", customer_id, true, true)
   end
 
   # def release_credits
