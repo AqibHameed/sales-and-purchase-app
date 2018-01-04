@@ -1,12 +1,24 @@
 module TendersHelper
   def time_remaining(close_date)
-
     if close_date < Time.now
       'Closed'
     else
       time_ago_in_words(close_date)
     end
     #return close_date
+  end
+
+  def distance_time_remaining(tender, date)
+    timezone = tender.try(:timezone)
+    if timezone
+      zone_time = Time.now.in_time_zone(timezone)
+      if date < zone_time
+        'Closed'
+      else
+        distance_of_time_in_words(date, zone_time)
+      end
+      #return close_date
+    end
   end
 
   def delete_stones_tender_path(id)

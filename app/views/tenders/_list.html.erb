@@ -22,7 +22,7 @@
       <td><%= tender.diamond_type %></td>
       <td><%= tender.bid_count(current_customer) > 0 ? tender.bid_count(current_customer) : (tender.sight_bid_count(current_customer) > 0 ? tender.sight_bid_count(current_customer) : 0) %></td>
       <td><%= tender.total_bid_amount(current_customer) > 0 ? tender.total_bid_amount(current_customer) : (tender.total_sight_bid_amount(current_customer)> 0 ? tender.total_sight_bid_amount(current_customer) : 0.0)%></td>
-      <td><%= time_remaining(tender.close_date) if !tender.close_date.nil?%></td>
+      <td><%= distance_time_remaining(tender, tender.close_date) if !tender.close_date.nil?%></td>
       <% if current_customer %>
       <td><%= bid_confirmation_link(tender, current_customer)  %></td>
       <% else %>
@@ -58,7 +58,7 @@
           <td><%= tender.stones.count %></td>
           <td><%= tender.stones.sum(:weight) %></td>
           <td><%= tender.open_date.strftime("%B, %d %Y") %></td>
-          <td><%= time_remaining(tender.open_date) if !tender.close_date.nil? %></td>
+          <td><%= distance_time_remaining(tender, tender.open_date) if !tender.open_date.nil? %></td>
         </tr>
       <% end %>
   </table>
