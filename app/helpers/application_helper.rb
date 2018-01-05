@@ -288,13 +288,15 @@ module ApplicationHelper
   end
 
   def get_status transaction
-    if transaction.paid
+    if !transaction.buyer_confirmed
+      'Awaiting Confirmation'
+    elsif transaction.paid
       'Completed'
     else
       if transaction.due_date.nil? || transaction.due_date.blank?
         'N/A'
       elsif (transaction.due_date > Date.today) && (transaction.paid == false)
-        'Pending'
+        'Pending Payment'
       elsif (transaction.due_date < Date.today) && (transaction.paid == false)
         'Overdue'
       end
