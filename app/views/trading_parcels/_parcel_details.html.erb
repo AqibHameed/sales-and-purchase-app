@@ -40,8 +40,12 @@
     <td><%= (@parcel.sight.nil? || @parcel.sight.blank?) ? 'N/A' : @parcel.sight.to_date.strftime("%m/%y") %></td>
   </tr>
   <tr class="parcel-details">
-    <td> Price</td>
+    <td> Avg. Price</td>
     <td><%= @parcel.price.nil? ? 'N/A' : number_with_precision(@parcel.price, precision: 2) %></td>
+  </tr>
+  <tr class="parcel-details">
+    <td>Price</td>
+    <td><%= @parcel.price.nil? ? 'N/A' : number_with_precision((@parcel.price*@parcel.weight), precision: 2) %></td>
   </tr>
   <tr class="parcel-details">
     <td> Credit</td>

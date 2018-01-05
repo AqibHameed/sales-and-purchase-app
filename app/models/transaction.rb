@@ -15,7 +15,7 @@ class Transaction < ApplicationRecord
       errors[:base] << "You haven't given any limit to selected customer. Please <a href = '/suppliers/credit'>click here</a> to assign.".html_safe
     else
       credit_limit = limit.credit_limit
-      transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false)
+      transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false, buyer_confirmed: true)
       @amount = []
       transactions.each do |t|
         @amount << t.remaining_amount
@@ -23,7 +23,7 @@ class Transaction < ApplicationRecord
       used_amt = @amount.sum
       get_weight = weight.blank? ? 1 : weight
       if diamond_type == 'Rough'
-        total_price = price.to_f
+        total_price = price.to_f * weight.to_f
       else
         total_price = price.to_f * weight.to_f
       end
