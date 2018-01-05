@@ -52,7 +52,7 @@
         <div class="clear10"></div>
         <div class="btns-groups">
           <%= f.submit 'Login', :class => 'btn-02 login-btn login_submit' %>
-          <%= link_to('Register', new_customer_registration_path, :class => 'btn-02 login-btn registration_submit')  %>
+          <%= link_to('Register', new_customer_registration_path, :class => 'btn-02 login-btn registration_submit', data: { turbolink: false })  %>
         </div>
         <% end %>
      </div>
