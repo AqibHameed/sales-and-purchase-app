@@ -1,6 +1,7 @@
-<script src="http://code.highcharts.com/highcharts.js"></script>
+<!--<script src="http://code.highcharts.com/highcharts.js"></script>-->
 <div class="tender-detail">
 	<h3> <%= @tender.name %></h3>
+  <% tender_timer = @tender.tender_timer %>
 	<div class="clear10"></div>
 	<%= raw(@tender.description)  %>
 	<div class="clear10"></div>
@@ -45,7 +46,18 @@
               Time Remaining
             </div>
             <div class="field">
-              <% unless @tender.nil? %>
+              <%#= tender_timer.inspect %>
+              <% if tender_timer['timer_value'] > 0 %>
+                <div class="clock"></div>
+                <% if tender_timer['tender_state'] == 'round_break' %>
+                  Next Round will be start at <b><%= tender_timer['round_start_in'] %></b>
+                <% elsif tender_timer['tender_state'] == 'tender_wait' %>
+                  Bidding start time <b><%= tender_timer['round_start_in'] %></b>
+                <% elsif tender_timer['tender_state'] == 'finished' %>
+                  Bidding is completed
+                <% end %>
+              <% end %>
+              <!-- <% unless @tender.nil? %>
                 <% if @tender.bidding_start %>
                   <div class="clock"></div>
                 <% elsif @tender.before_bidding_start %>
@@ -57,7 +69,7 @@
                 <% elsif DateTime.now > @tender.close_date %>
                   Bidding is completed
                 <% end %>
-              <%end%>
+              <%end%> -->
             </div>
           <%end%>
           <div class="clear"></div>
@@ -128,7 +140,21 @@
     $("#myTable").tablesorter();
     var buyer_left = $(this).find('.yes-no-round').html();
 
-    if ('<%= @tender.bidding_start %>' == 'true') {
+      <% if tender_timer['timer_value'] > 0 %>
+      var clock = $('.clock').FlipClock('<%=tender_timer['timer_value'].to_i%>', {
+          clockFace: '<%=tender_timer['clockFace'].to_s%>',
+          countdown: true,
+          callbacks: {
+              stop: function() {
+                  console.log('timer finished');
+                  setTimeout(function () { location.reload(true); }, 1000);
+              }
+          }
+      });
+      <% end %>
+
+
+    /*if ('<%= @tender.bidding_start %>' == 'true') {
       console.log("kkkkkkkkkkkkkkkkkkkkkkkk")
       var clock = $('.clock').FlipClock('<%=@tender.bidding_time.to_i%>', {
         clockFace: 'MinuteCounter',
@@ -191,7 +217,7 @@
       });
     } else {
       console.log("time up")
-    }
+    }*/
 
     function yes_no_rounds_show(){
       console.log('in yes no')
