@@ -711,6 +711,112 @@ class Tender < ApplicationRecord
   end
 
   # YES/NO Bidding #
+
+  def tender_timer
+    timer_value = case self.tender_type
+                    when 'Blind'
+                      bliding_timer
+                    when 'Yes/No'
+                      yn_timer
+                    else
+                      0
+                  end
+
+    return timer_value
+  end
+
+  #Prepares tender data in order to display timer
+  # Returns Hash object
+  def yn_timer
+    result = {
+        'timer_value' => 0,
+        'tender_state' => '',
+        'clockFace' => 'MinuteCounter'
+    }
+    #Check if the tender active
+    if Time.current.to_i >= self.bid_open.to_i && Time.current.to_i < self.close_date.to_i
+      open_bid = self.bid_open #Time.parse('2018-01-05 22:40:00')
+      #Time elapsed from the beginning of tender
+      elapsed_time = Time.current.to_i - open_bid.to_i
+      #Round duration time in seconds
+      round_duration_s = self.round_duration*60
+      #Time between rounds in seconds
+      rounds_between_duration_s = self.rounds_between_duration*60
+      #Period of round
+      round_period_s = round_duration_s + rounds_between_duration_s
+      #Cound of rounds that have already passed from the begginig of tender
+      rounds_pass = (elapsed_time/round_period_s).floor
+      #Current round period time
+      period_part = elapsed_time - (round_period_s)*rounds_pass
+      #Check what part of round is.
+      # Round duration
+      if period_part < round_duration_s
+        result['timer_value'] = round_duration_s - period_part
+        result['bid_status'] = true
+        result['tender_state'] = 'round_active'
+        result['current_round'] = rounds_pass + 1
+      # Round break
+      elsif period_part <= round_period_s
+        result['timer_value'] = round_period_s - period_part
+        result['bid_status'] = false
+        result['round_start_in'] = Time.strptime((Time.current.to_i + result['timer_value']).to_s, '%s')
+        result['tender_state'] = 'round_break'
+        result['current_round'] = rounds_pass
+      end
+      #Puts these value for debug
+      result['elapsed_time'] = elapsed_time
+      result['rounds_pass'] = rounds_pass
+      result['period_part'] = period_part
+
+    #Check if tender is not started
+    elsif Time.current.to_i < self.bid_open.to_i
+      result['timer_value'] = self.bid_open.to_i - Time.current.to_i
+      result['bid_status'] = false
+      result['round_start_in'] = open_bid #Time.strptime((Time.current.to_i + result['timer_value']).to_s, '%s')
+      result['tender_state'] = 'tender_wait'
+    #Check if tender has alredy finished
+    elsif Time.current.to_i > self.close_date.to_i
+      result['bid_status'] = false
+      result['tender_state'] = 'finished'
+    end
+    if result['timer_value'] > 3600 && result['timer_value'] < 86400
+      result['clockFace'] = 'HourlyCounter'
+    elsif result['timer_value'] > 86400
+      result['clockFace'] = 'DailyCounter'
+    end
+    return result
+  end
+
+  def bliding_timer
+    result = {
+        'timer_value' => 0,
+        'tender_state' => '',
+        'clockFace' => 'MinuteCounter'
+    }
+
+    #Check if the tender active
+    if Time.current.to_i >= self.bid_open.to_i && Time.current.to_i < self.close_date.to_i
+      result['timer_value'] = self.close_date.to_i - self.bid_open.to_i
+      result['tender_state'] = 'round_active'
+    #Check if tender is not started
+    elsif Time.current.to_i < self.bid_open.to_i
+      result['timer_value'] = self.bid_open.to_i - Time.current.to_i
+      result['round_start_in'] = Time.strptime((Time.current.to_i + result['timer_value']).to_s, '%s')
+      result['tender_state'] = 'tender_wait'
+    #Check if tender has alredy finished
+    elsif Time.current.to_i > self.close_date.to_i
+      result['tender_state'] = 'finished'
+    end
+
+    if result['timer_value'] > 3600 && result['timer_value'] < 86400
+      result['clockFace'] = 'HourlyCounter'
+    elsif result['timer_value'] > 86400
+      result['clockFace'] = 'DailyCounter'
+    end
+
+    return result
+  end
+
   def before_bidding_start
    if DateTime.now.to_i < self.round_open_time.to_i
     return true
@@ -743,6 +849,7 @@ class Tender < ApplicationRecord
     end
   end
 
+=begin
   def before_bidding_start
    if DateTime.now.to_i < self.round_open_time.to_i
     return true
@@ -750,6 +857,7 @@ class Tender < ApplicationRecord
     return false
     end
   end
+=end
 
   def round_duration_time
     if self.round_open_time.present?
