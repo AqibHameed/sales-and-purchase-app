@@ -55,7 +55,7 @@
       <th>Paid Date</th>
     </thead>
     <tbody>
-      <%@payment_details.each_with_index do |payment_detail,i|%>
+      <% @payment_details.each_with_index do |payment_detail,i|%>
         <tr>
           <td><%=i+1%></td>
           <td><%=number_with_precision(payment_detail.amount, precision: 2) %></td>
@@ -67,8 +67,11 @@
     </tr>
   </table>
   <div class="clear20"></div>
-
-  <%= link_to 'Message', new_message_path(id: @transaction.buyer_id), class: 'login-btn btn-02', data: {turbolinks: false}%>
+  <% if current_customer.id == @transaction.buyer_id %>
+    <%= link_to 'Message', new_message_path(id: @transaction.supplier_id), class: 'login-btn btn-02', data: {turbolinks: false}%>
+  <% else %>
+    <%= link_to 'Message', new_message_path(id: @transaction.buyer_id), class: 'login-btn btn-02', data: {turbolinks: false}%>
+  <% end %>
   <%if (!@transaction.paid? && @transaction.supplier_id == current_customer.id && @transaction.buyer_confirmed) %>
     <%=link_to 'Enter Payment','#', id: 'place_amount', class: 'login-btn btn-02',data: {turbolinks: false} %>
   <%end%>
