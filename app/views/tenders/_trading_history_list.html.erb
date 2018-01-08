@@ -23,8 +23,10 @@
       <% @transactions.each do |transaction| %>
       <% if get_status(transaction) == 'Overdue' %>
         <% color = 'bg-red' %>
+        <% link = 'white' %>
       <% else %>
-         <% color = 'bg-normal'%>
+         <% color = 'bg-normal' %>
+         <% link = '' %>
       <% end %>
       <tr class="<%= color %>">
         <td><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
@@ -47,11 +49,11 @@
         <% if transaction.buyer_confirmed %>
           <td>Confirmed</td>
         <% elsif current_user.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && get_status(transaction) != 'Completed' %>
-          <td><%=link_to 'Confirm', confirm_transaction_path(transaction), data: {turbolinks: false} %></td>
+          <td><%=link_to 'Confirm', confirm_transaction_path(transaction), data: {turbolinks: false}, class: link %></td>
         <% else %>
           <td></td>
         <% end %>
-        <td><%=link_to 'view' , transaction_path(transaction), data: {turbolinks: false} %></td>
+        <td><%=link_to 'view' , transaction_path(transaction), data: {turbolinks: false}, class: link %></td>
       </tr>
       <% end %>
     </tbody>
