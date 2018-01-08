@@ -457,9 +457,11 @@ class TendersController < ApplicationController
   def yes_or_no_winners
     data = params[:data]
     tender = Tender.where(id: data[:tender_id]).first
+    timer_info = tender.tender_timer
+    puts timer_info.inspect
     if data[:interest] == "Yes"
       if data[:stone_id].present?
-        @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: tender.round).first_or_create
+        @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: timer_info['current_round']).first_or_create
         # if @yes_no_buyer_interest.present?
         #   new_yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: @tender.round).first_or_create
         # else
@@ -469,7 +471,7 @@ class TendersController < ApplicationController
         # @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer])
         # place_bid = @yes_no_buyer_interest.first.place_bid + 1
         # @yes_no_buyer_interest = @yes_no_buyer_interest.first.update_attributes(interest: true, buyer_left: false, reserved_price: data[:reserved_price], place_bid: place_bid )
-        @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: tender.round).first_or_create
+        @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: timer_info['current_round']).first_or_create
         # @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer], interest: true).last
         # if @yes_no_buyer_interest.present?
         #   new_yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: @yes_no_buyer_interest.round + 1).first_or_create

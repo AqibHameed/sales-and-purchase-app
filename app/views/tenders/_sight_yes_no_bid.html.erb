@@ -22,9 +22,10 @@
 			</tr>
 		</thead>
 		<tbody>
+    <% tender_timer = @tender.tender_timer %>
       <% @sights.each_with_index do |sight,i| %>
         <% unless sight.source == "Description" || sight.source == "DESCRIPTION" %>
-          <% current_round = @tender.round %>
+        <% current_round = tender_timer['current_round']%>
           <% sight_winner = sight.yes_no_buyer_winner %>
 
           <tr>

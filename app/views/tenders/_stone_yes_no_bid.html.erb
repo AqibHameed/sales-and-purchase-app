@@ -20,9 +20,11 @@
       </tr>
     </thead>
     <tbody>
-      <% @stones.each_with_index do |stone,i| %>
+    <% tender_timer = @tender.tender_timer %>
+    <%= tender_timer.inspect %>
+    <% @stones.each_with_index do |stone,i| %>
          <% unless stone.description == "Description" || stone.description == "DESCRIPTION"%>
-            <% current_round = @tender.round %>
+            <% current_round = tender_timer['current_round']%>
             <% stone_winner = stone.yes_no_buyer_winner %>
 
               <tr class="<%= get_color(@diff, stone.description) %> ">
