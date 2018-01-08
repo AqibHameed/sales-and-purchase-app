@@ -23,7 +23,7 @@
         <tr class='bg-normal'>
           <td><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
           <td><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
-          <td><%= transaction.trading_parcel.weight rescue 'N/A'  %></td>
+          <td><%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %></td>
           <td><%= transaction.trading_parcel.cost rescue 'N/A'  %></td>
           <td><%= transaction.trading_parcel.box_value rescue 'N/A' %></td>
           <td><%= transaction.trading_parcel.sight rescue 'N/A' %></td>

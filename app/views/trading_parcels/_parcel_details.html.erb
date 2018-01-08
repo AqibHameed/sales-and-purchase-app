@@ -25,7 +25,7 @@
   </tr>
   <tr>
     <td> Carats</td>
-    <td><%= @parcel.weight %></td>
+    <td><%= number_with_precision(@parcel.weight, precision: 2) %></td>
   </tr>
   <tr>
     <td> Cost</td>

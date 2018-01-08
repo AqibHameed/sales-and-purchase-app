@@ -16,7 +16,7 @@
         <td><%= index_count(params[:page].to_i) + i %></td>
         <td><%= transaction.try(:supplier).try(:company) %></td>
         <td><%= get_description(transaction.trading_parcel) if transaction %></td>
-        <td><%= transaction.trading_parcel.weight %></td>
+        <td><%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A' %></td>
         <td><%= transaction.price.nil? ? 'N/A' : number_with_precision(transaction.price, precision: 2) %></td>
         <td><%= transaction.credit.nil? ? 'N/A' : transaction.credit %></td>
         <td><%= transaction.due_date.strftime("%B, %d %Y") %></td>
