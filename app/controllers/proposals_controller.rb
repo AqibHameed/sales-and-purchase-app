@@ -38,6 +38,7 @@ class ProposalsController < ApplicationController
   def update
     if @proposal.update_attributes(proposal_params)
       # Email sent to action for column user
+      Message.create_new_negotiate(@proposal, current_customer)
       flash[:notice] = "Proposal sent successfully."
       redirect_to proposals_path
     else

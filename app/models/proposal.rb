@@ -32,9 +32,9 @@ class Proposal < ApplicationRecord
       used_amt = @amount.sum
       get_weight = self.trading_parcel.weight.blank? ? 1 : self.trading_parcel.weight
       if self.trading_parcel.diamond_type == 'Rough'
-        total_price = price.to_f * get_weight.to_f
+        total_price = self.trading_parcel.price.to_f * get_weight.to_f
       else
-        total_price = price.to_f * get_weight.to_f
+        total_price = self.trading_parcel.price.to_f * get_weight.to_f
       end
       available_limit = credit_limit.to_f - used_amt.to_f
       if total_price.to_f > available_limit
