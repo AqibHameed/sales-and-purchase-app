@@ -172,7 +172,7 @@ class TendersController < ApplicationController
     @note.stone_id = params[:stone_id].present? ? params[:stone_id] : nil
     @note.sight_id = params[:sight_id].present? ? params[:sight_id] : nil
     @note.deec_no = params[:deec_no].present? ? params[:deec_no] : nil
-    @note.save
+    @note.save(validate: false)
 
     respond_to do |format|
       format.js
