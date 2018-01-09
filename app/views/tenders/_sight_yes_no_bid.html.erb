@@ -27,7 +27,7 @@
     <% current_round = tender_timer['current_round']%>
       <% @sights.each_with_index do |sight,i| %>
         <% unless sight.source == "Description" || sight.source == "DESCRIPTION" %>
-          <% is_customer_can_bid = current_customer.can_bid_on_parcel('sight', current_round+1, @tender, sight) %>
+          <% is_customer_can_bid = current_customer.can_bid_on_parcel('sight', current_round, @tender, sight) %>
           <% sight_winner = sight.yes_no_buyer_winner %>
 
           <tr>
@@ -68,7 +68,7 @@
               <% elsif sight.stone_winning_price.present? && sight_winner.try(:customer_id) != current_customer.id %>
               <% elsif is_customer_can_bid %>
                 <label class="switch">
-                  <input class="switch-input" type="checkbox" <%= is_customer_can_bid ? 'checked="checked"' : ''%> />
+                  <input class="switch-input" type="checkbox" <%= current_customer.can_bid_on_parcel('sight', current_round, @tender, sight) ? 'checked="checked"' : ''%> />
                   <span class="switch-label" data-on="Yes" data-off="No"></span>
                   <span class="switch-handle"></span>
                 </label>
