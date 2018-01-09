@@ -180,11 +180,18 @@ class Customer < ApplicationRecord
 
   ## YES/NO ##
   def can_bid_on_parcel(type, round, tender, stone)
-    if type == 'stone'
-      YesNoBuyerInterest.where(tender_id: tender.id, stone_id: stone.id, round: round - 1 , customer_id: self.id).first.present?
-    elsif type == 'sight'
-      YesNoBuyerInterest.where(tender_id: tender.id, sight_id: stone.id, round: round - 1, customer_id: self.id).first.present?
+    #always allow on the first round
+    if round == 1
+      return true
     end
+    #check placing bids by type of diamond
+    if type == 'stone'
+      return YesNoBuyerInterest.where(tender_id: tender.id, stone_id: stone.id, round: round - 1 , customer_id: self.id).first.present?
+    elsif type == 'sight'
+      return YesNoBuyerInterest.where(tender_id: tender.id, sight_id: stone.id, round: round - 1, customer_id: self.id).first.present?
+    end
+    #forbid to place bid by default
+    return false
   end
   ############
 
