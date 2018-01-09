@@ -365,5 +365,17 @@ module ApplicationHelper
     # YesNoBuyerInterest.where(stone_id: stones.map { |e| e.id }).empty
   end
 
+  def parcel_list_for_demand(demand_list=nil)
+    if demand_list.nil?
+      []
+    else
+      demand_list.map { |e| e.description  }
+    end
+  end
+
+  def customer_list_for_demand
+    Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+  end
+
 end
 

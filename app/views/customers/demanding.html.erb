@@ -1,28 +1,21 @@
-
 <div class="form-wrapper">
   <%= form_for @demanding_parcel, :url =>  demanding_create_customers_path , method: :post  do |f| %>
     <div class="form-row">
       <div class="label">Diamond Type: </div>
       <div class="field">
-        <%= f.select :diamond_type, options_for_select(['Rough', 'Sight']), {include_blank: true}, {class: 'input'} %>
+        <%= f.select :diamond_type, options_for_select(['Rough']), {include_blank: true}, {class: 'input'} %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label">Supplier: </div>
+      <div class="field">
+        <%= f.select :supplier_id, options_for_select(customer_list_for_demand), { include_blank: true }, { class: 'input' } %>
       </div>
     </div>
     <div class="form-row">
       <div class="label">Description: </div>
-      <div class="field">
-        <%= f.text_field :description,  class: 'input' %>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="label">Carats:</div>
-      <div class="field">
-        <%= f.text_field :weight, class: 'input' %>
-      </div>
-    </div>
-     <div class="form-row">
-      <div class="label">Price:</div>
-      <div class="field">
-        <%= f.text_field :price, class: 'input' %>
+      <div class="field demand_desc">
+        <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
       </div>
     </div>
     <div class="form-row">
@@ -35,3 +28,13 @@
 </div>
 <div class="clear10"></div>
 
+<script type="text/javascript">
+  $(document).on('change', '#demand_supplier_id', function(){
+    id = $('#demand_supplier_id').val()
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+  })
+})
+</script>

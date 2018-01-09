@@ -154,7 +154,7 @@ class CustomersController < ApplicationController
   end
 
   def demanding_create
-    @demanding_parcel = Demand.where(description: params[:demand][:description], customer_id: current_customer.id).first_or_create do |demand|
+    @demanding_parcel = Demand.where(description: params[:demand][:description], customer_id: current_customer.id, supplier_id: params[:demand][:supplier_id]).first_or_create do |demand|
       demand.weight = params[:demand][:weight]
       demand.price = params[:demand][:price]
       demand.diamond_type = params[:demand][:diamond_type]

@@ -30,7 +30,8 @@ class TradingParcel < ApplicationRecord
 
   def demand_count(parcel,customer)
     description = parcel.description
-    count = Demand.where(description: description).where.not(customer_id: customer.id).count
+    customer_id = parcel.customer_id
+    count = Demand.where(description: description, supplier_id: customer_id).where.not(customer_id: customer.id).count
     return count
   end
 

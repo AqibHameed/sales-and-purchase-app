@@ -97,6 +97,13 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def supplier_demand_list
+    @demand_list = DemandList.where(supplier_id: params[:id])
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def credit_given_list
     @credit_limits = CreditLimit.where(supplier_id: current_customer.id)
   end
