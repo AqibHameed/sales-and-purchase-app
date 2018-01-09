@@ -439,24 +439,35 @@ class Tender < ApplicationRecord
 
   def self.stone_list(stones, id, current_customer)
     @read_tick_stones =[]
+    @bid_allow_stones = []
     @read_stones=[]
     @tick_stones=[]
     @rest_stones=[]
     @stones=[]
+    tender = Tender.find(id)
+    timer_info = tender.tender_timer
     stones.each_with_index do |stone,i|
       key="#{stone.description}##{stone.weight}"
       read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
       tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
-      if tick.present? && read.present?
+      is_stone_allow = current_customer.can_bid_on_parcel('stone', timer_info['current_round'], tender, stone)
+      if tick.present? && read.present? && is_stone_allow == true
+        @bid_allow_stones << stone
+      elsif tick.present? && read.present?
         @read_tick_stones << stone
+      elsif read.present? && is_stone_allow == true
+        @bid_allow_stones << stone
       elsif read.present?
         @read_stones << stone
+      elsif tick.present? && is_stone_allow == true
+        @bid_allow_stones << stone
       elsif tick.present?
         @tick_stones << stone
       else
         @rest_stones << stone
       end
     end
+    @stones << @bid_allow_stones
     @stones << @read_tick_stones
     @stones << @read_stones
     @stones << @tick_stones
@@ -466,25 +477,36 @@ class Tender < ApplicationRecord
   end
 
   def self.sight_list(sights, id, current_customer)
+    @bid_allow_sights = []
     @read_tick_sights =[]
     @read_sights=[]
     @tick_sights=[]
     @rest_sights=[]
     @sights=[]
+    tender = Tender.find(id)
+    timer_info = tender.tender_timer
     sights.each_with_index do |sight,i|
       key="#{sight.source}##{sight.carats}"
       read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
       tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
-      if tick.present? && read.present?
+      is_sight_allow = current_customer.can_bid_on_parcel('stone', timer_info['current_round'], tender, stone)
+      if tick.present? && read.present? && is_sight_allow == true
+        @bid_allow_sights << sight
+      elsif tick.present? && read.present?
         @read_tick_sights << sight
+      elsif read.present? && is_sight_allow == true
+        @bid_allow_sights << sight
       elsif read.present?
         @read_sights << sight
+      elsif tick.present? && is_sight_allow == true
+        @bid_allow_sights << sight
       elsif tick.present?
         @tick_sights << sight
       else
         @rest_sights << sight
       end
     end
+    @sights << @bid_allow_sights
     @sights << @read_tick_sights
     @sights << @read_sights
     @sights << @tick_sights
@@ -731,11 +753,13 @@ class Tender < ApplicationRecord
     result = {
         'timer_value' => 0,
         'tender_state' => '',
-        'clockFace' => 'MinuteCounter'
+        'clockFace' => 'MinuteCounter',
+        'current_round' => 0,
+        'rounds_pass' => 0
     }
+    open_bid = self.bid_open #Time.parse('2018-01-05 22:40:00')
     #Check if the tender active
     if Time.current.to_i >= self.bid_open.to_i && Time.current.to_i < self.close_date.to_i
-      open_bid = self.bid_open #Time.parse('2018-01-05 22:40:00')
       #Time elapsed from the beginning of tender
       elapsed_time = Time.current.to_i - open_bid.to_i
       #Round duration time in seconds
@@ -774,6 +798,7 @@ class Tender < ApplicationRecord
       result['bid_status'] = false
       result['round_start_in'] = open_bid #Time.strptime((Time.current.to_i + result['timer_value']).to_s, '%s')
       result['tender_state'] = 'tender_wait'
+
     #Check if tender has alredy finished
     elsif Time.current.to_i > self.close_date.to_i
       result['bid_status'] = false
