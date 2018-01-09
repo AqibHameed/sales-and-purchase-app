@@ -741,7 +741,7 @@ class Tender < ApplicationRecord
                     when 'Yes/No'
                       yn_timer
                     else
-                      0
+                      {'timer_value' => 0,'tender_state' => 'finished','clockFace' => 'MinuteCounter','current_round' => 0,'rounds_pass' => 0}
                   end
 
     return timer_value
@@ -816,7 +816,9 @@ class Tender < ApplicationRecord
     result = {
         'timer_value' => 0,
         'tender_state' => '',
-        'clockFace' => 'MinuteCounter'
+        'clockFace' => 'MinuteCounter',
+        'current_round' => 0,
+        'rounds_pass' => 0
     }
 
     #Check if the tender active
