@@ -497,8 +497,8 @@ class TendersController < ApplicationController
   def update_time
     tender = Tender.where(id: params[:tender_id]).first
     if !tender.nil?
-      if tender.check_if_bid_placed?
-        tender.check_for_winners(tender.round, current_customer)
+      if tender.check_if_bid_placed(params[:round].to_i)
+        tender.check_for_winners(params[:round].to_i, current_customer)
       end
       if tender.updated_after_round
         render :json => { success: true }
