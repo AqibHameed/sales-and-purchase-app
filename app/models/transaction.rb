@@ -65,11 +65,7 @@ class Transaction < ApplicationRecord
   end
 
   def generate_and_add_amount
-    if diamond_type == 'Rough'
-      amount =  price
-    else
-      amount = price*trading_parcel.weight
-    end
+    amount = price*trading_parcel.weight
     self.remaining_amount = amount
     self.total_amount = amount
     self.save(validate: false)
