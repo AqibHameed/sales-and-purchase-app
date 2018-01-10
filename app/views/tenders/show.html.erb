@@ -138,37 +138,53 @@
 <% unless @tender.nil? || @tender.tender_type == 'Blind' %>
   $(document).ready(function() {
     $("#myTable").tablesorter();
-    var buyer_left = $(this).find('.yes-no-round').html();
-
       <% if tender_timer['timer_value'] > 0 %>
-      var clock = $('.clock').FlipClock('<%=tender_timer['timer_value'].to_i%>', {
+      $('.clock').FlipClock('<%=tender_timer['timer_value'].to_i%>', {
           clockFace: '<%=tender_timer['clockFace'].to_s%>',
           countdown: true,
           callbacks: {
               stop: function() {
-                  console.log('timer finished');
+                  <% if tender_timer['tender_state'] == 'round_active' %>
+                  on_round_finished();
+                  <% else %>
                   setTimeout(function () { location.reload(true); }, 1000);
+                  <% end %>
+
               }
           }
       });
+
+      function on_round_finished() {
+          $.ajax({
+              url : '/change_tender_open_time',
+              type : 'GET',
+              data : { tender_id: '<%=@tender.id%>', round: '<%= tender_timer['current_round']%>' },
+              success: function (data) {
+                  if(data.success == true) {
+                      setTimeout(function () { location.reload(true); }, 1000);
+                  }
+              }
+          })
+      }
+
       <% end %>
 
 
-    /*if ('<%= @tender.bidding_start %>' == 'true') {
+    /*if ('<%#= @tender.bidding_start %>' == 'true') {
       console.log("kkkkkkkkkkkkkkkkkkkkkkkk")
-      var clock = $('.clock').FlipClock('<%=@tender.bidding_time.to_i%>', {
+      var clock = $('.clock').FlipClock('<%#=@tender.bidding_time.to_i%>', {
         clockFace: 'MinuteCounter',
         countdown: true,
         callbacks: {
           stop: function() {
             console.log('342432423432345245453543')
-            yes_no_rounds("<%= @tender.id %>", "<%= (@tender.round_open_time.to_i + @tender.round_duration) %>");
+            yes_no_rounds("<%#= @tender.id %>", "<%#= (@tender.round_open_time.to_i + @tender.round_duration) %>");
           }
         }
       });
-    } else if ('<%= @tender.before_bidding_start %>' == 'true') {
+    } else if ('<%#= @tender.before_bidding_start %>' == 'true') {
       console.log("hHHHHHHHHHHHHHHH")
-      var clock1 = $('.clock1').FlipClock('<%=@tender.round_duration_time.to_i%>', {
+      var clock1 = $('.clock1').FlipClock('<%#=@tender.round_duration_time.to_i%>', {
         clockFace: 'MinuteCounter',
         countdown: true,
         callbacks: {
@@ -178,12 +194,12 @@
           }
         }
       });
-    } else if ('<%= @tender.break_time %>' == 'true') {
+    } else if ('<%#= @tender.break_time %>' == 'true') {
       console.log("LLLLLLLLLLLLLLLLLLLLLLLLLL")
       // $.ajax({
       //   url : '/change_system_price',
       //   type : 'GET',
-      //   data : { tender_id: '<%=@tender.id%>', customer_id: '<%=current_customer.id%>'},
+      //   data : { tender_id: '<%#=@tender.id%>', customer_id: '<%#=current_customer.id%>'},
       //   success: function (data) {
       //     console.log(data)
       //   }
@@ -192,12 +208,12 @@
       $.ajax({
         url : '/change_tender_open_time',
         type : 'GET',
-        data : { tender_id: '<%=@tender.id%>', round: round },
+        data : { tender_id: '<%#=@tender.id%>', round: round },
         success: function (data) {
           console.log(data)
         }
       })
-      var clock2 = $('.clock2').FlipClock('<%=@tender.break_duration.to_i%>',{
+      var clock2 = $('.clock2').FlipClock('<%#=@tender.break_duration.to_i%>',{
         clockFace: 'MinuteCounter',
         countdown: true,
         callbacks: {
@@ -207,7 +223,7 @@
             $.ajax({
               url : '/change_system_price',
               type : 'GET',
-              data : { tender_id: '<%=@tender.id%>', round: round },
+              data : { tender_id: '<%#=@tender.id%>', round: round },
               success: function (data) {
                 console.log(data)
               }
@@ -219,7 +235,7 @@
       console.log("time up")
     }*/
 
-    function yes_no_rounds_show(){
+    /*function yes_no_rounds_show(){
       console.log('in yes no')
       setTimeout(function () { location.reload(true); }, 1000);
     }
@@ -228,7 +244,7 @@
       console.log('in yes no rounds')
       var data = {"tender_id": tender}
       setTimeout(function () { location.reload(true); }, 3000);
-    }
+    }*/
   });
 <% end %>
 
