@@ -439,35 +439,24 @@ class Tender < ApplicationRecord
 
   def self.stone_list(stones, id, current_customer)
     @read_tick_stones =[]
-    #@bid_allow_stones = []
     @read_stones=[]
     @tick_stones=[]
     @rest_stones=[]
     @stones=[]
-    #tender = Tender.find(id)
-    #timer_info = tender.tender_timer
     stones.each_with_index do |stone,i|
       key="#{stone.description}##{stone.weight}"
       read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
       tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
-      #is_stone_allow = current_customer.can_bid_on_parcel('stone', timer_info['current_round'], tender, stone)
-      if tick.present? && read.present?# && is_stone_allow == true
-        #@bid_allow_stones << stone
-      #elsif tick.present? && read.present?
+      if tick.present? && read.present?
         @read_tick_stones << stone
-      elsif read.present?# && is_stone_allow == true
-        #@bid_allow_stones << stone
-      #elsif read.present?
+      elsif read.present?
         @read_stones << stone
-      elsif tick.present?# && is_stone_allow == true
-        #@bid_allow_stones << stone
-      #elsif tick.present?
+      elsif tick.present?
         @tick_stones << stone
       else
         @rest_stones << stone
       end
     end
-    #@stones << @bid_allow_stones
     @stones << @read_tick_stones
     @stones << @read_stones
     @stones << @tick_stones
@@ -477,36 +466,25 @@ class Tender < ApplicationRecord
   end
 
   def self.sight_list(sights, id, current_customer)
-    #@bid_allow_sights = []
     @read_tick_sights =[]
     @read_sights=[]
     @tick_sights=[]
     @rest_sights=[]
     @sights=[]
-    #tender = Tender.find(id)
-    #timer_info = tender.tender_timer
     sights.each_with_index do |sight,i|
       key="#{sight.source}##{sight.carats}"
       read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
       tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
-      #is_sight_allow = current_customer.can_bid_on_parcel('stone', timer_info['current_round'], tender, stone)
-      if tick.present? && read.present?# && is_sight_allow == true
-        #@bid_allow_sights << sight
-      #elsif tick.present? && read.present?
+      if tick.present? && read.present?
         @read_tick_sights << sight
-      elsif read.present?# && is_sight_allow == true
-        #@bid_allow_sights << sight
-      #elsif read.present?
+      elsif read.present?
         @read_sights << sight
-      elsif tick.present?# && is_sight_allow == true
-        #@bid_allow_sights << sight
-      #elsif tick.present?
+      elsif tick.present?
         @tick_sights << sight
       else
         @rest_sights << sight
       end
     end
-    #@sights << @bid_allow_sights
     @sights << @read_tick_sights
     @sights << @read_sights
     @sights << @tick_sights
@@ -768,7 +746,7 @@ class Tender < ApplicationRecord
       rounds_between_duration_s = self.rounds_between_duration*60
       #Period of round
       round_period_s = round_duration_s + rounds_between_duration_s
-      #Cound of rounds that have already passed from the begginig of tender
+      #Count of rounds that have already passed from the beginning of tender
       rounds_pass = (elapsed_time/round_period_s).floor
       #Current round period time
       period_part = elapsed_time - (round_period_s)*rounds_pass
@@ -785,7 +763,7 @@ class Tender < ApplicationRecord
         result['bid_status'] = false
         result['round_start_in'] = Time.strptime((Time.current.to_i + result['timer_value']).to_s, '%s')
         result['tender_state'] = 'round_break'
-        result['current_round'] = rounds_pass
+        result['current_round'] = rounds_pass+1
       end
       #Puts these value for debug
       result['elapsed_time'] = elapsed_time
@@ -954,53 +932,74 @@ class Tender < ApplicationRecord
   end
 
   def check_for_winners(round, current_customer)
+=begin
+    puts "Start winners ***********************************************************"
+    puts "Round: " + round.inspect
+    puts "Customer: " + current_customer.inspect
+=end
     if self.diamond_type == 'Rough'
       parcels = self.stones
     elsif self.diamond_type == 'Sight'
       parcels = self.sight
     end
+    #puts "Parcel: " + parcels.inspect
     parcels.each_with_index do |parcel, index|
       if self.diamond_type == 'Rough'
         yes_no_buyer_interests = YesNoBuyerInterest.where(tender_id: self.id, stone_id: parcel.id, round: round)
       elsif self.diamond_type == 'Sight'
         yes_no_buyer_interests = YesNoBuyerInterest.where(tender_id: self.id, sight_id: parcel.id, round: round)
       end
+      #puts "yes_no_buyer_interests: " + yes_no_buyer_interests.inspect
+      #puts "yes_no_buyer_interests COUNT: " + yes_no_buyer_interests.count.inspect
       if yes_no_buyer_interests.count == 1
         winning_price = parcel.yes_no_system_price.present? ? parcel.yes_no_system_price : parcel.reserved_price - ((20.to_f/100.to_f)*parcel.reserved_price)
         parcel.update_attributes(stone_winning_price: winning_price)
         if !parcel.yes_no_buyer_winner.present?
           winner = yes_no_buyer_interests.last
+          #puts "WINNER: " + winner.inspect
           winner = YesNoBuyerWinner.find_or_initialize_by(yes_no_buyer_interest_id: winner.id, tender_id: winner.tender_id, stone_id: winner.stone_id, sight_id: winner.sight_id, customer_id: winner.customer_id, round: winner.round, winning_price: parcel.stone_winning_price)
           winner.save
           winner_table = Winner.find_or_initialize_by(tender_id: winner.tender_id, customer_id: winner.customer_id, stone_id: winner.stone_id, sight_id: winner.sight_id)
           winner_table.save(validate: false)
         end
       elsif yes_no_buyer_interests.count > 1
+        puts "NOT UPDATED: " + self.updated_after_round.inspect
         if !self.updated_after_round
+          system_price,system_price_percentage = 0.0
           if self.diamond_type == 'Rough'
             total_customers = YesNoBuyerInterest.where(stone_id: parcel.id, round: round - 1).count
-            puts "total = #{total_customers}"
-            system_price,system_price_percentage = 0.0
+            #puts "total Rough = #{total_customers}"
             remaining_customers = YesNoBuyerInterest.where(stone_id: parcel.id, round: round).count
-            puts "Remaining = #{remaining_customers}"
-          elsif self.diamond_type == 'Sight'
+            #puts "Remaining Rough= #{remaining_customers}"
+          elsif self.diamond_type == ''
             total_customers = YesNoBuyerInterest.where(sight_id: parcel.id, round: round - 1).count
-            puts "total = #{total_customers}"
-            system_price,system_price_percentage = 0.0
+            #puts "total Sight= #{total_customers}"
             remaining_customers = YesNoBuyerInterest.where(sight_id: parcel.id, round: round).count
-            puts "Remaining = #{remaining_customers}"
+            #puts "Remaining Sight= #{remaining_customers}"
           end
-          left_customers = total_customers - remaining_customers
-          puts "LEft = #{left_customers}"
+          if round == 1
+            left_customers = 0
+          else
+            left_customers = total_customers - remaining_customers
+          end
+          #left_customers = total_customers - remaining_customers
+          #puts "LEft = #{left_customers}"
 
           customer_yes_no_bid = parcel.yes_no_buyer_interests.where(customer_id: current_customer.id).last
+
           if customer_yes_no_bid.present?
             reserved_price = customer_yes_no_bid.reserved_price
             if reserved_price.to_f < parcel.reserved_price.to_f
-              system_percentage = (remaining_customers.to_f/3.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
+              rate = 3
+              max_percent = 5
             else
-              system_percentage = (remaining_customers.to_f/5.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
+              rate = 5
+              max_percent = 3
             end
+            system_percentage = (remaining_customers.to_f/rate.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f)
+            #puts "system_percentage FIRST: #{system_percentage}"
+            system_percentage = [system_percentage, max_percent].min
+            #puts "system_percentage BEFORE LIMIT: #{system_percentage}"
             if system_percentage < 1
               system_price_percentage = 1
             elsif system_percentage > 5
@@ -1008,10 +1007,10 @@ class Tender < ApplicationRecord
             else
               system_price_percentage = system_percentage
             end
-            puts "system_percentage = #{system_percentage}"
-            puts "system_price_percentage = #{system_price_percentage}"
-            @yes_no_system_price = ( 100 + system_price_percentage.to_f)/100.to_f*reserved_price.to_f
-            puts "new price = #{@yes_no_system_price}"
+            #puts "system_percentage = #{system_percentage}"
+            #puts "system_price_percentage = #{system_price_percentage}"
+            @yes_no_system_price = (( 100 + system_price_percentage.to_f)/100.to_f*reserved_price.to_f).round(2)
+            #puts "new price = #{@yes_no_system_price}"
             parcel.update_attributes(yes_no_system_price: @yes_no_system_price)
             customer_yes_no_bid.update_attributes(reserved_price: @yes_no_system_price)
           end
@@ -1021,7 +1020,7 @@ class Tender < ApplicationRecord
       end
 
     end
-
+    #puts "END winners ***********************************************************"
   end
   ##################
 

@@ -501,14 +501,14 @@ class TendersController < ApplicationController
         tender.check_for_winners(params[:round].to_i, current_customer)
       end
       if tender.updated_after_round
-        render :json => { success: true }
+        render :json => { success: true, updated: 'already' }
       else
         tender.update_columns(updated_after_round: true, round: tender.round + 1)
         if tender.need_to_update_time?
           round_open_time = tender.round_open_time + (tender.round_duration).minutes + (tender.rounds_between_duration).minutes 
           tender.update_column(:round_open_time, round_open_time)
         end
-        render :json => { success: true }
+        render :json => { success: true, updated: 'done' }
       end
     end
   end
@@ -526,8 +526,15 @@ class TendersController < ApplicationController
     #     end
     #   end
     # end
-    tender.update_column(:updated_after_round, false)
-    render :json => { success: true }
+    if tender.updated_after_round
+      tender.update_column(:updated_after_round, false)
+      render :json => { success: true, updated: 'done'}
+    else
+      render :json => { success: true, updated: 'already' }
+    end
+
+
+
     # if @tender.diamond_type == 'Rough'
     #   @tender.stones.each_with_index do |stone,index|
     #     customer_yes_no_bid = stone.yes_no_buyer_interests.where(customer_id: current_customer.id).first
