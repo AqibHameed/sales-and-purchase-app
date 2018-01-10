@@ -30,7 +30,7 @@
       <td><%= (@transaction.trading_parcel.sight.nil? || @transaction.trading_parcel.sight.blank?) ? 'N/A' : @transaction.trading_parcel.sight.to_date.strftime("%m/%y") %></td>
     </tr>
     <tr class="parcel-details">
-      <td> Price</td>
+      <td> Avg. Price</td>
       <td><%= @transaction.price.nil? ? 'N/A' : number_with_precision(@transaction.price, precision: 2) %></td>
     </tr>
     <tr class="parcel-details">

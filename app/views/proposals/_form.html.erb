@@ -1,5 +1,5 @@
 <% if @proposal.new_record? %>
-  <% price = @parcel.price*@parcel.weight %>
+  <% price = @parcel.price %>
   <% credit =  @parcel.credit_period %>
 <% else %>
   <% price = @proposal.price %>
@@ -16,7 +16,7 @@
   </div>
 <% end %>
 <div class="form-row">
-  <div class="label">Price</div>
+  <div class="label">Avg. price</div>
   <div class='field'>
     <%=f.text_field :price, value: price, class: 'input' %>
   </div>
@@ -40,6 +40,6 @@
   <div class="label"></div>
   <div class='field'>
     <%=f.submit 'Submit', class: 'btn-01 login_btn' %>
-    <%=link_to 'Back', trading_customers_path, class: 'btn-01 login_btn',data: {turbolinks: false} %>
+    <%=link_to 'Back', trading_customers_path, class: 'btn-01 login_btn',data: { turbolinks: false } %>
   </div>
 </div>

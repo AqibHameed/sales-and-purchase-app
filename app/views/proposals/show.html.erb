@@ -13,6 +13,10 @@
       </tr>
     <% end %>
     <tr>
+      <td> Carats </td>
+      <td><%= @proposal.trading_parcel.weight.nil? ? 'N/A' : number_with_precision(@proposal.trading_parcel.weight, precision: 2) %></td>
+    </tr>
+    <tr>
       <td> List Price </td>
       <td><%= @proposal.trading_parcel.price.nil? ? 'N/A' : number_with_precision(@proposal.trading_parcel.price, precision: 2) %></td>
     </tr>

@@ -34,5 +34,4 @@ class TradingParcel < ApplicationRecord
     count = Demand.where(description: description, supplier_id: customer_id).where.not(customer_id: customer.id).count
     return count
   end
-
 end
