@@ -54,6 +54,7 @@ class ProposalsController < ApplicationController
       if @proposal.save(validate: false)
         @proposal.trading_parcel.update_column(:sold, true)
         Transaction.create_new(@proposal)
+        TradingParcel.send_won_parcel_email(@proposal)
         flash[:notice] = "Proposal accepted."
         respond_to do |format|
           format.js { render js: "window.location = '/proposals'"}

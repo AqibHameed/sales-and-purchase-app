@@ -6,7 +6,7 @@ class TradingParcel < ApplicationRecord
 
   validates :price, :credit_period, :weight, presence: true
   validates :price, :credit_period, :weight, numericality: true
-  after_create :generate_and_add_uid
+  after_create :generate_and_add_uid, :send_mail_to_demanded
 
   accepts_nested_attributes_for :my_transaction
 
@@ -33,5 +33,16 @@ class TradingParcel < ApplicationRecord
     customer_id = parcel.customer_id
     count = Demand.where(description: description, supplier_id: customer_id).where.not(customer_id: customer.id).count
     return count
+  end
+
+  def send_mail_to_demanded
+    demands = Demand.where(description: self.description, supplier_id: self.customer_id).map { |e| e.customer.email }
+    TenderMailer.parcel_up_email(self, demands).deliver rescue logger.info "Error sending email"
+  end
+
+  def self.send_won_parcel_email(proposal)
+    customer = proposal.buyer
+    parcel = proposal.trading_parcel
+    TenderMailer.parcel_won_email(customer, parcel).deliver rescue logger.info "Error sending email"
   end
 end

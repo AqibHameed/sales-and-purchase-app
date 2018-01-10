@@ -53,4 +53,16 @@ class TenderMailer < ApplicationMailer
     @attachment = attachment
     mail(:to => 'info@idtonline.co', :subject => '[Dialuck] New Attachment' )
   end
+
+  def parcel_up_email(parcel, emails)
+    @emails = emails
+    @parcel = parcel
+    mail(:to => emails, :subject => '[Dialuck] Parcel is up for sale' )
+  end
+
+  def parcel_won_email(customer, parcel)
+    @customer = customer
+    @parcel = parcel
+    mail(:to => @customer.email, :subject => '[Dialuck] You won the parcel' )
+  end
 end
