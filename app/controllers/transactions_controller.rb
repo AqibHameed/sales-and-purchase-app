@@ -38,7 +38,7 @@ class TransactionsController < ApplicationController
       if @transaction.remaining_amount == 0
         @transaction.update_column(:paid, true)
       end
-      TenderMailer.payment_received_email(@transaction, @payment).deliver rescue rescue logger.info "Error sending email" 
+      TenderMailer.payment_received_email(@transaction, @payment).deliver rescue logger.info "Error sending email" 
       redirect_to trading_history_path
     else
       error = @payment.errors.full_messages.first
