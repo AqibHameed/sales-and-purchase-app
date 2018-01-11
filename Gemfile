@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby '2.3.1'
 
 gem 'rails', '5.1.0'
-# gem 'pg', '~> 0.18.4'
+# gem 'pg'
 
 gem "mysql2"
 gem "devise"
@@ -26,7 +26,6 @@ gem "nested_form"
 gem 'active_model_serializers'
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
-
 
 gem 'delayed_job_active_record'
 gem 'momentjs-rails', '>= 2.9.0'
@@ -61,3 +60,4 @@ gem 'houston'
 gem "select2-rails"
 gem 'sendgrid', '1.2.0'
 gem 'intl-tel-input-rails'
+gem 'rufus-scheduler'

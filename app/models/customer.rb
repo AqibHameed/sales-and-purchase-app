@@ -178,6 +178,10 @@ class Customer < ApplicationRecord
     SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false
   end
 
+  def credit_days_by_supplier(supplier)
+    DaysLimit.where(supplier_id: supplier.id, buyer_id: self.id).first.days_limit rescue 30
+  end
+
   ## YES/NO ##
   def can_bid_on_parcel(type, round, tender, stone)
     #always allow on the first round

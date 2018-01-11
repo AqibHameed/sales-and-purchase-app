@@ -31,7 +31,6 @@ class TransactionsController < ApplicationController
   def payment
     @payment = PartialPayment.new(partial_payment_params)
     @payment.customer_id = current_customer.id
-
     if @payment.save
       @transaction = Transaction.find(@payment.transaction_id)
       amount = @transaction.remaining_amount
@@ -39,12 +38,12 @@ class TransactionsController < ApplicationController
       if @transaction.remaining_amount == 0
         @transaction.update_column(:paid, true)
       end
+      TenderMailer.payment_received_email(@transaction, @payment).deliver rescue rescue logger.info "Error sending email" 
       redirect_to trading_history_path
     else
       error = @payment.errors.full_messages.first
       redirect_to trading_history_path, notice: error
     end
-
   end
 
   def customer
