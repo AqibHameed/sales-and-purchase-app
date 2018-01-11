@@ -46,7 +46,7 @@
               Time Remaining
             </div>
             <div class="field">
-              <%#= tender_timer.inspect %>
+              <%= tender_timer.inspect %>
               <% if tender_timer['timer_value'] > 0 %>
                 <div class="clock"></div>
                 <% if tender_timer['tender_state'] == 'round_break' %>
@@ -139,11 +139,8 @@
   $(document).ready(function() {
     $("#myTable").tablesorter();
       <% if tender_timer['timer_value'] > 0 %>
-
+        var reload_time = Math.floor(Math.random() * (1500 - 1000 + 1) + 1000);
         init_timer(<%=tender_timer['timer_value'].to_i%>, '<%=tender_timer['clockFace'].to_s%>');
-        <%if tender_timer['tender_state'] == 'round_break' %>
-        on_round_finished();
-        <% end %>
 
         function init_timer(value, clockFace)
         {
@@ -156,17 +153,19 @@
                     countdown: true,
                     callbacks: {
                         stop: function() {
-                            <%if tender_timer['tender_state'] == 'round_break' %>
+                            <%if tender_timer['tender_state'] == 'round_active' %>
+                            on_round_finished();
+                            <% elsif tender_timer['tender_state'] == 'round_break' %>
                             on_round_break_finished();
                             <% else %>
-                            setTimeout(function () { location.reload(true); }, 1500);
+                            setTimeout(function () { location.reload(true); }, reload_time);
                             <% end %>
                         }
                     }
                 });
             }
         }
-      <%if tender_timer['tender_state'] == 'round_break' %>
+      <%#if tender_timer['tender_state'] == 'round_break' %>
       function on_round_break_finished()
       {
           $.ajax({
@@ -176,7 +175,7 @@
               success: function (data) {
                   console.log(data)
                   if(data.success == true) {
-                      setTimeout(function () { location.reload(true); }, 1000);
+                      setTimeout(function () { location.reload(true); }, reload_time);
                   } else {
                       console.log(data);
                       alert('An error occurred during request to the server. Please contact to administrator.');
@@ -187,14 +186,13 @@
 
       function on_round_finished() {
           var round = Math.max(<%= tender_timer['current_round']%>, 1);
-          console.log(round);
           $.ajax({
               url : '/change_tender_open_time',
               type : 'GET',
               data : { tender_id: '<%=@tender.id%>', round: round },
               success: function (data) {
                   if(data.success == true) {
-                      //setTimeout(function () { location.reload(true); }, 1000);
+                      setTimeout(function () { location.reload(true); }, reload_time);
                   } else {
                       console.log(data);
                       alert('An error occurred during request to the server. Please contact to administrator.');
@@ -203,7 +201,7 @@
           })
 
       }
-      <% end %>
+      <% #end %>
       <% end %>
   });
 <% end %>
