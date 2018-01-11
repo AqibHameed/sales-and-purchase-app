@@ -87,9 +87,17 @@ $(document).ready(function() {
   $('#creditList').DataTable({
     // "paging": false,
     "pageLength": 20,
-    "bLengthChange": false,
-    "searching": false,
-    "bInfo" : false,
+    // "bLengthChange": false,
+    "bInfo" : false
+    // "columnDefs": [
+    //   { "orderable": false, "targets": 0 },
+    //   { "orderable": false, "targets": 1 },
+    //   { "orderable": false, "targets": 2 },
+    //   { "orderable": false, "targets": 3 },
+    //   { "orderable": false, "targets": 4 },
+    //   { "orderable": false, "targets": 5 },
+    //   { "orderable": false, "targets": 6 }
+    // ]
   });
 
   // $(document).click(function(e){
