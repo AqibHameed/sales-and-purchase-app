@@ -7,7 +7,7 @@ class DemandList < ApplicationRecord
       field :supplier_id, :enum do
         label "Supplier"
         enum do
-          Company.all.map { |c| [ c.name, c.id ] }
+          Customer.all.map { |c| [ c.company, c.id ] }
         end
       end
     end
