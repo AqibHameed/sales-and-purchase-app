@@ -438,59 +438,59 @@ class Tender < ApplicationRecord
   end
 
   def self.stone_list(stones, id, current_customer)
-    @read_tick_stones =[]
-    @read_stones=[]
-    @tick_stones=[]
-    @rest_stones=[]
-    @stones=[]
+    read_tick_stones =[]
+    read_stones=[]
+    tick_stones=[]
+    rest_stones=[]
+    tender_stones=[]
     stones.each_with_index do |stone,i|
       key="#{stone.description}##{stone.weight}"
       read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
       tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
       if tick.present? && read.present?
-        @read_tick_stones << stone
+        read_tick_stones << stone
       elsif read.present?
-        @read_stones << stone
+        read_stones << stone
       elsif tick.present?
-        @tick_stones << stone
+        tick_stones << stone
       else
-        @rest_stones << stone
+        rest_stones << stone
       end
     end
-    @stones << @read_tick_stones
-    @stones << @read_stones
-    @stones << @tick_stones
-    @stones << @rest_stones
-    @stones = @stones.flatten
-    return @stones
+    tender_stones << read_tick_stones
+    tender_stones << read_stones
+    tender_stones << tick_stones
+    tender_stones << rest_stones
+    tender_stones = tender_stones.flatten
+    return tender_stones
   end
 
   def self.sight_list(sights, id, current_customer)
-    @read_tick_sights =[]
-    @read_sights=[]
-    @tick_sights=[]
-    @rest_sights=[]
-    @sights=[]
+    read_tick_sights =[]
+    read_sights=[]
+    tick_sights=[]
+    rest_sights=[]
+    tender_sights=[]
     sights.each_with_index do |sight,i|
       key="#{sight.source}##{sight.carats}"
       read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
       tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
       if tick.present? && read.present?
-        @read_tick_sights << sight
+        read_tick_sights << sight
       elsif read.present?
-        @read_sights << sight
+        read_sights << sight
       elsif tick.present?
-        @tick_sights << sight
+        tick_sights << sight
       else
-        @rest_sights << sight
+        rest_sights << sight
       end
     end
-    @sights << @read_tick_sights
-    @sights << @read_sights
-    @sights << @tick_sights
-    @sights << @rest_sights
-    @sights = @sights.flatten
-    return @sights
+    tender_sights << read_tick_sights
+    tender_sights << read_sights
+    tender_sights << tick_sights
+    tender_sights << rest_sights
+    tender_sights = tender_sights.flatten
+    return tender_sights
   end
 
   def self.tenders_for_calender(start_date, end_date)
@@ -963,7 +963,7 @@ class Tender < ApplicationRecord
           winner_table.save(validate: false)
         end
       elsif yes_no_buyer_interests.count > 1
-        puts "NOT UPDATED: " + self.updated_after_round.inspect
+        #puts "NOT UPDATED: " + self.updated_after_round.inspect
         if !self.updated_after_round
           system_price,system_price_percentage = 0.0
           if self.diamond_type == 'Rough'
