@@ -65,4 +65,17 @@ class TenderMailer < ApplicationMailer
     @parcel = parcel
     mail(:to => @customer.email, :subject => '[Dialuck] You won the parcel' )
   end
+
+  def send_overdue_transaction_mail(transaction)
+    @transaction = transaction
+    @buyer = transaction.buyer
+    @supplier = transaction.supplier
+    mail(:to => @buyer.email, :subject => '[Dialuck] Payment is due' )
+  end
+
+  def payment_received_email(transaction, payment)
+    @transaction = transaction
+    @payment = payment
+    mail(:to => @transaction.buyer.email, :subject => '[Dialuck] Payment is received' )
+  end
 end

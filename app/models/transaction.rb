@@ -99,6 +99,17 @@ class Transaction < ApplicationRecord
     total_complete_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND paid = ? AND buyer_confirmed = ?", customer_id, true, true)
   end
 
+  def self.send_overdue_email
+    Transaction.all.each do |t|
+      invoice_date = t.created_at
+      credit_days = t.buyer.credit_days_by_supplier(t.supplier)
+      overdue_date = invoice_date + credit_days.days
+      if Date.today == overdue_date
+        TenderMailer.send_overdue_transaction_mail(t).deliver rescue logger.info "Error sending email" 
+      end
+    end
+  end
+
   # def release_credits
   #   cl = CreditLimit.where(buyer_id: self.buyer_id, supplier_id: self.supplier_id).first
   #   if cl

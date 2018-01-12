@@ -66,6 +66,7 @@
               <% elsif sight.stone_winning_price.present? && sight_winner.try(:customer_id) == current_customer.id %>
                 winner
               <% elsif sight.stone_winning_price.present? && sight_winner.try(:customer_id) != current_customer.id %>
+                You are not Winner
               <% elsif is_customer_can_bid %>
                 <label class="switch">
                   <input class="switch-input" type="checkbox" <%= current_customer.can_bid_on_parcel('sight', current_round+1, @tender, sight) ? 'checked="checked"' : ''%> />

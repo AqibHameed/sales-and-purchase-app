@@ -29,8 +29,10 @@
     </div>
     <% end %>
   </div>
-
-  <strong class="fleft yes-no-round">Round : <%= @tender.round %></strong>
+  <% tender_timer = @tender.tender_timer %>
+  <strong class="yes-no-round">Round(from db) : <%= @tender.round %></strong>
+  <br/>
+  <strong class="yes-no-round-timer">Round(from timer object) : <%= tender_timer['current_round'] %></strong>
 
   <input type="submit" value="Filter" name="commit" class="fright btn-00" onclick="return validateForm()" >
   <input type="button" value="Reset" class="fright btn-00" onclick="window.location.href='/tenders/<%= @tender.id%>'" >

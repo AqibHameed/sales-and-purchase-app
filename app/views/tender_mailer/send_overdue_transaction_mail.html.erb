@@ -1,0 +1,9 @@
+<p>Dear <%=@buyer.first_name%>,</p>
+<p>Your payment is due. Please find details below:</p>
+<p><strong>Seller:</strong> <%=@supplier.company %></p>
+<p><strong>Amount:</strong> <%= @transaction.total_amount %></p>
+<p><strong>Invoice Date: </strong><%= @transaction.created_at.strftime('%d-%m-%Y')%></p>
+
+Thanks & Regards,<br>
+Dialuck Team.
+
