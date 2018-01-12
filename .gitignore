@@ -25,3 +25,8 @@ config/puma.rb
 
 # Ignore application configuration
 /config/application.yml
+
+
+.idea/
+Dockerfile
+docker-compose.yml
