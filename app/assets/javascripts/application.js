@@ -233,3 +233,27 @@ $(document).ready(function() {
     })
   });
 });
+
+
+// Responsive tables data show
+$(document).ready(function() {
+
+  if($('.table-responsive').length){
+      $('.table-responsive .table-head-in-td').click(function(){
+        $(this).closest('tr').toggleClass('opened');
+      });
+  }
+
+});
+
+// Mobile menu
+$(document).ready(function() {
+
+  if($('.menu-burger').length){
+      $('.menu-burger').click(function(){
+        $(this).toggleClass('opened');
+        $('.header .c1 .nav').toggleClass('opened');
+      });
+  }
+
+});

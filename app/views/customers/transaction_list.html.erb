@@ -1,7 +1,7 @@
 <div class="table">
 
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
-    <thead>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter table-responsive" >
+    <thead class="thead-desktop">
       <tr>
         <th>Description</th>
         <th>No. of Stones</th>
@@ -21,26 +21,26 @@
     <tbody>
       <% @transactions.each do |transaction| %>
         <tr class='bg-normal'>
-          <td><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
-          <td><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
-          <td><%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %></td>
-          <td><%= transaction.trading_parcel.cost rescue 'N/A'  %></td>
-          <td><%= transaction.trading_parcel.box_value rescue 'N/A' %></td>
-          <td><%= transaction.trading_parcel.sight rescue 'N/A' %></td>
-          <td><%= transaction.price rescue 'N/A' %></td>
-          <td><%= transaction.credit rescue 'N/A' %></td>
+          <td><span class="table-head-in-td">Description</span><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
+          <td><span class="table-head-in-td">No. of Stones</span><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
+          <td><span class="table-head-in-td">Carats</span><%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %></td>
+          <td><span class="table-head-in-td">Cost</span><%= transaction.trading_parcel.cost rescue 'N/A'  %></td>
+          <td><span class="table-head-in-td">Box Value</span><%= transaction.trading_parcel.box_value rescue 'N/A' %></td>
+          <td><span class="table-head-in-td">Sight</span><%= transaction.trading_parcel.sight rescue 'N/A' %></td>
+          <td><span class="table-head-in-td">Price</span><%= transaction.price rescue 'N/A' %></td>
+          <td><span class="table-head-in-td">Credit</span><%= transaction.credit rescue 'N/A' %></td>
           <% if @customer.id == transaction.buyer_id %>
-            <td>Bought</td>
-            <td><%= transaction.supplier.company rescue 'N/A' %></td>
+            <td><span class="table-head-in-td">Activity</span>Bought</td>
+            <td><span class="table-head-in-td">Counterparty</span><%= transaction.supplier.company rescue 'N/A' %></td>
           <% elsif @customer.id == transaction.supplier_id  %>
-            <td>Sold</td>
-            <td><%= transaction.buyer.company rescue 'N/A' %></td>
+            <td><span class="table-head-in-td">Activity</span>Sold</td>
+            <td><span class="table-head-in-td">Counterparty</span><%= transaction.buyer.company rescue 'N/A' %></td>
           <%else%>
             <td></td>
             <td></td>
           <% end %>
-          <td><%= get_status(transaction) %></td>
-          <td><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
+          <td><span class="table-head-in-td">Status</span><%= get_status(transaction) %></td>
+          <td><span class="table-head-in-td">Invoice Date</span><%= transaction.created_at.strftime("%B, %d %Y")  %></td>
           <td></td>
         </tr>
       <% end %>

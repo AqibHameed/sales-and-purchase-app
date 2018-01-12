@@ -1,5 +1,5 @@
-<table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-  <tr>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter table-responsive">
+  <tr class="thead-desktop">
     <th></th>
     <th>Description</th>
     <th>No. of Stones</th>
@@ -22,18 +22,18 @@
     <% if parcel.sold %>
       <tr style="background: #ccc;">
         <td><%= index_count(params[:page].to_i) + i %></td>
-        <td><%= get_description(parcel) if parcel %></td>
-        <td><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
-        <td><%= number_with_precision(parcel.weight, precision: 2) %></td>
-        <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
-        <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
-        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
-         <td><%= parcel.price*parcel.weight %></td>
+        <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
+        <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
+        <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
+        <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
+        <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
+        <td><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
+        <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
+         <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight %></td>
 
-        <td><%= parcel.credit_period %></td>
-        <td><%= parcel.try(:customer).try(:company) %></td>
-        <td><%= parcel.uid %></td>
+        <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
+        <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
+        <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
         <!-- <td><%=parcel.demand_count(parcel)%></td> -->
         <% if parcel.customer_id == current_customer.id %>
           <% if params[:controller] == 'customers' %>
@@ -51,17 +51,17 @@
     <% else %>
       <tr>
         <td><%= index_count(params[:page].to_i) + i %></td>
-        <td><%= get_description(parcel) if parcel %></td>
-        <td><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
-        <td><%= number_with_precision(parcel.weight, precision: 2) %></td>
-        <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
-        <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
-        <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
-        <td><%= parcel.price*parcel.weight rescue 0 %></td>
-        <td><%= parcel.credit_period %></td>
-        <td><%= parcel.try(:customer).try(:company) %></td>
-        <td><%= parcel.uid %></td>
+        <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
+        <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
+        <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
+        <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
+        <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
+        <td><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
+        <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
+        <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
+        <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
+        <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
+        <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
         <% unless params[:controller] == 'customers' %>
           <td>
             <%= link_to parcel.demand_count(parcel,current_customer),  demand_supplier_path(id: parcel.id)%>

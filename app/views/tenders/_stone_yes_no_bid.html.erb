@@ -1,6 +1,6 @@
 <div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable_stones" class="tablesorter">
-    <thead>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable_stones" class="tablesorter table-responsive stone-list-table">
+    <thead class="thead-desktop">
       <tr>
         <% if current_customer %>
           <th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
@@ -30,14 +30,14 @@
 
               <tr class="<%= get_color(@diff, stone.description) %> ">
                 <% if current_customer %>
-                  <td><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0 %>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
-                  <td><%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0 %></span></td>
+                  <td><span class="table-head-in-td">Imp</span><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0 %>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
+                  <td><span class="table-head-in-td">Read</span><%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0 %></span></td>
                 <% end %>
-                <td><%= stone.lot_no %></td>
-                <td><%= stone.description %></td>
-                <td><%= stone.no_of_stones %></td>
-                <td><%= stone.weight %></td>
-                <td class = "yes_no_reserved_price" >
+                <td><span class="table-head-in-td">Lot No</span><%= stone.lot_no %></td>
+                <td><span class="table-head-in-td">Description</span><%= stone.description %></td>
+                <td><span class="table-head-in-td">Stones</span><%= stone.no_of_stones %></td>
+                <td><span class="table-head-in-td">Carat</span><%= stone.weight %></td>
+                <td class = "yes_no_reserved_price" ><span class="table-head-in-td">System Price</span>
                 <% if current_round == 1 %>
                   <%= stone.reserved_price.present? ? stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price) : "empty price" %>
                 <% else %>
@@ -45,14 +45,14 @@
                 <% end %>
                 </td>
                 <% if current_customer %>
-                  <td><%= stone.stone_winning_price.present? ? stone.stone_winning_price : "" %></td>
-                  <td>
+                  <td><span class="table-head-in-td">Winning price</span><%= stone.stone_winning_price.present? ? stone.stone_winning_price : "" %></td>
+                  <td><span class="table-head-in-td">My Note</span>
                     <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(stone.key) %></span>
                      <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>
                   </td>
                 <% end %>
-                  <td><%= link_to "View", view_past_result_tender_path(@tender.id, :stone_id => stone.id, :key => stone.description, stone_count: stone.no_of_stones), :class => "past_result_link" %></td>
-                  <td>
+                  <td><span class="table-head-in-td">History</span><%= link_to "View", view_past_result_tender_path(@tender.id, :stone_id => stone.id, :key => stone.description, stone_count: stone.no_of_stones), :class => "past_result_link" %></td>
+                  <td><span class="table-head-in-td">Yes / No</span>
                     <%#= is_customer_can_bid%>
                     <% if tender_timer['tender_state'] == 'tender_wait' %>
                       Pending

@@ -1,0 +1,876 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require fancybox
+ *= require style.css
+ *= require jquery.dataTables.css
+ *= require jquery.fancybox-1.3.4
+ *= require bootstrap-datetimepicker
+ *= require dataTables/jquery.dataTables
+ *= require flipclock.css
+ *= require select2
+ *= require font-awesome
+ *= require intlTelInput
+ */
+
+.validation-error{
+    color: red;
+}
+
+tr.winner {
+  background: #00D812;
+}
+
+
+/* tender filters */
+
+a.add{background:url(../assets/add.png) no-repeat;padding:5px 12px 9px;text-indent:-9999px;margin-left:5px;}
+a.remove{background:url(../assets/remove.png) no-repeat;padding:5px 12px 9px;text-indent:-9999px;margin-left:5px;}
+
+.filter input,.filter select {
+  width:110px;
+  border: 1px solid #B8B8B8;
+}
+
+.input1.error {
+
+  border: 1px solid #FF0000;
+}
+
+
+.btn-00 {
+    background: none repeat scroll 0 0 #ED5A48;
+    border: 0 none;
+    border-radius: 3px 3px 3px 3px;
+    color: #FFFFFF;
+    font-size: 14px;
+    margin-right: 4px;
+    padding: 4px 7px;
+    text-decoration: none;
+    cursor:pointer;
+}
+
+.search-filter{
+  border: 1px solid #B8B8B8;
+  width: 150px;
+}
+
+.bid_form{
+  z-index:9999;
+  position:fixed;
+  left:10%;
+  top:10%;
+  box-shadow: 0px 0px 10px #000;
+}
+
+.close_bid {
+  position:absolute;
+  right:-32px;
+  top:-16px;
+}
+
+#screenMask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    opacity: 0.6;
+    background:#000;
+    width:100%;
+    height:100%;
+}
+
+div.title1 {
+  padding:0 0 10px;
+  font-weight:bold;
+  clear:both;
+  cursor:pointer;
+  color:#ED5A48;
+}
+
+.border {
+  border:1px solid #999;
+}
+
+.low {
+  background-color:#A0D9FF;
+}
+
+.mid {
+  background-color: #7CB5EC;
+}
+
+.high {
+  background-color:#71AAE1;
+}
+
+.vhigh {
+	background-color: #4D86BD;
+}
+
+.form-field{
+  margin: 5px 0px 0px 20px
+}
+.label{
+  margin-top: 5px;
+}
+.mt10{
+  margin-top: 10px !important;
+}
+.hide {
+  display: none;
+}
+.mr5{
+  margin-right: 5px;
+}
+.green {
+  background-color: #5cb85c;
+}
+.red{
+  background-color: #440001;
+}
+.disabled {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+.mt50{
+  margin-top: 50px;
+}
+
+#creditList thead th {
+  border-top: 1px solid #e8e8e8; 
+  border-right: 1px solid #e8e8e8;  
+  font-weight: bold ; 
+  background: #5f5f5f ; 
+  color: #ffffff ;  
+  padding: 8px ; 
+  text-align: left ; 
+}
+table.dataTable.no-footer{
+  border-bottom: 0px solid #111;
+}
+#limit, #days_limit{
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  color: #495057;
+  display: block;
+  font-size: 15px;
+  padding: 0.2rem 1rem;
+}
+
+.switch {
+  position: relative;
+  display: block;
+  vertical-align: top;
+  width: 70px;
+  height: 30px;
+  padding: 3px;
+  margin: 0 10px 10px 0;
+  background: linear-gradient(to bottom, #eeeeee, #FFFFFF 25px);
+  background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF 25px);
+  border-radius: 18px;
+  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+.switch-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+.switch-label {
+  position: relative;
+  display: block;
+  height: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #eceeef;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
+  color: #fefaf9;
+}
+.switch-label:before, .switch-label:after {
+  position: absolute;
+  top: 50%;
+  margin-top: -.5em;
+  line-height: 1;
+  -webkit-transition: inherit;
+  -moz-transition: inherit;
+  -o-transition: inherit;
+  transition: inherit;
+}
+.switch-label:before {
+  content: attr(data-off);
+  right: 11px;
+  color: #000;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+}
+.switch-label:after {
+  content: attr(data-on);
+  left: 11px;
+  color: #FFFFF;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+}
+.switch-input:checked ~ .switch-label {
+  background: #ED5A48;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.switch-input:checked ~ .switch-label:before {
+  opacity: 0;
+}
+.switch-input:checked ~ .switch-label:after {
+  opacity: 1;
+}
+.switch-handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(to bottom, #FFFFFF 40%, #f0f0f0);
+  background-image: -webkit-linear-gradient(top, #FFFFFF 40%, #f0f0f0);
+  border-radius: 100%;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+.switch-handle:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(to bottom, #eeeeee, #FFFFFF);
+  background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF);
+  border-radius: 6px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
+}
+.switch-input:checked ~ .switch-handle {
+  left: 44px;
+  box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+ 
+/* Transition
+========================== */
+.switch-label, .switch-handle {
+  transition: All 0.3s ease;
+  -webkit-transition: All 0.3s ease;
+  -moz-transition: All 0.3s ease;
+  -o-transition: All 0.3s ease;
+}
+.row-active{
+    background: #00CC33 !important;
+    /*background: #ED5A48 !important;*/
+}
+.stone-winner{
+    background: #e2e24e !important;
+}
+ /* Dropdown Button */
+.dropbtn {
+  background-color: #ed5a48;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+}
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #ed5a48;
+}
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  margin-left: 41%;
+  margin-top: 13px;
+}
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {
+  background-color: #ed5a48
+}
+.show { 
+  display:block; 
+}
+.nav-dropdown{
+  float:left; 
+  width:22%; 
+  text-align:right; 
+  font-size:12px; 
+  color:#ffffff; 
+  padding:12px 0;
+}
+.no-border{
+  border: medium none !important;
+  margin-top: -5px;
+}
+.list_dropdown{
+  display: inline-block;
+  padding: 0 0 0 7px;
+  position: relative;
+  width: 43px;
+}
+
+.header .c1 .nav li .list-dropdown-content a{
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+}
+
+.list-dropdown-content{
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  margin-top: 13px;
+}
+.list-dropdown-content a:hover {
+  background-color: #ed5a48
+}
+
+h4{
+  color: #ed5a48;
+  font-size: 18px;
+  font-weight: normal;
+  margin: 15px 0 5px;
+}
+
+.customer_list_verified_icon {
+  vertical-align: middle;
+  width: 12px;
+}
+
+.bg-red{
+  background: #ee0000; 
+}
+.save_btn {
+  left: 50%;
+  position: relative;
+  top: -18px;
+}
+.white{
+  color: #000;
+}
+.font-size-16{
+  font-size: 16px;
+}
+
+
+//Responsive changes start
+
+//Variables start
+$wide: 1030px;
+$middle: 769px;
+$small: 760px;
+
+$tr-odd-bg-color: #f2f2f2;
+
+
+@mixin tdResponsive() {
+  & {
+    .table-head-in-td {
+      display: inline-block;
+      padding-right: 5px;
+      //color: #bb1f10;
+      color: #5f5f5f;
+      font-size: 10px;
+    }
+    .table-head-in-td:after {
+      display: inline-block;
+      content: ":";
+      margin-right: 10px;
+    }
+  }
+}
+//Use
+//.td {
+//  @include tdResponsive();
+//}
+
+.wrapper {
+  @media (max-width: $wide) {
+    width: 100%;
+  }
+}
+
+
+//Tables responsive configuration
+@media (max-width: $wide) {
+  .table-head-in-td {
+    display: none;
+  }
+}
+
+@media (max-width: $middle) {}
+@media (max-width: $small) {
+  .thead-desktop {
+    display: none!important;
+  }
+
+  .table-responsive {
+
+    tr {
+      vertical-align: top;
+      display: block;
+
+      td {
+        display: block;
+
+        @include tdResponsive();
+      }
+      td {
+        display: none;
+      }
+      td:first-of-type {
+        display: block;
+
+        .table-head-in-td {
+          position: relative;
+          padding-left: 20px;
+          cursor: pointer;
+
+          &:before {
+            display: block;
+            content: "+";
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+          }
+        }
+
+
+      }
+      td:last-of-type {
+        //border-bottom: 1px solid #c12e1c;
+      }
+    }
+    tr.opened {
+
+      td {
+        display: block;
+      }
+      td:first-of-type {
+        .table-head-in-td {
+          &:before {
+            //display: block;
+            content: "-";
+            //position: absolute;
+            //right: 0;
+            //top: 8px;
+            //width: 20px;
+            //height: 20px;
+          }
+
+        }
+
+
+      }
+    }
+
+    tr:nth-child(odd) {
+      //background-color: #f2f2f2;
+      background-color: $tr-odd-bg-color;
+    }
+  }
+}
+
+
+//Tenders page start
+.container .c1.dashboard {
+  @media (max-width: $wide) {
+    width: 66%;
+  }
+  @media (max-width: $middle) {
+    width: 100%;
+  }
+  @media (max-width: $small) {}
+}
+
+.container .c2.news {
+  @media (max-width: $wide) {
+    width: 30%;
+  }
+  @media (max-width: $middle) {
+    width: 100%;
+    padding-top: 50px;
+  }
+  @media (max-width: $small) {}
+}
+
+//Tender filter
+
+.tender_filter {
+  @media (max-width: $wide) {
+    border: 1px solid #E8E8E8;
+  }
+  @media (max-width: $small) {
+
+    span {
+      display: block;
+      margin-bottom: 10px;
+      overflow: hidden;
+      padding: 0;
+
+      input, select {
+        width: 100%;
+        border: 1px solid grey;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+
+//Form-wrapper responsive
+
+.form-wrapper {
+  @media (max-width: $small) {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+
+
+//Tender detail
+.tender-detail {
+
+  .stone-list-table {
+
+  }
+}
+
+//Tender history
+
+.tender_history {
+
+  @media (max-width: $small) {
+    .form-wrapper {
+      .form-row {
+        float: none;
+
+        .label {
+          width: 100%;
+          display: block;
+          text-align: left;
+        }
+        .field {
+          float: none;
+
+          input,
+          .select {
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          span {
+            display: block;
+            width: 100%;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+}
+
+//Buy trade
+//Buy demand
+.form-wrapper {
+  .new_demand,
+  .parcel_search,
+  .new_trading_document,
+  .new_trading_parcel {
+
+    @media (max-width: $small) {
+      .form-row .label {
+        float: none;
+        width: 100%;
+        text-align: left;
+        margin-right: 15px;
+      }
+    }
+  }
+}
+
+
+//Forms
+
+.edit_customer,
+.credit-form {
+  @media (max-width: $small) {
+    .form-row .label {
+      float: none;
+      width: 100%;
+      text-align: left;
+      margin-right: 15px;
+    }
+  }
+}
+
+
+//Edit profile
+.edit-profile-page {
+  .edit-profile-page--menu {
+    span {
+      @media (max-width: $small) {
+        display: block;
+        float: none;
+
+      }
+    }
+    a {
+      @media (max-width: $small) {
+        display: block;
+        float: none;
+        margin-bottom: 20px;
+      }
+    }
+  }
+}
+
+//Add company page
+
+.add-company-box {
+  @media (max-width: $small) {
+    padding: 10px;
+    width: 90%;
+    box-sizing: border-box;
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .registration_submit {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      display: block;
+    }
+  }
+}
+
+//Purchase table
+//Sales table
+
+.table-purchase,
+.table-sales {
+
+  .table-head-in-td {
+    display: none;
+  }
+
+  @media (max-width: $small) {
+
+    width: 100%;
+
+    .table-head-in-td {
+      display: inline-block;
+    }
+
+    thead {
+      display: none;
+    }
+    tbody {
+      th, td {
+        display: block;
+
+        @include tdResponsive();
+      }
+      th {
+        .table-head-in-td {
+          color: white;
+        }
+      }
+    }
+
+    tr:nth-child(even) {
+      //background-color: #f2f2f2;
+      background-color: $tr-odd-bg-color;
+    }
+  }
+
+}
+
+
+//Registration page
+.page-registration {
+
+  @media (max-width: $small) {
+    .login-box {
+      width: 100%;
+      margin: 0 auto;
+      padding: 10px;
+      box-sizing: border-box;
+
+      .field {
+        input {
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .intl-tel-input {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+// Calendar
+.fc-header-title h2 {
+  @media (max-width: $small) {
+    display: block;
+    width: 60px;
+    line-height: 30px;
+    font-size: 11px!important;
+  }
+}
+
+
+//Navigation
+
+.header {
+
+  .current_user_menu {
+    .dropdown-content {
+      right: 0;
+    }
+  }
+  .menu-burger{
+    display: none;
+  }
+
+  @media (max-width: $small) {
+    .c1 {
+      width: 60%;
+
+      .nav {
+
+        display: none;
+
+        //display: block;
+        width: 100%;
+        position: absolute;
+        background: #ed5a48;
+        top: 35px;
+        left: 0;
+
+        .dropbtn {
+          background-color: transparent;
+        }
+
+        .list_dropdown {
+          padding: 0;
+          width: 100%!important;
+        }
+
+        .dropdown.list_dropdown > span{
+          position: absolute;
+          right: 0;
+          top: 3px;
+          width: 43px;
+
+          img {
+            width: 12px;
+          }
+        }
+
+        li.first {
+
+        }
+
+        li {
+          display: block;
+          float: none;
+          width: 100%;
+        }
+      }
+    }
+
+    .current_user_menu {
+
+      .dropdown.nav-dropdown{
+        width: 40%;
+        padding-right: 40px;
+        box-sizing: border-box;
+        position: relative;
+
+        span {
+          position: absolute;
+          right: 16px;
+          top: 13px;
+          width: 43px;
+
+          img {
+            width: 12px;
+          }
+        }
+      }
+      .dropdown-content {
+        right: 10px;
+      }
+    }
+
+    .menu-burger {
+      display: block;
+      margin-top: 10px;
+      margin-left: 10px;
+      width: 20px;
+      height: 20px;
+      background-image: url('../assets/menu-burger.png');
+      background-repeat: no-repeat;
+      background-position: 0;
+      -webkit-background-size: cover;
+      background-size: cover;
+      cursor: pointer;
+      //background-color: #fff;
+
+      &.opened {
+        background-image: url('../assets/menu-close.png');
+      }
+    }
+    .c1 .nav.opened {
+      display: block;
+    }
+  }
+}
+
+@media (max-width: $wide) {}
+@media (max-width: $middle) {}
+@media (max-width: $small) {}
+>>>>>>> f35911d... common tables responsive classes added. tables accordeon function added.:app/assets/stylesheets/application.css.scss

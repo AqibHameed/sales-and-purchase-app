@@ -1,7 +1,7 @@
 <div class="table">
 
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter" >
-    <thead>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter table-responsive " >
+    <thead class="thead-desktop">
       <tr>
         <th>Tender Name</th>
         <th>Stone Description</th>
@@ -22,20 +22,20 @@
         <% stone = Stone.where(tender_id: winner.tender.try(:id), lot_no: winner.lot_no).first %>
         <tr>
           <% if winner.tender.nil? %>
-            <td>N/A</td>
+            <td><span class="table-head-in-td">Tender Name</span>N/A</td>
           <% else %>
-            <td><%= link_to winner.tender.name, tender_path(winner.tender.id), data: {turbolinks: false} %></td>
+            <td><span class="table-head-in-td">Tender Name</span><%= link_to winner.tender.name, tender_path(winner.tender.id), data: {turbolinks: false} %></td>
           <% end %>
-          <td><%= winner.description rescue 'N/A' %></td>
-          <td><%= stone.weight  rescue 'N/A' %></td>
+          <td><span class="table-head-in-td">Stone Description</span><%= winner.description rescue 'N/A' %></td>
+          <td><span class="table-head-in-td">Stone Weight</span><%= stone.weight  rescue 'N/A' %></td>
           <% if current_customer %>
-            <td><%= stone.customer_bid_amount(current_customer) rescue 'N/A' %></td>
+            <td><span class="table-head-in-td">Bid Amount</span><%= stone.customer_bid_amount(current_customer) rescue 'N/A' %></td>
           <% else %>
-            <td><%= number_to_currency stone.winning_bid.try(:total) rescue 'N/A' %></td>
+            <td><span class="table-head-in-td">Winning Bid/Highest Bid</span><%= number_to_currency stone.winning_bid.try(:total) rescue 'N/A' %></td>
           <% end %>
-          <td><%= number_to_currency(winner.selling_price) rescue 'N/A' %></td>
+          <td><span class="table-head-in-td">Selling Price</span><%= number_to_currency(winner.selling_price) rescue 'N/A' %></td>
           <% if current_customer %>
-            <td><%= raw get_difference(stone.customer_bid_amount(current_customer), winner.selling_price) rescue 'N/A' %></td>
+            <td><span class="table-head-in-td">Difference</span><%= raw get_difference(stone.customer_bid_amount(current_customer), winner.selling_price) rescue 'N/A' %></td>
           <% end %>
         </tr>
       <% end %>
