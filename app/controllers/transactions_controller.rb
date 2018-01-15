@@ -69,6 +69,22 @@ class TransactionsController < ApplicationController
     @payment_details = PartialPayment.where(transaction_id: params[:id])
   end
 
+  def edit
+    @transaction = Transaction.find(params[:id])
+  end
+
+  def update
+    @transaction = Transaction.find(params[:id])
+    unless params[:weight].blank?
+      @transaction.trading_parcel.update_column(:weight, params[:weight])
+    end
+    if @transaction.update_attributes(update_transaction_params)
+      redirect_to transaction_path(@transaction)
+    else
+      render :edit
+    end
+  end
+
   # def reject_reason
   #   @transaction = Transaction.find(params[:id])
   #   @transaction.reject_reason = params[:transaction][:reject_reason]
@@ -94,6 +110,9 @@ class TransactionsController < ApplicationController
 
   def invite_params
     params.require(:customer).permit(:first_name,:company,:mobile_no,:email)
+  end
 
+  def update_transaction_params
+    params.require(:transaction).permit(:paid, :total_amount, :price, :invoice_no, :ready_for_buyer)
   end
 end

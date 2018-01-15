@@ -1,0 +1,97 @@
+<%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
+<%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
+<h3>Edit Transaction </h3>
+
+<div class="transaction-form">
+  <div class="clear10"></div>
+  <div class="form-wrapper">
+    <%= form_for @transaction do |f| %>
+      <% if @transaction.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@transaction.errors.count, "error") %> prohibited this transaction from being saved:</h2>
+          <ul>
+            <% @transaction.errors.each do |atr, msg| %>
+              <li>
+                <% if atr.to_s.include? "base" %>
+                  <%= msg %>
+                <% else %>
+                  <%= @transaction.errors.full_message(atr, msg) %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="clear20"></div>
+      <div class="field">
+        <div class="form-row">
+          <div class="label">Invoice no:</div>
+          <div class='field'>
+            <%=f.text_field :invoice_no, value: @transaction.invoice_no,  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Buyer:</div>
+          <div class='field'>
+            <%=f.text_field :buyer_id, value: @transaction.buyer.company,  class: 'input disabled' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Avg Price:</div>
+          <div class='field'>
+            <%=f.text_field :price, value: @transaction.price,  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Carats:</div>
+          <div class='field'>
+            <%=text_field_tag :weight, @transaction.trading_parcel.weight,  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Amount:</div>
+          <div class='field'>
+            <%=f.text_field :total_amount, value: @transaction.total_amount,  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Paid:</div>
+          <div class='field'>
+            <%=f.select :paid, options_for_select([[true, 1],[false, 0]], @transaction.paid), { include_blank: true },  class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Send to Buyer:</div>
+          <div class='field'>
+            <%=f.check_box :ready_for_buyer,  class: 'input' %>
+          </div>
+        </div>
+      </div>
+      <div class="clear"></div>
+      <div class="form-row">
+        <div class="label"></div>
+        <div class='field'>
+          <%=f.submit 'Submit', class: 'btn-01 login_btn', id: 'transaction_submit' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
+<div class="clear"></div>
+
+<script type="text/javascript">
+  $(document).on('focusout','#transaction_price', function(){
+    var carat = $('#weight').val();
+    var price = $('#transaction_price').val();
+    var amount = carat*price;
+    $('#transaction_total_amount').val(amount);
+  });
+
+  $(document).on('focusout','#weight', function(){
+    var carat = $('#weight').val();
+    var price = $('#transaction_price').val();
+    var amount = carat*price;
+    $('#transaction_total_amount').val(amount);
+  });
+</script>
