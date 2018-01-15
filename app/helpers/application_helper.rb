@@ -373,8 +373,8 @@ module ApplicationHelper
     end
   end
 
-  def customer_list_for_demand
-    Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+  def supplier_list_for_demand
+    DemandSupplier.all.map { |e| [e.name, e.id] }
   end
 
 end

@@ -1,0 +1,2 @@
+class DemandSupplier < ApplicationRecord
+end

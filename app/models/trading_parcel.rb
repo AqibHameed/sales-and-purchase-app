@@ -36,7 +36,7 @@ class TradingParcel < ApplicationRecord
   end
 
   def send_mail_to_demanded
-    demands = Demand.where(description: self.description, supplier_id: self.customer_id).map { |e| e.customer.email }
+    demands = Demand.where(description: self.description, demand_supplier_id: self.customer_id).map { |e| e.customer.email }
     TenderMailer.parcel_up_email(self, demands).deliver rescue logger.info "Error sending email"
   end
 

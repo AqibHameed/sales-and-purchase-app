@@ -98,7 +98,7 @@ class SuppliersController < ApplicationController
   end
 
   def supplier_demand_list
-    @demand_list = DemandList.where(supplier_id: params[:id])
+    @demand_list = DemandList.where(demand_supplier_id: params[:id])
     respond_to do |format|
       format.js
     end
