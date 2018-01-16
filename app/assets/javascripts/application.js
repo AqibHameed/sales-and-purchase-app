@@ -257,3 +257,27 @@ $(document).ready(function() {
   }
 
 });
+
+function ajaxRequest(url, data, callback, type) {
+    if(typeof type == 'undefined') {
+        type = 'GET'
+    }
+    if (!data) {
+        data = {};
+    }
+    $.ajax({
+        url : url,
+        type : type,
+        data : data,
+        success: function (data) {
+            if(typeof callback == 'function') {
+                callback(data);
+            }
+        },
+        error: function (jqXHR, textStatus,errorThrown) {
+            console.log(jqXHR, textStatus, errorThrown);
+            alert('An error occurred: ' + textStatus + ' ' + errorThrown);
+        }
+    });
+
+}

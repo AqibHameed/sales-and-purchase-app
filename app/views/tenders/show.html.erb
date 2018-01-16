@@ -139,24 +139,27 @@
   $(document).ready(function() {
     $("#myTable").tablesorter();
       <% if tender_timer['timer_value'] > 0 %>
-        var reload_time = Math.floor(Math.random() * (1500 - 1000 + 1) + 1000);
+        var reload_time = Math.floor(Math.random() * (1500 - <%= current_user.id.to_i%> + 1) + 1000);
         init_timer(<%=tender_timer['timer_value'].to_i%>, '<%=tender_timer['clockFace'].to_s%>');
 
         function init_timer(value, clockFace)
         {
             if($('.clock').length == 1 && value) {
                 if(typeof clockFace == 'undefined') {
-                    clockFace = 'MinuteCounter'
+                     clockFace = 'MinuteCounter'
                 }
                 $('.clock').FlipClock(value, {
                     clockFace: clockFace,
                     countdown: true,
                     callbacks: {
+                        start: function () {
+                            <%if tender_timer['tender_state'] == 'round_break' %>
+                            on_round_break_begin();
+                            <% end %>
+                        },
                         stop: function() {
-                            <%if tender_timer['tender_state'] == 'round_active' %>
-                            on_round_finished();
-                            <% elsif tender_timer['tender_state'] == 'round_break' %>
-                            on_round_break_finished();
+                            <% if tender_timer['tender_state'] == 'round_break' %>
+                            on_round_break_end();
                             <% else %>
                             setTimeout(function () { location.reload(true); }, reload_time);
                             <% end %>
@@ -165,14 +168,29 @@
                 });
             }
         }
-      <%#if tender_timer['tender_state'] == 'round_break' %>
-      function on_round_break_finished()
+        function on_round_break_begin() {
+            var tender_id = '<%=@tender.id%>',
+                check_time = Math.floor(Math.random() * (6000 - <%= current_user.id.to_i%> + 1) + 1000),
+                check_callback = function (result) {
+                    console.log(result);
+                    if(result.success && result.updated == false) {
+                        var round = Math.max(<%= tender_timer['current_round']%>, 1),
+                            url = '/change_tender_open_time',
+                            data = { tender_id: tender_id, round: round };
+                        ajaxRequest(url, data, function(data){
+                            console.log(data);
+                        });
+                    }
+                };
+            setTimeout(function () {
+                ajaxRequest('/can_update', {tender_id:tender_id}, check_callback);
+            }, check_time);
+        }
+      function on_round_break_end()
       {
-          $.ajax({
-              url : '/change_system_price',
-              type : 'GET',
-              data : { tender_id: '<%=@tender.id%>'},
-              success: function (data) {
+          var url = '/change_system_price',
+              data = { tender_id: '<%=@tender.id%>'},
+              callback = function (data) {
                   console.log(data)
                   if(data.success == true) {
                       setTimeout(function () { location.reload(true); }, reload_time);
@@ -180,28 +198,10 @@
                       console.log(data);
                       alert('An error occurred during request to the server. Please contact to administrator.');
                   }
-              }
-          })
+              };
+          ajaxRequest(url, data, callback);
       }
 
-      function on_round_finished() {
-          var round = Math.max(<%= tender_timer['current_round']%>, 1);
-          $.ajax({
-              url : '/change_tender_open_time',
-              type : 'GET',
-              data : { tender_id: '<%=@tender.id%>', round: round },
-              success: function (data) {
-                  if(data.success == true) {
-                      setTimeout(function () { location.reload(true); }, reload_time);
-                  } else {
-                      console.log(data);
-                      alert('An error occurred during request to the server. Please contact to administrator.');
-                  }
-              }
-          })
-
-      }
-      <% #end %>
       <% end %>
   });
 <% end %>

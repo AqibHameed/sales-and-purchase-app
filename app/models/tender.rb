@@ -743,7 +743,7 @@ class Tender < ApplicationRecord
       #Round duration time in seconds
       round_duration_s = self.round_duration*60
       #Time between rounds in seconds
-      rounds_between_duration_s =self.rounds_between_duration*60
+      rounds_between_duration_s = self.rounds_between_duration*60
       #Period of round
       round_period_s = round_duration_s + rounds_between_duration_s
       #Count of rounds that have already passed from the beginning of tender

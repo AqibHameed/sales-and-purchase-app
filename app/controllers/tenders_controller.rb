@@ -494,11 +494,19 @@ class TendersController < ApplicationController
     end
   end
 
+  def round_updated
+    tender = Tender.where(id: params[:tender_id]).first
+    if !tender.nil?
+      render :json => { success: true, updated: tender.updated_after_round }
+    else
+      render :json => { success: true, updated: true }
+    end
+
+  end
+
   def update_time
     tender = Tender.where(id: params[:tender_id]).first
-    puts "!!!!!!!!!!!!!!UPDATE ROUND START: #{params[:round].to_i}"
-    puts "Time: #{Time.current} - timestamp: #{Time.current.to_i}"
-    puts "Customer: #{current_customer.id} email: #{current_customer.email}"
+    puts "!!!!!!!!!!!!!!UPDATE ROUND START: #{params[:round].to_i} Time: #{Time.current} - timestamp: #{Time.current.to_i} Customer: #{current_customer.id} email: #{current_customer.email}"
     if !tender.nil?
       if !tender.updated_after_round
         tender.update_columns(updated_after_round: true, round: params[:round].to_i + 1)
@@ -512,7 +520,7 @@ class TendersController < ApplicationController
         puts "!!!!!!!!!!!!!!UPDATE ROUND END: with price"
         render :json => { success: true, updated: 'done' }
       else
-        puts "!!!!!!!!!!!!!!UPDATE ROUND END: no price"
+        puts "!!!!!!!!!!!!!!UPDATE ROUND END: price already updated"
         render :json => { success: true, updated: 'already' }
       end
     end
