@@ -496,10 +496,12 @@ class TendersController < ApplicationController
 
   def round_updated
     tender = Tender.where(id: params[:tender_id]).first
+    locked = true
     if !tender.nil?
-      render :json => { success: true, updated: tender.updated_after_round }
+      locked = tender.updated_after_round.nil? ? false : tender.updated_after_round
+      render :json => { success: true, updated: locked }
     else
-      render :json => { success: true, updated: true }
+      render :json => { success: true, updated: locked }
     end
 
   end
