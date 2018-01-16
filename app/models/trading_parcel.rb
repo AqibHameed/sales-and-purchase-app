@@ -28,10 +28,12 @@ class TradingParcel < ApplicationRecord
     self.save(validate: false)
   end
 
-  def demand_count(parcel,customer)
-    description = parcel.description
-    customer_id = parcel.customer_id
-    count = Demand.where(description: description, demand_supplier_id: customer_id).where.not(customer_id: customer.id).count
+  def demand_count(parcel, customer)
+    count = Demand.where(description: parcel.description, demand_supplier_id: parcel.customer_id).where.not(customer_id: customer.id).count
+    # customer_ids = demands.customer_ids
+    # customer_ids.each do |id|
+    #   Customer.check_overdue(id)
+    # end
     return count
   end
 

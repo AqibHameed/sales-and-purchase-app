@@ -9,17 +9,17 @@
         <li>
           <%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
         </li>
-        <li>
-          <div class="dropdown list_dropdown" style="width: 68px;">
-            <a id="dropbtn" class="dropbtn"> History </a>
-            <span><%=image_tag "down-arrow.png", width: '18%' %></span>
-            <div id="myDropdown" class="list-dropdown-content">
-              <%= link_to 'Auction', history_tenders_path, data: { turbolinks: false } %>
-              <%= link_to 'Trading', trading_history_path, data: { turbolinks: false } %>
-            </div>
-          </div>
-        </li>
         <% if current_customer %>
+          <li>
+            <div class="dropdown list_dropdown" style="width: 68px;">
+              <a id="dropbtn" class="dropbtn"> History </a>
+              <span><%=image_tag "down-arrow.png", width: '18%' %></span>
+              <div id="myDropdown" class="list-dropdown-content">
+                <%= link_to 'Auction', history_tenders_path, data: { turbolinks: false } %>
+                <%= link_to 'Trading', trading_history_path, data: { turbolinks: false } %>
+              </div>
+            </div>
+          </li>
           <!-- <li>
             <%#= link_to 'Inbox', proposals_path, data: { turbolinks: false } %>
           </li> -->
@@ -70,6 +70,9 @@
           </li>
           <li>
             <%= link_to 'Invite', new_customer_invitation_path, data: { turbolinks: false } %>
+          </li>
+          <li>
+            <%= link_to 'Demand List', demand_list_upload_suppliers_path, data: { turbolinks: false } %>
           </li>
         <% end %>
       </ul>

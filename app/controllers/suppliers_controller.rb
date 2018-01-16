@@ -1,8 +1,8 @@
 class SuppliersController < ApplicationController
   layout 'supplier', :except => [:profile]
   layout 'application', :except => [:profile]
-  before_action :authenticate_customer!
-  # before_action :authenticate_admin!
+  before_action :authenticate_customer!, except: [:demand_list_upload]
+  before_action :authenticate_admin!, only: [:demand_list_upload]
 
   def index
     @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc).page params[:page]
@@ -25,6 +25,10 @@ class SuppliersController < ApplicationController
     @parcel = TradingParcel.find(params[:id])
     @demand = Demand.where(description: @parcel.description).where.not(customer_id: current_customer.id)
     @customers = Customer.unscoped.where(id: @demand.map(&:customer_id)).page params[:page]
+  end
+
+  def demand_list_upload
+
   end
 
   def parcels
