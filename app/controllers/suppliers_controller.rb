@@ -1,8 +1,8 @@
 class SuppliersController < ApplicationController
   layout 'supplier', :except => [:profile]
   layout 'application', :except => [:profile]
-  before_action :authenticate_customer!, except: [:demand_list_upload]
-  before_action :authenticate_admin!, only: [:demand_list_upload]
+  before_action :authenticate_customer!, except: [:add_demand_list, :upload_demand_list]
+  before_action :authenticate_admin!, only: [:add_demand_list, :upload_demand_list]
 
   def index
     @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc).page params[:page]
@@ -27,8 +27,12 @@ class SuppliersController < ApplicationController
     @customers = Customer.unscoped.where(id: @demand.map(&:customer_id)).page params[:page]
   end
 
-  def demand_list_upload
+  def add_demand_list
+  end
 
+  def upload_demand_list
+    DemandList.import(params[:file], params[:supplier])
+    redirect_to add_demand_list_suppliers_path, notice: "List imported."
   end
 
   def parcels

@@ -148,6 +148,8 @@ Rails.application.routes.draw do
       get :credit
       get :credit_given_list
       get :single_parcel_form
+      get :add_demand_list
+      post :upload_demand_list
     end
   end
   resources :messages

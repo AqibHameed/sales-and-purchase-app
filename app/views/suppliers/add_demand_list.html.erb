@@ -1,0 +1,25 @@
+<div class="clear10"></div>
+<div class="search-form form-wrapper credit-form">
+  <%= form_tag(upload_demand_list_suppliers_path, :method => "post", multipart: true) do %>
+    <div class="form-row">
+      <div class="label">Supplier</div>
+      <div class="field">
+        <%= select_tag :supplier, options_for_select(DemandSupplier.all.map { |e| [e.name, e.id] }), include_blank: true, class: 'input'%>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label">File</div>
+      <div class="field">
+        <%= file_field_tag :file, class: 'input' %>
+      </div>
+    </div>
+    <div class="clear10"></div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%= submit_tag "Upload List", class: 'login-btn btn-02' %>
+      </div>
+    </div>
+  <% end %>
+</div>
+<div class="clear10"></div>
