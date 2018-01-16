@@ -425,11 +425,11 @@ $tr-odd-bg-color: #f2f2f2;
 
 
 //Tables responsive configuration
-@media (max-width: $wide) {
+/*@media (max-width: $wide) {*/
   .table-head-in-td {
     display: none;
   }
-}
+/*}*/
 
 @media (max-width: $middle) {}
 @media (max-width: $small) {

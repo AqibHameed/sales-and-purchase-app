@@ -235,8 +235,10 @@ $(document).ready(function() {
 });
 
 
-// Responsive tables data show
+
 $(document).ready(function() {
+
+  // Responsive tables data show
 
   if($('.table-responsive').length){
       $('.table-responsive .table-head-in-td').click(function(){
@@ -244,10 +246,7 @@ $(document).ready(function() {
       });
   }
 
-});
-
-// Mobile menu
-$(document).ready(function() {
+  // Mobile menu
 
   if($('.menu-burger').length){
       $('.menu-burger').click(function(){
