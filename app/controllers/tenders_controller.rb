@@ -496,21 +496,27 @@ class TendersController < ApplicationController
 
   def update_time
     tender = Tender.where(id: params[:tender_id]).first
+    puts "!!!!!!!!!!!!!!UPDATE ROUND START: #{params[:round].to_i}"
+    puts "Time: #{Time.current} - timestamp: #{Time.current.to_i}"
+    puts "Customer: #{current_customer.id} email: #{current_customer.email}"
     if !tender.nil?
-      if tender.check_if_bid_placed(params[:round].to_i)
-        tender.check_for_winners(params[:round].to_i, current_customer)
-      end
-      if tender.updated_after_round
-        render :json => { success: true, updated: 'already' }
-      else
-        tender.update_columns(updated_after_round: true, round: tender.round + 1)
+      if !tender.updated_after_round
+        tender.update_columns(updated_after_round: true, round: params[:round].to_i + 1)
+        if tender.check_if_bid_placed(params[:round].to_i)
+          tender.check_for_winners(params[:round].to_i, current_customer)
+        end
         if tender.need_to_update_time?
-          round_open_time = tender.round_open_time + (tender.round_duration).minutes + (tender.rounds_between_duration).minutes 
+          round_open_time = tender.round_open_time + (tender.round_duration).minutes + (tender.rounds_between_duration).minutes
           tender.update_column(:round_open_time, round_open_time)
         end
+        puts "!!!!!!!!!!!!!!UPDATE ROUND END: with price"
         render :json => { success: true, updated: 'done' }
+      else
+        puts "!!!!!!!!!!!!!!UPDATE ROUND END: no price"
+        render :json => { success: true, updated: 'already' }
       end
     end
+    puts "!!!!!!!!!!!!!!UPDATE ROUND END: no TENDER"
   end
 
   def update_system_price

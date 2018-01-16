@@ -743,7 +743,7 @@ class Tender < ApplicationRecord
       #Round duration time in seconds
       round_duration_s = self.round_duration*60
       #Time between rounds in seconds
-      rounds_between_duration_s = self.rounds_between_duration*60
+      rounds_between_duration_s =self.rounds_between_duration*60
       #Period of round
       round_period_s = round_duration_s + rounds_between_duration_s
       #Count of rounds that have already passed from the beginning of tender
@@ -962,7 +962,7 @@ class Tender < ApplicationRecord
         end
       elsif yes_no_buyer_interests.count > 1
         puts "NOT UPDATED: " + self.updated_after_round.inspect
-        if !self.updated_after_round
+        #if !self.updated_after_round
           system_price,system_price_percentage = 0.0
           if self.diamond_type == 'Rough'
             total_customers = YesNoBuyerInterest.where(stone_id: parcel.id, round: round - 1).count
@@ -983,7 +983,7 @@ class Tender < ApplicationRecord
           #left_customers = total_customers - remaining_customers
           puts "LEft = #{left_customers}"
 
-          customer_yes_no_bid = parcel.yes_no_buyer_interests.where(customer_id: current_customer.id).last
+          customer_yes_no_bid = parcel.yes_no_buyer_interests.where(tender_id: self.id, round: round).last
 
           if customer_yes_no_bid.present?
             reserved_price = customer_yes_no_bid.reserved_price
@@ -1013,7 +1013,7 @@ class Tender < ApplicationRecord
             customer_yes_no_bid.update_attributes(reserved_price: @yes_no_system_price)
           end
 
-        end
+        #end
 
       end
 
