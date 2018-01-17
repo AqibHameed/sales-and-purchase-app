@@ -28,6 +28,8 @@ class Customer < ApplicationRecord
   has_many :sender, :class_name => 'Message', :foreign_key => 'sender_id'
   has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
 
+  has_many :customer_roles
+  has_many :roles #, through: :customer_roles
   # accepts_nested_attributes_for :companies
 
   has_many :customer_ratings
