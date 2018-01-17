@@ -374,7 +374,7 @@ module ApplicationHelper
   end
 
   def supplier_list_for_demand
-    DemandSupplier.all.map { |e| [e.name, e.id] }
+    DemandSupplier.all.map { |e| e.name }
   end
 
 end

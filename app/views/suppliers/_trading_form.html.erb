@@ -79,8 +79,6 @@
         </div>
       </div>
 
-
-
       <div class="sight_diamond hide">
         <div class="form-row">
           <div class="label"> Source Column:</div>
@@ -184,14 +182,16 @@
         <div class="form-row">
           <div class="label"> Source: </div>
           <div class="field">
-            <%= f.text_field :source, class: 'input' %>
+            <%#= f.text_field :source, class: 'input' %>
+            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
           </div>
         </div>
 
         <div class="form-row">
           <div class="label"> Box: </div>
           <div class="field">
-            <%= f.text_field :box, class: 'input' %>
+            <%#= f.text_field :box, class: 'input' %>
+            <%= f.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
           </div>
         </div>
 
@@ -210,7 +210,7 @@
         </div>
 
         <div class="form-row">
-          <div class="label"> Sight:</div>
+          <div class="label"> Month Sight:</div>
           <div class="field">
             <%= f.text_field :sight, class: 'input' %>
           </div>
@@ -259,7 +259,14 @@
   </div>
 </div>
 <script>
-
+  $(document).on('change', '#trading_parcel_source', function(){
+    id = $('#trading_parcel_source').val()
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+    })
+  })
 
   $(document).on('focusout','#price', function(){
     var carat = $('#carat').val();

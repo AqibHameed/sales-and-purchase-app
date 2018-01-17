@@ -1,5 +1,6 @@
 class DemandList < ApplicationRecord
   validates :demand_supplier_id, :description, presence: true
+  belongs_to :demand_supplier
 
   def self.import(file, supplier)
     data_file = Spreadsheet.open(open(file))
@@ -12,6 +13,16 @@ class DemandList < ApplicationRecord
   end
 
   rails_admin do
+    list do
+      [:id, :description, :created_at, :updated_at].each do |field_name|
+        field field_name
+      end
+      field :demand_supplier do
+        formatted_value do # used in form views
+          value.demand_supplier.name
+        end
+      end
+    end
     edit do
       field :description
       field :demand_supplier_id, :enum do
