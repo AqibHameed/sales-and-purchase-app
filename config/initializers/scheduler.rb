@@ -7,7 +7,8 @@ scheduler.cron '5 0 * * *' do
 end
 
 scheduler.cron '* * * * *' do
-  puts Tender.update_round_prices
+  puts '======PRICE SECHEDULER========'
+  Tender.update_round_prices
 end
 
 
