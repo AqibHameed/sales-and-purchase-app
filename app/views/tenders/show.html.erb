@@ -152,56 +152,13 @@
                     clockFace: clockFace,
                     countdown: true,
                     callbacks: {
-                        start: function () {
-                            <%if tender_timer['tender_state'] == 'round_break' %>
-                            on_round_break_begin();
-                            <% end %>
-                        },
                         stop: function() {
-                            <% if tender_timer['tender_state'] == 'round_break' %>
-                            on_round_break_end();
-                            <% else %>
                             setTimeout(function () { location.reload(true); }, reload_time);
-                            <% end %>
                         }
                     }
                 });
             }
         }
-        function on_round_break_begin() {
-            var tender_id = '<%=@tender.id%>',
-                check_time = Math.floor(Math.random() * (6000 - <%= current_user.id.to_i%> + 1) + 1000),
-                check_callback = function (result) {
-                    console.log(result);
-                    if(result.success && result.updated == false) {
-                        var round = Math.max(<%= tender_timer['current_round']%>, 1),
-                            url = '/change_tender_open_time',
-                            data = { tender_id: tender_id, round: round };
-                        ajaxRequest(url, data, function(data){
-                            console.log(data);
-                        });
-                    }
-                };
-            setTimeout(function () {
-                ajaxRequest('/can_update', {tender_id:tender_id}, check_callback);
-            }, check_time);
-        }
-      function on_round_break_end()
-      {
-          var url = '/change_system_price',
-              data = { tender_id: '<%=@tender.id%>'},
-              callback = function (data) {
-                  console.log(data)
-                  if(data.success == true) {
-                      setTimeout(function () { location.reload(true); }, reload_time);
-                  } else {
-                      console.log(data);
-                      alert('An error occurred during request to the server. Please contact to administrator.');
-                  }
-              };
-          ajaxRequest(url, data, callback);
-      }
-
       <% end %>
   });
 <% end %>

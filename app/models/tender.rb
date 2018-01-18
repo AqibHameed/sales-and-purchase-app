@@ -934,7 +934,7 @@ class Tender < ApplicationRecord
   def check_for_winners(round, current_customer)
     puts "Start winners ***********************************************************"
     puts "Round: " + round.inspect
-    puts "Customer: " + current_customer.inspect
+    #puts "Customer: " + current_customer.inspect
     if self.diamond_type == 'Rough'
       parcels = self.stones
     elsif self.diamond_type == 'Sight'
@@ -1020,6 +1020,38 @@ class Tender < ApplicationRecord
     end
     puts "END winners ***********************************************************"
   end
+
+  def self.update_round_prices
+    tenders = Tender.active
+    puts "********* UPDATE PRICE TASK BEGIN *****************"
+    puts "Found #{tenders.count} tenders"
+    tenders.each do |tender|
+      if tender.tender_type == 'Yes/No'
+        puts "Tender Name: #{tender.name}"
+        timer_info = tender.tender_timer
+        puts timer_info.inspect
+        locked = tender.updated_after_round.nil? ? false : tender.updated_after_round
+        puts "Tender locked #{locked}"
+        if timer_info['tender_state'] == 'round_break' && !locked
+          #There is at least one bid in this round
+          if tender.check_if_bid_placed(timer_info['current_round'])
+            puts "Start to update price"
+            tender.check_for_winners(timer_info['current_round'], false)
+            tender.update_columns(updated_after_round: true, round: timer_info['current_round'].to_i + 1)
+          else
+            puts "It seems like there are no any parcels to bid"
+            puts "Close Tender"
+            tender.update_columns(close_date: Time.current)
+          end
+        #reset lock flag if we on round
+        elsif timer_info['tender_state'] == 'round_active' && locked
+          tender.update_columns(updated_after_round: false)
+        end
+      end
+    end
+    puts "********* UPDATE PRICE TASK END *****************"
+  end
+
   ##################
 
   rails_admin do
