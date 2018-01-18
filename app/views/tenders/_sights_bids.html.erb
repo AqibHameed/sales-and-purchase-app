@@ -1,6 +1,6 @@
 <div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
-    <thead>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter table-responsive">
+    <thead class="thead-desktop">
       <tr>
         <% if current_customer %>
               <th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
@@ -31,34 +31,41 @@
          <% unless sight.source == "Description" || sight.source == "DESCRIPTION"%>
           <tr>
             <% if current_customer %>
-                  <td><div id_key="<%= sight.id %>" key="<%= sight.key %>" score='<%= @important.include?(sight.key) ? 1 : 0%>' id="star_<%= sight.id %>" class="star" ></div><span class="score"><%= @important.include?(sight.key) ? 1 : 0%></span></td>
-                <td><%= check_box_tag "read",1,@read.include?(sight.key) ,{:id => "read_" + sight.id.to_s, :class => "read", :key => sight.key} %><span class="score"><%= @read.include?(sight.key) ? 1 : 0%></span></td>
+                  <td><span class="table-head-in-td">Imp</span><div id_key="<%= sight.id %>" key="<%= sight.key %>" score='<%= @important.include?(sight.key) ? 1 : 0%>' id="star_<%= sight.id %>" class="star" ></div><span class="score"><%= @important.include?(sight.key) ? 1 : 0%></span></td>
+                <td><span class="table-head-in-td">Read</span><%= check_box_tag "read",1,@read.include?(sight.key) ,{:id => "read_" + sight.id.to_s, :class => "read", :key => sight.key} %><span class="score"><%= @read.include?(sight.key) ? 1 : 0%></span></td>
                 <% end %>
-            <td><%= sight.source %></td>
-            <td><%= sight.box %></td>
-            <td><%= sight.carats %></td>
-            <td><%= sight.cost %></td>
-            <td><%= sight.box_value_from %> - <%= sight.box_value_to %></td>
-            <td><%= sight.sight %></td>
-            <td><%= sight.price %>%</td>
-            <td><%= sight.credit %></td>
+            <td><span class="table-head-in-td">Source</span><%= sight.source %></td>
+            <td><span class="table-head-in-td">Box</span><%= sight.box %></td>
+            <td><span class="table-head-in-td">Carats</span><%= sight.carats %></td>
+            <td><span class="table-head-in-td">Cost</span><%= sight.cost %></td>
+            <td><span class="table-head-in-td">Box Value</span><%= sight.box_value_from %> - <%= sight.box_value_to %></td>
+            <td><span class="table-head-in-td">Sight</span><%= sight.sight %></td>
+            <td><span class="table-head-in-td">Price</span><%= sight.price %>%</td>
+            <td><span class="table-head-in-td">Credit</span><%= sight.credit %></td>
             <% if current_customer %>
               <% bid = sight.per_carat_bid(current_customer) %>
                   <td id="pcb_<%= sight.id %>" >
+                   <span class="table-head-in-td">Price per carat</span>
                     <%= number_to_currency(bid) unless bid.class == String %>
                   </td>
                   <% total_bid = sight.total_bid(current_customer) %>
                   <td id="tb_<%= sight.id %>" >
+                   <span class="table-head-in-td">Total Bid</span>
                     <%= number_to_currency(total_bid) unless total_bid.class == String %>
                   </td>
                   <td>
+                     <span class="table-head-in-td">My Note</span>
                       <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(sight.key) %></span>
                       <%= link_to 'Note', add_note_tender_path(@tender.id, :key => sight.key, :sight_id => sight.id, :index => i), :class => 'add_note' %>
                     </td>
                 <% end %>
-                <td><%= link_to "View", view_past_result_tender_path(@tender.id, :sight_id => sight.id, :key => sight.source, stone_count: (sight.box_value_to - sight.box_value_from)), :class => "past_result_link" %></td>
+                <td>
+                <span class="table-head-in-td">History</span>
+                <%= link_to "View", view_past_result_tender_path(@tender.id, :sight_id => sight.id, :key => sight.source, stone_count: (sight.box_value_to - sight.box_value_from)), :class => "past_result_link" %></td>
                 <% if current_customer %>
-                  <td><%= link_to 'Bid', place_new_sight_bids_path(sight.id), :class => 'place_bid' %></td>
+                  <td>
+                  <span class="table-head-in-td">Bid</span>
+                  <%= link_to 'Bid', place_new_sight_bids_path(sight.id), :class => 'place_bid' %></td>
                 <% end %>
 
           </tr>
