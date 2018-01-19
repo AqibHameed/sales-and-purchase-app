@@ -43,6 +43,10 @@ class Customer < ApplicationRecord
   has_many :supplier_notifications, :foreign_key => "supplier_id", :class_name => "SupplierNotification"
   has_many :buyer_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit"
   has_many :supplier_days_limits, :foreign_key => "supplier_id", :class_name => "DaysLimit"
+  has_many :brokers, :foreign_key => "broker_id", :class_name => "BrokerRequest"
+  has_many :sellers, :foreign_key => "seller_id", :class_name => "BrokerRequest"
+
+
   # Setup accessible (or protected) attributes for your model
   # attr_accessible :email, :password, :password_confirmation, :remember_me,
   #                 :first_name, :last_name,
@@ -200,6 +204,14 @@ class Customer < ApplicationRecord
     end
   end
 
+  def self.get_sellers
+    Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 2)
+  end
+
+  def self.get_buyers
+    Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 1)
+  end
+
   ## YES/NO ##
   def can_bid_on_parcel(type, round, tender, stone)
     #always allow on the first round
@@ -216,6 +228,16 @@ class Customer < ApplicationRecord
     return false
   end
   ############
+
+  ### Brokers ###
+  def sent_broker_request(seller)
+    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: false).first.present?
+  end
+
+  def is_broker(seller)
+    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
+  end
+  ###############
 
   rails_admin do
     list do

@@ -1,0 +1,43 @@
+<div class="dashboard">
+  <h3> My Broker Requests </h3>
+  <div class="clear10"></div>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th>Seller Name</th>
+      <th>Company</th>
+      <th></th>
+    </tr>
+    <% @requests.each do |request| %>
+      <tr>
+        <td><%= request.broker.name %></td>
+        <td><%= request.broker.company %></td>
+        <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: { turbolink: false } %> | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: { turbolink: false } %></td>
+      </tr>
+    <% end %>
+  </table>
+  </div>
+</div>
+<div class="clear10"></div>
+<div class="dashboard">
+  <h3> My Brokers </h3>
+  <div class="clear10"></div>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th></th>
+      <th>Broker Name</th>
+      <th>Company</th>
+    </tr>
+    <% @my_brokers.each do |broker| %>
+      <tr>
+        <td></td>
+        <td><%= broker.broker.name %></td>
+        <td><%= broker.broker.company %></td>
+      </tr>
+    <% end %>
+    
+</table>
+  </div>
+</div>
+

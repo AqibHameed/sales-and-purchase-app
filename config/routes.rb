@@ -178,6 +178,14 @@ Rails.application.routes.draw do
       put :paid
     end
   end
+  resources :brokers, only: [:index] do
+    collection do
+      get :send_request
+      get :requests
+      get :accept
+      get :reject
+    end
+  end
 
   namespace :api do
     namespace :v1 do

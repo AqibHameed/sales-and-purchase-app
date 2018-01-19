@@ -61,7 +61,7 @@
                 <a id="dropbtn" class="dropbtn"> Broker </a>
                 <span><%=image_tag "down-arrow.png", width: '25%' %></span>
                 <div id="myDropdown" class="list-dropdown-content">
-                  <%= link_to 'Test', '#', data: { turbolinks: false } %>
+                  <%= link_to 'Requests', brokers_path, data: { turbolinks: false } %>
                   <%#= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
                   <%#= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
                 </div>
@@ -104,6 +104,9 @@
         <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
         <%= link_to 'Info', info_customers_path, data: { turbolinks: false } unless current_admin %>
         <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
+        <% if can? :access, :sell %>
+          <%= link_to 'Broker Request', requests_brokers_path, data: { turbolinks: false } %> 
+        <% end %>
         <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
       </div>
     </div>

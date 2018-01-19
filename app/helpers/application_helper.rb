@@ -377,5 +377,16 @@ module ApplicationHelper
     DemandSupplier.all.map { |e| e.name }
   end
 
+  def link_to_request(current_customer, seller)
+    puts current_customer.sent_broker_request(seller)
+    if current_customer.sent_broker_request(seller)
+      'Requested'
+    elsif current_customer.is_broker(seller)
+      'Connected'
+    else
+      link_to 'Send Request', send_request_brokers_path(s: seller.id), data: { turbolink: false }
+    end
+  end
+
 end
 
