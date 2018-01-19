@@ -517,24 +517,32 @@ h4 {
       margin-bottom: 10px;
       display: block; } }
 
+.credit-table .table-head-in-td,
 .table-purchase .table-head-in-td,
 .table-sales .table-head-in-td {
   display: none; }
 @media (max-width: 760px) {
+  .credit-table,
   .table-purchase,
   .table-sales {
     width: 100%; }
+    .credit-table .table-head-in-td,
     .table-purchase .table-head-in-td,
     .table-sales .table-head-in-td {
       display: inline-block; }
+    .credit-table thead,
     .table-purchase thead,
     .table-sales thead {
       display: none; }
-    .table-purchase tbody th, .table-purchase tbody td,
+    .credit-table tbody th, .credit-table tbody td,
+    .table-purchase tbody th,
+    .table-purchase tbody td,
     .table-sales tbody th,
     .table-sales tbody td {
       display: block; }
-      .table-purchase tbody th .table-head-in-td, .table-purchase tbody td .table-head-in-td,
+      .credit-table tbody th .table-head-in-td, .credit-table tbody td .table-head-in-td,
+      .table-purchase tbody th .table-head-in-td,
+      .table-purchase tbody td .table-head-in-td,
       .table-sales tbody th .table-head-in-td,
       .table-sales tbody td .table-head-in-td {
         display: inline-block;
@@ -542,15 +550,19 @@ h4 {
         color: #5f5f5f;
         font-size: 12px;
         width: 120px; }
-      .table-purchase tbody th .table-head-in-td:after, .table-purchase tbody td .table-head-in-td:after,
+      .credit-table tbody th .table-head-in-td:after, .credit-table tbody td .table-head-in-td:after,
+      .table-purchase tbody th .table-head-in-td:after,
+      .table-purchase tbody td .table-head-in-td:after,
       .table-sales tbody th .table-head-in-td:after,
       .table-sales tbody td .table-head-in-td:after {
         display: inline-block;
         content: ":";
         margin-right: 10px; }
+    .credit-table tbody th .table-head-in-td,
     .table-purchase tbody th .table-head-in-td,
     .table-sales tbody th .table-head-in-td {
       color: white; }
+    .credit-table tr:nth-child(even),
     .table-purchase tr:nth-child(even),
     .table-sales tr:nth-child(even) {
       background-color: #f2f2f2; } }
@@ -639,5 +651,45 @@ h4 {
 @media (max-width: 760px) {
   .alert {
     padding: 0 15px; } }
+
+@media (max-width: 760px) {
+  .tender-filter-block select {
+    width: 100%;
+    margin-bottom: 10px; }
+  .tender-filter-block .from-to {
+    display: block;
+    margin-bottom: 5px; }
+  .tender-filter-block input {
+    display: block;
+    width: 100%; }
+  .tender-filter-block a.add {
+    margin-top: 10px;
+    /* position: relative; */
+    /* top: 17px; */
+    margin-bottom: 0px;
+    display: block;
+    height: 10px; } }
+
+@media (max-width: 760px) {
+  .login-page {
+    width: 100%;
+    box-sizing: border-box; }
+    .login-page h6 {
+      font-size: 24px; }
+    .login-page .sub-heading {
+      font-size: 20px; }
+    .login-page p {
+      margin-bottom: 0; }
+    .login-page .login-box {
+      width: 90%;
+      box-sizing: border-box;
+      padding-left: 10px;
+      padding-right: 10px; }
+      .login-page .login-box .field input {
+        width: 100%; }
+      .login-page .login-box .alert {
+        padding: 0; }
+      .login-page .login-box p {
+        font-size: 20px; } }
 
 /*# sourceMappingURL=application.css.map */

@@ -21,9 +21,9 @@
     </script>
     <% else %>
 
-    <div class='filter'>
+    <div class='filter tender-filter-block'>
       <%= select_tag "filter[][type]", options_for_select(['Lot No','DEEC No','Carat'])  %>&nbsp;&nbsp;&nbsp;&nbsp;
-      From : &nbsp;<%= text_field_tag "filter[][from]", "", :class => "input1" %>&nbsp;&nbsp;To :&nbsp;&nbsp;<%= text_field_tag "filter[][to]", "", :class => "input1" %>
+     <span class="from-to">From : &nbsp;</span><%= text_field_tag "filter[][from]", "", :class => "input1" %>&nbsp;&nbsp;<span class="from-to">To :&nbsp;&nbsp;</span><%= text_field_tag "filter[][to]", "", :class => "input1" %>
       <a href="javascript:void(0)" class="add" onclick ="addFilter()"  ></a>
       <div class="clear10"></div>
     </div>

@@ -695,7 +695,9 @@ $tr-odd-bg-color: #f2f2f2;
 
 //Purchase table
 //Sales table
+//Credit table
 
+.credit-table,
 .table-purchase,
 .table-sales {
 
@@ -883,6 +885,77 @@ $tr-odd-bg-color: #f2f2f2;
 .alert {
   @media (max-width: $small) {
     padding: 0 15px;
+  }
+}
+
+.tender-filter-block {
+  @media (max-width: $small) {
+    select {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .from-to {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+    }
+
+    a.add {
+      margin-top: 10px;
+      /* position: relative; */
+      /* top: 17px; */
+      margin-bottom: 0px;
+      display: block;
+      height: 10px;
+    }
+  }
+}
+
+@media (max-width: $small) {
+  .login-page {
+
+    width: 100%;
+    box-sizing: border-box;
+
+    h6 {
+      font-size: 24px;
+    }
+
+    .sub-heading {
+      font-size: 20px;
+    }
+    p {
+      margin-bottom: 0;
+    }
+
+    .login-box {
+      width: 90%;
+      box-sizing: border-box;
+      padding-left: 10px;
+      padding-right: 10px;
+
+      .field input {
+        width: 100%;
+      }
+
+      .alert {
+        padding: 0;
+      }
+
+      p {
+        font-size: 20px;
+      }
+    }
+  }
+
+
+  .login-page .login-box     * {
+    //font-size: 30px!important;
   }
 }
 
