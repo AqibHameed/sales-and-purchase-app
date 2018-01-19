@@ -21,7 +21,7 @@
   <% @parcels.each.with_index(1) do |parcel, i|%>
     <% if parcel.sold %>
       <tr style="background: #ccc;">
-        <td><%= index_count(params[:page].to_i) + i %></td>
+        <td><span class="table-head-in-td">Count</span><%= index_count(params[:page].to_i) + i %></td>
         <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
         <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
         <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
@@ -50,7 +50,7 @@
       </tr>
     <% else %>
       <tr>
-        <td><%= index_count(params[:page].to_i) + i %></td>
+        <td><span class="table-head-in-td">Count</span><%= index_count(params[:page].to_i) + i %></td>
         <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
         <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
         <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>

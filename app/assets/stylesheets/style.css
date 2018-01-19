@@ -297,3 +297,24 @@ span.score {
   padding-left: 396px;
 }
 .yes-no-round{padding-top: 10px;}
+
+
+
+@media (max-width:760px) {
+    .login-page {
+
+        /*background-color: blue;*/
+    }
+
+    .login-page .sub-heading {
+        font-size: 30px;
+    }
+
+    .login-page .login-box {
+        width: 80%;
+    }
+
+    .login-page .login-box     * {
+        font-size: 30px!important;
+    }
+}
