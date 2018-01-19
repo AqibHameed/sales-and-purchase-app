@@ -29,28 +29,45 @@
           <!-- <li>
             <%#= link_to 'Auctions', auctions_path, data: { turbolinks: false } %>
           </li> -->
-          <li>
-            <div class="dropdown list_dropdown">
-              <a id="dropbtn" class="dropbtn"> Buy </a>
-              <span><%=image_tag "down-arrow.png", width: '25%' %></span>
-              <div id="myDropdown" class="list-dropdown-content">
-                <%= link_to 'Trade', trading_customers_path, data: { turbolinks: false } %>
-                <%= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %>
-                <%#= link_to 'Credit', credit_customers_path, data: { turbolinks: false } %>
+          <% if can? :access, :buy %>
+            <li>
+              <div class="dropdown list_dropdown">
+                <a id="dropbtn" class="dropbtn"> Buy </a>
+                <span><%=image_tag "down-arrow.png", width: '25%' %></span>
+                <div id="myDropdown" class="list-dropdown-content">
+                  <%= link_to 'Trade', trading_customers_path, data: { turbolinks: false } %>
+                  <%= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %>
+                  <%#= link_to 'Credit', credit_customers_path, data: { turbolinks: false } %>
+                </div>
               </div>
-            </div>
-          </li>
-          <li>
-            <div class="dropdown list_dropdown">
-              <a id="dropbtn" class="dropbtn"> Sell </a>
-              <span><%=image_tag "down-arrow.png", width: '25%' %></span>
-              <div id="myDropdown" class="list-dropdown-content">
-                <%= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %>
-                <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
-                <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
+            </li>
+          <% end %>
+          <% if can? :access, :sell %>
+            <li>
+              <div class="dropdown list_dropdown">
+                <a id="dropbtn" class="dropbtn"> Sell </a>
+                <span><%=image_tag "down-arrow.png", width: '25%' %></span>
+                <div id="myDropdown" class="list-dropdown-content">
+                  <%= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %>
+                  <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
+                  <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
+          <% end %>
+          <% if can? :access, :broker %>
+            <li>
+              <div class="dropdown list_dropdown">
+                <a id="dropbtn" class="dropbtn"> Broker </a>
+                <span><%=image_tag "down-arrow.png", width: '25%' %></span>
+                <div id="myDropdown" class="list-dropdown-content">
+                  <%= link_to 'Test', '#', data: { turbolinks: false } %>
+                  <%#= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
+                  <%#= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
+                </div>
+              </div>
+            </li>
+          <% end %>
         <% end %>
         <!-- <li>
         <a href="#">Reports</a>

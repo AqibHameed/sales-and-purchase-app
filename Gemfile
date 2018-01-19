@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby '2.3.1'
 
 gem 'rails', '5.1.0'
-# gem 'pg'
+gem 'pg'
 
 gem "mysql2"
 gem "devise"
@@ -20,7 +20,6 @@ gem 'jquery-rails'
 gem 'fancybox-rails'
 gem 'suggest-db-indices'
 gem 'httparty'
-gem "cancan"
 gem 'paper_trail'
 gem "nested_form"
 gem 'active_model_serializers'
@@ -61,3 +60,5 @@ gem "select2-rails"
 gem 'sendgrid', '1.2.0'
 gem 'intl-tel-input-rails'
 gem 'rufus-scheduler'
+gem "rails_admin_import"
+gem 'cancancan'

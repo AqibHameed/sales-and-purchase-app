@@ -2,6 +2,7 @@ class CustomersController < ApplicationController
 
   before_action :authenticate_customer!
   before_action :check_info_shared, only: [:shared_info]
+  before_action :check_role_authorization, only: [:trading, :demanding]
 
   def profile
     @customer = current_customer
@@ -214,6 +215,14 @@ class CustomersController < ApplicationController
 
   def demanding_params
     params.require(:demand).permit(:description,:weight,:price,:diamond_type)
+  end
+
+  def check_role_authorization
+    if current_customer.has_role?('Buyer')
+      # do nothing
+    else
+      redirect_to root_path, notice: 'You are not authorized.'
+    end
   end
 
 end

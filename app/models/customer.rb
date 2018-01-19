@@ -29,7 +29,7 @@ class Customer < ApplicationRecord
   has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
 
   has_many :customer_roles
-  has_many :roles #, through: :customer_roles
+  # has_many :roles, through: :customer_roles
   # accepts_nested_attributes_for :companies
 
   has_many :customer_ratings
@@ -72,7 +72,7 @@ class Customer < ApplicationRecord
   #           :presence => true , :reduce => true
 
   # send_account_creation_mail
-  after_create :add_user_to_tenders
+  after_create :add_user_to_tenders, :assign_role_to_customer
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
@@ -176,12 +176,28 @@ class Customer < ApplicationRecord
     CustomersTender.create(customer_tenders)
   end
 
+  def assign_role_to_customer
+    CustomerRole.create(role_id: 1, customer_id: self.id)
+  end
+
   def notify_by_supplier supplier
     SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false
   end
 
   def credit_days_by_supplier(supplier)
     DaysLimit.where(supplier_id: supplier.id, buyer_id: self.id).first.days_limit rescue 30
+  end
+
+  def has_role?(role_name)
+    role = Role.where(name: role_name).first
+    unless role.nil?
+      customer_role = CustomerRole.where(customer_id: self.id, role_id: role.id).first
+      if customer_role.present?
+        return true
+      else
+        return false
+      end
+    end
   end
 
   ## YES/NO ##
