@@ -888,20 +888,14 @@ class Tender < ApplicationRecord
     if self.diamond_type == 'Rough'
       parcels = self.stones.map { |e| e.id  }
       bids = YesNoBuyerInterest.where(stone_id: parcels, tender_id: self.id, round: round)
-      if bids.empty?
-        return false
-      else
-        return true
-      end
+      return !bids.empty?
     elsif self.diamond_type == 'Sight'
-      parcels = self.sight.map { |e| e.id  }
+      parcels = self.sights.map { |e| e.id  }
       bids = YesNoBuyerInterest.where(sight_id: parcels, tender_id: self.id, round: round)
-      if bids.empty?
-        return false
-      else
-        return true
-      end
+      return !bids.empty?
     end
+    #return false by default
+    return false
   end
 
   def need_to_update_time?
@@ -938,19 +932,22 @@ class Tender < ApplicationRecord
     if self.diamond_type == 'Rough'
       parcels = self.stones
     elsif self.diamond_type == 'Sight'
-      parcels = self.sight
+      parcels = self.sights
     end
     puts "Parcel: " + parcels.inspect
     parcels.each_with_index do |parcel, index|
       if self.diamond_type == 'Rough'
         yes_no_buyer_interests = YesNoBuyerInterest.where(tender_id: self.id, stone_id: parcel.id, round: round)
+        parcel_reserved_price = parcel.reserved_price
       elsif self.diamond_type == 'Sight'
         yes_no_buyer_interests = YesNoBuyerInterest.where(tender_id: self.id, sight_id: parcel.id, round: round)
+        parcel_reserved_price = parcel.sight_reserved_price
       end
       puts "yes_no_buyer_interests: " + yes_no_buyer_interests.inspect
       puts "yes_no_buyer_interests COUNT: " + yes_no_buyer_interests.count.inspect
+
       if yes_no_buyer_interests.count == 1
-        winning_price = parcel.yes_no_system_price.present? ? parcel.yes_no_system_price : parcel.reserved_price - ((20.to_f/100.to_f)*parcel.reserved_price)
+        winning_price = parcel.yes_no_system_price.present? ? parcel.yes_no_system_price : parcel_reserved_price - ((20.to_f/100.to_f)*parcel_reserved_price)
         parcel.update_attributes(stone_winning_price: winning_price)
         if !parcel.yes_no_buyer_winner.present?
           winner = yes_no_buyer_interests.last
@@ -969,7 +966,7 @@ class Tender < ApplicationRecord
             puts "total Rough = #{total_customers}"
             remaining_customers = YesNoBuyerInterest.where(stone_id: parcel.id, round: round).count
             puts "Remaining Rough= #{remaining_customers}"
-          elsif self.diamond_type == ''
+          elsif self.diamond_type == 'Sight'
             total_customers = YesNoBuyerInterest.where(sight_id: parcel.id, round: round - 1).count
             puts "total Sight= #{total_customers}"
             remaining_customers = YesNoBuyerInterest.where(sight_id: parcel.id, round: round).count
@@ -987,7 +984,7 @@ class Tender < ApplicationRecord
 
           if customer_yes_no_bid.present?
             reserved_price = customer_yes_no_bid.reserved_price
-            if reserved_price.to_f < parcel.reserved_price.to_f
+            if reserved_price.to_f < parcel_reserved_price.to_f
               rate = 3
               max_percent = 5
             else
