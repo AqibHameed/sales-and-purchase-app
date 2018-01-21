@@ -135,12 +135,11 @@
 </div>
 <div class="clear"></div>
 <script>
-<% unless @tender.nil? || @tender.tender_type == 'Blind' %>
+<% unless @tender.nil? %>
   $(document).ready(function() {
     $("#myTable").tablesorter();
       <% if tender_timer['timer_value'] > 0 %>
         var reload_time = Math.floor(Math.random() * (1500 - <%= current_user.id.to_i%> + 1) + 1000);
-        init_timer(<%=tender_timer['timer_value'].to_i%>, '<%=tender_timer['clockFace'].to_s%>');
 
         function init_timer(value, clockFace)
         {
@@ -159,6 +158,24 @@
                 });
             }
         }
+
+        ajaxRequest('/get_timer',
+            {tender_id:'<%=@tender.id%>'},
+            function (result) {
+                //console.log(result);
+                if (result.success == true && result.timer) {
+                    var timer = result.timer;
+                    init_timer(timer['timer_value'], timer['clockFace'])
+                } else {
+                    init_timer(<%=tender_timer['timer_value'].to_i%>, '<%=tender_timer['clockFace'].to_s%>');
+                }
+
+            },
+            function (jqXHR, textStatus, errorThrown) {
+                init_timer(<%=tender_timer['timer_value'].to_i%>, '<%=tender_timer['clockFace'].to_s%>');
+            }
+        );
+
       <% end %>
   });
 <% end %>

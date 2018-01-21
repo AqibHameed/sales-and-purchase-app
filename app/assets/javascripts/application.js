@@ -257,9 +257,12 @@ $(document).ready(function() {
 
 });
 
-function ajaxRequest(url, data, callback, type) {
+function ajaxRequest(url, data, callback, errorCallback, type) {
     if(typeof type == 'undefined') {
         type = 'GET'
+    }
+    if (typeof errorCallback == 'undefined') {
+        errorCallback = false
     }
     if (!data) {
         data = {};
@@ -275,7 +278,11 @@ function ajaxRequest(url, data, callback, type) {
         },
         error: function (jqXHR, textStatus,errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
-            alert('An error occurred: ' + textStatus + ' ' + errorThrown);
+            if(errorCallback !== false && typeof callback == 'function') {
+                errorCallback(jqXHR, textStatus,errorThrown);
+            } else {
+                alert('An error occurred: ' + textStatus + ' ' + errorThrown);
+            }
         }
     });
 

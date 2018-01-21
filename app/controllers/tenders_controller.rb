@@ -506,6 +506,12 @@ class TendersController < ApplicationController
 
   end
 
+  def timer_value
+    tender = Tender.where(id: params[:tender_id]).first
+    timer_tender = tender.tender_timer
+    render :json => { success: true, timer: timer_tender }
+  end
+
   def update_time
     tender = Tender.where(id: params[:tender_id]).first
     puts "!!!!!!!!!!!!!!UPDATE ROUND START: #{params[:round].to_i} Time: #{Time.current} - timestamp: #{Time.current.to_i} Customer: #{current_customer.id} email: #{current_customer.email}"
