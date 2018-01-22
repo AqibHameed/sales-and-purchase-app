@@ -65,7 +65,12 @@
                       You are not Winner
                   <% elsif is_customer_can_bid %>
                       <label class="switch">
-                        <input class="switch-input" type="checkbox" <%= current_customer.can_bid_on_parcel('stone', current_round+1, @tender, stone) ? 'checked="checked"' : ''%> />
+                        <input class="switch-input"
+                               type="checkbox"
+                               <%= current_customer.can_bid_on_parcel('stone', current_round+1, @tender, stone) ? 'checked="checked"' : ''%>
+                               data-system-price="<%= system_price %>"
+                               data-stone-id = "<%= stone.id %>"
+                        />
                         <span class="switch-label" data-on="Yes" data-off="No"></span>
                         <span class="switch-handle"></span>
                       </label>
@@ -85,116 +90,58 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function() {
-    addStarRatings('<%= @tender.id %>')
-    addRead('<%= @tender.id %>')
-    $(document).on('click', '.place_bid', function(e) {
-      e.preventDefault()
-      var _this = $(this);
-      var top = $(this).position()['top'] - 300;
-      var url = $(this).attr('href')
-      $.ajax({
-        url : url,
-        type : 'GET',
-        success : function(response) {
-          $('.bid_form').html(response).show()
-          // $('.bid_form').css('margin-top', top + 'px' )
-          $('tr').removeClass('current_bid');
-          $(_this).parents('tr').addClass('current_bid');
-        }
-      })
-    });
 
-    $(document).on('click', '.add_note', function(e) {
-      e.preventDefault()
-      var _this = $(this);
-      var top = $(this).position()['top'] - 300;
-      var url = $(this).attr('href')
-      $.ajax({
-        url : url,
-        type : 'GET',
-        success : function(response) {
-          $('.bid_form').html(response).show()
-          // $('.bid_form').css('margin-top', top + 'px' )
-          $('tr').removeClass('current_bid');
-          $(_this).parents('tr').addClass('current_bid');
-        }
-      })
-    });
+      addStarRatings('<%= @tender.id %>');
+      addRead('<%= @tender.id %>');
 
-    $(document).on('click', '.past_result_link', function(e) {
-    e.preventDefault()
-    var _this = $(this);
-    var top = $(this).position()['top'] - 300;
-    var url = $(this).attr('href')
-    $.ajax({
-      url : url,
-      type : 'GET',
-      success : function(response) {
-        $('.bid_form').html(response).show()
-        // $('.bid_form').css('margin-top', top + 'px' )
-        $('tr').removeClass('current_bid');
-        $(_this).parents('tr').addClass('current_bid');
-      }
-    })
-  });
-
-    $(document).ready(function() {
-      $('.switch-input').on('change', function() {
-        var isChecked = $(this).is(':checked');
-        var selectedData;
-        var $switchLabel = $('.switch-label');
-        console.log('isChecked: ' + isChecked);
-        if(isChecked) {
-          selectedData = $switchLabel.attr('data-on');
-          var stone_id = $(this).closest('tr').find('.yes_no_stone_id').val();
-          var tender_id = $(this).closest('tr').find('.yes_no_tender_id').val();
-          var reserved_price = $(this).closest('tr').find('.yes_no_reserved_price').html();
-          var current_customer = "<%= current_customer.id %>"
-          var interest = selectedData
-          var data = {"stone_id": stone_id, "tender_id": tender_id, "current_customer": current_customer, "interest": interest, "reserved_price": $.trim(reserved_price.replace(/[\n]+/g,' ')) }
+      $(document).on('click', '.add_note, .past_result_link', function(e) {
+          e.preventDefault()
+          var _this = $(this),
+              url = $(this).attr('href');
           $.ajax({
-              url:"/tenders/yes_or_no_winners",
-              type:'POST',
-              dataType:'json',
-              data:{data},
-              success:function(data){
-                console.log("success");
-              },
-              error:function(data){
-                console.log("error")
+              url : url,
+              type : 'GET',
+              success : function(response) {
+                  $('.bid_form').html(response).show();
+                  $('tr').removeClass('current_bid');
+                  $(_this).parents('tr').addClass('current_bid');
               }
-            });
-        } else {
-          selectedData = $switchLabel.attr('data-off');
-          var stone_id = $(this).closest('tr').find('.yes_no_stone_id').val();
-          var tender_id = $(this).closest('tr').find('.yes_no_tender_id').val();
-          var reserved_price = $(this).closest('tr').find('.yes_no_reserved_price').html();
-          var current_customer = "<%= current_customer.id %>"
-          var interest = selectedData
-          var data = {"stone_id": stone_id, "tender_id": tender_id, "current_customer": current_customer, "interest": interest, "reserved_price": $.trim(reserved_price.replace(/[\n]+/g,' ')) }
-          console.log(data)
-          $.ajax({
-            url:"/tenders/yes_or_no_winners",
-            type:'POST',
-            dataType:'json',
-            data:{data},
-            success:function(data){
-              console.log("success");
-            },
-            error:function(data){
-              console.log("error")
-            }
-          });
-        }
-        console.log('Selected data: ' + selectedData);
+          })
       });
+
+      $('.switch-input').on('change', function() {
+          var isChecked = $(this).is(':checked'),
+              stone_id = $(this).data('stone-id'),
+              reserved_price =  $(this).data('system-price'),
+              data = [
+                  {name: 'tender_id', value: "<%= @tender.id %>"},
+                  {name: 'current_customer', value: "<%= current_customer.id %>"},
+                  {name: 'interest', value: isChecked ? "Yes" : "No"},
+              ];
+          if(!isNaN(stone_id)) {
+              data.push({name: 'stone_id', value: stone_id})
+          }
+          if(!isNaN(reserved_price)) {
+              data.push({name: 'reserved_price', value:reserved_price});
+          }
+
+          ajaxRequest(
+              "/tenders/yes_or_no_winners",
+              data,
+              function (result) {
+                  //console.log(result);
+              },
+              false,
+              'POST'
+          );
+      });
+
       // Params ($selector, boolean)
       function setSwitchState(el, flag) {
-        el.attr('unchecked', flag);
+          el.attr('unchecked', flag);
       }
       // Usage
       setSwitchState($('.switch-input'), true);
-    });
 
   })
 
