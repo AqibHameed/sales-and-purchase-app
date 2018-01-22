@@ -39,9 +39,7 @@ class Bid < ApplicationRecord
     order by b.created_at desc limit(3)"
     results = Bid.find_by_sql(query)
   end
-
-
-
+  
   rails_admin do
     configure :stone_description do
       pretty_value do

@@ -105,30 +105,38 @@ class Stone < ApplicationRecord
   end
 
   def self.active_parcels term
-    # mysql
-    Tender.find_by_sql(
-      "SELECT tenders.name, s.* FROM tenders 
-      left join stones s on s.tender_id = tenders.id
-      WHERE (open_date <= '#{Time.now.utc}'
-      AND close_date >= '#{Time.now.utc}')
-      AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term})"
-    )
-
-    # # pg
+    # # mysql
     # Tender.find_by_sql(
     #   "SELECT tenders.name, s.* FROM tenders 
     #   left join stones s on s.tender_id = tenders.id
     #   WHERE (open_date <= '#{Time.now.utc}'
     #   AND close_date >= '#{Time.now.utc}')
-    #   AND (s.weight = #{term} OR s.lot_no = #{term.to_i})"
+    #   AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term})"
     # )
+
+    # pg
+    Tender.find_by_sql(
+      "SELECT tenders.name, s.* FROM tenders 
+      left join stones s on s.tender_id = tenders.id
+      WHERE (open_date <= '#{Time.now.utc}'
+      AND close_date >= '#{Time.now.utc}')
+      AND (s.weight = #{term} OR s.lot_no = #{term})"
+    )
   end
 
-  def has_note customer
-    if self.customer_id == customer.id
+  def has_note? customer
+    if self.try(:note).try(:customer_id) == customer.id
       true
     else
-      false                                                                                                                                      
+      false                                                                                     
+    end
+  end
+
+  def has_bid? customer
+    if self.try(:bids).map { |e| e.customer_id  }.include?(customer.id)
+      true
+    else
+      false                                                                                 
     end
   end
 

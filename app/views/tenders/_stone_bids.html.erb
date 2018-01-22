@@ -26,47 +26,91 @@
 
       <% @stones.each_with_index do |stone,i| %>
         <% unless stone.description == "Description" || stone.description == "DESCRIPTION"%>
-          <tr class="<%= get_color(@diff, stone.description) %>" >
-            <% if current_customer %>
-              <td>
-              <span class="table-head-in-td">Imp</span>
-              <div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
-              <td>
-              <span class="table-head-in-td">Read</span>
-              <%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
-            <% end %>
-            <td><span class="table-head-in-td">Lot No</span><%= stone.lot_no %></td>
-            <td><span class="table-head-in-td">DEEC No</span><%= stone.deec_no %></td>
-            <td><span class="table-head-in-td">Description</span><%= stone.description %></td>
-            <td><span class="table-head-in-td">Stones</span><%= stone.no_of_stones %></td>
-            <td><span class="table-head-in-td">Carat</span><%= stone.weight %></td>
-            <% if current_customer %>
-              <% bid = stone.per_carat_bid(current_customer) %>
-              <td id="pcb_<%= stone.id %>" >
-               <span class="table-head-in-td">Price per carat</span>
-                <%= number_to_currency(bid) unless bid.class == String %>
-              </td>
-              <% total_bid = stone.total_bid(current_customer) %>
-              <td id="tb_<%= stone.id %>" >
-               <span class="table-head-in-td">Total Bid</span>
-                <%= number_to_currency(total_bid) unless total_bid.class == String %>
-              </td>
-              <td>
-               <span class="table-head-in-td">My Note</span>
-                <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(stone.key) %></span>
-                 <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>
+          <% if stone.has_note?(current_customer) || stone.has_bid?(current_customer) %>
+            <tr class="<%= get_color(@diff, stone.description) %> highlighted" >
+              <% if current_customer %>
+                <td>
+                <span class="table-head-in-td">Imp</span>
+                <div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
+                <td>
+                <span class="table-head-in-td">Read</span>
+                <%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
+              <% end %>
+              <td><span class="table-head-in-td">Lot No</span><%= stone.lot_no %></td>
+              <td><span class="table-head-in-td">DEEC No</span><%= stone.deec_no %></td>
+              <td><span class="table-head-in-td">Description</span><%= stone.description %></td>
+              <td><span class="table-head-in-td">Stones</span><%= stone.no_of_stones %></td>
+              <td><span class="table-head-in-td">Carat</span><%= stone.weight %></td>
+              <% if current_customer %>
+                <% bid = stone.per_carat_bid(current_customer) %>
+                <td id="pcb_<%= stone.id %>" >
+                 <span class="table-head-in-td">Price per carat</span>
+                  <%= number_to_currency(bid) unless bid.class == String %>
+                </td>
+                <% total_bid = stone.total_bid(current_customer) %>
+                <td id="tb_<%= stone.id %>" >
+                 <span class="table-head-in-td">Total Bid</span>
+                  <%= number_to_currency(total_bid) unless total_bid.class == String %>
+                </td>
+                <td>
+                 <span class="table-head-in-td">My Note</span>
+                  <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(stone.key) %></span>
+                   <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>
 
-              </td>
-            <% end %>
-              <td>
-              <span class="table-head-in-td">History</span>
-              <%= link_to "View", view_past_result_tender_path(@tender.id,:key => stone.description), :class => "past_result_link" %></td>
-            <% if current_customer %>
-              <td>
-              <span class="table-head-in-td">Bid</span>
-              <%= link_to 'Bid', place_new_stone_bids_path(stone.id), :class => 'place_bid' %></td>
-            <% end %>
-          </tr>
+                </td>
+              <% end %>
+                <td>
+                <span class="table-head-in-td">History</span>
+                <%= link_to "View", view_past_result_tender_path(@tender.id,:key => stone.description), :class => "past_result_link" %></td>
+              <% if current_customer %>
+                <td>
+                <span class="table-head-in-td">Bid</span>
+                <%= link_to 'Bid', place_new_stone_bids_path(stone.id), :class => 'place_bid' %></td>
+              <% end %>
+            </tr>
+          <% else %>
+            <tr class="<%= get_color(@diff, stone.description) %>" >
+              <% if current_customer %>
+                <td>
+                <span class="table-head-in-td">Imp</span>
+                <div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
+                <td>
+                <span class="table-head-in-td">Read</span>
+                <%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
+              <% end %>
+              <td><span class="table-head-in-td">Lot No</span><%= stone.lot_no %></td>
+              <td><span class="table-head-in-td">DEEC No</span><%= stone.deec_no %></td>
+              <td><span class="table-head-in-td">Description</span><%= stone.description %></td>
+              <td><span class="table-head-in-td">Stones</span><%= stone.no_of_stones %></td>
+              <td><span class="table-head-in-td">Carat</span><%= stone.weight %></td>
+              <% if current_customer %>
+                <% bid = stone.per_carat_bid(current_customer) %>
+                <td id="pcb_<%= stone.id %>" >
+                 <span class="table-head-in-td">Price per carat</span>
+                  <%= number_to_currency(bid) unless bid.class == String %>
+                </td>
+                <% total_bid = stone.total_bid(current_customer) %>
+                <td id="tb_<%= stone.id %>" >
+                 <span class="table-head-in-td">Total Bid</span>
+                  <%= number_to_currency(total_bid) unless total_bid.class == String %>
+                </td>
+                <td>
+                 <span class="table-head-in-td">My Note</span>
+                  <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(stone.key) %></span>
+                   <%= link_to 'Note', add_note_tender_path(@tender.id, :key => stone.key, :stone_id => stone.id, :deec_no => stone.deec_no, :index => i), :class => 'add_note' %>
+
+                </td>
+              <% end %>
+                <td>
+                <span class="table-head-in-td">History</span>
+                <%= link_to "View", view_past_result_tender_path(@tender.id,:key => stone.description), :class => "past_result_link" %></td>
+              <% if current_customer %>
+                <td>
+                <span class="table-head-in-td">Bid</span>
+                <%= link_to 'Bid', place_new_stone_bids_path(stone.id), :class => 'place_bid' %></td>
+              <% end %>
+            </tr>
+          <% end %>
         <%end%>
       <% end %>
     </tbody>

@@ -297,3 +297,7 @@ span.score {
   padding-left: 396px;
 }
 .yes-no-round{padding-top: 10px;}
+
+.highlighted{
+  background: peachpuff;
+}

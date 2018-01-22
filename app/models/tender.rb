@@ -443,11 +443,14 @@ class Tender < ApplicationRecord
     tick_stones=[]
     rest_stones=[]
     tender_stones=[]
+    bid_note_stones = []
     stones.each_with_index do |stone,i|
       key="#{stone.description}##{stone.weight}"
       read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
       tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
-      if tick.present? && read.present?
+      if stone.has_bid?(current_customer) || stone.has_note?(current_customer)
+        bid_note_stones << stone
+      elsif tick.present? && read.present?
         read_tick_stones << stone
       elsif read.present?
         read_stones << stone
@@ -457,6 +460,7 @@ class Tender < ApplicationRecord
         rest_stones << stone
       end
     end
+    tender_stones << bid_note_stones
     tender_stones << read_tick_stones
     tender_stones << read_stones
     tender_stones << tick_stones
@@ -471,11 +475,14 @@ class Tender < ApplicationRecord
     tick_sights=[]
     rest_sights=[]
     tender_sights=[]
+    bid_note_stones = []
     sights.each_with_index do |sight,i|
       key="#{sight.source}##{sight.carats}"
       read = Rating.where(key: key, flag_type: 'Read', tender_id: id, customer_id: current_customer.id)
       tick = Rating.where(key: key,flag_type: 'Imp', tender_id: id, customer_id: current_customer.id)
-      if tick.present? && read.present?
+      if stone.has_bid?(current_customer) || stone.has_note?(current_customer)
+        bid_note_stones << sight
+      elsif tick.present? && read.present?
         read_tick_sights << sight
       elsif read.present?
         read_sights << sight
@@ -485,6 +492,7 @@ class Tender < ApplicationRecord
         rest_sights << sight
       end
     end
+    tender_sights << bid_note_stones
     tender_sights << read_tick_sights
     tender_sights << read_sights
     tender_sights << tick_sights
