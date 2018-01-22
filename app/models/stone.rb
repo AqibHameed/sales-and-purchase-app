@@ -111,7 +111,7 @@ class Stone < ApplicationRecord
       left join stones s on s.tender_id = tenders.id
       WHERE (open_date <= '#{Time.now.utc}'
       AND close_date >= '#{Time.now.utc}')
-      AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term.to_i})"
+      AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term})"
     )
 
     # # pg
@@ -122,6 +122,14 @@ class Stone < ApplicationRecord
     #   AND close_date >= '#{Time.now.utc}')
     #   AND (s.weight = #{term} OR s.lot_no = #{term.to_i})"
     # )
+  end
+
+  def has_note customer
+    if self.customer_id == customer.id
+      true
+    else
+      false                                                                                                                                      
+    end
   end
 
   rails_admin do
