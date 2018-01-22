@@ -11,7 +11,10 @@ Rails.application.routes.draw do
   get "/verified_unverified", to: 'home#verified_unverified'
   get "/change_tender_open_time", to: 'tenders#update_time'
   get '/change_system_price', to: 'tenders#update_system_price'
-  
+  get '/chat', to: 'chats#index'
+  get '/video_chat', to: 'chat_vidoes#index'
+
+
   get '/admins/sign_up', to: redirect('/')
   devise_for :admins, :controllers => {:sessions => 'sessions'}
   mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
@@ -117,7 +120,7 @@ Rails.application.routes.draw do
       post :company_limits
     end
   end
-  
+
   resources :stones do
     resources :bids do
       collection do
