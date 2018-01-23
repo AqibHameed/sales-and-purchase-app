@@ -491,6 +491,7 @@ h4 {
     margin-right: 15px; } }
 
 @media (max-width: 760px) {
+  .send-proposal--form-wrapper .form-row .label,
   .transaction-form .form-row .label,
   .edit_customer .form-row .label,
   .credit-form .form-row .label {
