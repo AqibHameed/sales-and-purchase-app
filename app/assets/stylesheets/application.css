@@ -630,7 +630,8 @@ h4 {
       .header .current_user_menu .dropdown.nav-dropdown span img {
         width: 12px; }
   .header .current_user_menu .dropdown-content {
-    right: 10px; }
+    right: 10px;
+    z-index: 10; }
   .header .menu-burger {
     display: block;
     margin-top: 10px;
