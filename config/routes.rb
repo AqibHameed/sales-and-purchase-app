@@ -14,6 +14,9 @@ Rails.application.routes.draw do
   get '/can_update', to: 'tenders#round_updated'
   get '/get_timer', to: 'tenders#timer_value'
   
+  get '/chat', to: 'chats#index'
+  get '/video_chat', to: 'chat_vidoes#index'
+
   get '/admins/sign_up', to: redirect('/')
   devise_for :admins, :controllers => {:sessions => 'sessions'}
   mount RailsAdmin::Engine => '/admins', :as => 'rails_admin'
@@ -119,7 +122,7 @@ Rails.application.routes.draw do
       post :company_limits
     end
   end
-  
+
   resources :stones do
     resources :bids do
       collection do
