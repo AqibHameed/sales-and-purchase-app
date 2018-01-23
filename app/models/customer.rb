@@ -3,7 +3,7 @@ class Customer < ApplicationRecord
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
-  attr_accessor :login
+  attr_accessor :login, :role
 
   devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
@@ -79,7 +79,7 @@ class Customer < ApplicationRecord
   after_create :add_user_to_tenders, :assign_role_to_customer
   default_scope { order("first_name asc, last_name asc") }
 
-  validates :first_name, :company, :mobile_no, :presence => true
+  validates :first_name, :company, :mobile_no, :role, :presence => true
 
   has_attached_file :certificate
   do_not_validate_attachment_file_type :certificate
@@ -181,7 +181,12 @@ class Customer < ApplicationRecord
   end
 
   def assign_role_to_customer
-    CustomerRole.create(role_id: 1, customer_id: self.id)
+    if self.role == "Buyer/Seller"
+      CustomerRole.create(role_id: 1, customer_id: self.id)
+      CustomerRole.create(role_id: 2, customer_id: self.id)
+    elsif self.role == "Broker"
+      CustomerRole.create(role_id: 4, customer_id: self.id)
+    end
   end
 
   def notify_by_supplier supplier

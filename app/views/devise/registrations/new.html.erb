@@ -49,6 +49,11 @@
           <%= f.label :password_confirmation %><br />
           <%= f.password_field :password_confirmation, autocomplete: "off" %>
         </div>
+
+        <div class="field">
+          <%= f.label :role %><br />
+          <%= f.select :role, options_for_select(['Buyer/Seller', "Broker"]), {include_blank: true},  class: 'input', autocomplete: "off" %>
+        </div>
   
         <div class="btns-groups">
           <%= f.submit "Sign up", class: "btn-02 login-btn signup-btn" %>
