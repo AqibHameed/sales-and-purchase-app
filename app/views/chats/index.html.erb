@@ -1,4 +1,6 @@
 <%= render partial: "index"%>
+<%= render partial: "index2"%>
+<%= render partial: "index3"%>
 
     <!-- <script src="/assets/js/login.js" defer></script> -->
     <!--ede upr vala sara code ek html file ch  -->
@@ -7,7 +9,23 @@
     <!--check lona same as routes vaala  -->
     <!--agr login hai tan roites.js ne aapi fredirect kr dena  -->
     <!--  agr login ni aa tan js to login kra dena-->
-    <script src="/assets/js/login.js" defer></script>
+    <!-- <script src="/assets/js/QBconfig.js" defer></script>
+    <script src="/assets/js/user.js" defer></script>
+    <script src="/assets/js/dialog.js" defer></script>
+    <script src="/assets/js/message.js" defer></script>
+    <script src="/assets/js/listeners.js" defer></script>
+    <script src="/assets/js/helpers.js" defer></script>
+    <script src="/assets/js/app.js" defer></script> -->
+    <%= javascript_include_tag "js/QBconfig"  ,:defer => "defer" %>
+    <%= javascript_include_tag "js/user"  ,:defer => "defer" %>
+    <%= javascript_include_tag "js/dialog"  ,:defer => "defer" %>
+    <%= javascript_include_tag "js/message"  ,:defer => "defer" %>
+    <%= javascript_include_tag "js/listeners"  ,:defer => "defer" %>
+    <%= javascript_include_tag "js/helpers"  ,:defer => "defer" %>
+    <%= javascript_include_tag "js/app"  ,:defer => "defer" %>
+
+    <%= javascript_include_tag "js/login"  ,:defer => "defer" %>
+    <!-- <script src="/assets/js/login.js" defer></script> -->
 
 
   <script type="text/javascript">
@@ -54,9 +72,12 @@
 
 
   </script>
-  <script src="/assets/js/login2.js" defer></script>
+  <!-- <script src="/assets/js/login2.js" defer></script> -->
+  <%= javascript_include_tag "js/login2"  ,:defer => "defer" %>
+  <%= javascript_include_tag "js/route"  ,:defer => "defer" %>
 
-  <script src="/assets/js/route.js" defer></script>
+
+  <!-- <script src="/assets/js/route.js" defer></script> -->
 
 
 </body>

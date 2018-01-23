@@ -1,0 +1,22 @@
+<!-- <script src="/assets/js_vid/config.js"></script>
+<script src="/assets/js_vid/helpers.js"></script>
+<script src="/assets/js_vid/stateBoard.js"></script> -->
+
+
+<!-- Check our qbMediaRecorder https://github.com/QuickBlox/javascript-media-recorder -->
+<script src="https://unpkg.com/media-recorder-js@0.1.0/mediaRecorder.js"></script>
+<%= javascript_include_tag "js_vid/config.js"  ,:defer => "defer" %>
+<%= javascript_include_tag "js_vid/helpers.js"  ,:defer => "defer" %>
+<%= javascript_include_tag "js_vid/stateBoard.js"  ,:defer => "defer" %>
+
+<!-- <script src="/assets/js_vid/app.js"></script> -->
+
+<!-- hack for github Pages -->
+<script>
+  var host = "quickblox.github.io";
+  if ((host == window.location.host) && (window.location.protocol != "https:"))
+    window.location.protocol = "https";
+
+</script>
+</body>
+</html>
