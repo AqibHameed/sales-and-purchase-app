@@ -231,9 +231,9 @@
             var $form=$("form")
 
             if(localStorage.getItem('isAuth')) {
-              localStorage.removeItem('isAuth');
+              $('#already_auth').modal();
+              return false;
             }
-
 
             $form.addClass('join-wait');
 
