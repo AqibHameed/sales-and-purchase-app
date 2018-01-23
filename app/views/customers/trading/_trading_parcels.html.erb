@@ -22,12 +22,12 @@
     <% if parcel.sold %>
       <tr style="background: #ccc;">
         <td><span class="table-head-in-td">Count</span><%= index_count(params[:page].to_i) + i %></td>
-        <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
+        <td class="td-mobile-open"><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
         <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
         <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
         <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
         <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
+        <td class="td-mobile-open"><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
         <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
          <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight %></td>
 
