@@ -79,7 +79,7 @@ class Customer < ApplicationRecord
   after_create :add_user_to_tenders, :assign_role_to_customer
   default_scope { order("first_name asc, last_name asc") }
 
-  validates :first_name, :company, :mobile_no, :role, :presence => true
+  validates :first_name, :company, :mobile_no, :presence => true
 
   has_attached_file :certificate
   do_not_validate_attachment_file_type :certificate
