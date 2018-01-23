@@ -9,6 +9,7 @@ class BrokersController < ApplicationController
       br.accepted = false
     end
     if broker_request.save
+      Message.create_new_broker(broker_request, current_customer)
       flash[:notice] = 'Request sent successfully.'
       redirect_to brokers_path
     else

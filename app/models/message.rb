@@ -22,4 +22,9 @@ class Message < ApplicationRecord
       Message.create(subject: "Buyer sent a new proposal.", message: @message, sender_id: proposal.buyer_id, receiver_id: proposal.supplier_id, message_type: "Proposal")
     end
   end
+
+  def self.create_new_broker(request, current_customer)
+    @message  = "A new broker sent you a request. Please check broker requests."
+    Message.create(subject: "You have a new broker request", message: @message, sender_id: request.broker_id, receiver_id: request.seller_id, message_type: "Broker Request")
+  end
 end
