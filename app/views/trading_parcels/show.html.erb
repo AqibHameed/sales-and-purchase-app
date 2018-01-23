@@ -25,7 +25,7 @@
 <div class="proposal-form hide">
   <h3> Send Proposal </h3>
   <div class="clear10"></div>
-  <div class="form-wrapper">
+  <div class="form-wrapper send-proposal--form-wrapper">
   <%= form_for @proposal do |f| %>
     <%= render partial: 'proposals/form', locals: { f: f } %>
     <%=f.hidden_field :buyer_id, value: current_customer.id %>
