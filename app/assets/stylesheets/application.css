@@ -378,6 +378,9 @@ h4 {
   .thead-desktop {
     display: none !important; }
 
+  .td-mobile-open {
+    display: block !important; }
+
   .table-responsive tr {
     vertical-align: top;
     display: block; }
@@ -389,6 +392,9 @@ h4 {
         color: #5f5f5f;
         font-size: 12px;
         width: 120px; }
+        .table-responsive tr td .table-head-in-td + a {
+          padding-left: 125px;
+          display: block; }
       .table-responsive tr td .table-head-in-td:after {
         display: inline-block;
         content: ":";
@@ -550,6 +556,13 @@ h4 {
         color: #5f5f5f;
         font-size: 12px;
         width: 120px; }
+        .credit-table tbody th .table-head-in-td + a, .credit-table tbody td .table-head-in-td + a,
+        .table-purchase tbody th .table-head-in-td + a,
+        .table-purchase tbody td .table-head-in-td + a,
+        .table-sales tbody th .table-head-in-td + a,
+        .table-sales tbody td .table-head-in-td + a {
+          padding-left: 125px;
+          display: block; }
       .credit-table tbody th .table-head-in-td:after, .credit-table tbody td .table-head-in-td:after,
       .table-purchase tbody th .table-head-in-td:after,
       .table-purchase tbody td .table-head-in-td:after,
