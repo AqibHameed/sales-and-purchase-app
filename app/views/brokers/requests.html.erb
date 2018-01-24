@@ -3,18 +3,18 @@
   <div class="clear10"></div>
   <div class="table">
     <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-    <tr>
-      <th>Seller Name</th>
-      <th>Company</th>
-      <th></th>
-    </tr>
-    <% @requests.each do |request| %>
       <tr>
-        <td><%= request.broker.name %></td>
-        <td><%= request.broker.company %></td>
-        <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: { turbolink: false } %> | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: { turbolink: false } %></td>
+        <th>Seller Name</th>
+        <th>Company</th>
+        <th></th>
       </tr>
-    <% end %>
+      <% @requests.each do |request| %>
+        <tr>
+          <td><%= request.broker.name %></td>
+          <td><%= request.broker.company %></td>
+          <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: { turbolink: false } %> | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: { turbolink: false } %></td>
+        </tr>
+      <% end %>
   </table>
   </div>
 </div>

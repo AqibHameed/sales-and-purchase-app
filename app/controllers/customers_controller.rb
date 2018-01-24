@@ -152,18 +152,22 @@ class CustomersController < ApplicationController
 
   def demanding
     @demanding_parcel = Demand.new
+    @my_demands = Demand.where(customer_id: current_customer.id)
   end
 
   def demanding_create
-    @demanding_parcel = Demand.where(description: params[:demand][:description], customer_id: current_customer.id, supplier_id: params[:demand][:supplier_id]).first_or_create do |demand|
+    demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
+    @demanding_parcel = Demand.where(description: params[:demand][:description], customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
       demand.weight = params[:demand][:weight]
       demand.price = params[:demand][:price]
       demand.diamond_type = params[:demand][:diamond_type]
     end
     if @demanding_parcel.save
-      redirect_to root_path
+      flash[:notice] = "Demand created successfully."
+      redirect_to demanding_customers_path
     else
-      redirect_to root_path
+      flash[:notice] = "Something went wrong. Please try again."
+      redirect_to demanding_customers_path
     end
   end
 
@@ -214,7 +218,7 @@ class CustomersController < ApplicationController
   end
 
   def demanding_params
-    params.require(:demand).permit(:description,:weight,:price,:diamond_type)
+    params.require(:demand).permit(:description, :weight, :price, :diamond_type)
   end
 
   def check_role_authorization

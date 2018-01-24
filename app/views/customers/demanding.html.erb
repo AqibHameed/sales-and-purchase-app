@@ -26,7 +26,26 @@
     </div>
   <% end %>
 </div>
-<div class="clear10"></div>
+<div class="clear20"></div>
+
+<h3>Demand List</h3>
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th></th>
+      <th>Description</th>
+      <th>Supplier</th>
+    </tr>
+    <% @my_demands.each do |demand| %>
+      <tr>
+        <td></td>
+        <td><%= demand.description %></td>
+        <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
 
 <script type="text/javascript">
   $(document).on('change', '#demand_demand_supplier_id', function(){
