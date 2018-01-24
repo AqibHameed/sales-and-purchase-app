@@ -779,4 +779,22 @@ h4 {
       width: 100%;
       margin: 5px 0 5px 0 !important; } }
 
+@media (max-width: 760px) {
+  #chart-popup {
+    height: 80%; }
+    #chart-popup > div {
+      overflow-y: scroll;
+      height: 100%;
+      border: 1px solid #e8e8e8; }
+      #chart-popup > div .table table {
+        display: block;
+        border: 0; }
+        #chart-popup > div .table table tbody {
+          display: block; }
+          #chart-popup > div .table table tbody td {
+            display: block;
+            width: 100%;
+            border: 0;
+            box-sizing: border-box; } }
+
 /*# sourceMappingURL=application.css.map */
