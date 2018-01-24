@@ -1,6 +1,18 @@
 
 
 
-<%=audio_tag("end_of_call.ogg", "end_of_call.mp3")%>
-<%=audio_tag("calling.ogg", "calling.mp3")%>
-<%=audio_tag("ringtone.ogg", "ringtone.mp3")%>
+<!-- SOUNDS -->
+<audio id="endCallSignal" preload="auto">
+    <source src="<%=asset_path("end_of_call.ogg")%>" type="audio/ogg" />
+    <source src="<%=asset_path("end_of_call.mp3")%>" type="audio/mp3" />
+</audio>
+
+<audio id="callingSignal" loop preload="auto">
+    <source src="<%=asset_path("calling.ogg")%>" type="audio/ogg" />
+    <source src="<%=asset_path("calling.mp3")%>" type="audio/mp3" />
+</audio>
+
+<audio id="ringtoneSignal" loop preload="auto">
+    <source src="<%=asset_path("ringtone.ogg")%>" type="audio/ogg" />
+    <source src="<%=asset_path("ringtone.mp3")%>" type="audio/mp3" />
+</audio>

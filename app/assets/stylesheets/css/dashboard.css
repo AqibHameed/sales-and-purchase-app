@@ -295,7 +295,8 @@
 .messages.loading:before {
     content: "";
     display: block;
-    background: url(/assets/img/loader2.gif);
+    /*background: url(/assets/img/loader2.gif);*/
+    background: url(<%=asset_path("img/loader2.gif")%>);
     width: 30px;
     height: 30px;
     background-size: contain;
@@ -458,7 +459,7 @@
     left: 0;
     height:100%;
     width: 100%;
-    background: url(/assets/img/loader2.gif) no-repeat 50% 50%;
+    background: url(<%=asset_path("img/loader2.gif")%>) no-repeat 50% 50%;
     background-size: 20px;
 }
 
@@ -578,7 +579,7 @@
 .group_chat__user_list.loading:after{
     content: "";
     display: block;
-    background: url(/assets/img/loader2.gif);
+    background: url(<%=asset_path("img/loader2.gif")%>);
     width: 30px;
     height: 30px;
     background-size: contain;
