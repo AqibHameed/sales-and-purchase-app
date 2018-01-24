@@ -56,7 +56,7 @@
             </li>
             <% if current_customer.has_role?('Seller') %>
               <li>
-                <%= link_to 'Broker Request', requests_brokers_path, data: { turbolinks: false } %>
+                <%= link_to 'Manage Brokers', requests_brokers_path, data: { turbolinks: false } %>
               </li>
             <% end %>
           <% end %>
