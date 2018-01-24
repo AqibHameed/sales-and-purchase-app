@@ -407,6 +407,7 @@ $tr-odd-bg-color: #f2f2f2;
       //width: 120px;
       width: 100px;
 
+      position: relative;
       left: -130px;
       margin-right: -110px;
       box-sizing: border-box;
@@ -418,9 +419,14 @@ $tr-odd-bg-color: #f2f2f2;
       margin-right: 10px;
     }
     .table-head-in-td--count {
-      width: 50px;
-      padding-top: 20px;
-      padding-bottom: 20px;
+      //width: 50px;
+      //padding-top: 20px;
+      //padding-bottom: 20px;
+      padding-left: 15px;
+      margin: 0;
+      left: 0;
+      width: 20px;
+      height: 10px;
     }
     .table-head-in-td--count:after {
       display: none;
@@ -433,7 +439,7 @@ $tr-odd-bg-color: #f2f2f2;
 //}
 
 
-.td-mobile-count {
+.table-responsive tr td.td-mobile-count {
   .lefter {
     display: block;
   }
@@ -441,28 +447,42 @@ $tr-odd-bg-color: #f2f2f2;
     display: none;
   }
   @media (max-width: $small) {
-    display: table;
+    display: table!important;
     width: 100%;
     box-sizing: border-box;
+    //padding-left: 15px!important;
+    padding-left: 0px!important;
+    padding-top: 20px;
+    padding-bottom: 20px;
 
     .lefter {
       display: table-cell;
       color: #ff1919;
       vertical-align: middle;
-      border-right: 1px solid #bdbdbd;
+      border-right: 2px solid #bdbdbd;
+      font-size: 12px;
+
+      width: 40px;
+      max-width: 40px;
+      box-sizing: border-box;
+      text-align: center;
+      font-weight: bold;
+
     }
     .righter {
       display: table-cell;
-      padding-left: 23px;
+      padding-left: 10px;
+      font-size: 12px;
 
       .top {
-        line-height: 1;
+        line-height: 1.4;
         color: #000;
         text-align: left;
         display: block;
+        text-transform: uppercase;
       }
       .bottom {
-        line-height: 1;
+        line-height: 1.4;
         //color: #959595;
         color: #bdbdbd;
         text-align: left;
@@ -645,7 +665,7 @@ $tr-odd-bg-color: #f2f2f2;
 .tender_history {
 
   @media (max-width: $small) {
-    .form-wrapp
+    .form-wrapp {
       .form-row {
         float: none; 
 
@@ -668,6 +688,7 @@ $tr-odd-bg-color: #f2f2f2;
             width: 100%;
             overflow: hidden;
           }
+
         }
       }
     }
