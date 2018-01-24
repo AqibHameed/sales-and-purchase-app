@@ -10,6 +10,8 @@ class Ability
     else
       if customer.has_role?('Broker')
         can :access, :broker
+        can :access, :sell
+        can :access, :buy
       end
       if customer.has_role?('Supplier')
         can :access, :auctions
