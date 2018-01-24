@@ -245,6 +245,11 @@ $(document).ready(function() {
         $(this).closest('tr').toggleClass('opened');
       });
   }
+  if($('.table-responsive').length){
+      $('.table-responsive .td-mobile-count').click(function(){
+        $(this).closest('tr').toggleClass('opened');
+      });
+  }
 
   // Mobile menu
 
