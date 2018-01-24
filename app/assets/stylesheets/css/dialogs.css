@@ -8,7 +8,7 @@
 .sidebar__dilog_list.loading:after {
     content: "";
     display: block;
-    background: url(../img/loader2.gif);
+    background: url(/assets/img/loader2.gif);
     width: 30px;
     height: 30px;
     background-size: contain;
