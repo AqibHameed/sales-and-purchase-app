@@ -1057,4 +1057,36 @@ $tr-odd-bg-color: #f2f2f2;
   }
 }
 
+#chart-popup{
+  @media (max-width: $small) {
+
+    height: 80%;
+
+    & > div {
+      overflow-y: scroll;
+      height: 100%;
+      1px solid #e8e8e8;
+
+      .table table {
+        display: block;
+        border: 0;
+
+        tbody {
+          display: block;
+
+          td {
+            display: block;
+            width: 100%;
+            border: 0;
+            box-sizing: border-box;
+          }
+
+        }
+
+      }
+    }
+
+  }
+}
+
 @media (max-width: $small) {}
