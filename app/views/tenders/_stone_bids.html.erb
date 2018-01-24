@@ -53,9 +53,9 @@
               <% end %>
               <td><span class="table-head-in-td">Lot No</span><%= stone.lot_no %></td>
               <td><span class="table-head-in-td">DEEC No</span><%= stone.deec_no %></td>
-              <td class="td-mobile-open"><span class="table-head-in-td">Description</span><%= stone.description %></td>
+              <td class=""><span class="table-head-in-td">Description</span><%= stone.description %></td>
               <td><span class="table-head-in-td">Stones</span><%= stone.no_of_stones %></td>
-              <td class="td-mobile-open"><span class="table-head-in-td">Carat</span><%= stone.weight %></td>
+              <td class=""><span class="table-head-in-td">Carat</span><%= stone.weight %></td>
               <% if current_customer %>
                 <% bid = stone.per_carat_bid(current_customer) %>
                 <td id="pcb_<%= stone.id %>" >
