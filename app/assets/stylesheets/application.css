@@ -365,30 +365,41 @@ h4 {
 .font-size-16 {
   font-size: 16px; }
 
-.td-mobile-count .lefter {
+.table-responsive tr td.td-mobile-count .lefter {
   display: block; }
-.td-mobile-count .righter {
+.table-responsive tr td.td-mobile-count .righter {
   display: none; }
 @media (max-width: 760px) {
-  .td-mobile-count {
-    display: table;
+  .table-responsive tr td.td-mobile-count {
+    display: table !important;
     width: 100%;
-    box-sizing: border-box; }
-    .td-mobile-count .lefter {
+    box-sizing: border-box;
+    padding-left: 0px !important;
+    padding-top: 20px;
+    padding-bottom: 20px; }
+    .table-responsive tr td.td-mobile-count .lefter {
       display: table-cell;
       color: #ff1919;
       vertical-align: middle;
-      border-right: 1px solid #bdbdbd; }
-    .td-mobile-count .righter {
+      border-right: 2px solid #bdbdbd;
+      font-size: 12px;
+      width: 40px;
+      max-width: 40px;
+      box-sizing: border-box;
+      text-align: center;
+      font-weight: bold; }
+    .table-responsive tr td.td-mobile-count .righter {
       display: table-cell;
-      padding-left: 23px; }
-      .td-mobile-count .righter .top {
-        line-height: 1;
+      padding-left: 10px;
+      font-size: 12px; }
+      .table-responsive tr td.td-mobile-count .righter .top {
+        line-height: 1.4;
         color: #000;
         text-align: left;
-        display: block; }
-      .td-mobile-count .righter .bottom {
-        line-height: 1;
+        display: block;
+        text-transform: uppercase; }
+      .table-responsive tr td.td-mobile-count .righter .bottom {
+        line-height: 1.4;
         color: #bdbdbd;
         text-align: left;
         display: block; } }
@@ -420,6 +431,7 @@ h4 {
         color: #5f5f5f;
         font-size: 12px;
         width: 100px;
+        position: relative;
         left: -130px;
         margin-right: -110px;
         box-sizing: border-box; }
@@ -428,9 +440,11 @@ h4 {
         content: ":";
         margin-right: 10px; }
       .table-responsive tr td .table-head-in-td--count {
-        width: 50px;
-        padding-top: 20px;
-        padding-bottom: 20px; }
+        padding-left: 15px;
+        margin: 0;
+        left: 0;
+        width: 20px;
+        height: 10px; }
       .table-responsive tr td .table-head-in-td--count:after {
         display: none; }
     .table-responsive tr td {
@@ -497,19 +511,19 @@ h4 {
     box-sizing: border-box; } }
 
 @media (max-width: 760px) {
-  .tender_history .form-wrapper .form-row {
+  .tender_history .form-wrapp .form-row {
     float: none; }
-    .tender_history .form-wrapper .form-row .label {
+    .tender_history .form-wrapp .form-row .label {
       width: 100%;
       display: block;
       text-align: left; }
-    .tender_history .form-wrapper .form-row .field {
+    .tender_history .form-wrapp .form-row .field {
       float: none; }
-      .tender_history .form-wrapper .form-row .field input,
-      .tender_history .form-wrapper .form-row .field .select {
+      .tender_history .form-wrapp .form-row .field input,
+      .tender_history .form-wrapp .form-row .field .select {
         width: 100%;
         box-sizing: border-box; }
-      .tender_history .form-wrapper .form-row .field span {
+      .tender_history .form-wrapp .form-row .field span {
         display: block;
         width: 100%;
         overflow: hidden; } }
@@ -591,6 +605,7 @@ h4 {
         color: #5f5f5f;
         font-size: 12px;
         width: 100px;
+        position: relative;
         left: -130px;
         margin-right: -110px;
         box-sizing: border-box; }
@@ -607,9 +622,11 @@ h4 {
       .table-purchase tbody td .table-head-in-td--count,
       .table-sales tbody th .table-head-in-td--count,
       .table-sales tbody td .table-head-in-td--count {
-        width: 50px;
-        padding-top: 20px;
-        padding-bottom: 20px; }
+        padding-left: 15px;
+        margin: 0;
+        left: 0;
+        width: 20px;
+        height: 10px; }
       .credit-table tbody th .table-head-in-td--count:after, .credit-table tbody td .table-head-in-td--count:after,
       .table-purchase tbody th .table-head-in-td--count:after,
       .table-purchase tbody td .table-head-in-td--count:after,
