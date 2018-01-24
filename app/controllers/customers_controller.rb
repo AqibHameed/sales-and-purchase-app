@@ -218,7 +218,7 @@ class CustomersController < ApplicationController
   end
 
   def check_role_authorization
-    if current_customer.has_role?('Buyer')
+    if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker')
       # do nothing
     else
       redirect_to root_path, notice: 'You are not authorized.'
