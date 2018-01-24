@@ -448,7 +448,8 @@ h4 {
       .table-responsive tr td .table-head-in-td--count:after {
         display: none; }
     .table-responsive tr td {
-      display: none; }
+      display: none;
+      padding-left: 145px; }
     .table-responsive tr td:first-of-type {
       display: block;
       padding-left: 145px; }
