@@ -1,3 +1,59 @@
 
 <!-- <link rel="stylesheet" href="/assets/css/style.css"> -->
-<%= stylesheet_link_tag "css/style" %>
+<!-- <%= stylesheet_link_tag "css/style" %> -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" rel="stylesheet">
+<%= stylesheet_link_tag "css/main" %>
+<%= stylesheet_link_tag "css/login" %>
+<%= stylesheet_link_tag "css/dashboard" %>
+<%= stylesheet_link_tag "css/dialogs" %>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script src="https://unpkg.com/navigo@4.3.6/lib/navigo.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js" defer></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/quickblox/2.5.4/quickblox.min.js"></script>
+
+<!-- <script src="/assets/js/quickblox.min.js" defer></script> -->
+
+</head>
+<body>
+<div id="page"></div>
+
+
+<!-- Underscore templates  -->
+<script type="text/template" id="tpl_login">
+    <div class="login__wrapper">
+        <div class="login__container">
+            <div class="login__inner">
+                <div class="login__top" style="display:none">
+                    <a href="https://quickblox.com/" class="login__logo">
+                        <!-- <img src="/assets/img/qb-logo.svg" alt="QuickBlox"> -->
+                        <%=image_tag("/assets/img/qb-logo.svg")%>
+
+                        ]
+                    </a>
+                    <h1>Quickblox Chat Sample</h1>
+                    <h3>Please enter your username and user group.
+                        Users within the same group will be able
+                        to communicate, create chats with each other
+                    </h3>
+                </div>
+
+                <form name="loginForm" class="login__form" style="display:none">
+                    <div class="login_form__row">
+                        <label for="userName">User name</label>
+                        <input type="text" id="userName" name="userName"/>
+                    </div>
+                    <div class="login_form__row">
+                        <label for="userGroup">User group</label>
+                        <input type="text" id="userGroup" name="userGroup"/>
+                    </div>
+                    <div class="login__button_wrap">
+                        <button type="submit" name="login_submit" id="login_form_submit" class="btn m-login__button j-login__button" disabled>
+                            login
+                        </button>
+                    </div>
+                </form>
+                <!-- <img src="/assets/img/loader2.gif"> -->
+                <%=image_tag("/assets/img/loader2.gif")%>
+            </div>
