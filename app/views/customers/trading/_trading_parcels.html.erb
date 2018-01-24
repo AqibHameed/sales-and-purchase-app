@@ -23,7 +23,6 @@
       <tr style="background: #ccc;">
         <td class="td-mobile-count">
             <div class="lefter">
-                <span class="table-head-in-td table-head-in-td--count"></span>
                 <%= index_count(params[:page].to_i) + i %>
             </div>
             <div class="righter">
@@ -64,7 +63,21 @@
       </tr>
     <% else %>
       <tr>
-        <td><span class="table-head-in-td">Count</span><%= index_count(params[:page].to_i) + i %></td>
+        <td class="td-mobile-count">
+                    <div class="lefter">
+                        <%= index_count(params[:page].to_i) + i %>
+                    </div>
+                    <div class="righter">
+                        <div class="top">
+                            <%= get_description(parcel) if parcel %>
+                        </div>
+                        <div class="bottom">
+                            Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
+                            Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
+                        </div>
+                    </div>
+                </td>
+
         <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
         <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
         <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
