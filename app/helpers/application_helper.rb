@@ -361,6 +361,10 @@ module ApplicationHelper
     "#{link_to('Click Here', Rails.application.routes.url_helpers.proposal_path(proposal))}"
   end
 
+  def view_request
+    "#{link_to('Click Here', Rails.application.routes.url_helpers.requests_brokers_path)}"
+  end
+
   def check_round stones
     # YesNoBuyerInterest.where(stone_id: stones.map { |e| e.id }).empty
   end

@@ -24,7 +24,7 @@ class Message < ApplicationRecord
   end
 
   def self.create_new_broker(request, current_customer)
-    @message  = "A new broker sent you a request. Please check broker requests."
+    @message  = "A new broker sent you a request. Please #{ApplicationController.helpers.view_request} to accept"
     Message.create(subject: "You have a new broker request", message: @message, sender_id: request.broker_id, receiver_id: request.seller_id, message_type: "Broker Request")
   end
 end

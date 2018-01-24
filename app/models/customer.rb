@@ -63,7 +63,7 @@ class Customer < ApplicationRecord
   #           :format => {:with => /^\d{10}$/, multiline: true},
   #           :unless => proc{|obj| obj.phone_2.blank?} , :reduce => true
 
-  validates :mobile_no, uniqueness: true
+  validates :mobile_no, :company, uniqueness: true
             # :format => {:with => /^\d{10}$/, multiline: true},
             # :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
 
