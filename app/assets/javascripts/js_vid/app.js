@@ -230,10 +230,10 @@
             //     }));  //got username and chatroom
             var $form=$("form")
 
-            if(localStorage.getItem('isAuth')) {
-              $('#already_auth').modal();
-              return false;
-            }
+            // if(localStorage.getItem('isAuth')) {
+            //   $('#already_auth').modal();
+            //   return false;
+            // }
 
             $form.addClass('join-wait');
 
@@ -245,6 +245,7 @@
                     password: currentuser_email
                 }, function(err, res) {
                     if(err) {
+
                         if(!_.isEmpty(app.currentSession)) {
                             app.currentSession.stop({});
                             app.currentSession = {};
@@ -849,6 +850,7 @@
         };
 
         QB.webrtc.onRejectCallListener = function onRejectCallListener(session, userId, extension) {
+
             console.group('onRejectCallListener.');
                 console.log('UserId: ' + userId);
                 console.log('Session: ' + session);
