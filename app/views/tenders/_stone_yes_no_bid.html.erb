@@ -30,13 +30,28 @@
 
               <tr class="<%= get_color(@diff, stone.description) %> ">
                 <% if current_customer %>
-                  <td><span class="table-head-in-td">Imp</span><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0 %>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
+                  <td class="td-mobile-count">
+                                                      <div class="lefter">
+                                                          <div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0 %>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span>
+                                                      </div>
+                                                      <div class="righter">
+                                                          <div class="top">
+                                                              <%= stone.description %>
+                                                          </div>
+                                                          <div class="bottom">
+                                                              Weight: <%= stone.weight %>,
+                                                              Stone: <%= stone.no_of_stones %>
+                                                          </div>
+                                                      </div>
+                                                  </td>
+
+
                   <td><span class="table-head-in-td">Read</span><%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0 %></span></td>
                 <% end %>
                 <td><span class="table-head-in-td">Lot No</span><%= stone.lot_no %></td>
-                <td class="td-mobile-open"><span class="table-head-in-td">Description</span><%= stone.description %></td>
+                <td class=""><span class="table-head-in-td">Description</span><%= stone.description %></td>
                 <td><span class="table-head-in-td">Stones</span><%= stone.no_of_stones %></td>
-                <td class="td-mobile-open"><span class="table-head-in-td">Carat</span><%= stone.weight %></td>
+                <td class=""><span class="table-head-in-td">Carat</span><%= stone.weight %></td>
                 <td><span class="table-head-in-td">System Price</span>
                 <% if current_round == 1 %>
                   <% system_price = stone.reserved_price.present? ? stone.reserved_price - ((20.to_f/100.to_f)*stone.reserved_price) : "empty price" %>
