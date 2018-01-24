@@ -54,9 +54,11 @@
                 </div>
               </div>
             </li>
-            <li>
-              <%= link_to 'Broker Request', requests_brokers_path, data: { turbolinks: false } %>
-            </li>
+            <% if customer.has_role?('Seller') %>
+              <li>
+                <%= link_to 'Broker Request', requests_brokers_path, data: { turbolinks: false } %>
+              </li>
+            <% end %>
           <% end %>
           <% if can? :access, :broker %>
             <li>
