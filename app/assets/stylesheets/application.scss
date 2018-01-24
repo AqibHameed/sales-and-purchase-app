@@ -974,4 +974,21 @@ $tr-odd-bg-color: #f2f2f2;
   }
 }
 
+.approve_list {
+  @media (max-width: $small) {
+    label {
+      text-align: left;
+      display: block;
+      margin-bottom: 20px;
+
+      select,
+      input {
+        display: block;
+        width: 100%;
+        margin: 5px 0 5px 0!important;
+      }
+    }
+  }
+}
+
 @media (max-width: $small) {}
