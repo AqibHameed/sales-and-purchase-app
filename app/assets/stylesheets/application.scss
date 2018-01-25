@@ -1066,6 +1066,10 @@ $tr-odd-bg-color: #f2f2f2;
 #chart-popup{
   @media (max-width: $small) {
 
+    .highcharts-container {
+      margin-left: 35px;
+    }
+
     height: 80%;
 
     & > div {
