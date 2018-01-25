@@ -105,23 +105,23 @@ class Stone < ApplicationRecord
   end
 
   def self.active_parcels term
-    # # mysql
-    # Tender.find_by_sql(
-    #   "SELECT tenders.name, s.* FROM tenders 
-    #   left join stones s on s.tender_id = tenders.id
-    #   WHERE (open_date <= '#{Time.now.utc}'
-    #   AND close_date >= '#{Time.now.utc}')
-    #   AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term})"
-    # )
-
-    # pg
+    # mysql
     Tender.find_by_sql(
       "SELECT tenders.name, s.* FROM tenders 
       left join stones s on s.tender_id = tenders.id
       WHERE (open_date <= '#{Time.now.utc}'
       AND close_date >= '#{Time.now.utc}')
-      AND (s.weight = #{term} OR s.lot_no = #{term})"
+      AND (FORMAT(s.weight, 2) = #{term})"
     )
+
+    # # pg
+    # Tender.find_by_sql(
+    #   "SELECT tenders.name, s.* FROM tenders 
+    #   left join stones s on s.tender_id = tenders.id
+    #   WHERE (open_date <= '#{Time.now.utc}'
+    #   AND close_date >= '#{Time.now.utc}')
+    #   AND (s.weight = #{term} OR s.lot_no = #{term})"
+    # )
   end
 
   def has_note? customer
