@@ -111,7 +111,7 @@ class Stone < ApplicationRecord
       left join stones s on s.tender_id = tenders.id
       WHERE (open_date <= '#{Time.now.utc}'
       AND close_date >= '#{Time.now.utc}')
-      AND (FORMAT(s.weight, 2) = #{term})"
+      AND (CAST(s.weight as decimal(10, 2))) = #{term}"
     )
 
     # # pg
@@ -159,5 +159,4 @@ class Stone < ApplicationRecord
       end
     end
   end
-
 end
