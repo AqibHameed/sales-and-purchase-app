@@ -492,11 +492,11 @@ $tr-odd-bg-color: #f2f2f2;
   }
 }
 
-.table-responsive.stone-list-table tr td.td-mobile-count .lefter {
-  @media (max-width: $small) {
-    padding-left: 10px;
-  }
-}
+//.table-responsive.stone-list-table tr td.td-mobile-count .lefter {
+//  @media (max-width: $small) {
+//    padding-left: 10px;
+//  }
+//}
 
 .wrapper {
   @media (max-width: $wide) {
