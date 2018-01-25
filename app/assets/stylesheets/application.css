@@ -786,12 +786,12 @@ h4 {
       overflow-y: scroll;
       height: 100%;
       border: 1px solid #e8e8e8; }
-      #chart-popup > div .table table {
+      #chart-popup > div table {
         display: block;
         border: 0; }
-        #chart-popup > div .table table tbody {
+        #chart-popup > div table tbody {
           display: block; }
-          #chart-popup > div .table table tbody td {
+          #chart-popup > div table tbody td {
             display: block;
             width: 100%;
             border: 0;
