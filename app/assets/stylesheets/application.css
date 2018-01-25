@@ -404,10 +404,6 @@ h4 {
         text-align: left;
         display: block; } }
 
-@media (max-width: 760px) {
-  .table-responsive.stone-list-table tr td.td-mobile-count .lefter {
-    padding-left: 10px; } }
-
 @media (max-width: 1030px) {
   .wrapper {
     width: 100%; } }
@@ -785,7 +781,8 @@ h4 {
 
 @media (max-width: 760px) {
   #chart-popup {
-    height: 80%; }
+    height: 92%;
+    top: 3%; }
     #chart-popup .highcharts-container {
       margin-left: 35px; }
     #chart-popup > div {
