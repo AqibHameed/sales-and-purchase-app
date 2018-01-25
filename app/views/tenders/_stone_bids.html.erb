@@ -2,11 +2,12 @@
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter table-responsive stone-list-table">
     <thead class="thead-desktop">
       <tr>
+      <th>Lot No</th>
         <% if current_customer %>
-          <th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
           <th>Read&nbsp;&nbsp;&nbsp;&nbsp;</th>
+          <th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
         <% end %>
-        <th>Lot No</th>
+
         <th>DEEC No</th>
         <th>Description</th>
         <th>Stones&nbsp;&nbsp;&nbsp;&nbsp;</th>
@@ -28,30 +29,30 @@
         <% unless stone.description == "Description" || stone.description == "DESCRIPTION"%>
           <% if stone.has_note?(current_customer) || stone.has_bid?(current_customer) %>
             <tr class="<%= get_color(@diff, stone.description) %> highlighted" >
+            <td class="td-mobile-count">
+                <div class="lefter">
+                    <%= stone.lot_no %>
+                </div>
+                <div class="righter">
+                    <div class="top">
+                        <%= stone.description %>
+                    </div>
+                    <div class="bottom">
+                        Weight: <%= stone.weight %>,
+                        Stone: <%= stone.no_of_stones %>
+                    </div>
+                </div>
+            </td>
+
               <% if current_customer %>
-
-                <td class="td-mobile-count">
-                    <div class="lefter">
-                        <div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span>
-                    </div>
-                    <div class="righter">
-                        <div class="top">
-                            <%= stone.description %>
-                        </div>
-                        <div class="bottom">
-                            Weight: <%= stone.weight %>,
-                            Stone: <%= stone.no_of_stones %>
-                        </div>
-                    </div>
-                </td>
-
                 <td>
-                <span class="table-head-in-td">Read</span>
-                <%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
-
+                    <span class="table-head-in-td">Read</span>
+                    <%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span>
+                </td>
+                <td><span class="table-head-in-td">Imp</span><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
 
               <% end %>
-              <td><span class="table-head-in-td">Lot No</span><%= stone.lot_no %></td>
+
               <td><span class="table-head-in-td">DEEC No</span><%= stone.deec_no %></td>
               <td class=""><span class="table-head-in-td">Description</span><%= stone.description %></td>
               <td><span class="table-head-in-td">Stones</span><%= stone.no_of_stones %></td>
@@ -85,10 +86,10 @@
             </tr>
           <% else %>
             <tr class="<%= get_color(@diff, stone.description) %>" >
-              <% if current_customer %>
+
                 <td class="td-mobile-count">
                     <div class="lefter">
-                        <div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span>
+                        <%= stone.lot_no %>
                     </div>
                     <div class="righter">
                         <div class="top">
@@ -101,11 +102,15 @@
                     </div>
                 </td>
                 
+              <% if current_customer %>
                 <td>
-                <span class="table-head-in-td">Read</span>
-                <%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span></td>
+                    <span class="table-head-in-td">Read</span>
+                    <%= check_box_tag "read",1,@read.include?(stone.key) ,{:id => "read_" + stone.id.to_s, :class => "read", :key => stone.key} %><span class="score"><%= @read.include?(stone.key) ? 1 : 0%></span>
+                </td>
+                <td><span class="table-head-in-td">Imp</span><div id_key="<%= stone.id %>" key="<%= stone.key %>" score='<%= @important.include?(stone.key) ? 1 : 0%>' id="star_<%= stone.id %>" class="star" ></div><span class="score"><%= @important.include?(stone.key) ? 1 : 0%></span></td>
+
               <% end %>
-              <td><span class="table-head-in-td">Lot No</span><%= stone.lot_no %></td>
+
               <td><span class="table-head-in-td">DEEC No</span><%= stone.deec_no %></td>
               <td><span class="table-head-in-td">Description</span><%= stone.description %></td>
               <td><span class="table-head-in-td">Stones</span><%= stone.no_of_stones %></td>
