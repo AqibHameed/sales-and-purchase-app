@@ -531,15 +531,40 @@ $tr-odd-bg-color: #f2f2f2;
       td {
         display: block;
 
+        width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+
         @include tdResponsive();
       }
       td {
         display: none;
-        padding-left: 145px;
+        padding-left: 145px!important;
+
+        .given_days,
+        .edit_days {
+          display: inline-block;
+          overflow: hidden;
+          vertical-align: top;
+          width: 90%;
+          box-sizing: border-box;
+
+          &.hide {
+            display: none;
+          }
+
+          input {
+            width: 80%;
+            box-sizing: border-box;
+            display: inline-block;
+            margin-right: 10%;
+            font-size: 12px;
+          }
+        }
       }
       td:first-of-type {
         display: block;
-        padding-left: 145px;
+        padding-left: 145px!important;
 
         .table-head-in-td {
           position: relative;
