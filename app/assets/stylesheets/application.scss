@@ -541,6 +541,7 @@ $tr-odd-bg-color: #f2f2f2;
         display: none;
         padding-left: 145px!important;
 
+        .edit_field,
         .given_days,
         .edit_days {
           display: inline-block;
@@ -556,9 +557,10 @@ $tr-odd-bg-color: #f2f2f2;
           input {
             width: 80%;
             box-sizing: border-box;
-            display: inline-block;
+            display: inline-block!important;
             margin-right: 10%;
-            font-size: 12px;
+            font-size: 12px!important;
+            margin-bottom: 5px;
           }
         }
       }
