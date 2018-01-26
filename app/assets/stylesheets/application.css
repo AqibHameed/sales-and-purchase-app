@@ -453,6 +453,7 @@ h4 {
     .table-responsive tr td {
       display: none;
       padding-left: 145px !important; }
+      .table-responsive tr td .edit_field,
       .table-responsive tr td .given_days,
       .table-responsive tr td .edit_days {
         display: inline-block;
@@ -460,16 +461,19 @@ h4 {
         vertical-align: top;
         width: 90%;
         box-sizing: border-box; }
+        .table-responsive tr td .edit_field.hide,
         .table-responsive tr td .given_days.hide,
         .table-responsive tr td .edit_days.hide {
           display: none; }
+        .table-responsive tr td .edit_field input,
         .table-responsive tr td .given_days input,
         .table-responsive tr td .edit_days input {
           width: 80%;
           box-sizing: border-box;
-          display: inline-block;
+          display: inline-block !important;
           margin-right: 10%;
-          font-size: 12px; }
+          font-size: 12px !important;
+          margin-bottom: 5px; }
     .table-responsive tr td:first-of-type {
       display: block;
       padding-left: 145px !important; }
