@@ -249,4 +249,6 @@ Rails.application.routes.draw do
   get '/trading_history' => 'tenders#trading_history', as: 'trading_history'
   get '/change_days_limits' => 'suppliers#change_days_limits', as: 'change_days_limit'
   get '/supplier_demand_list' => 'suppliers#supplier_demand_list'
+  get '/supplier_list' => 'suppliers#supplier_list'
+  
 end
