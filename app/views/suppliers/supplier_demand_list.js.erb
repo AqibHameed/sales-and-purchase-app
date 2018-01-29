@@ -1,2 +1,4 @@
-$('#demand_description').html("<%= j render :partial => 'description_dropdown', collection: @demand_list, as: 'dl' %>")
-$('#trading_parcel_box').html("<%= j render :partial => 'description_dropdown', collection: @demand_list, as: 'dl' %>")
+var prompt_str = '<option value="">Please Select</option>'
+$('#demand_description').html(prompt_str +"<%= j render :partial => 'description_dropdown', collection: @demand_list, as: 'dl' %>")
+$('#trading_parcel_box').html(prompt_str +"<%= j render :partial => 'description_dropdown', collection: @demand_list, as: 'dl' %>")
+$('#trading_parcel_description').html(prompt_str +"<%= j render :partial => 'description_dropdown', collection: @demand_list, as: 'dl' %>")

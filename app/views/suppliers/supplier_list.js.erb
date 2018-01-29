@@ -1,0 +1,5 @@
+var prompt_str = '<option value="">Please Select</option>'
+$('#demand_demand_supplier_id').html(prompt_str + "<%= j render :partial => 'suppliers_dropdown', collection: @demand_suppliers, as: 'ds' %>")
+$('#trading_parcel_source').html(prompt_str + "<%= j render :partial => 'suppliers_dropdown', collection: @demand_suppliers, as: 'ds' %>")
+
+

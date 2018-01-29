@@ -114,6 +114,16 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def supplier_list
+    if params[:diamond_type] == 'Outside Goods'
+      params[:diamond_type] = 'Rough'
+    end
+    @demand_suppliers = DemandSupplier.where(diamond_type: params[:diamond_type])
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def credit_given_list
     @credit_limits = CreditLimit.where(supplier_id: current_customer.id)
   end
