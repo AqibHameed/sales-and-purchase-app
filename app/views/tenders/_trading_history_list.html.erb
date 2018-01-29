@@ -3,6 +3,7 @@
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter table-responsive" >
     <thead class="thead-desktop">
       <tr>
+        <th>Lot No</th>
         <th>Description</th>
         <th>No. of Stones</th>
         <th>Carats</th>
@@ -29,6 +30,21 @@
          <% link = '' %>
       <% end %>
       <tr class="<%= color %>">
+        <td class="td-mobile-count">
+            <div class="lefter">
+              <%= transaction.lot_no %>
+            </div>
+            <div class="righter">
+                <div class="top">
+                    <%= get_description(transaction.trading_parcel) rescue 'N/A'  %>
+                </div>
+                <div class="bottom">
+                    Weight: <%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %>,
+                    Stone: <%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %>
+                </div>
+            </div>
+        </td>
+
         <td><span class="table-head-in-td">Description</span><%= get_description(transaction.trading_parcel) rescue 'N/A'  %></td>
         <td><span class="table-head-in-td">No. of Stones</span><%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %></td>
         <td><span class="table-head-in-td">Carats</span><%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %></td>
