@@ -51,8 +51,33 @@
         $('.active_table').removeClass('hide')
       }
     })
+
+
+      var CREDENTIALS = {
+        appId: 67854,
+        authKey: 'cQ3F2AYqFThBR5t',
+        authSecret: 'tDrTBXv6Vp2w47E'
+      };
+      QB.init(CREDENTIALS.appId, CREDENTIALS.authKey, CREDENTIALS.authSecret);
+
+      QB.createSession(function(err,result){
+          if (result){
+            var param_check_user= {login: ["<%=current_user.email%>"]}
+            QB.users.get(param_check_user, function(err, result){
+              debugger
+                if (err) {
+                  var params = { 'login': "<%=current_user.email%>", 'password': "<%=current_user.email%>", 'tag_list': "DIALUCK",'full_name':"<%=current_user.name%>"};
+                  QB.users.create(params, function(err, user){
+                      if (user) {
+                          // user created
+                      } else  {
+                        // debugger
+                      }
+                  });
+                }
+            });
+          }
+      });
+
   });
 </script>
-
-
-
