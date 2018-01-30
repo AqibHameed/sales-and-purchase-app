@@ -1,5 +1,6 @@
 class TenderMailer < ApplicationMailer
   default from: "Dialuck Admin <admin@dialuck.net>"
+  
   def new_tender_mail(tender, customer)
     @tender, @customer = tender, customer
     mail(:to => @customer.email, :subject => "[Dialuck] New Tender #{@tender.name} Assigned" )

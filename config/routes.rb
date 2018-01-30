@@ -188,6 +188,7 @@ Rails.application.routes.draw do
       get :requests
       get :accept
       get :reject
+      get :remove
     end
   end
 
