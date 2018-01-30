@@ -408,8 +408,8 @@ $tr-odd-bg-color: #f2f2f2;
       //width: 100px;
 
       position: relative;
-      left: -130px;
-      margin-right: -110px;
+      //left: -130px;
+      //margin-right: -110px;
       box-sizing: border-box;
 
       white-space: nowrap;
@@ -543,7 +543,9 @@ $tr-odd-bg-color: #f2f2f2;
       }
       td {
         display: none;
-        padding-left: 145px!important;
+        //padding-left: 145px!important;
+        padding-left: 20px;
+        vertical-align: top;
 
         .edit_field,
         .given_days,
@@ -570,7 +572,7 @@ $tr-odd-bg-color: #f2f2f2;
       }
       td:first-of-type {
         display: block;
-        padding-left: 145px!important;
+        //padding-left: 145px!important;
 
         .table-head-in-td {
           position: relative;
