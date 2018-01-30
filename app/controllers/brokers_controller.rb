@@ -39,7 +39,7 @@ class BrokersController < ApplicationController
   def remove
     puts @broker_request.inspect
     @broker_request.destroy
-    CustomerMailer.remove_broker_mail(request).deliver
+    CustomerMailer.remove_broker_mail(@broker_request).deliver
     flash[:notice] = 'Broker removed successfully.'
     redirect_to requests_brokers_path
   end

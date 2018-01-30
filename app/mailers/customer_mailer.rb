@@ -3,7 +3,7 @@ class CustomerMailer < ApplicationMailer
 
   def remove_broker_mail(request)
     @request = request
-    broker = request.broker.email
+    broker = @request.broker.email
     mail(:to => broker, :subject => '[Dialuck] Broker Remove' )
   end
 end
