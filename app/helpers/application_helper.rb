@@ -388,7 +388,7 @@ module ApplicationHelper
     elsif current_customer.is_broker(seller)
       'Connected'
     else
-      link_to 'Send Request', send_request_brokers_path(s: seller.id), data: { turbolink: false }
+      link_to 'Send Request', send_request_brokers_path(s: seller.id), data: { turbolinks: false }
     end
   end
 

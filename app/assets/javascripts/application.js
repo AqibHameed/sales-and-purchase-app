@@ -99,7 +99,7 @@ $(document).ready(function() {
     //   { "orderable": false, "targets": 6 }
     // ]
   });
-
+  
   // $(document).click(function(e){
   //   if (!e.target.matches('.dropbtn')) {
   //     var dropdowns = $(".dropdown-content");
