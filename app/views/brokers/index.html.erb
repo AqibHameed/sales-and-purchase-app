@@ -2,20 +2,26 @@
   <h3> Send Request to Seller</h3>
   <div class="clear10"></div>
   <div class="table">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-    <tr>
-      <th>Seller Name</th>
-      <th>Company</th>
-      <th></th>
-    </tr>
-    <% @sellers.each do |seller| %>
-      <tr>
-        <td><%= seller.name %></td>
-        <td><%= seller.company %></td>
-        <td><%= link_to_request(current_customer, seller) %></td>
-      </tr>
-    <% end %>
-    
-</table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id='sellerList' class="tablesorter table-responsive">
+      <thead class="thead-desktop">
+        <th>Seller Name</th>
+        <th>Company</th>
+        <th></th>
+      </thead>
+      <% @sellers.each do |seller| %>
+        <tr>
+          <td><%= seller.name %></td>
+          <td><%= seller.company %></td>
+          <td><%= link_to_request(current_customer, seller) %></td>
+        </tr>
+      <% end %>
+    </table>
   </div>
 </div>
+
+<script type="text/javascript">
+  $('#sellerList').DataTable({
+    "pageLength": 50,
+    "bInfo" : false
+  });
+</script>
