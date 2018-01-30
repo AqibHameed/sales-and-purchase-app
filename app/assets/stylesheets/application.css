@@ -134,15 +134,14 @@ div.title1 {
 .mt50 {
   margin-top: 50px; }
 
-#creditList thead th, #sellerList thead th {
+#creditList thead th {
   border-top: 1px solid #e8e8e8;
   border-right: 1px solid #e8e8e8;
   font-weight: bold;
   background: #5f5f5f;
   color: #ffffff;
   padding: 8px;
-  text-align: left; 
-}
+  text-align: left; }
 
 table.dataTable.no-footer {
   border-bottom: 0px solid #111; }
@@ -434,11 +433,12 @@ h4 {
         padding-right: 5px;
         color: #5f5f5f;
         font-size: 12px;
-        width: 100px;
+        width: 120px;
         position: relative;
-        left: -130px;
-        margin-right: -110px;
-        box-sizing: border-box; }
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
       .table-responsive tr td .table-head-in-td:after {
         display: inline-block;
         content: ":";
@@ -453,7 +453,8 @@ h4 {
         display: none; }
     .table-responsive tr td {
       display: none;
-      padding-left: 145px !important; }
+      padding-left: 20px;
+      vertical-align: top; }
       .table-responsive tr td .edit_field,
       .table-responsive tr td .given_days,
       .table-responsive tr td .edit_days {
@@ -476,8 +477,7 @@ h4 {
           font-size: 12px !important;
           margin-bottom: 5px; }
     .table-responsive tr td:first-of-type {
-      display: block;
-      padding-left: 145px !important; }
+      display: block; }
       .table-responsive tr td:first-of-type .table-head-in-td {
         position: relative;
         padding-left: 20px;
@@ -630,11 +630,12 @@ h4 {
         padding-right: 5px;
         color: #5f5f5f;
         font-size: 12px;
-        width: 100px;
+        width: 120px;
         position: relative;
-        left: -130px;
-        margin-right: -110px;
-        box-sizing: border-box; }
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
       .credit-table tbody th .table-head-in-td:after, .credit-table tbody td .table-head-in-td:after,
       .table-purchase tbody th .table-head-in-td:after,
       .table-purchase tbody td .table-head-in-td:after,
