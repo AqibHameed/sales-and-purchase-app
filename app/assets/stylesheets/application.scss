@@ -1162,4 +1162,13 @@ $tr-odd-bg-color: #f2f2f2;
 
 }
 
+.tenderList {
+  @media (max-width: $small) {
+    .table-responsive tr td:first-of-type .table-head-in-td {
+      min-height: 15px;
+      float: left;
+    }
+  }
+}
+
 @media (max-width: $small) {}
