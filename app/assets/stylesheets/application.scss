@@ -1093,6 +1093,22 @@ $tr-odd-bg-color: #f2f2f2;
         margin: 5px 0 5px 0!important;
       }
     }
+
+    #creditList_filter {
+      label:before {
+        display: block;
+        content: "";
+        width: 15px;
+        height: 15px;
+        float: left;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        background-image: url('/assets/search/search-01.png');
+        background-repeat: no-repeat;
+        -webkit-background-size: 20px;
+        background-size: 20px;
+      }
+    }
   }
 }
 
