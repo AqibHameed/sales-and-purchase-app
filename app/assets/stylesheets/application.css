@@ -803,7 +803,19 @@ h4 {
     .approve_list label input {
       display: block;
       width: 100%;
-      margin: 5px 0 5px 0 !important; } }
+      margin: 5px 0 5px 0 !important; }
+  .approve_list #creditList_filter label:before {
+    display: block;
+    content: "";
+    width: 15px;
+    height: 15px;
+    float: left;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    background-image: url("/assets/search/search-01.png");
+    background-repeat: no-repeat;
+    -webkit-background-size: 20px;
+    background-size: 20px; } }
 
 @media (max-width: 760px) {
   #chart-popup {
