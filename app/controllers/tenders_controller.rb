@@ -8,6 +8,7 @@ class TendersController < ApplicationController
 
   layout :false, :only => [:admin_details, :admin_winner_details]
 
+
   def new
     @tender = Tender.new
   end
@@ -85,6 +86,15 @@ class TendersController < ApplicationController
       @upcoming_tenders = Tender.where(upcomimg_str).where(col_str).order("open_date").page params[:page]
     end
     @news = News.first(10)
+
+    # GetCustomerViaApiJob.perform_later
+  end
+
+  def update_chat_id
+    current_customer.update(chat_id: params["QBuser_id"].to_s)
+    respond_to do |format|
+      format.html { render :json => {:status => "200"}}
+    end
   end
 
   def show
@@ -531,7 +541,7 @@ class TendersController < ApplicationController
     #   else
     #     tender.update_columns(updated_after_round: true, round: tender.round + 1)
     #     if tender.need_to_update_time?
-    #       round_open_time = tender.round_open_time + (tender.round_duration).minutes + (tender.rounds_between_duration).minutes 
+    #       round_open_time = tender.round_open_time + (tender.round_duration).minutes + (tender.rounds_between_duration).minutes
     #       tender.update_column(:round_open_time, round_open_time)
     #     end
     #   end
@@ -563,7 +573,7 @@ class TendersController < ApplicationController
     #         system_percentage = (remaining_customers.to_f/3.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
     #         if system_percentage < 2
     #           system_price_percentage = 2
-    #         else 
+    #         else
     #           system_price_percentage = system_percentage
     #         end
     #         puts "system_percentage = #{system_percentage}"
@@ -574,7 +584,7 @@ class TendersController < ApplicationController
     #         system_percentage = (remaining_customers.to_f/5.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
     #         if system_percentage < 2
     #           system_price_percentage = 2
-    #         else 
+    #         else
     #           system_price_percentage = system_percentage
     #         end
     #         @yes_no_system_price = ( 100 + system_price_percentage.to_f)/100.to_f*reserved_price.to_f
@@ -613,7 +623,7 @@ class TendersController < ApplicationController
     #         system_percentage = (remaining_customers.to_f/3.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
     #         if system_percentage < 2
     #           system_price_percentage = 2
-    #         else 
+    #         else
     #           system_price_percentage = system_percentage
     #         end
     #         @yes_no_system_price = ( 100 + system_price_percentage.to_f)/100.to_f*reserved_price.to_f
@@ -624,7 +634,7 @@ class TendersController < ApplicationController
     #         system_percentage = (remaining_customers.to_f/5.to_f*(1-left_customers.to_f/remaining_customers.to_f).to_f).abs
     #         if system_percentage < 2
     #           system_price_percentage = 2
-    #         else 
+    #         else
     #           system_price_percentage = system_percentage
     #         end
     #         @yes_no_system_price = ( 100 + system_price_percentage.to_f)/100.to_f*reserved_price.to_f
@@ -666,4 +676,3 @@ class TendersController < ApplicationController
   end
 
 end
-
