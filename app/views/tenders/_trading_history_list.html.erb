@@ -3,7 +3,7 @@
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter table-responsive" >
     <thead class="thead-desktop">
       <tr>
-        <th>Lot No</th>
+        <th>S No.</th>
         <th>Description</th>
         <th>No. of Stones</th>
         <th>Carats</th>
@@ -18,10 +18,11 @@
         <th>Invoice Date</th>
         <th></th>
         <th></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
-      <% @transactions.each do |transaction| %>
+      <% @transactions.each.with_index(1) do |transaction, i| %>
       <% if get_status(transaction) == 'Overdue' %>
         <% color = 'bg-red' %>
         <% link = 'white' %>
@@ -32,15 +33,15 @@
       <tr class="<%= color %>">
         <td class="td-mobile-count">
             <div class="lefter">
-              <%= transaction.lot_no %>
+              <%= i  %>
             </div>
             <div class="righter">
                 <div class="top">
-                    <%= get_description(transaction.trading_parcel) rescue 'N/A'  %>
+                  <%= get_description(transaction.trading_parcel) rescue 'N/A'  %>
                 </div>
                 <div class="bottom">
-                    Weight: <%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %>,
-                    Stone: <%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %>
+                  Weight: <%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %>,
+                  Stone: <%= transaction.trading_parcel.no_of_stones rescue 'N/A'  %>
                 </div>
             </div>
         </td>
@@ -71,8 +72,8 @@
         <% end %>
         <td><%=link_to 'view' , transaction_path(transaction), data: {turbolinks: false}, class: link %></td>
         <% if current_user.id == transaction.supplier_id %>
-                    <td><%=link_to 'Edit' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %></td>
-                  <% end %>
+          <td><%=link_to 'Edit' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %></td>
+        <% end %>
       </tr>
       <% end %>
     </tbody>
