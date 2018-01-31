@@ -49,7 +49,8 @@ class Api::V1::SessionsController < Devise::SessionsController
       company_address: customer.company_address, 
       phone_2: customer.phone_2, 
       mobile_no: customer.mobile_no, 
-      authentication_token: customer.authentication_token
+      authentication_token: customer.authentication_token,
+      chat_id: customer.chat_id
     }
   end
 

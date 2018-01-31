@@ -1,6 +1,6 @@
 <div>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable_sights" class="tablesorter sight-time-hide">
-		<thead>
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable_sights" class="tablesorter sight-time-hide table-responsive">
+		<thead class="thead-desktop">
 			<tr>
 				<% if current_customer %>
           <th>Imp&nbsp;&nbsp;&nbsp;&nbsp;</th>
@@ -32,33 +32,41 @@
 
           <tr>
             <% if current_customer %>
-              <td><div id_key="<%= sight.id %>" key="<%= sight.key %>" score='<%= @important.include?(sight.key) ? 1 : 0%>' id="star_<%= sight.id %>" class="star" ></div><span class="score"><%= @important.include?(sight.key) ? 1 : 0%></span></td>
-              <td><%= check_box_tag "read",1,@read.include?(sight.key) ,{:id => "read_" + sight.id.to_s, :class => "read", :key => sight.key} %><span class="score"><%= @read.include?(sight.key) ? 1 : 0%></span></td>
+              <td><span class="table-head-in-td">Imp</span><div id_key="<%= sight.id %>" key="<%= sight.key %>" score='<%= @important.include?(sight.key) ? 1 : 0%>' id="star_<%= sight.id %>" class="star" ></div><span class="score"><%= @important.include?(sight.key) ? 1 : 0%></span></td>
+              <td><span class="table-head-in-td">Read</span><%= check_box_tag "read",1,@read.include?(sight.key) ,{:id => "read_" + sight.id.to_s, :class => "read", :key => sight.key} %><span class="score"><%= @read.include?(sight.key) ? 1 : 0%></span></td>
             <% end %>
-            <td><%= sight.source %></td>
-            <td><%= sight.box %></td>
-            <td><%= sight.carats %></td>
-            <td><%= sight.cost %></td>
-            <td><%= sight.box_value_from %> - <%= sight.box_value_to %></td>
-            <td><%= sight.sight %></td>
-            <td class = "yes_no_reserved_price">
+            <td><span class="table-head-in-td">Source</span><%= sight.source %></td>
+            <td><span class="table-head-in-td">Box</span><%= sight.box %></td>
+            <td><span class="table-head-in-td">Carats</span><%= sight.carats %></td>
+            <td><span class="table-head-in-td">Cost</span><%= sight.cost %></td>
+            <td><span class="table-head-in-td">Box Value</span><%= sight.box_value_from %> - <%= sight.box_value_to %></td>
+            <td><span class="table-head-in-td">Sight</span><%= sight.sight %></td>
+            <td>
+            <span class="table-head-in-td">System Price</span>
             <% if current_round == 1 %>
 
-              <%= sight.sight_reserved_price.present? ? sight.sight_reserved_price.to_f - ((20.to_f/100.to_f)*sight.sight_reserved_price.to_f) : "empty price" %>
+              <% system_price = sight.sight_reserved_price.present? ? sight.sight_reserved_price.to_f - ((20.to_f/100.to_f)*sight.sight_reserved_price.to_f) : "empty price" %>
             <%else%>
 
-              <%= sight.stone_winning_price.present? ? sight.stone_winning_price : (sight.yes_no_system_price.present? ? sight.yes_no_system_price : sight.sight_reserved_price.to_f - ((20.to_f/100.to_f)*sight.sight_reserved_price.to_f)) %>
+              <% system_price = sight.stone_winning_price.present? ? sight.stone_winning_price : (sight.yes_no_system_price.present? ? sight.yes_no_system_price : sight.sight_reserved_price.to_f - ((20.to_f/100.to_f)*sight.sight_reserved_price.to_f)) %>
             <%end%>
+              <span class = "yes_no_reserved_price"><%= system_price %></span>
             </td>
             <% if current_customer %>
-              <td><%= sight.stone_winning_price.present? ? sight.stone_winning_price : "" %></td>
               <td>
+              <span class="table-head-in-td">Winning price</span>
+              <%= sight.stone_winning_price.present? ? sight.stone_winning_price : "" %></td>
+              <td>
+              <span class="table-head-in-td">My Note</span>
               <span id="note-<%= i %>"><%= image_tag('icon-notes.png') if @notes.include?(sight.key) %></span>
                 <%= link_to 'Note', add_note_tender_path(@tender.id, :key => sight.key, :sight_id => sight.id, :index => i), :class => 'add_note' %></td>
             <% end %>
-            <td><%= link_to "View", view_past_result_tender_path(@tender.id, :sight_id => sight.id, :key => sight.source, stone_count: (sight.box_value_to - sight.box_value_from)), :class => "past_result_link" %></td>
+            <td>
+            <span class="table-head-in-td">History</span>
+            <%= link_to "View", view_past_result_tender_path(@tender.id, :sight_id => sight.id, :key => sight.source, stone_count: (sight.box_value_to - sight.box_value_from)), :class => "past_result_link" %></td>
 
             <td>
+            <span class="table-head-in-td">Yes / No</span>
               <% if tender_timer['tender_state'] == 'tender_wait' %>
                 Pending
               <% elsif tender_timer['tender_state'] == 'round_break' %>
@@ -69,7 +77,12 @@
                 You are not Winner
               <% elsif is_customer_can_bid %>
                 <label class="switch">
-                  <input class="switch-input" type="checkbox" <%= current_customer.can_bid_on_parcel('sight', current_round+1, @tender, sight) ? 'checked="checked"' : ''%> />
+                  <input class="switch-input"
+                         type="checkbox"
+                         <%= current_customer.can_bid_on_parcel('sight', current_round+1, @tender, sight) ? 'checked="checked"' : ''%>
+                         data-system-price="<%= system_price %>"
+                         data-sight-id = "<%= sight.id %>"
+                  />
                   <span class="switch-label" data-on="Yes" data-off="No"></span>
                   <span class="switch-handle"></span>
                 </label>
@@ -88,59 +101,50 @@
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		addStarRatings('<%= @tender.id %>')
-    	addRead('<%= @tender.id %>')
-      	$(document).ready(function() {
-        $('.switch-input').on('change', function() {
-        var isChecked = $(this).is(':checked');
-        var selectedData;
-        var $switchLabel = $('.switch-label');
-        console.log('isChecked: ' + isChecked);
-        if(isChecked) {
-          selectedData = $switchLabel.attr('data-on');
-          var sight_id = $(this).closest('tr').find('.yes_no_sight_id').val();
-          var tender_id = $(this).closest('tr').find('.yes_no_tender_id').val();
-          var reserved_price = $(this).closest('tr').find('.yes_no_reserved_price').html();
-          var current_customer = "<%= current_customer.id %>"
-          var interest = selectedData
-          var data = {"sight_id": sight_id, "tender_id": tender_id, "current_customer": current_customer, "interest": interest, "reserved_price": $.trim(reserved_price.replace(/[\n]+/g,' ')) }
-          console.log(data)
+$(document).ready(function() {
+      addStarRatings('<%= @tender.id %>');
+      addRead('<%= @tender.id %>');
+
+      $(document).on('click', '.add_note, .past_result_link', function(e) {
+          e.preventDefault();
+          var _this = $(this),
+              url = $(this).attr('href');
           $.ajax({
-              url:"/tenders/yes_or_no_winners",
-              type:'POST',
-              dataType:'json',
-              data:{data},
-              success:function(data){
-                  console.log("success");
-              },
-              error:function(data){
-                  console.log("error")
+              url : url,
+              type : 'GET',
+              success : function(response) {
+                  $('.bid_form').html(response).show()
+                  $('tr').removeClass('current_bid');
+                  $(_this).parents('tr').addClass('current_bid');
               }
-            });
-        } else {
-          selectedData = $switchLabel.attr('data-off');
-          var sight_id = $(this).closest('tr').find('.yes_no_sight_id').val();
-          var tender_id = $(this).closest('tr').find('.yes_no_tender_id').val();
-          var reserved_price = $(this).closest('tr').find('.yes_no_reserved_price').html();
-          var current_customer = "<%= current_customer.id %>"
-          var interest = selectedData
-          var data = {"sight_id": sight_id, "tender_id": tender_id, "current_customer": current_customer, "interest": interest, "reserved_price": $.trim(reserved_price.replace(/[\n]+/g,' ')) }
-          console.log(data)
-          $.ajax({
-              url:"/tenders/yes_or_no_winners",
-              type:'POST',
-              dataType:'json',
-              data:{data},
-              success:function(data){
-                  console.log("success");
+          })
+      });
+
+      $('.switch-input').on('change', function() {
+          var isChecked = $(this).is(':checked'),
+              sight_id = $(this).data('sight-id'),
+              reserved_price =  $(this).data('system-price'),
+              data = [
+                  {name: 'tender_id', value: "<%= @tender.id %>"},
+                  {name: 'current_customer', value: "<%= current_customer.id %>"},
+                  {name: 'interest', value: isChecked ? "Yes" : "No"},
+              ];
+          if(!isNaN(sight_id)) {
+              data.push({name: 'sight_id', value: sight_id})
+          }
+          if(!isNaN(reserved_price)) {
+              data.push({name: 'reserved_price', value:reserved_price});
+          }
+
+          ajaxRequest(
+              "/tenders/yes_or_no_winners",
+              data,
+              function (result) {
+                  //console.log(result);
               },
-              error:function(data){
-                  console.log("error")
-              }
-            });
-        }
-        console.log('Selected data: ' + selectedData);
+              false,
+              'POST'
+          );
       });
 
       // Params ($selector, boolean)
@@ -150,41 +154,6 @@
 
       // Usage
       setSwitchState($('.switch-input'), true);
-    });
-
-    $(document).on('click', '.add_note', function(e) {
-      e.preventDefault()
-      var _this = $(this);
-      var top = $(this).position()['top'] - 300;
-      var url = $(this).attr('href')
-      $.ajax({
-        url : url,
-        type : 'GET',
-        success : function(response) {
-          $('.bid_form').html(response).show()
-          // $('.bid_form').css('margin-top', top + 'px' )
-          $('tr').removeClass('current_bid');
-          $(_this).parents('tr').addClass('current_bid');
-        }
-      })
-    });
-
-    $(document).on('click', '.past_result_link', function(e) {
-      e.preventDefault()
-      var _this = $(this);
-      var top = $(this).position()['top'] - 300;
-      var url = $(this).attr('href')
-      $.ajax({
-        url : url,
-        type : 'GET',
-        success : function(response) {
-          $('.bid_form').html(response).show()
-          // $('.bid_form').css('margin-top', top + 'px' )
-          $('tr').removeClass('current_bid');
-          $(_this).parents('tr').addClass('current_bid');
-        }
-      })
-    });
-	})
+});
 </script>
 

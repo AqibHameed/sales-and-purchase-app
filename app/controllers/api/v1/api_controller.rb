@@ -1,6 +1,6 @@
 class Api::V1::ApiController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:device_token, :supplier_notification, :email_attachment]
-  before_action :current_customer, only: [:device_token, :supplier_notification]
+  skip_before_action :verify_authenticity_token, only: [:device_token, :supplier_notification, :email_attachment, :update_chat_id]
+  before_action :current_customer, only: [:device_token, :supplier_notification, :update_chat_id]
 
   def current_customer
     token = request.headers['Authorization'].presence
@@ -92,6 +92,21 @@ class Api::V1::ApiController < ApplicationController
       else
         render json: {success: false, message: attachment.errors.full_messages, response_code: 201 }
       end
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
+    end
+  end
+
+  def customer_list
+    customers = Customer.all
+    render json: { customers: customers.as_json(only: [:first_name, :last_name, :email, :company, :chat_id]), response_code: 200}
+  end
+
+  def update_chat_id
+    if current_customer
+      current_customer.chat_id = params[:chat_id]
+      current_customer.save(validate: false)
+      render json: {success: true, customer: current_customer.as_json(only: [:first_name, :last_name, :email, :company, :chat_id]), response_code: 200 }
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end

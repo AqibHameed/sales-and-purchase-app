@@ -99,7 +99,7 @@ $(document).ready(function() {
     //   { "orderable": false, "targets": 6 }
     // ]
   });
-
+  
   // $(document).click(function(e){
   //   if (!e.target.matches('.dropbtn')) {
   //     var dropdowns = $(".dropdown-content");
@@ -233,3 +233,62 @@ $(document).ready(function() {
     })
   });
 });
+
+
+
+$(document).ready(function() {
+
+  // Responsive tables data show
+
+  if($('.table-responsive').length){
+      $('.table-responsive .table-head-in-td').click(function(){
+        $(this).closest('tr').toggleClass('opened');
+      });
+  }
+  if($('.table-responsive').length){
+      $('.table-responsive .td-mobile-count').click(function(){
+        $(this).closest('tr').toggleClass('opened');
+      });
+  }
+
+  // Mobile menu
+
+  if($('.menu-burger').length){
+      $('.menu-burger').click(function(){
+        $(this).toggleClass('opened');
+        $('.header .c1 .nav').toggleClass('opened');
+      });
+  }
+
+});
+
+function ajaxRequest(url, data, callback, errorCallback, type) {
+    if(typeof type == 'undefined') {
+        type = 'GET'
+    }
+    if (typeof errorCallback == 'undefined') {
+        errorCallback = false
+    }
+    if (!data) {
+        data = {};
+    }
+    $.ajax({
+        url : url,
+        type : type,
+        data : data,
+        success: function (data) {
+            if(typeof callback == 'function') {
+                callback(data);
+            }
+        },
+        error: function (jqXHR, textStatus,errorThrown) {
+            console.log(jqXHR, textStatus, errorThrown);
+            if(errorCallback !== false && typeof callback == 'function') {
+                errorCallback(jqXHR, textStatus,errorThrown);
+            } else {
+                alert('An error occurred: ' + textStatus + ' ' + errorThrown);
+            }
+        }
+    });
+
+}

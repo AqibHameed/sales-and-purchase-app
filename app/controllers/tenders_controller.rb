@@ -71,7 +71,7 @@ class TendersController < ApplicationController
 
   def index
     col_str = ""
-    upcomimg_str = "open_date > '#{Time.zone.now}'"
+    upcomimg_str = "open_date > '#{Time.now}'"
     if params[:comapany] || params[:tender] || params[:status]
       col_str =  "tenders.name LIKE '%#{params[:tender]}%'"  unless params[:tender].blank?
       col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:company]}" : " AND tenders.company_id = #{params[:company]}" unless params[:company].blank?
@@ -455,62 +455,72 @@ class TendersController < ApplicationController
   end
 
   def yes_or_no_winners
-    data = params[:data]
+    data = params
     tender = Tender.where(id: data[:tender_id]).first
     timer_info = tender.tender_timer
-    puts timer_info.inspect
-    if data[:interest] == "Yes"
+    #puts timer_info.inspect
+    if data[:interest] == "Yes" && data[:reserved_price].present?
       if data[:stone_id].present?
         @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: timer_info['current_round']).first_or_create
-        # if @yes_no_buyer_interest.present?
-        #   new_yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: @tender.round).first_or_create
-        # else
-        #   @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: @tender.round).first_or_create
-        # end
       elsif data[:sight_id].present?
-        # @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer])
-        # place_bid = @yes_no_buyer_interest.first.place_bid + 1
-        # @yes_no_buyer_interest = @yes_no_buyer_interest.first.update_attributes(interest: true, buyer_left: false, reserved_price: data[:reserved_price], place_bid: place_bid )
         @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: timer_info['current_round']).first_or_create
-        # @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer], interest: true).last
-        # if @yes_no_buyer_interest.present?
-        #   new_yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: @yes_no_buyer_interest.round + 1).first_or_create
-        # else
-        #   @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer], interest: true, reserved_price: data[:reserved_price], round: 1).first_or_create
-        # end
       end
       render :json => { success: true }
     else
       if data[:stone_id].present?
         @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], stone_id: data[:stone_id], customer_id: data[:current_customer]).last
-        @yes_no_buyer_interest.destroy
+        if @yes_no_buyer_interest.present?
+          @yes_no_buyer_interest.destroy
+        end
       elsif data[:sight_id].present?
         @yes_no_buyer_interest = YesNoBuyerInterest.where(tender_id: data[:tender_id], sight_id: data[:sight_id], customer_id: data[:current_customer]).last
-        @yes_no_buyer_interest.destroy
-        # place_bid = @yes_no_buyer_interest.first.place_bid - 1
-        # @yes_no_buyer_interest = @yes_no_buyer_interest.first.update_attributes(interest: false, buyer_left: true,place_bid: place_bid, round: place_bid)
+        if @yes_no_buyer_interest.present?
+          @yes_no_buyer_interest.destroy
+        end
       end
       render :json => { success: true }
     end
   end
 
+  def round_updated
+    tender = Tender.where(id: params[:tender_id]).first
+    locked = true
+    if !tender.nil?
+      locked = tender.updated_after_round.nil? ? false : tender.updated_after_round
+      render :json => { success: true, updated: locked }
+    else
+      render :json => { success: true, updated: locked }
+    end
+
+  end
+
+  def timer_value
+    tender = Tender.where(id: params[:tender_id]).first
+    timer_tender = tender.tender_timer
+    render :json => { success: true, timer: timer_tender }
+  end
+
   def update_time
     tender = Tender.where(id: params[:tender_id]).first
+    puts "!!!!!!!!!!!!!!UPDATE ROUND START: #{params[:round].to_i} Time: #{Time.current} - timestamp: #{Time.current.to_i} Customer: #{current_customer.id} email: #{current_customer.email}"
     if !tender.nil?
-      if tender.check_if_bid_placed(params[:round].to_i)
-        tender.check_for_winners(params[:round].to_i, current_customer)
-      end
-      if tender.updated_after_round
-        render :json => { success: true, updated: 'already' }
-      else
-        tender.update_columns(updated_after_round: true, round: tender.round + 1)
+      if !tender.updated_after_round
+        tender.update_columns(updated_after_round: true, round: params[:round].to_i + 1)
+        if tender.check_if_bid_placed(params[:round].to_i)
+          tender.check_for_winners(params[:round].to_i, current_customer)
+        end
         if tender.need_to_update_time?
-          round_open_time = tender.round_open_time + (tender.round_duration).minutes + (tender.rounds_between_duration).minutes 
+          round_open_time = tender.round_open_time + (tender.round_duration).minutes + (tender.rounds_between_duration).minutes
           tender.update_column(:round_open_time, round_open_time)
         end
+        puts "!!!!!!!!!!!!!!UPDATE ROUND END: with price"
         render :json => { success: true, updated: 'done' }
+      else
+        puts "!!!!!!!!!!!!!!UPDATE ROUND END: price already updated"
+        render :json => { success: true, updated: 'already' }
       end
     end
+    puts "!!!!!!!!!!!!!!UPDATE ROUND END: no TENDER"
   end
 
   def update_system_price

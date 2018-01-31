@@ -3,13 +3,13 @@
     <div class="form-row">
       <div class="label">Diamond Type: </div>
       <div class="field">
-        <%= f.select :diamond_type, options_for_select(['Rough']), {include_blank: true}, {class: 'input'} %>
+        <%= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
       </div>
     </div>
     <div class="form-row">
       <div class="label">Supplier: </div>
       <div class="field">
-        <%= f.select :supplier_id, options_for_select(customer_list_for_demand), { include_blank: true }, { class: 'input' } %>
+        <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand), { include_blank: true }, { class: 'input' } %>
       </div>
     </div>
     <div class="form-row">
@@ -26,11 +26,39 @@
     </div>
   <% end %>
 </div>
-<div class="clear10"></div>
+<div class="clear20"></div>
+
+<h3>Demand List</h3>
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+    <tr>
+      <th></th>
+      <th>Description</th>
+      <th>Supplier</th>
+    </tr>
+    <% @my_demands.each do |demand| %>
+      <tr>
+        <td></td>
+        <td><%= demand.description %></td>
+        <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
 
 <script type="text/javascript">
-  $(document).on('change', '#demand_supplier_id', function(){
-    id = $('#demand_supplier_id').val()
+  $(document).on('change', '#demand_diamond_type', function(){
+    type = $('#demand_diamond_type').val()
+    $.ajax({
+      url: '/supplier_list',
+      method: 'get',
+      data: {diamond_type: type}
+    })
+  })
+
+  $(document).on('change', '#demand_demand_supplier_id', function(){
+    id = $('#demand_demand_supplier_id').val()
     $.ajax({
       url: '/supplier_demand_list',
       method: 'get',

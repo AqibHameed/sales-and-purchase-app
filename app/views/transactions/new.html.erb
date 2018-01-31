@@ -26,7 +26,7 @@
       <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select(['Rough', 'Sight', 'Finance']),  { class: 'input', include_blank: true } %>
+          <%= select_tag "trading_document_diamond_type", options_for_select(['Outside Goods', 'Sight', 'Something Special']),  { class: 'input', include_blank: true } %>
         </div>
       </div>
 
@@ -34,8 +34,8 @@
         <div class="form-row">
           <div class="label">Description: </div>
           <div class="field">
-            <%= p.text_field :description,  class: 'input' %>
-            <%=p.hidden_field :diamond_type, class: 'diamond_type_value'%>
+            <%= p.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
+            <%= p.hidden_field :diamond_type, class: 'diamond_type_value'%>
           </div>
         </div>
         <div class="form-row">
@@ -56,14 +56,15 @@
         <div class="form-row">
           <div class="label"> Source: </div>
           <div class="field">
-            <%= p.text_field :source, class: 'input' %>
+            <%= p.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
           </div>
         </div>
 
         <div class="form-row">
           <div class="label"> Box: </div>
           <div class="field">
-            <%= p.text_field :box, class: 'input' %>
+            <%#= p.text_field :box, class: 'input' %>
+            <%= p.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
           </div>
         </div>
 
@@ -82,7 +83,7 @@
         </div>
 
         <div class="form-row">
-          <div class="label"> Sight:</div>
+          <div class="label"> Month Sight:</div>
           <div class="field">
             <%= p.text_field :sight, class: 'input' %>
           </div>
@@ -159,31 +160,32 @@
 
 <script type="text/javascript">
 
-$(document).ready(function (){
-  $(".date").datepicker({
-    "dateFormat" : 'dd/mm/yy'
-  });
-})
-$(document).on('click', '.invite', function(e) {
-      e.preventDefault()
-      var _this = $(this);
-      var top = $(this).position()['top'] - 300;
-      $.ajax({
-        url : '/transactions/invite',
-        type : 'GET',
-        success : function(response) {
-          console.log(response)
-          $('.bid_form').html(response).show()
-          $('tr').removeClass('current_bid');
-          $(_this).parents('tr').addClass('current_bid');
-
-        }
-      })
+  $(document).ready(function (){
+    $(".date").datepicker({
+      "dateFormat" : 'dd/mm/yy'
     });
+  })
+
+  $(document).on('click', '.invite', function(e) {
+    e.preventDefault()
+    var _this = $(this);
+    var top = $(this).position()['top'] - 300;
+    $.ajax({
+      url : '/transactions/invite',
+      type : 'GET',
+      success : function(response) {
+        console.log(response)
+        $('.bid_form').html(response).show()
+        $('tr').removeClass('current_bid');
+        $(_this).parents('tr').addClass('current_bid');
+
+      }
+    })
+  });
 
   $(document).on('change', '#trading_document_diamond_type', function(){
     val = $(this).val()
-    if(val == "Rough"){
+    if(val == "Outside Goods"){
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
@@ -201,7 +203,7 @@ $(document).on('click', '.invite', function(e) {
       $('.transactions-weight').val('')
       $('#trading_parcel_weight').val('')
       $('.diamond_type_value').val('Sight')
-    }else if(val == "Finance"){
+    }else if(val == "Something Special"){
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').addClass('hide')
@@ -282,6 +284,32 @@ $(document).on('click', '.invite', function(e) {
       }
     });
   }
+
+  $(document).on('change', '#trading_parcel_source', function(){
+    id = $('#trading_parcel_source').val()
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+    })
+  })
+
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $('#trading_document_diamond_type').val()
+    if (val == 'Outside Goods'){
+      $.ajax({
+        url: '/supplier_demand_list',
+        method: 'get',
+        data: {id: val}
+      })
+    } else if (val == 'Sight'){
+      $.ajax({
+        url: '/supplier_list',
+        method: 'get',
+        data: {diamond_type: val}
+      })
+    }
+  })
 
 </script>
 <style>

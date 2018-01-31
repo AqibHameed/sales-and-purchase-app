@@ -1,21 +1,4 @@
 <%#= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
-<div class="search-form form-wrapper">
-  <%= form_tag(credit_suppliers_path, :method => "get", id: "search-form") do %>
-    <div class="form-row">
-      <div class="label">Search</div>
-      <div class="field">
-        <%= text_field_tag :name, params[:search], placeholder: "Search Companies", class: 'input'%>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="label"></div>
-      <div class="field">
-        <%= submit_tag "Search", :name => nil, class: 'login-btn btn-02' %>
-      </div>
-    </div>
-  <% end %>
-</div>
-
 <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
 
 <% if params[:name].present? %>

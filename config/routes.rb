@@ -11,9 +11,11 @@ Rails.application.routes.draw do
   get "/verified_unverified", to: 'home#verified_unverified'
   get "/change_tender_open_time", to: 'tenders#update_time'
   get '/change_system_price', to: 'tenders#update_system_price'
+  get '/can_update', to: 'tenders#round_updated'
+  get '/get_timer', to: 'tenders#timer_value'
+  
   get '/chat', to: 'chats#index'
   get '/video_chat', to: 'chat_vidoes#index'
-
 
   get '/admins/sign_up', to: redirect('/')
   devise_for :admins, :controllers => {:sessions => 'sessions'}
@@ -150,6 +152,8 @@ Rails.application.routes.draw do
       get :credit
       get :credit_given_list
       get :single_parcel_form
+      get :add_demand_list
+      post :upload_demand_list
     end
   end
   resources :messages
@@ -178,6 +182,15 @@ Rails.application.routes.draw do
       put :paid
     end
   end
+  resources :brokers, only: [:index] do
+    collection do
+      get :send_request
+      get :requests
+      get :accept
+      get :reject
+      get :remove
+    end
+  end
 
   namespace :api do
     namespace :v1 do
@@ -198,6 +211,8 @@ Rails.application.routes.draw do
       get '/old_tenders', to: 'tenders#old_tenders'
       get '/old_upcoming', to: 'tenders#old_upcoming'
       get '/old_tender_parcel', to: 'tenders#old_tender_parcel'
+      get '/customer_list', to: 'api#customer_list'
+      put '/update_chat_id', to: 'api#update_chat_id'
       resources :tenders do
         collection do
           get :upcoming
@@ -235,4 +250,6 @@ Rails.application.routes.draw do
   get '/trading_history' => 'tenders#trading_history', as: 'trading_history'
   get '/change_days_limits' => 'suppliers#change_days_limits', as: 'change_days_limit'
   get '/supplier_demand_list' => 'suppliers#supplier_demand_list'
+  get '/supplier_list' => 'suppliers#supplier_list'
+  
 end

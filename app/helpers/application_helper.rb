@@ -361,6 +361,10 @@ module ApplicationHelper
     "#{link_to('Click Here', Rails.application.routes.url_helpers.proposal_path(proposal))}"
   end
 
+  def view_request
+    "#{link_to('Click Here', Rails.application.routes.url_helpers.requests_brokers_path)}"
+  end
+
   def check_round stones
     # YesNoBuyerInterest.where(stone_id: stones.map { |e| e.id }).empty
   end
@@ -373,8 +377,19 @@ module ApplicationHelper
     end
   end
 
-  def customer_list_for_demand
-    Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+  def supplier_list_for_demand
+    DemandSupplier.all.map { |e| e.name }
+  end
+
+  def link_to_request(current_customer, seller)
+    puts current_customer.sent_broker_request(seller)
+    if current_customer.sent_broker_request(seller)
+      'Requested'
+    elsif current_customer.is_broker(seller)
+      'Connected'
+    else
+      link_to 'Send Request', send_request_brokers_path(s: seller.id), data: { turbolinks: false }
+    end
   end
 
 end

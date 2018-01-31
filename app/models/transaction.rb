@@ -6,6 +6,7 @@ class Transaction < ApplicationRecord
 
   validate :credit_validation, :validate_invoice_date
   after_create :update_credit_limit, :generate_and_add_uid, :generate_and_add_amount
+  after_save :calculate_amount
 
   attr_accessor :weight
 
@@ -69,6 +70,13 @@ class Transaction < ApplicationRecord
     self.remaining_amount = amount
     self.total_amount = amount
     self.save(validate: false)
+  end
+
+  def calculate_amount
+    amount = price*trading_parcel.weight
+    paid_amt = PartialPayment.where(transaction_id: self.id).sum(:amount)
+    remaining_amount = amount - paid_amt
+    self.update_columns({remaining_amount: remaining_amount, total_amount: amount})
   end
 
   def self.total_transaction(customer_id)

@@ -3,7 +3,7 @@ class Customer < ApplicationRecord
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
-  attr_accessor :login
+  attr_accessor :login, :role
 
   devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
@@ -28,6 +28,8 @@ class Customer < ApplicationRecord
   has_many :sender, :class_name => 'Message', :foreign_key => 'sender_id'
   has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
 
+  has_many :customer_roles
+  # has_many :roles, through: :customer_roles
   # accepts_nested_attributes_for :companies
 
   has_many :customer_ratings
@@ -41,6 +43,10 @@ class Customer < ApplicationRecord
   has_many :supplier_notifications, :foreign_key => "supplier_id", :class_name => "SupplierNotification"
   has_many :buyer_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit"
   has_many :supplier_days_limits, :foreign_key => "supplier_id", :class_name => "DaysLimit"
+  has_many :brokers, :foreign_key => "broker_id", :class_name => "BrokerRequest"
+  has_many :sellers, :foreign_key => "seller_id", :class_name => "BrokerRequest"
+
+
   # Setup accessible (or protected) attributes for your model
   # attr_accessible :email, :password, :password_confirmation, :remember_me,
   #                 :first_name, :last_name,
@@ -57,7 +63,7 @@ class Customer < ApplicationRecord
   #           :format => {:with => /^\d{10}$/, multiline: true},
   #           :unless => proc{|obj| obj.phone_2.blank?} , :reduce => true
 
-  validates :mobile_no, uniqueness: true
+  validates :mobile_no, :company, uniqueness: true
             # :format => {:with => /^\d{10}$/, multiline: true},
             # :unless => proc{|obj| obj.mobile_no.blank?} , :reduce => true
 
@@ -70,7 +76,7 @@ class Customer < ApplicationRecord
   #           :presence => true , :reduce => true
 
   # send_account_creation_mail
-  after_create :add_user_to_tenders
+  after_create :add_user_to_tenders, :assign_role_to_customer
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
@@ -174,12 +180,41 @@ class Customer < ApplicationRecord
     CustomersTender.create(customer_tenders)
   end
 
+  def assign_role_to_customer
+    if self.role == "Buyer/Seller"
+      CustomerRole.create(role_id: 1, customer_id: self.id)
+      CustomerRole.create(role_id: 2, customer_id: self.id)
+    elsif self.role == "Broker"
+      CustomerRole.create(role_id: 4, customer_id: self.id)
+    end
+  end
+
   def notify_by_supplier supplier
     SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false
   end
 
   def credit_days_by_supplier(supplier)
     DaysLimit.where(supplier_id: supplier.id, buyer_id: self.id).first.days_limit rescue 30
+  end
+
+  def has_role?(role_name)
+    role = Role.where(name: role_name).first
+    unless role.nil?
+      customer_role = CustomerRole.where(customer_id: self.id, role_id: role.id).first
+      if customer_role.present?
+        return true
+      else
+        return false
+      end
+    end
+  end
+
+  def self.get_sellers
+    Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 2)
+  end
+
+  def self.get_buyers
+    Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 1)
   end
 
   ## YES/NO ##
@@ -198,6 +233,16 @@ class Customer < ApplicationRecord
     return false
   end
   ############
+
+  ### Brokers ###
+  def sent_broker_request(seller)
+    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: false).first.present?
+  end
+
+  def is_broker(seller)
+    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
+  end
+  ###############
 
   rails_admin do
     list do

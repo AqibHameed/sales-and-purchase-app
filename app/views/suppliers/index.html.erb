@@ -15,7 +15,7 @@
 <script type="text/javascript">
   $(document).on('change', '#trading_document_diamond_type', function(){
     val = $(this).val()
-    if(val == "Rough"){
+    if(val == "Outside Goods"){
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
@@ -38,11 +38,38 @@
     $('#trading_document_diamond_type').val('')
     $('.bulk').removeClass('hide')
     $('.single').addClass('hide')
-
   })
+
   $(document).on('click', '.single_parcel', function(){
     $('#trading_document_diamond_type').val('')
     $('.single').removeClass('hide')
     $('.bulk').addClass('hide')
+  })
+
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $('.single #trading_document_diamond_type').val()
+    if (val == 'Outside Goods'){
+      $.ajax({
+        url: '/supplier_demand_list',
+        method: 'get',
+        data: {id: val}
+      })
+    } else if (val == 'Sight'){
+      $.ajax({
+        url: '/supplier_list',
+        method: 'get',
+        data: {diamond_type: val}
+      })
+    }
+  })
+
+  
+  $(document).on('change', '#trading_parcel_source', function(){
+    id = $('.single #trading_parcel_source').val()
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+    })
   })
 </script>

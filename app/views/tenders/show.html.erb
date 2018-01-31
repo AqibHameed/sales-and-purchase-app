@@ -122,7 +122,7 @@
       <%# end %>
     </div>
 
-		<div class="bid-info bid_form" style="width:80%!important; margin-left:-10px; display:none">
+		<div id="chart-popup" class="bid-info bid_form" style="width:80%!important; margin-left:-10px; display:none">
 
 		</div>
 
@@ -135,73 +135,47 @@
 </div>
 <div class="clear"></div>
 <script>
-<% unless @tender.nil? || @tender.tender_type == 'Blind' %>
+<% unless @tender.nil? %>
   $(document).ready(function() {
     $("#myTable").tablesorter();
       <% if tender_timer['timer_value'] > 0 %>
-        var reload_time = Math.floor(Math.random() * (1500 - 1000 + 1) + 1000);
-        init_timer(<%=tender_timer['timer_value'].to_i%>, '<%=tender_timer['clockFace'].to_s%>');
+        var reload_time = Math.floor(Math.random() * (1500 - <%= current_user.id.to_i%> + 1) + 1000);
 
         function init_timer(value, clockFace)
         {
             if($('.clock').length == 1 && value) {
                 if(typeof clockFace == 'undefined') {
-                    clockFace = 'MinuteCounter'
+                     clockFace = 'MinuteCounter'
                 }
                 $('.clock').FlipClock(value, {
                     clockFace: clockFace,
                     countdown: true,
                     callbacks: {
                         stop: function() {
-                            <%if tender_timer['tender_state'] == 'round_active' %>
-                            on_round_finished();
-                            <% elsif tender_timer['tender_state'] == 'round_break' %>
-                            on_round_break_finished();
-                            <% else %>
                             setTimeout(function () { location.reload(true); }, reload_time);
-                            <% end %>
                         }
                     }
                 });
             }
         }
-      <%#if tender_timer['tender_state'] == 'round_break' %>
-      function on_round_break_finished()
-      {
-          $.ajax({
-              url : '/change_system_price',
-              type : 'GET',
-              data : { tender_id: '<%=@tender.id%>'},
-              success: function (data) {
-                  console.log(data)
-                  if(data.success == true) {
-                      setTimeout(function () { location.reload(true); }, reload_time);
-                  } else {
-                      console.log(data);
-                      alert('An error occurred during request to the server. Please contact to administrator.');
-                  }
-              }
-          })
-      }
 
-      function on_round_finished() {
-          var round = Math.max(<%= tender_timer['current_round']%>, 1);
-          $.ajax({
-              url : '/change_tender_open_time',
-              type : 'GET',
-              data : { tender_id: '<%=@tender.id%>', round: round },
-              success: function (data) {
-                  if(data.success == true) {
-                      setTimeout(function () { location.reload(true); }, reload_time);
-                  } else {
-                      console.log(data);
-                      alert('An error occurred during request to the server. Please contact to administrator.');
-                  }
-              }
-          })
+        ajaxRequest('/get_timer',
+            {tender_id:'<%=@tender.id%>'},
+            function (result) {
+                //console.log(result);
+                if (result.success == true && result.timer) {
+                    var timer = result.timer;
+                    init_timer(timer['timer_value'], timer['clockFace'])
+                } else {
+                    init_timer(<%=tender_timer['timer_value'].to_i%>, '<%=tender_timer['clockFace'].to_s%>');
+                }
 
-      }
-      <% #end %>
+            },
+            function (jqXHR, textStatus, errorThrown) {
+                init_timer(<%=tender_timer['timer_value'].to_i%>, '<%=tender_timer['clockFace'].to_s%>');
+            }
+        );
+
       <% end %>
   });
 <% end %>

@@ -111,7 +111,7 @@ class Stone < ApplicationRecord
       left join stones s on s.tender_id = tenders.id
       WHERE (open_date <= '#{Time.now.utc}'
       AND close_date >= '#{Time.now.utc}')
-      AND (FORMAT(s.weight, 2) = #{term} OR s.lot_no = #{term.to_i})"
+      AND (CAST(s.weight as decimal(10, 2))) = #{term}"
     )
 
     # # pg
@@ -120,8 +120,24 @@ class Stone < ApplicationRecord
     #   left join stones s on s.tender_id = tenders.id
     #   WHERE (open_date <= '#{Time.now.utc}'
     #   AND close_date >= '#{Time.now.utc}')
-    #   AND (s.weight = #{term} OR s.lot_no = #{term.to_i})"
+    #   AND (s.weight = #{term} OR s.lot_no = #{term})"
     # )
+  end
+
+  def has_note? customer
+    if self.try(:note).try(:customer_id) == customer.id
+      true
+    else
+      false                                                                                     
+    end
+  end
+
+  def has_bid? customer
+    if self.try(:bids).map { |e| e.customer_id  }.include?(customer.id)
+      true
+    else
+      false                                                                                 
+    end
   end
 
   rails_admin do
@@ -143,5 +159,4 @@ class Stone < ApplicationRecord
       end
     end
   end
-
 end

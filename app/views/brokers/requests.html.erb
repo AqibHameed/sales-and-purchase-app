@@ -1,0 +1,47 @@
+<div class="dashboard">
+  <h3> Broker Requests </h3>
+  <div class="clear10"></div>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+      <tr>
+        <th></th>
+        <th>Broker Name</th>
+        <th>Company</th>
+        <th></th>
+      </tr>
+      <% @requests.each do |request| %>
+        <tr>
+          <td></td>
+          <td><%= request.broker.name %></td>
+          <td><%= request.broker.company %></td>
+          <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: { turbolinks: false } %> | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: { turbolinks: false } %></td>
+        </tr>
+      <% end %>
+  </table>
+  </div>
+</div>
+<div class="clear10"></div>
+<div class="dashboard">
+  <h3> My Brokers </h3>
+  <div class="clear10"></div>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">                                                                            
+    <tr>
+      <th></th>
+      <th>Broker Name</th>
+      <th>Company</th>
+      <th></th>
+    </tr>
+    <% @my_brokers.each do |b| %>
+      <tr>
+        <td></td>
+        <td><%= b.broker.name %></td>
+        <td><%= b.broker.company %></td>
+        <td><%= link_to "Remove", remove_brokers_path(id: b.id), data: { turbolinks: false } %></td>
+      </tr>
+    <% end %>
+    
+</table>
+  </div>
+</div>
+
