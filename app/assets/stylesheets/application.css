@@ -846,6 +846,8 @@ h4 {
       box-sizing: border-box; } }
 
 @media (max-width: 760px) {
+  .approve_list #tenderList tr td:first-of-type .table-head-in-td,
+  .approve_list .table-responsive tr td:first-of-type .table-head-in-td,
   .tenderList #tenderList tr td:first-of-type .table-head-in-td,
   .tenderList .table-responsive tr td:first-of-type .table-head-in-td {
     min-height: 15px;
