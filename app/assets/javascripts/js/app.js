@@ -225,3 +225,7 @@ App.prototype.checkInternetConnection = function () {
 
 // QBconfig was loaded from QBconfig.js file
 var app = new App(QBconfig);
+
+function send_email_invite() {
+  alert("will send invite")
+}

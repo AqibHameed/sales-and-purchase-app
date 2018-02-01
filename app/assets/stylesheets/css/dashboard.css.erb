@@ -21,6 +21,10 @@
     z-index: 999;
 }
 
+.button-sendEmail {
+            background: #9bdc8a; /* this is a green */
+        }
+
 .sidebar.active {
     left: 0;
 }
@@ -68,7 +72,7 @@
 
 .logout {
     height: 18px;
-    background-image: url('../img/ic_exit_to_app.svg');
+    background-image: url('<%=asset_path("img/ic_exit_to_app.svg")%>');
     overflow: hidden;
     font-size: 0;
     margin-top: 10px;
@@ -586,6 +590,24 @@
     margin: 15px auto;
 }
 
+.group_chat__user_list22,
+.update_chat__user_list22{
+    flex: 1 1 100%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.group_chat__user_list22.loading:after{
+    content: "";
+    display: block;
+    background: url(<%=asset_path("img/loader2.gif")%>);
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    margin: 15px auto;
+}
+
+
 .group__chat__description,
 .update__chat__description{
     font-size: 15px;
@@ -608,7 +630,7 @@
 .user__item.selected .user__avatar,
 .user__item.disabled .user__avatar {
     background-color: #28C849;
-    background-image: url('../img/ic_done.svg');
+    background-image: url('<%=asset_path("img/ic_done.svg")%>');
 }
 
 .user__item.disabled {

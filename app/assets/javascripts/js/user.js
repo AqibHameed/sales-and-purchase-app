@@ -77,22 +77,63 @@ User.prototype.getUsersByIds = function (userList) {
 User.prototype.getUsers = function () {
     var self = this,
         params = {
-            tags: app.user.user_tags,
-            per_page: 100
+            // tags: app.user.user_tags,
+            // per_page: 100
         };
 
     return new Promise(function(resolve, reject){
-        QB.users.get(params, function (err, responce) {
-            if (err) {
-                reject(err);
-            }
+        // QB.users.get(params, function (err, responce) {
+        //     if (err) {
+        //         reject(err);
+        //     }
+        //
+        //     var userList = responce.items.map(function(data){
+        //         return self.addToCache(data.user);
+        //     });
+        //     debugger
+        //     resolve(userList);
+        // });
 
-            var userList = responce.items.map(function(data){
-                return self.addToCache(data.user);
+        var usersCount = 0;
+        var userList_arr=[]
+      // var page_number=1
+      function retrieveAllUsersFromPage(page_number) {
+          var params = { page: page_number, per_page: '100'};
+            QB.users.listUsers(params, function(err, responce){
+              if (responce) {
+                // var userList += responce.items
+
+                userList_arr.push.apply(userList_arr,responce.items)
+                
+                usersCount += responce.items.length;
+                if(responce.total_entries > usersCount){
+                  retrieveAllUsersFromPage(responce.current_page+1);
+                }
+                else{
+                  var userList=userList_arr.map(function(data){
+                      return self.addToCache(data.user);
+                  });
+
+                  resolve(userList);
+
+                }
+              } else {
+                // error
+              }
+
             });
 
-            resolve(userList);
-        });
+        }
+        retrieveAllUsersFromPage(1);
+
+        // debugger
+
+
+
+
+
+
+
     })
 
 
@@ -102,7 +143,7 @@ User.prototype.getUsers = function () {
     //         if (err) {
     //             reject(err);
     //         }
-    //         
+    //
     //         QB.users.listUsers({ 'login': "emporio12@gmail.com", 'password': "somepass1"}, function(error, response){
     //             var userList = response.items.map(function(data){
     //                 return self.addToCache(data.user);
