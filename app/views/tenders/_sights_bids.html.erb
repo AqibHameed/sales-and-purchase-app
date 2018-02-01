@@ -163,8 +163,9 @@
 	        success : function(response) {
 	          $('.bid_form').html(response).show()
 	          // $('.bid_form').css('margin-top', top + 'px' )
-	          $('tr').removeClass('current_bid');
+	          $('tr.highlighted.current_bid').removeClass('current_bid');
 	          $(_this).parents('tr').addClass('current_bid');
+	          $(_this).parents('tr').addClass('highlighted');
 	        }
 	      })
 	    });

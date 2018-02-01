@@ -1,6 +1,6 @@
 <% past_history = @history.collect{ |t| t.avg_selling_price }.first(3)  %>
 <div class=''>
-  <%= link_to "X", "javascript:void(0)", :class => 'btn-01 close_bid fright', :onclick => "$('tr').removeClass('current_bid');$('.bid_form').html('').hide();removeMask();" %>
+  <%= link_to "X", "javascript:void(0)", :class => 'btn-01 close_bid fright', :onclick => "$('tr.highlighted.current_bid'').removeClass('highlighted').removeClass('current_bid');$('.bid_form').html('').hide();removeMask();" %>
   <div class=''>
     <table>
       <tr>
@@ -129,7 +129,7 @@
               </div>
               <div class="field">
                 <%= f.submit "Save", :class => 'btn-01 submit_bid' %>
-                <%= button_tag "Cancel", :class => 'btn-01 submit_bid', :onclick => "$('tr').removeClass('current_bid');$('.bid_form').html('').hide();removeMask();" %>
+                <%= button_tag "Cancel", :class => 'btn-01 submit_bid', :onclick => "$('tr.highlighted.current_bid'').removeClass('highlighted').removeClass('current_bid');$('.bid_form').html('').hide();removeMask();" %>
               </div>
               <div class="clear"></div>
             </div>
