@@ -102,7 +102,7 @@ Rails.application.configure do
   }
 
   # Mailer config
-  config.action_mailer.default_url_options = { :host => 'https://claritynetwork.co'}
+  config.action_mailer.default_url_options = { :host => 'http://35.154.206.134'}
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
@@ -112,7 +112,7 @@ Rails.application.configure do
     :authentication => :plain,
     :user_name => ENV['SENDGRID_USERNAME'],
     :password => ENV['SENDGRID_PASSWORD'],
-    :domain => 'claritynetwork.co',
+    :domain => '35.154.206.134',
     :address => 'smtp.sendgrid.net',
     :port => 587,
     :enable_starttls_auto => true
