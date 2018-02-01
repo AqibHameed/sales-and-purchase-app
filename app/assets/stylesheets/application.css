@@ -458,10 +458,8 @@ h4 {
       .table-responsive tr td .edit_field,
       .table-responsive tr td .given_days,
       .table-responsive tr td .edit_days {
-        display: inline-block;
         overflow: hidden;
         vertical-align: top;
-        width: 90%;
         box-sizing: border-box; }
         .table-responsive tr td .edit_field.hide,
         .table-responsive tr td .given_days.hide,
@@ -470,12 +468,13 @@ h4 {
         .table-responsive tr td .edit_field input,
         .table-responsive tr td .given_days input,
         .table-responsive tr td .edit_days input {
-          width: 80%;
+          width: 100%;
           box-sizing: border-box;
-          display: inline-block !important;
-          margin-right: 10%;
+          display: block;
+          margin-right: 0;
           font-size: 12px !important;
-          margin-bottom: 5px; }
+          margin-top: 5px;
+          margin-bottom: 10px; }
     .table-responsive tr td:first-of-type {
       display: block; }
       .table-responsive tr td:first-of-type .table-head-in-td {
@@ -847,8 +846,38 @@ h4 {
       box-sizing: border-box; } }
 
 @media (max-width: 760px) {
+  .tenderList #tenderList tr td:first-of-type .table-head-in-td,
   .tenderList .table-responsive tr td:first-of-type .table-head-in-td {
     min-height: 15px;
     float: left; } }
+
+input[type="button"],
+input[type="submit"],
+.btn-01,
+.btn-02 {
+  border: 0px;
+  outline: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  cursor: default; }
+
+@media (max-width: 760px) {
+  .table-responsive .fa {
+    font-size: 16px;
+    float: right; }
+  .table-responsive .edit_field a {
+    text-transform: uppercase;
+    margin-right: 0px;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 10px; }
+  .table-responsive .edit_field a + a {
+    float: left; }
+  .table-responsive .table-head-in-td + img {
+    float: right; } }
 
 /*# sourceMappingURL=application.css.map */

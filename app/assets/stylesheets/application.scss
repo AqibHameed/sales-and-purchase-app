@@ -1168,7 +1168,9 @@ $tr-odd-bg-color: #f2f2f2;
 }
 
 .tenderList {
+
   @media (max-width: $small) {
+
     #tenderList,
     .table-responsive {
       tr {
