@@ -13,7 +13,8 @@ Rails.application.routes.draw do
   get '/change_system_price', to: 'tenders#update_system_price'
   get '/can_update', to: 'tenders#round_updated'
   get '/get_timer', to: 'tenders#timer_value'
-  
+
+
   get '/chat', to: 'chats#index'
   get '/video_chat', to: 'chat_vidoes#index'
 
@@ -188,6 +189,7 @@ Rails.application.routes.draw do
       get :requests
       get :accept
       get :reject
+      get :remove
     end
   end
 
@@ -245,8 +247,13 @@ Rails.application.routes.draw do
   end
 
   root :to => 'tenders#index'
+
   get '/change_limits' => 'suppliers#change_limits', as: 'change_credit_limit'
   get '/trading_history' => 'tenders#trading_history', as: 'trading_history'
   get '/change_days_limits' => 'suppliers#change_days_limits', as: 'change_days_limit'
   get '/supplier_demand_list' => 'suppliers#supplier_demand_list'
+  get '/supplier_list' => 'suppliers#supplier_list'
+  get '/update_chat_id',to: 'tenders#update_chat_id'
+
+
 end

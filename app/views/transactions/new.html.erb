@@ -34,8 +34,8 @@
         <div class="form-row">
           <div class="label">Description: </div>
           <div class="field">
-            <%= p.text_field :description,  class: 'input' %>
-            <%=p.hidden_field :diamond_type, class: 'diamond_type_value'%>
+            <%= p.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
+            <%= p.hidden_field :diamond_type, class: 'diamond_type_value'%>
           </div>
         </div>
         <div class="form-row">
@@ -292,6 +292,23 @@
       method: 'get',
       data: {id: id}
     })
+  })
+
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $('#trading_document_diamond_type').val()
+    if (val == 'Outside Goods'){
+      $.ajax({
+        url: '/supplier_demand_list',
+        method: 'get',
+        data: {id: val}
+      })
+    } else if (val == 'Sight'){
+      $.ajax({
+        url: '/supplier_list',
+        method: 'get',
+        data: {diamond_type: val}
+      })
+    }
   })
 
 </script>

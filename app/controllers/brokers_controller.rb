@@ -1,4 +1,5 @@
 class BrokersController < ApplicationController
+  before_action :load_request, only: [:accept, :reject, :remove]
 
   def index
     @sellers = Customer.get_sellers
@@ -24,17 +25,29 @@ class BrokersController < ApplicationController
   end
 
   def accept
-    request = BrokerRequest.find(params[:id])
-    request.update_column(:accepted, true)
+    @broker_request.update_column(:accepted, true)
     flash[:notice] = 'Request accepted successfully.'
     redirect_to requests_brokers_path
   end
 
   def reject
-    request = BrokerRequest.find(params[:id])
-    request.destroy
+    @broker_request.destroy
     flash[:notice] = 'Request rejected successfully.'
     redirect_to requests_brokers_path
+  end
+
+  def remove
+    puts @broker_request.inspect
+    @broker_request.destroy
+    CustomerMailer.remove_broker_mail(@broker_request).deliver
+    flash[:notice] = 'Broker removed successfully.'
+    redirect_to requests_brokers_path
+  end
+
+  private
+
+  def load_request
+    @broker_request = BrokerRequest.find(params[:id])
   end
 end
     
