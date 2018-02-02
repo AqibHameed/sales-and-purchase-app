@@ -184,6 +184,24 @@
                                     console.log('[create user] Error:', createErr);
                                     reject(createErr);
                                 } else {
+                                  $.ajax({
+                                       url: '/update_chat_id',
+                                      type: 'get',
+                                      // headers: {Accept: '*/*;q=0.5, text/javascript, application/javascript, application/ecmascript, application/x-ecmascript'},
+                                       data: {
+                                         "QBuser_id":createUser.id
+                                       },
+
+                                       success: function(data) {
+                                         console.log("successfully updated chat_id")
+
+                                       },
+                                       error: function(err){
+                                         console.log("error in updating chat_id")
+
+
+                                       }
+                                   });
                                     QB.login(userRequiredParams, function(reloginErr, reloginUser) {
                                         if(reloginErr) {
                                             console.log('[relogin user] Error:', reloginErr);
@@ -224,32 +242,78 @@
             var tpl = _.template( $('#user_tpl').html() ),
                 usersHTML = '',
                 users = [];
+            //
 
-            QB.users.get({'tags': [app.caller.user_tags], 'per_page': 100}, function(err, result){
-                if (err) {
-                    reject(err);
-                } else {
-                    _.each(result.items, function(item) {
+            var usersCount = 0;
+            var userList_arr=[]
+          // var page_number=1
+          function retrieveAllUsersFromPage(page_number) {
+              var params = { page: page_number, per_page: '100'};
+                QB.users.listUsers(params, function(err, responce){
+                  if (responce) {
+                    // var userList += responce.items
+
+                    // userList_arr.push.apply(userList_arr,responce.items)
+                    _.each(responce.items, function(item) {
                         users.push(item.user);
 
                         if( item.user.id !== app.caller.id ) {
                             usersHTML += tpl(item.user);
                         }
                     });
-
-                    if(result.items.length < 2) {
-                        reject({
-                            'title': 'not found',
-                            'message': 'Not found users by tag'
-                        });
-                    } else {
-                        resolve({
-                            'usersHTML': usersHTML,
-                            'users': users
-                        });
+                    usersCount += responce.items.length;
+                    if(responce.total_entries > usersCount){
+                      retrieveAllUsersFromPage(responce.current_page+1);
                     }
-                }
-            });
+                    else{
+                      // var userList=userList_arr.map(function(data){
+                      //     return self.addToCache(data.user);
+                      // });
+
+                      // resolve(userList);
+                      resolve({
+                          'usersHTML': usersHTML,
+                          'users': users
+                      });
+
+                    }
+                  } else {
+                    // error
+                  }
+
+                });
+
+            }
+            retrieveAllUsersFromPage(1);
+
+            //
+
+
+            // QB.users.get({'tags': [app.caller.user_tags], 'per_page': 100}, function(err, result){
+            //     if (err) {
+            //         reject(err);
+            //     } else {
+            //         _.each(result.items, function(item) {
+            //             users.push(item.user);
+            //
+            //             if( item.user.id !== app.caller.id ) {
+            //                 usersHTML += tpl(item.user);
+            //             }
+            //         });
+            //
+            //         if(result.items.length < 2) {
+            //             reject({
+            //                 'title': 'not found',
+            //                 'message': 'Not found users by tag'
+            //             });
+            //         } else {
+            //             resolve({
+            //                 'usersHTML': usersHTML,
+            //                 'users': users
+            //             });
+            //         }
+            //     }
+            // });
         });
     };
 
