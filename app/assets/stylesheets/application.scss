@@ -1201,6 +1201,7 @@ input[type="submit"],
   cursor:default;
 }
 
+.credit-table,
 .table-responsive {
   @media (max-width: $small) {
     .fa {
@@ -1230,5 +1231,24 @@ input[type="submit"],
   }
 }
 
+.credit-table {
+  @media (max-width: $small) {
+
+    .edit_field {
+      overflow: hidden;
+
+      input {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .fa {
+        position: static;
+        margin-top: 10px;
+      }
+    }
+
+  }
+}
 
 @media (max-width: $small) {}
