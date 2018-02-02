@@ -887,6 +887,8 @@ input[type="submit"],
     float: right; } }
 
 @media (max-width: 760px) {
+  .credit-table tr td:first-of-type {
+    display: none; }
   .credit-table td.hide {
     display: none; }
   .credit-table .edit_field {
