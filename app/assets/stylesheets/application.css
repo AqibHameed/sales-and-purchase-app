@@ -889,6 +889,10 @@ input[type="submit"],
 @media (max-width: 760px) {
   .credit-table tr td:first-of-type {
     display: none; }
+  .credit-table .credit_edit_block {
+    display: block;
+    float: right;
+    background-color: transparent; }
   .credit-table td.hide {
     display: none; }
   .credit-table .edit_field {
