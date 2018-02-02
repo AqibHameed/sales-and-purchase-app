@@ -1,0 +1,11 @@
+<% Customer.where(chat_id:"-1").each do |non_QB_user| %>
+  <div class="user__item " id="<%=non_QB_user.id%>QB">
+      <span class="user__avatar m-user__img_10">
+          <i class="material-icons m-user_icon">account_circle</i>
+      </span>
+      <div class="user__details">
+          <p class="user__name"><%=non_QB_user.name%></p>
+          <button class="button-sendEmail" onclick="send_email_invite()">Send Invite +</button>
+      </div>
+  </div>
+<%end%>

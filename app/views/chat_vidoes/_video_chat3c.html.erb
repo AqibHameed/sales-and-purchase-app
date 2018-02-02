@@ -1,0 +1,20 @@
+<div class="state_board j-state_board"></div>
+
+<div class="dashboard__inner inner">
+    <div class="users j-users_wrap">
+      <% Customer.where(chat_id:"-1").each do |non_QB_user| %>
+      <div class="users__item">
+        <button class="users__user " data-id="<%=non_QB_user.id%>QB" >
+            <i class="user__icon"></i>
+            <span class="user__name"><%=non_QB_user.name%></span>
+            <button class="button-E" onclick="send_email_invite()" style="background: #9bdc8a;margin-left: 50px;">Send Invite +</button>
+
+            <!-- <i class="users__btn_remove j-user-remove"></i> -->
+        </button>
+      </div>
+      <%end%>
+
+    </div>
+
+    <div class="board clearfix j-board"></div>
+</div>

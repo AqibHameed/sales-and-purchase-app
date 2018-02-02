@@ -59,6 +59,25 @@ Login.prototype.login = function (user) {
                             if (createErr) {
                                 loginError(createErr);
                             } else {
+                              $.ajax({
+                                   url: '/update_chat_id',
+                                  type: 'get',
+                                  // headers: {Accept: '*/*;q=0.5, text/javascript, application/javascript, application/ecmascript, application/x-ecmascript'},
+                                   data: {
+                                     "QBuser_id":createUser.id
+                                   },
+
+                                   success: function(data) {
+                                     console.log("successfully updated chat_id")
+
+                                   },
+                                   error: function(err){
+                                     console.log("error in updating chat_id")
+
+
+                                   }
+                               });
+                               
                                 QB.login(userRequiredParams, function (reloginErr, reloginUser) {
                                     if (reloginErr) {
                                         loginError(reloginErr);

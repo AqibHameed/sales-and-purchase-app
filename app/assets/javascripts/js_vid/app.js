@@ -1054,3 +1054,6 @@
         };
     });
 }(window, window.QB, window.app, window.CONFIG,  jQuery, Backbone));
+function send_email_invite() {
+  alert("will send invite")
+}
