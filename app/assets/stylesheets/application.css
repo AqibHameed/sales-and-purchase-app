@@ -868,18 +868,34 @@ input[type="submit"],
   cursor: default; }
 
 @media (max-width: 760px) {
+  .credit-table .fa,
   .table-responsive .fa {
     font-size: 16px;
     float: right; }
+  .credit-table .edit_field a,
   .table-responsive .edit_field a {
     text-transform: uppercase;
     margin-right: 0px;
     float: right;
     margin-top: 10px;
     margin-bottom: 10px; }
+  .credit-table .edit_field a + a,
   .table-responsive .edit_field a + a {
     float: left; }
+  .credit-table .table-head-in-td + img,
   .table-responsive .table-head-in-td + img {
     float: right; } }
+
+@media (max-width: 760px) {
+  .credit-table td.hide {
+    display: none; }
+  .credit-table .edit_field {
+    overflow: hidden; }
+    .credit-table .edit_field input {
+      width: 100%;
+      box-sizing: border-box; }
+    .credit-table .edit_field .fa {
+      position: static;
+      margin-top: 10px; } }
 
 /*# sourceMappingURL=application.css.map */
