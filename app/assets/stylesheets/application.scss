@@ -1234,6 +1234,10 @@ input[type="submit"],
 .credit-table {
   @media (max-width: $small) {
 
+    td.hide {
+      display: none;
+    }
+
     .edit_field {
       overflow: hidden;
 
