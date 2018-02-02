@@ -1234,6 +1234,13 @@ input[type="submit"],
 .credit-table {
   @media (max-width: $small) {
 
+    tr {
+      td:first-of-type {
+        display: none;
+      }
+    }
+
+
     td.hide {
       display: none;
     }
