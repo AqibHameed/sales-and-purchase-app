@@ -162,7 +162,7 @@
 
         var userRequiredParams = {
             'login': currentuser_email,
-            'password': currentuser_email
+            'password': user_phone_number
         };
 
         return new Promise(function(resolve, reject) {

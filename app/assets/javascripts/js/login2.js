@@ -11,7 +11,7 @@ if(!loginModule.isLogin) {
 
               var user = {
                   login: user_email,
-                  password: user_email,
+                  password: user_phone_number,
                   full_name: user_name,
                   tag_list: "DIALUCK"
               };
