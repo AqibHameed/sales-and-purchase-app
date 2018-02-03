@@ -1234,6 +1234,19 @@ input[type="submit"],
 .credit-table {
   @media (max-width: $small) {
 
+    tr {
+      td:first-of-type {
+        display: none;
+      }
+    }
+
+
+    .credit_edit_block {
+      display: block;
+      float: right;
+      background-color: transparent;
+    }
+
     td.hide {
       display: none;
     }
@@ -1249,6 +1262,7 @@ input[type="submit"],
       .fa {
         position: static;
         margin-top: 10px;
+        display: block;
       }
     }
 
