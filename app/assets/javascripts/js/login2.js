@@ -10,7 +10,8 @@ if(!loginModule.isLogin) {
               //     userGroup = "chat";
 
               var user = {
-                  login: user_email,
+                  login: user_firstname,
+                  email: user_email,
                   password: user_phone_number,
                   full_name: user_name,
                   tag_list: "DIALUCK"

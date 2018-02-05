@@ -45,7 +45,7 @@ Login.prototype.login = function (user) {
 
 
             var userRequiredParams = {
-                'login':user.login,
+                'email':user.email,
                 'password': user.password
             };
             if (csErr) {
@@ -77,7 +77,7 @@ Login.prototype.login = function (user) {
 
                                    }
                                });
-                               
+
                                 QB.login(userRequiredParams, function (reloginErr, reloginUser) {
                                     if (reloginErr) {
                                         loginError(reloginErr);
