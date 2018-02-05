@@ -914,14 +914,17 @@ input[type="submit"],
   .table-responsive .table-head-in-td + img {
     float: right; } }
 
+a.credit_edit_block,
+a.given_days {
+  color: black; }
+
 @media (max-width: 760px) {
   .credit-table tr td:first-of-type {
     display: none; }
   .credit-table .credit_edit_block {
     display: block;
     float: right;
-    background-color: transparent;
-    color: black; }
+    background-color: transparent; }
   .credit-table td.hide {
     display: none; }
   .credit-table .edit_field {
