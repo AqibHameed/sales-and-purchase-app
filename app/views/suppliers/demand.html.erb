@@ -76,7 +76,7 @@
       success:function(data){
         $(self).parents('tr').find('td.days_limit').removeClass('hide')
         $(self).parents('tr').find('td.edit_days').addClass('hide')
-        $(self).parents('tr').find('td.days_limit').html('<a href="#" class="given_days">'+ data.value +'<i class="fa fa-edit pull-right" id="days_edit"></i></span><span class="edit_days hide"><input name="days_limit" id="days_limit" value="" data-id="'+ user_id +'" placeholder="Enter days limit" type="text"><i class="fa fa-check-square-o save_date_btn"></i></a>')
+        $(self).parents('tr').find('td.days_limit').html('<a href="#" class="given_days">'+ data.value +'<i class="fa fa-edit pull-right" id="days_edit"></i></a><a href="#" class="edit_days hide"><input name="days_limit" id="days_limit" value="" data-id="'+ user_id +'" placeholder="Enter days limit" type="text"><i class="fa fa-check-square-o save_date_btn"></i></a>')
         $(self).parent('.edit_field').find('#limit').val('')
       }
     })

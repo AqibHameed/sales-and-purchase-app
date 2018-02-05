@@ -20,7 +20,7 @@
         <td><span class="table-head-in-td">Available Limit</span><%= number_to_currency(get_available_credit_limit(customer, current_customer)) rescue 'N/A' %></td>
         <td class="days_limit">
         <span class="table-head-in-td">Overdue Limit</span>
-          <a href="#" class="given_days"><%= get_days_limit(customer, current_customer) %><i class="fa fa-edit pull-right" id='days_edit'></i></span><span class="edit_days hide"><%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days' %><i class="fa fa-check-square-o save_date_btn"></i></a>
+          <a href="#" class="given_days"><%= get_days_limit(customer, current_customer) %><i class="fa fa-edit pull-right" id='days_edit'></i></a><a href="#" class="edit_days hide"><%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days' %><i class="fa fa-check-square-o save_date_btn"></i></a>
         </td>
         <td><span class="table-head-in-td">Suppliers Connected</span><%= supplier_connected(customer,current_customer)%></td>
         <% if customer.is_blocked_by_supplier(current_customer.id) %>
