@@ -416,7 +416,12 @@ $tr-odd-bg-color: #f2f2f2;
       overflow: hidden;
       text-overflow: ellipsis;
 
+      & + .star {
+        display: inline-block;
+      }
+
     }
+
     .table-head-in-td:after {
       display: inline-block;
       content: ":";
