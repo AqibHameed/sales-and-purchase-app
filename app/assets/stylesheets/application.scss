@@ -1274,4 +1274,20 @@ input[type="submit"],
   }
 }
 
+
+.yes-no-round-timer {
+  @media (max-width: $small) {
+    display: block;
+
+    & + input {
+      float: left;
+      margin-top: 40px;
+
+      & + input {
+        float: right;
+        margin-top: 40px;
+      }
+    }
+  }
+}
 @media (max-width: $small) {}
