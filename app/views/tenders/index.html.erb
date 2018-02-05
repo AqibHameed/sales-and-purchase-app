@@ -54,7 +54,7 @@
 
   });
 
-  <% if user_signed_in? %>
+  <% if customer_signed_in? %>
     var login_email= "<%=current_customer.email%>"
     var user_fullname="<%=current_customer.name%>"
     var user_firstname="<%=current_customer.first_name%>"
