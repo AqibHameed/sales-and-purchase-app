@@ -914,6 +914,9 @@ input[type="submit"],
   .table-responsive .table-head-in-td + img {
     float: right; } }
 
+a.edit_field,
+a.given_limit,
+a.edit_days,
 a.credit_edit_block,
 a.given_days {
   color: black; }
