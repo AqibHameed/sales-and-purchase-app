@@ -190,6 +190,7 @@ Rails.application.routes.draw do
       get :accept
       get :reject
       get :remove
+      get :shared_parcels
     end
   end
 
