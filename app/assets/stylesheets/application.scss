@@ -1312,6 +1312,11 @@ input[type="submit"],
   }
 }
 
+a.credit_edit_block,
+a.given_days {
+  color: black;
+}
+
 .credit-table {
   @media (max-width: $small) {
 
@@ -1325,7 +1330,6 @@ input[type="submit"],
       display: block;
       float: right;
       background-color: transparent;
-      color: black;
     }
 
     td.hide {
