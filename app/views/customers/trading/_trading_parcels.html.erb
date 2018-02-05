@@ -64,20 +64,19 @@
     <% else %>
       <tr>
         <td class="td-mobile-count">
-                    <div class="lefter">
-                        <%= index_count(params[:page].to_i) + i %>
-                    </div>
-                    <div class="righter">
-                        <div class="top">
-                            <%= get_description(parcel) if parcel %>
-                        </div>
-                        <div class="bottom">
-                            Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
-                            Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
-                        </div>
-                    </div>
-                </td>
-
+          <div class="lefter">
+            <%= index_count(params[:page].to_i) + i %>
+          </div>
+          <div class="righter">
+            <div class="top">
+              <%= get_description(parcel) if parcel %>
+            </div>
+            <div class="bottom">
+              Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
+              Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
+            </div>
+          </div>
+        </td>
         <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
         <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
         <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
@@ -91,14 +90,19 @@
         <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
         <% unless params[:controller] == 'customers' %>
           <td>
-            <%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id)%>
+            <%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id) %>
           </td>
         <% end %>
         <% if parcel.customer_id == current_customer.id %>
           <% if params[:controller] == 'customers' %>
             <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
           <% else %>
-            <td><%= check_box_tag :for_sale, parcel.id, nil, checked: parcel.for_sale %></td>
+            <td><%= select_tag "for_sale", options_for_select(for_sale_options, TradingParcel.for_sales[parcel.for_sale]), 'data-id' => parcel.id %>
+              <br/>
+              <span class="broker-list hide">
+                <%= select_tag "broker_id", options_for_select(list_of_brokers(current_customer), selected: parcel.broker_ids), 'data-id' => parcel.id, include_blank: true, multiple: true %>
+              </span>
+            </td>
             <td>
               <%= link_to 'Share', '#', 'data-id' => parcel.id, id: 'share', class: 'mr5',data: {turbolinks: false} %>
               <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
@@ -114,3 +118,5 @@
   <% end %>
 </table>
 <%= paginate @parcels %>
+
+

@@ -588,7 +588,6 @@ class Tender < ApplicationRecord
         # TenderMailer.send_tender_close_notification(tender, customer).deliver rescue logger.info "Error sending email"
       end
     end
-
     save_winners
   end
 
@@ -718,6 +717,36 @@ class Tender < ApplicationRecord
     CustomersTender.create(customer_tenders)
   end
 
+  # def self.tender_push_notification
+  #   Tender.all.each do |t|
+  #     time_in_zone = Time.now.in_time_zone(t.try(:timezone))
+  #     unless t.open_date > time_in_zone
+        
+        
+  #       message = "You have 24 hours to bid on "
+  #       # Cusetomers
+  #       customers_to_notify = SupplierNotification.where(supplier_id: self.company_id, notify: true).map { |e| e.customer_id }
+  #       android_devices = Device.where(device_type: 'android', customer_id: customers_to_notify)
+  #       # android_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
+  #       # ios_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'ios'")
+  #       ios_devices = Device.where(device_type: 'ios', customer_id: customers_to_notify)
+
+  #       # Added notification
+  #       notification = Notification.create(title: 'new tender', description: message, tender_id: self.id)
+
+  #       # send android notification
+  #       android_registration_ids = android_devices.map { |e| e.token }
+  #       Notification.send_android_notifications(android_registration_ids, message, self.id)
+
+  #       # # send iOS notification
+  #       # ios_registration_ids = ios_devices.map { |e| e.token }
+  #       # Notification.send_ios_notifications(ios_registration_ids, message, self.id)
+
+  #       # Add customer notification for history
+  #       CustomerNotification.add_notification_history(android_devices, ios_devices, notification).
+  #     end
+  #   end
+  # end
   # YES/NO Bidding #
 
   def tender_timer

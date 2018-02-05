@@ -225,21 +225,42 @@ function isNumber(evt) {
 }
 
 $(document).ready(function() {
+  var val = $('#for_sale').val()
+  if(val == "2"){
+    $('.broker-list').removeClass('hide')
+  }else{
+    $('.broker-list').addClass('hide')
+  }
+
   $(document).on('change', '#for_sale', function() {
-    parcel_id = $(this).val();
+    var val = $(this).val()
+    if(val == "2"){
+    $('.broker-list').removeClass('hide')
+    }else{
+      $('.broker-list').addClass('hide')
+    }
+    parcel_id = $(this).data('id');
+    val = $(this).val()
     $.ajax({
-      url: '/customers/'+parcel_id+'/check_for_sale',
+      url: '/customers/'+parcel_id+'/check_for_sale?val='+val,
       type: "GET"
     })
   });
+
+  $('#broker_id').select2({})
+
+  $('#broker_id').on("change", function (e) {
+    broker_ids = $('#broker_id').val();
+    parcel_id = $('#broker_id').data('id')
+    $.ajax({
+      url : '/share_with_brokers',
+      data : { broker_ids: broker_ids, id: parcel_id }
+    });
+  });
 });
 
-
-
 $(document).ready(function() {
-
   // Responsive tables data show
-
   if($('.table-responsive').length){
       $('.table-responsive .table-head-in-td').click(function(){
         $(this).closest('tr').toggleClass('opened');
@@ -250,17 +271,15 @@ $(document).ready(function() {
         $(this).closest('tr').toggleClass('opened');
       });
   }
-
   // Mobile menu
-
   if($('.menu-burger').length){
-      $('.menu-burger').click(function(){
-        $(this).toggleClass('opened');
-        $('.header .c1 .nav').toggleClass('opened');
-      });
+    $('.menu-burger').click(function(){
+      $(this).toggleClass('opened');
+      $('.header .c1 .nav').toggleClass('opened');
+    });
   }
-
 });
+
 
 function ajaxRequest(url, data, callback, errorCallback, type) {
     if(typeof type == 'undefined') {

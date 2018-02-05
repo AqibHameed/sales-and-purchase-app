@@ -242,6 +242,10 @@ class Customer < ApplicationRecord
   def is_broker(seller)
     BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
   end
+
+  def my_brokers
+    BrokerRequest.where(seller_id: self.id, accepted: true)
+  end
   ###############
 
   rails_admin do
