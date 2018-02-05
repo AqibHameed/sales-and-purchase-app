@@ -1290,4 +1290,12 @@ input[type="submit"],
     }
   }
 }
+
+.flip-clock-wrapper {
+  @media (max-width: $small) {
+    margin: 50px -10px 0 -10px;
+  }
+}
+
+
 @media (max-width: $small) {}
