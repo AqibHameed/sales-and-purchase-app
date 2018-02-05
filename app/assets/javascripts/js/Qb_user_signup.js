@@ -11,10 +11,10 @@ QB.init(CREDENTIALS.appId, CREDENTIALS.authKey, CREDENTIALS.authSecret);
 
 QB.createSession(function(err,result){
     if (result){
-      var param_check_user= {login: [login_email]}
+      var param_check_user= {email: [login_email]}
       QB.users.get(param_check_user, function(err, result){
           if (err) {
-            var params = { 'login': login_email,'email': login_email, 'password': user_phone_number, 'tag_list': "DIALUCK",'full_name':user_fullname};
+            var params = { 'login': user_firstname,'email': login_email, 'password': user_phone_number, 'tag_list': "DIALUCK",'full_name':user_fullname};
             QB.users.create(params, function(err, user){
                 if (user) {
                     // user created
