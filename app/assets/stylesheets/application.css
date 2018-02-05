@@ -914,6 +914,7 @@ input[type="submit"],
   .table-responsive .table-head-in-td + img {
     float: right; } }
 
+a.save_btn_block,
 a.edit_field,
 a.given_limit,
 a.edit_days,
