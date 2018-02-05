@@ -19,7 +19,7 @@
               <td class="given_limit">
               <span class="table-head-in-td">Given</span>
               <%= number_to_currency(get_credit_limit(cl.buyer, current_customer)) rescue 'N/A' %>
-              <a href="#" class="credit_edit_block"><i class="fa fa-edit pull-right credit_edit" id='credit_edit'></i></a></td>
+              <a href="javascript:void(0)" class="credit_edit_block"><i class="fa fa-edit pull-right credit_edit" id='credit_edit'></i></a></td>
               <td class="edit_field hide">
               <span class="table-head-in-td">Used</span>
               <%=text_field_tag "limit", '', 'data-id'=> cl.buyer.id, placeholder: 'Enter limit' %><i class="fa fa-check-square-o save_btn"></i></td>
