@@ -439,6 +439,8 @@ h4 {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis; }
+        .table-responsive tr td .table-head-in-td + .star {
+          display: inline-block; }
       .table-responsive tr td .table-head-in-td:after {
         display: inline-block;
         content: ":";
@@ -530,10 +532,30 @@ h4 {
       border: 1px solid grey;
       box-sizing: border-box; } }
 
+.form-wrapper .form-row .field.field--bittons, .form-wrapper .form-row .field.field--textarea {
+  width: 60% !important; }
+  @media (max-width: 760px) {
+    .form-wrapper .form-row .field.field--bittons, .form-wrapper .form-row .field.field--textarea {
+      width: 100% !important; }
+      .form-wrapper .form-row .field.field--bittons textarea, .form-wrapper .form-row .field.field--textarea textarea {
+        width: 100px; }
+      .form-wrapper .form-row .field.field--bittons button, .form-wrapper .form-row .field.field--textarea button {
+        float: right;
+        margin-right: 0; } }
+
 @media (max-width: 760px) {
   .form-wrapper {
     width: 100%;
-    box-sizing: border-box; } }
+    box-sizing: border-box; }
+    .form-wrapper form {
+      padding: 10px;
+      box-sizing: border-box; }
+      .form-wrapper form .form-row .label {
+        margin-top: 0;
+        margin-bottom: 5px;
+        text-align: left; }
+        .form-wrapper form .form-row .label.label--hidden-mobile {
+          display: none; } }
 
 @media (max-width: 760px) {
   .tender_history .form-wrapp .form-row {
@@ -635,6 +657,12 @@ h4 {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis; }
+        .credit-table tbody th .table-head-in-td + .star, .credit-table tbody td .table-head-in-td + .star,
+        .table-purchase tbody th .table-head-in-td + .star,
+        .table-purchase tbody td .table-head-in-td + .star,
+        .table-sales tbody th .table-head-in-td + .star,
+        .table-sales tbody td .table-head-in-td + .star {
+          display: inline-block; }
       .credit-table tbody th .table-head-in-td:after, .credit-table tbody td .table-head-in-td:after,
       .table-purchase tbody th .table-head-in-td:after,
       .table-purchase tbody td .table-head-in-td:after,
@@ -886,7 +914,20 @@ input[type="submit"],
   .table-responsive .table-head-in-td + img {
     float: right; } }
 
+a.edit_field,
+a.given_limit,
+a.edit_days,
+a.credit_edit_block,
+a.given_days {
+  color: black; }
+
 @media (max-width: 760px) {
+  .credit-table tr td:first-of-type {
+    display: none; }
+  .credit-table .credit_edit_block {
+    display: block;
+    float: right;
+    background-color: transparent; }
   .credit-table td.hide {
     display: none; }
   .credit-table .edit_field {
@@ -896,6 +937,21 @@ input[type="submit"],
       box-sizing: border-box; }
     .credit-table .edit_field .fa {
       position: static;
-      margin-top: 10px; } }
+      margin-top: 10px;
+      display: block; } }
+
+@media (max-width: 760px) {
+  .yes-no-round-timer {
+    display: block; }
+    .yes-no-round-timer + input {
+      float: left;
+      margin-top: 40px; }
+      .yes-no-round-timer + input + input {
+        float: right;
+        margin-top: 40px; } }
+
+@media (max-width: 760px) {
+  .flip-clock-wrapper {
+    margin: 50px -10px 0 -10px; } }
 
 /*# sourceMappingURL=application.css.map */

@@ -42,17 +42,17 @@
 	          <div class="label">
 		          Note
 	          </div>
-	          <div class="field" style='width:60%!important'>
+	          <div class="field field--textarea" style=''>
 		          <%= text_area_tag :note,(@note.note unless @note.nil?) ,:rows => 4, :style => "width:100%;"%>
 		      </div>
 	          <div class="clear"></div>
           </div>
           <div class="clear10"></div>
           <div class="form-row">
-	          <div class="label" style='width:25%!important'>
+	          <div class="label label--hidden-mobile" style='width:25%!important'>
 		          &nbsp;
 	          </div>
-	          <div class="field" style='width:60%!important'>
+	          <div class="field field--bittons" style=''>
 		          <%= submit_tag "Add Note", :class => 'btn-01 submit_bid' %>
 		          <%= button_tag "Cancel", :class => 'btn-01 submit_bid', :onclick => "$('tr').removeClass('current_bid');$('.bid_form').html('').hide();removeMask();" %>
 	          </div>

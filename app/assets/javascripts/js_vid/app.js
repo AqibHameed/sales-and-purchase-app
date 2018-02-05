@@ -242,7 +242,7 @@
 
                 QB.chat.connect({
                     jid: QB.chat.helpers.getUserJid( app.caller.id, CREDS.appId ),
-                    password: currentuser_email
+                    password: user_phone_number
                 }, function(err, res) {
                     if(err) {
 

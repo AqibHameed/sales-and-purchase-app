@@ -161,8 +161,9 @@
 
 
         var userRequiredParams = {
-            'login': currentuser_email,
-            'password': currentuser_email
+            'login': currentuser_first_name,
+            'email': currentuser_email,
+            'password': user_phone_number
         };
 
         return new Promise(function(resolve, reject) {
@@ -176,6 +177,7 @@
                             /** Login failed, trying to create account */
                             QB.users.create({
                                 'login': userRequiredParams.login,
+                                'email': userRequiredParams.email,
                                 'password': userRequiredParams.password,
                                 'full_name': data.username,
                                 'tag_list': data.room

@@ -164,14 +164,16 @@ class Customer < ApplicationRecord
           parcels = t.stones
           parcels.each do |p|
             yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: t.id, stone_id: p.id, customer_id: self.id, bid_open_time: t.bid_open, bid_close_time: t.bid_close, round: 1)
-            yes_no_buyer_interests.reserved_price = p.reserved_price - ((20.to_f/100.to_f)*p.reserved_price) rescue 0
+            #yes_no_buyer_interests.reserved_price = p.reserved_price - ((20.to_f/100.to_f)*p.reserved_price) rescue 0
+            yes_no_buyer_interests.reserved_price = p.starting_price rescue 0
             yes_no_buyer_interests.save
           end
         else
           parcels = t.sights
           parcels.each do |p|
             yes_no_buyer_interests = YesNoBuyerInterest.find_or_initialize_by(tender_id: t.id, sight_id: p.id, customer_id: self.id, bid_open_time: t.bid_open, bid_close_time: t.bid_close, round: 1)
-            yes_no_buyer_interests.reserved_price = p.sight_reserved_price - ((20.to_f/100.to_f)*p.sight_reserved_price) rescue 0
+            #yes_no_buyer_interests.reserved_price = p.sight_reserved_price - ((20.to_f/100.to_f)*p.sight_reserved_price) rescue 0
+            yes_no_buyer_interests.reserved_price = p.starting_price rescue 0
             yes_no_buyer_interests.save
           end
         end
@@ -225,9 +227,9 @@ class Customer < ApplicationRecord
     end
     #check placing bids by type of diamond
     if type == 'stone'
-      return YesNoBuyerInterest.where(tender_id: tender.id, stone_id: stone.id, round: round - 1 , customer_id: self.id).first.present?
+      return YesNoBuyerInterest.where(tender_id: tender.id, stone_id: stone.id, round: round - 1 , customer_id: self.id, interest: 1).first.present?
     elsif type == 'sight'
-      return YesNoBuyerInterest.where(tender_id: tender.id, sight_id: stone.id, round: round - 1, customer_id: self.id).first.present?
+      return YesNoBuyerInterest.where(tender_id: tender.id, sight_id: stone.id, round: round - 1, customer_id: self.id, interest: 1).first.present?
     end
     #forbid to place bid by default
     return false

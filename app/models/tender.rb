@@ -6,7 +6,7 @@ class Tender < ApplicationRecord
                   :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
                   :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
                   :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id, :diamond_type, :bid_open, :round_duration, :rounds_between_duration, :sight_document, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field, :reserved_field,
-                  :supplier_mine_id, :country, :city, :timezone, :sights_attributes, :bid_close, :round
+                  :supplier_mine_id, :country, :city, :timezone, :sights_attributes, :bid_close, :round, :sight_starting_price_field, :stone_starting_price_field
   # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
   #                 :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
   #                 :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
@@ -199,6 +199,7 @@ class Tender < ApplicationRecord
               stone.weight = Tender.get_value(data_row[Tender.get_index(self.weight_field)].to_f) unless self.weight_field.blank?
               stone.stone_type = (data_row[Tender.get_index(self.no_of_stones_field)].to_i == 1 ? 'Stone' : 'Parcel' rescue 'Stone'  ) unless self.no_of_stones_field.blank?
               stone.reserved_price = Tender.get_value(data_row[Tender.get_index(self.reserved_field)]) unless self.reserved_field.blank?
+              stone.starting_price = Tender.get_value(data_row[Tender.get_index(self.stone_starting_price_field)]) unless self.stone_starting_price_field.blank?
               stone.save
               # if stone.save
               #   tender = Tender.find(stone.tender_id)
@@ -230,6 +231,9 @@ class Tender < ApplicationRecord
         worksheet.each_with_index do |data_row, i|
           unless i == 0
             unless data_row[('A'..'AZ').to_a.index(self.source_no_field)].nil?
+              puts "@@@@@@"
+              puts data_row.inspect
+              puts "@@@@@@"
               sight = self.sights.new
               sight.source = Tender.get_value(data_row[Tender.get_index(self.source_no_field)]) unless self.source_no_field.blank?
               sight.box = Tender.get_value(data_row[Tender.get_index(self.box_no_field)]) unless self.box_no_field.blank?
@@ -242,6 +246,7 @@ class Tender < ApplicationRecord
               sight.price = Tender.get_value(data_row[Tender.get_index(self.price_no_field)]) unless self.price_no_field.blank?
               sight.credit = Tender.get_value(data_row[Tender.get_index(self.credit_no_field)]) unless self.credit_no_field.blank?
               sight.sight_reserved_price = Tender.get_value(data_row[Tender.get_index(self.sight_reserved_field)]) unless self.sight_reserved_field.blank?
+              sight.starting_price = Tender.get_value(data_row[Tender.get_index(self.sight_starting_price_field)]) unless self.sight_starting_price_field.blank?
               sight.save
               # if sight.save
               #   puts "#{sight.inspect}"
@@ -984,7 +989,7 @@ class Tender < ApplicationRecord
       puts "yes_no_buyer_interests COUNT: " + yes_no_buyer_interests.count.inspect
 
       if yes_no_buyer_interests.count == 1
-        winning_price = parcel.yes_no_system_price.present? ? parcel.yes_no_system_price : parcel_reserved_price - ((20.to_f/100.to_f)*parcel_reserved_price)
+        winning_price = parcel.yes_no_system_price.present? ? parcel.yes_no_system_price : parcel.starting_price
         parcel.update_attributes(stone_winning_price: winning_price)
         if !parcel.yes_no_buyer_winner.present?
           winner = yes_no_buyer_interests.last
@@ -1194,7 +1199,7 @@ class Tender < ApplicationRecord
         label "Stone Document"
         partial :upload_document
       end
-      [:deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field,:weight_field,:sheet_no, :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reserved_field, :sheet_no, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field].each do |f|
+      [:deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field,:weight_field,:sheet_no, :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reserved_field, :sheet_no, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field,:sight_starting_price_field, :stone_starting_price_field].each do |f|
         field f do
           partial :blank
         end
