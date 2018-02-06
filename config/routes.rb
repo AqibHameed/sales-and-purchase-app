@@ -190,6 +190,7 @@ Rails.application.routes.draw do
       get :accept
       get :reject
       get :remove
+      get :shared_parcels
     end
   end
 
@@ -254,6 +255,7 @@ Rails.application.routes.draw do
   get '/supplier_demand_list' => 'suppliers#supplier_demand_list'
   get '/supplier_list' => 'suppliers#supplier_list'
   get '/update_chat_id',to: 'tenders#update_chat_id'
+  get '/share_with_brokers', to: 'trading_parcels#share_broker'
 
 
 end

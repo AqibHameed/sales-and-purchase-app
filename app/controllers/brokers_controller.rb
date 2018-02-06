@@ -44,6 +44,10 @@ class BrokersController < ApplicationController
     redirect_to requests_brokers_path
   end
 
+  def shared_parcels
+    @parcels = TradingParcel.where("broker_ids = ?", [current_customer.id].to_yaml)
+  end
+
   private
 
   def load_request

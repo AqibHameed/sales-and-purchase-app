@@ -1,4 +1,5 @@
 class TradingParcel < ApplicationRecord
+  serialize :broker_ids
   paginates_per 25
   belongs_to :customer
   has_many :proposals
@@ -12,6 +13,8 @@ class TradingParcel < ApplicationRecord
 
   attr_accessor :single_parcel
 
+  enum for_sale: [ :to_all, :to_none, :broker, :credit_given, :demanded ]
+
   def self.search_by_filters(params, current_customer)
     parcels = TradingParcel.where.not(customer_id: current_customer.id).order(created_at: :desc)
     parcels = parcels.where("description like ? OR box like ? OR source like ?", "%#{params[:description]}%", "%#{params[:description]}%", "%#{params[:description]}%") unless params[:description].blank?
@@ -19,7 +22,6 @@ class TradingParcel < ApplicationRecord
     parcels = parcels.where(no_of_stones: params[:no_of_stones]) unless params[:no_of_stones].blank?
     parcels = parcels.where(weight: params[:weight]) unless params[:weight].blank?
     parcels = parcels.where(credit_period: params[:credit_period]) unless params[:credit_period].blank?
-
   end
 
   def generate_and_add_uid
