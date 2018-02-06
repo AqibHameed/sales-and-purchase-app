@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_nested_form
 //= require jquery_ujs
+//= require bootstrap-sprockets
 //= require dataTables/jquery.dataTables
 //= require fancybox
 //= require jquery.dataTables.min.js

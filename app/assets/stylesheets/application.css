@@ -8,6 +8,7 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
+ *= require bootstrap_and_overrides
  *= require fancybox
  *= require style.css
  *= require jquery.dataTables.css
@@ -19,6 +20,7 @@
  *= require font-awesome
  *= require intlTelInput
  */
+
 .validation-error {
   color: red; }
 
