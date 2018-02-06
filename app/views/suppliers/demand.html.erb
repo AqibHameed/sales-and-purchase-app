@@ -17,7 +17,7 @@
 
 
         <td class="credit_limit">
-          <span class="given_limit"><%= number_to_currency(get_credit_limit(customer, current_customer)) %><i class="fa fa-edit pull-right" id='credit_edit'></i></span><span class="edit_field hide"><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %><%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%> <%=link_to 'Cancel',  demand_supplier_path(id: @parcel.id) , data: { turbolinks: false }%></span>
+          <a href="#" class="given_limit"><%= number_to_currency(get_credit_limit(customer, current_customer)) %><i class="fa fa-edit pull-right" id='credit_edit'></i></a><span class="edit_field hide"><%=text_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %><%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%> <%=link_to 'Cancel',  demand_supplier_path(id: @parcel.id) , data: { turbolinks: false }%></span>
         </td>
         <td><%= number_to_currency(get_used_credit_limit(customer, current_customer)) rescue 'N/A' %></td>
         <td><%= number_to_currency(get_available_credit_limit(customer, current_customer)) rescue 'N/A' %></td>
@@ -58,7 +58,7 @@
         window.location.reload()
         // $(self).parents('tr').find('td.credit_limit').removeClass('hide')
         // $(self).parents('tr').find('td.edit_field').addClass('hide')
-        // $(self).parents('tr').find('td.credit_limit').html('<span class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></span><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')
+        // $(self).parents('tr').find('td.credit_limit').html('<a href="#" class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></a><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')
         // $(self).parent('.edit_field').find('#limit').val('')
       }
     })
@@ -76,7 +76,7 @@
       success:function(data){
         $(self).parents('tr').find('td.days_limit').removeClass('hide')
         $(self).parents('tr').find('td.edit_days').addClass('hide')
-        $(self).parents('tr').find('td.days_limit').html('<span class="given_days">'+ data.value +'<i class="fa fa-edit pull-right" id="days_edit"></i></span><span class="edit_days hide"><input name="days_limit" id="days_limit" value="" data-id="'+ user_id +'" placeholder="Enter days limit" type="text"><i class="fa fa-check-square-o save_date_btn"></i></span>')
+        $(self).parents('tr').find('td.days_limit').html('<a href="#" class="given_days">'+ data.value +'<i class="fa fa-edit pull-right" id="days_edit"></i></a><a href="#" class="edit_days hide"><input name="days_limit" id="days_limit" value="" data-id="'+ user_id +'" placeholder="Enter days limit" type="text"><i class="fa fa-check-square-o save_date_btn"></i></a>')
         $(self).parent('.edit_field').find('#limit').val('')
       }
     })

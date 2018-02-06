@@ -240,16 +240,13 @@ $(document).ready(function() {
 
   // Responsive tables data show
 
-  if($('.table-responsive').length){
-      $('.table-responsive .table-head-in-td').click(function(){
-        $(this).closest('tr').toggleClass('opened');
-      });
-  }
-  if($('.table-responsive').length){
-      $('.table-responsive .td-mobile-count').click(function(){
-        $(this).closest('tr').toggleClass('opened');
-      });
-  }
+  $(document).on('click', '.table-responsive .table-head-in-td', function(){
+    $(this).closest('tr').toggleClass('opened');
+  });
+
+  $(document).on('click', '.table-responsive .td-mobile-count', function(){
+    $(this).closest('tr').toggleClass('opened');
+  });
 
   // Mobile menu
 

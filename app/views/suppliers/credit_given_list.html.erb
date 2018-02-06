@@ -19,14 +19,15 @@
               <td class="given_limit">
               <span class="table-head-in-td">Given</span>
               <%= number_to_currency(get_credit_limit(cl.buyer, current_customer)) rescue 'N/A' %>
-              <span class="credit_edit_block"><i class="fa fa-edit pull-right credit_edit" id='credit_edit'></i></span></td>
+              <a href="javascript:void(0)" class="credit_edit_block"><i class="fa fa-edit pull-right credit_edit" id='credit_edit'></i></a></td>
               <td class="edit_field hide">
+              <%=text_field_tag "limit", '', 'data-id'=> cl.buyer.id, placeholder: 'Enter limit' %><a href="javascript:void(0)" class="save_btn_block"><i class="fa fa-check-square-o save_btn"></i></a></td>
+              <td>
               <span class="table-head-in-td">Used</span>
-              <%=text_field_tag "limit", '', 'data-id'=> cl.buyer.id, placeholder: 'Enter limit' %><i class="fa fa-check-square-o save_btn"></i></td>
+              <%= number_to_currency(get_used_credit_limit(cl.buyer, current_customer)) rescue 'N/A' %></td>
               <td>
               <span class="table-head-in-td">Available</span>
-              <%= number_to_currency(get_used_credit_limit(cl.buyer, current_customer)) rescue 'N/A' %></td>
-              <td><%= number_to_currency(get_available_credit_limit(cl.buyer, current_customer))rescue 'N/A' %></td>
+              <%= number_to_currency(get_available_credit_limit(cl.buyer, current_customer))rescue 'N/A' %></td>
             </tr>
           <% end %>
         <% end %>
@@ -41,7 +42,7 @@
     $(this).parent('td').next('td').removeClass('hide')
   })
 
-  $(document).on('click', '.save_btn', function(){
+  $(document).on('click', '.save_btn_block', function(){
     self = $(this)
     value = $(this).parent('.edit_field').find('#limit').val()
     user_id = $(this).parent('.edit_field').find('#limit').data('id')
@@ -54,7 +55,7 @@
         window.location.reload()
         // $(self).parents('tr').find('td.given_limit').removeClass('hide')
         // $(self).parents('tr').find('td.edit_field').addClass('hide')
-        // $(self).parents('tr').find('td.given_limit').html(data.value + '<span class="credit_edit_block"><i id="credit_edit" class="fa fa-edit pull-right credit_edit"></i></span>')
+        // $(self).parents('tr').find('td.given_limit').html(data.value + '<a href="#" class="credit_edit_block"><i id="credit_edit" class="fa fa-edit pull-right credit_edit"></i></a>')
         // $(self).parent('.edit_field').find('#limit').val('')
       }
     })
