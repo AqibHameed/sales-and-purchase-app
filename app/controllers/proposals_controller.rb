@@ -58,13 +58,13 @@ class ProposalsController < ApplicationController
         flash[:notice] = "Proposal accepted."
         respond_to do |format|
           format.js { render js: "window.location = '/proposals'"}
-          format.html { redirect_to proposals_path }
+          format.html { redirect_to root_path }
         end
       end
       @trading_parcel = @proposal.trading_parcel.dup
       @trading_parcel.customer_id = @proposal.buyer_id
       @trading_parcel.sold = false
-      @trading_parcel.for_sale = false
+      @trading_parcel.for_sale = 0
       @trading_parcel.save
     end
   end
@@ -75,7 +75,7 @@ class ProposalsController < ApplicationController
       flash[:notice] = "Proposal rejected"
       respond_to do |format|
         format.js { render js: "window.location = '/proposals'"}
-        format.html { redirect_to proposals_path }
+        format.html { redirect_to root_path }
       end
     end
   end
