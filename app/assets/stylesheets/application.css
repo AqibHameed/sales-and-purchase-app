@@ -8,6 +8,7 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
+ *= require bootstrap_and_overrides
  *= require fancybox
  *= require style.css
  *= require jquery.dataTables.css
@@ -19,6 +20,7 @@
  *= require font-awesome
  *= require intlTelInput
  */
+
 .validation-error {
   color: red; }
 
@@ -129,7 +131,9 @@ div.title1 {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
-  cursor: not-allowed; }
+  pointer-events: none;
+  cursor: default;
+}
 
 .mt50 {
   margin-top: 50px; }
@@ -914,6 +918,7 @@ input[type="submit"],
   .table-responsive .table-head-in-td + img {
     float: right; } }
 
+a.save_btn_block,
 a.edit_field,
 a.given_limit,
 a.edit_days,
