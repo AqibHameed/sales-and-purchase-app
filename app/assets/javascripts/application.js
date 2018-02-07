@@ -251,7 +251,6 @@ $(document).ready(function() {
   $('.broker-select').select2({})
 
   $('.broker-select').on("change", function (e) {
-    alert('23232');
     broker_ids = $(this).val();
     parcel_id = $(this).data('id')
     $.ajax({
