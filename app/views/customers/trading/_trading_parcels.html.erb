@@ -19,104 +19,106 @@
     <th></th>
   </tr>
   <% @parcels.each.with_index(1) do |parcel, i|%>
-    <% if parcel.sold %>
-      <tr style="background: #ccc;">
-        <td class="td-mobile-count">
+    <% if check_parcel_visibility(parcel, current_customer) %>
+      <% if parcel.sold %>
+        <tr style="background: #ccc;">
+          <td class="td-mobile-count">
             <div class="lefter">
-                <%= index_count(params[:page].to_i) + i %>
+              <%= index_count(params[:page].to_i) + i %>
             </div>
             <div class="righter">
-                <div class="top">
-                    <%= get_description(parcel) if parcel %>
-                </div>
-                <div class="bottom">
-                    Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
-                    Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
-                </div>
+              <div class="top">
+                <%= get_description(parcel) if parcel %>
+              </div>
+              <div class="bottom">
+                Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
+                Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
+              </div>
             </div>
-        </td>
-        <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
-        <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
-        <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
-        <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
-        <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td class="td-mobile-open"><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
-        <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
-         <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight %></td>
-
-        <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
-        <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
-        <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
-        <!-- <td><%=parcel.demand_count(parcel)%></td> -->
-        <% if parcel.customer_id == current_customer.id %>
-          <% if params[:controller] == 'customers' %>
-            <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
-          <% else %>
-            <td>
-              <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-              <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
-            </td>
-          <% end %>
-        <% else %>
-          <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
-        <% end %>
-      </tr>
-    <% else %>
-      <tr>
-        <td class="td-mobile-count">
-          <div class="lefter">
-            <%= index_count(params[:page].to_i) + i %>
-          </div>
-          <div class="righter">
-            <div class="top">
-              <%= get_description(parcel) if parcel %>
-            </div>
-            <div class="bottom">
-              Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
-              Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
-            </div>
-          </div>
-        </td>
-        <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
-        <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
-        <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
-        <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
-        <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-        <td><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
-        <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
-        <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
-        <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
-        <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
-        <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
-        <% unless params[:controller] == 'customers' %>
-          <td>
-            <%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id) %>
           </td>
-        <% end %>
-        <% if parcel.customer_id == current_customer.id %>
-          <% if params[:controller] == 'customers' %>
-            <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
+          <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
+          <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
+          <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
+          <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
+          <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
+          <td class="td-mobile-open"><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
+          <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
+           <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight %></td>
+
+          <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
+          <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
+          <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
+          <!-- <td><%=parcel.demand_count(parcel)%></td> -->
+          <% if parcel.customer_id == current_customer.id %>
+            <% if params[:controller] == 'customers' %>
+              <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
+            <% else %>
+              <td>
+                <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
+                <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
+              </td>
+            <% end %>
           <% else %>
-            <td><%= select_tag "for_sale", options_for_select(for_sale_options, TradingParcel.for_sales[parcel.for_sale]), 'data-id' => parcel.id %>
-              <br/>
-              <span class="broker-list hide">
-                <%= select_tag "broker_id", options_for_select(list_of_brokers(current_customer), selected: parcel.broker_ids), 'data-id' => parcel.id, include_blank: true, multiple: true %>
-              </span>
-            </td>
+            <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
+          <% end %>
+        </tr>
+      <% else %>
+        <tr>
+          <td class="td-mobile-count">
+            <div class="lefter">
+              <%= index_count(params[:page].to_i) + i %>
+            </div>
+            <div class="righter">
+              <div class="top">
+                <%= get_description(parcel) if parcel %>
+              </div>
+              <div class="bottom">
+                Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
+                Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
+              </div>
+            </div>
+          </td>
+          <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
+          <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
+          <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
+          <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
+          <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
+          <td><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
+          <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
+          <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
+          <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
+          <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
+          <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
+          <% unless params[:controller] == 'customers' %>
             <td>
-              <%= link_to 'Share', '#', 'data-id' => parcel.id, id: 'share', class: 'mr5',data: {turbolinks: false} %>
-              <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-              <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-              <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
+              <%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id) %>
             </td>
           <% end %>
-        <% else %>
-          <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
-        <% end %>
-      </tr>
+          <% if parcel.customer_id == current_customer.id %>
+            <% if params[:controller] == 'customers' %>
+              <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
+            <% else %>
+              <td><%= select_tag "for_sale", options_for_select(for_sale_options, TradingParcel.for_sales[parcel.for_sale]), 'data-id' => parcel.id %>
+                <br/>
+                <span class="broker-list <%=(parcel.for_sale == 'broker') ? '' : 'hide' %>">
+                  <%= select_tag "broker_id", options_for_select(list_of_brokers(current_customer), selected: parcel.broker_ids), 'data-id' => parcel.id, include_blank: true, multiple: true, class: 'broker-select' %>
+                </span>
+              </td>
+              <td>
+                <%= link_to 'Share', '#', 'data-id' => parcel.id, id: 'share', class: 'mr5',data: {turbolinks: false} %>
+                <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
+                <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
+                <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
+              </td>
+            <% end %>
+          <% else %>
+            <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
+          <% end %>
+        </tr>
+      <% end %>
     <% end %>
   <% end %>
 </table>
-<%= paginate @parcels %>
+<%#= paginate @parcels %>
 
 

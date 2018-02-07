@@ -45,7 +45,7 @@ class BrokersController < ApplicationController
   end
 
   def shared_parcels
-    @parcels = TradingParcel.where("broker_ids = ?", [current_customer.id].to_yaml)
+    @parcels = TradingParcel.all.select { |e| e.broker_ids.include? current_customer.id.to_s unless e.broker_ids.nil? }
   end
 
   private

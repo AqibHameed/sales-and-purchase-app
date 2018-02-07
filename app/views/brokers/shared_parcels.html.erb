@@ -2,24 +2,57 @@
   <h3> Shared Parcels </h3>
   <div class="clear10"></div>
   <div class="table">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" id='sellerList' class="tablesorter table-responsive">
-      <thead class="thead-desktop">
-        <th>Seller Name</th>
-        <th>Company</th>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter table-responsive">
+      <tr class="thead-desktop">
         <th></th>
-      </thead>
-      <%= @parcels.inspect %>
-      <%# @sellers.each do |seller| %>
-        <tr>
-          <td><%#= seller.name %></td>
-          <td><%#= seller.company %></td>
-          <td><%#= link_to_request(current_customer, seller) %></td>
-        </tr>
-      <%# end %>
+        <th>Description</th>
+        <th>No. of Stones</th>
+        <th>Carats</th>
+        <th>Cost</th>
+        <th>Box Value</th>
+        <th>Avg Price</th>
+        <th>Sight</th>
+        <th>Price</th>
+        <th>Credit</th>
+        <th>Supplier</th>
+        <th>UID</th>
+        <th>Demand</th>
+        <th>For Sale</th>
+        <th></th>
+      </tr>
+      <% @parcels.each.with_index(1) do |parcel, i|%>
+          <tr>
+            <td class="td-mobile-count">
+              <div class="lefter">
+                <%= index_count(params[:page].to_i) + i %>
+              </div>
+              <div class="righter">
+                <div class="top">
+                  <%= get_description(parcel) if parcel %>
+                </div>
+                <div class="bottom">
+                  Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
+                  Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
+                </div>
+              </div>
+            </td>
+            <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
+            <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
+            <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
+            <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
+            <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
+            <td><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
+            <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
+            <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
+            <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
+            <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
+            <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
+            <td><%= link_to parcel.demand_count(parcel, current_customer), demand_supplier_path(id: parcel.id), data: { turbolinks: false } %></td>
+            <td></td>
+          </tr>
+      <% end %>
     </table>
   </div>
 </div>
-
 <script type="text/javascript">
-
 </script>

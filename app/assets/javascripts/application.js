@@ -225,19 +225,19 @@ function isNumber(evt) {
 }
 
 $(document).ready(function() {
-  var val = $('#for_sale').val()
-  if(val == "2"){
-    $('.broker-list').removeClass('hide')
-  }else{
-    $('.broker-list').addClass('hide')
-  }
+  // var val = $('#for_sale').val()
+  // if(val == "2"){
+  //   $('.broker-list').removeClass('hide')
+  // }else{
+  //   $('.broker-list').addClass('hide')
+  // }
 
   $(document).on('change', '#for_sale', function() {
     var val = $(this).val()
     if(val == "2"){
-    $('.broker-list').removeClass('hide')
+      $(this).parent('td').find('.broker-list').removeClass('hide')
     }else{
-      $('.broker-list').addClass('hide')
+      $(this).parent('td').find('.broker-list').addClass('hide')
     }
     parcel_id = $(this).data('id');
     val = $(this).val()
@@ -247,7 +247,7 @@ $(document).ready(function() {
     })
   });
 
-  $('#broker_id').select2({})
+  $('.broker-select').select2({})
 
   $('#broker_id').on("change", function (e) {
     broker_ids = $('#broker_id').val();
