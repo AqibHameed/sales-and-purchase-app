@@ -1033,3 +1033,27 @@ $small: 760px;
     }
   }
 }
+
+// Login box
+
+.login-box {
+  box-sizing: content-box;
+
+  .alert,
+  .alert.alert-success {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    font-size: 12px;
+
+    @media (min-width: $tablet) {
+      font-size: 20px;
+    }
+  }
+
+  label {
+    font-weight: normal;
+    padding-left: 0;
+  }
+}
