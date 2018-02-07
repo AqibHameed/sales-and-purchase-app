@@ -20,6 +20,7 @@
  *= require font-awesome
  *= require intlTelInput
  */
+
 .validation-error {
   color: red; }
 
@@ -131,7 +132,8 @@ div.title1 {
   background-color: #cccccc;
   color: #666666;
   pointer-events: none;
-  cursor: default; }
+  cursor: default;
+}
 
 .mt50 {
   margin-top: 50px; }
@@ -369,10 +371,8 @@ h4 {
 
 .table-responsive tr td.td-mobile-count .lefter {
   display: block; }
-
 .table-responsive tr td.td-mobile-count .righter {
   display: none; }
-
 @media (max-width: 760px) {
   .table-responsive tr td.td-mobile-count {
     display: table !important;
@@ -381,39 +381,37 @@ h4 {
     padding-left: 0px !important;
     padding-top: 20px;
     padding-bottom: 20px; }
+    .table-responsive tr td.td-mobile-count .lefter {
+      display: table-cell;
+      color: #ff1919;
+      vertical-align: middle;
+      border-right: 2px solid #bdbdbd;
+      font-size: 12px;
+      width: 40px;
+      max-width: 40px;
+      box-sizing: border-box;
+      text-align: center;
+      font-weight: bold; }
+    .table-responsive tr td.td-mobile-count .righter {
+      display: table-cell;
+      padding-left: 10px;
+      font-size: 12px; }
+      .table-responsive tr td.td-mobile-count .righter .top {
+        line-height: 1.4;
+        color: #000;
+        text-align: left;
+        display: block;
+        text-transform: uppercase; }
+      .table-responsive tr td.td-mobile-count .righter .bottom {
+        line-height: 1.4;
+        color: #bdbdbd;
+        text-align: left;
+        display: block; } }
 
-  .table-responsive tr td.td-mobile-count .lefter {
-    display: table-cell;
-    color: #ff1919;
-    vertical-align: middle;
-    border-right: 2px solid #bdbdbd;
-    font-size: 12px;
-    width: 40px;
-    max-width: 40px;
-    box-sizing: border-box;
-    text-align: center;
-    font-weight: bold; }
-
-  .table-responsive tr td.td-mobile-count .righter {
-    display: table-cell;
-    padding-left: 10px;
-    font-size: 12px; }
-
-  .table-responsive tr td.td-mobile-count .righter .top {
-    line-height: 1.4;
-    color: #000;
-    text-align: left;
-    display: block;
-    text-transform: uppercase; }
-
-  .table-responsive tr td.td-mobile-count .righter .bottom {
-    line-height: 1.4;
-    color: #bdbdbd;
-    text-align: left;
-    display: block; } }
 @media (max-width: 1030px) {
   .wrapper {
     width: 100%; } }
+
 /*@media (max-width: $wide) {*/
 .table-head-in-td {
   display: none; }
@@ -429,100 +427,84 @@ h4 {
   .table-responsive tr {
     vertical-align: top;
     display: block; }
-
-  .table-responsive tr td {
-    display: block;
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box; }
-
-  .table-responsive tr td .table-head-in-td {
-    display: inline-block;
-    padding-right: 5px;
-    color: #5f5f5f;
-    font-size: 12px;
-    width: 120px;
-    position: relative;
-    box-sizing: border-box;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; }
-
-  .table-responsive tr td .table-head-in-td + .star {
-    display: inline-block; }
-
-  .table-responsive tr td .table-head-in-td:after {
-    display: inline-block;
-    content: ":";
-    margin-right: 10px; }
-
-  .table-responsive tr td .table-head-in-td--count {
-    padding-left: 15px;
-    margin: 0;
-    left: 0;
-    width: 20px;
-    height: 10px; }
-
-  .table-responsive tr td .table-head-in-td--count:after {
-    display: none; }
-
-  .table-responsive tr td {
-    display: none;
-    padding-left: 20px;
-    vertical-align: top; }
-
-  .table-responsive tr td .edit_field,
-  .table-responsive tr td .given_days,
-  .table-responsive tr td .edit_days {
-    overflow: hidden;
-    vertical-align: top;
-    box-sizing: border-box; }
-
-  .table-responsive tr td .edit_field.hide,
-  .table-responsive tr td .given_days.hide,
-  .table-responsive tr td .edit_days.hide {
-    display: none; }
-
-  .table-responsive tr td .edit_field input,
-  .table-responsive tr td .given_days input,
-  .table-responsive tr td .edit_days input {
-    width: 100%;
-    box-sizing: border-box;
-    display: block;
-    margin-right: 0;
-    font-size: 12px !important;
-    margin-top: 5px;
-    margin-bottom: 10px; }
-
-  .table-responsive tr td:first-of-type {
-    display: block; }
-
-  .table-responsive tr td:first-of-type .table-head-in-td {
-    position: relative;
-    padding-left: 20px;
-    cursor: pointer; }
-
-  .table-responsive tr td:first-of-type .table-head-in-td:before {
-    display: block;
-    content: "";
-    position: absolute;
-    left: 0px;
-    top: 3px;
-    width: 0px;
-    height: 0px;
-    cursor: pointer;
-    border: 5px solid transparent;
-    border-top: 8px solid #030303; }
-
+    .table-responsive tr td {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      box-sizing: border-box; }
+      .table-responsive tr td .table-head-in-td {
+        display: inline-block;
+        padding-right: 5px;
+        color: #5f5f5f;
+        font-size: 12px;
+        width: 120px;
+        position: relative;
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+        .table-responsive tr td .table-head-in-td + .star {
+          display: inline-block; }
+      .table-responsive tr td .table-head-in-td:after {
+        display: inline-block;
+        content: ":";
+        margin-right: 10px; }
+      .table-responsive tr td .table-head-in-td--count {
+        padding-left: 15px;
+        margin: 0;
+        left: 0;
+        width: 20px;
+        height: 10px; }
+      .table-responsive tr td .table-head-in-td--count:after {
+        display: none; }
+    .table-responsive tr td {
+      display: none;
+      padding-left: 20px;
+      vertical-align: top; }
+      .table-responsive tr td .edit_field,
+      .table-responsive tr td .given_days,
+      .table-responsive tr td .edit_days {
+        overflow: hidden;
+        vertical-align: top;
+        box-sizing: border-box; }
+        .table-responsive tr td .edit_field.hide,
+        .table-responsive tr td .given_days.hide,
+        .table-responsive tr td .edit_days.hide {
+          display: none; }
+        .table-responsive tr td .edit_field input,
+        .table-responsive tr td .given_days input,
+        .table-responsive tr td .edit_days input {
+          width: 100%;
+          box-sizing: border-box;
+          display: block;
+          margin-right: 0;
+          font-size: 12px !important;
+          margin-top: 5px;
+          margin-bottom: 10px; }
+    .table-responsive tr td:first-of-type {
+      display: block; }
+      .table-responsive tr td:first-of-type .table-head-in-td {
+        position: relative;
+        padding-left: 20px;
+        cursor: pointer; }
+        .table-responsive tr td:first-of-type .table-head-in-td:before {
+          display: block;
+          content: "";
+          position: absolute;
+          left: 0px;
+          top: 3px;
+          width: 0px;
+          height: 0px;
+          cursor: pointer;
+          border: 5px solid transparent;
+          border-top: 8px solid #030303; }
   .table-responsive tr.opened td {
     display: block; }
-
   .table-responsive tr.opened td:first-of-type .table-head-in-td:before {
     content: "";
     border: 5px solid transparent;
     border-left: 8px solid #030303;
     top: 1px; }
-
   .table-responsive tr:nth-child(odd) {
     background-color: #f2f2f2; } }
 @media (max-width: 1030px) {
@@ -531,6 +513,7 @@ h4 {
 @media (max-width: 769px) {
   .container .c1.dashboard {
     width: 100%; } }
+
 @media (max-width: 1030px) {
   .container .c2.news {
     width: 30%; } }
@@ -538,6 +521,7 @@ h4 {
   .container .c2.news {
     width: 100%;
     padding-top: 50px; } }
+
 @media (max-width: 1030px) {
   .tender_filter {
     border: 1px solid #E8E8E8; } }
@@ -547,61 +531,54 @@ h4 {
     margin-bottom: 10px;
     overflow: hidden;
     padding: 0; }
+    .tender_filter span input, .tender_filter span select {
+      width: 100%;
+      border: 1px solid grey;
+      box-sizing: border-box; } }
 
-  .tender_filter span input, .tender_filter span select {
-    width: 100%;
-    border: 1px solid grey;
-    box-sizing: border-box; } }
 .form-wrapper .form-row .field.field--bittons, .form-wrapper .form-row .field.field--textarea {
   width: 60% !important; }
+  @media (max-width: 760px) {
+    .form-wrapper .form-row .field.field--bittons, .form-wrapper .form-row .field.field--textarea {
+      width: 100% !important; }
+      .form-wrapper .form-row .field.field--bittons textarea, .form-wrapper .form-row .field.field--textarea textarea {
+        width: 100px; }
+      .form-wrapper .form-row .field.field--bittons button, .form-wrapper .form-row .field.field--textarea button {
+        float: right;
+        margin-right: 0; } }
 
-@media (max-width: 760px) {
-  .form-wrapper .form-row .field.field--bittons, .form-wrapper .form-row .field.field--textarea {
-    width: 100% !important; }
-
-  .form-wrapper .form-row .field.field--bittons textarea, .form-wrapper .form-row .field.field--textarea textarea {
-    width: 100px; }
-
-  .form-wrapper .form-row .field.field--bittons button, .form-wrapper .form-row .field.field--textarea button {
-    float: right;
-    margin-right: 0; } }
 @media (max-width: 760px) {
   .form-wrapper {
     width: 100%;
     box-sizing: border-box; }
+    .form-wrapper form {
+      padding: 10px;
+      box-sizing: border-box; }
+      .form-wrapper form .form-row .label {
+        margin-top: 0;
+        margin-bottom: 5px;
+        text-align: left; }
+        .form-wrapper form .form-row .label.label--hidden-mobile {
+          display: none; } }
 
-  .form-wrapper form {
-    padding: 10px;
-    box-sizing: border-box; }
-
-  .form-wrapper form .form-row .label {
-    margin-top: 0;
-    margin-bottom: 5px;
-    text-align: left; }
-
-  .form-wrapper form .form-row .label.label--hidden-mobile {
-    display: none; } }
 @media (max-width: 760px) {
   .tender_history .form-wrapp .form-row {
     float: none; }
+    .tender_history .form-wrapp .form-row .label {
+      width: 100%;
+      display: block;
+      text-align: left; }
+    .tender_history .form-wrapp .form-row .field {
+      float: none; }
+      .tender_history .form-wrapp .form-row .field input,
+      .tender_history .form-wrapp .form-row .field .select {
+        width: 100%;
+        box-sizing: border-box; }
+      .tender_history .form-wrapp .form-row .field span {
+        display: block;
+        width: 100%;
+        overflow: hidden; } }
 
-  .tender_history .form-wrapp .form-row .label {
-    width: 100%;
-    display: block;
-    text-align: left; }
-
-  .tender_history .form-wrapp .form-row .field {
-    float: none; }
-
-  .tender_history .form-wrapp .form-row .field input,
-  .tender_history .form-wrapp .form-row .field .select {
-    width: 100%;
-    box-sizing: border-box; }
-
-  .tender_history .form-wrapp .form-row .field span {
-    display: block;
-    width: 100%;
-    overflow: hidden; } }
 @media (max-width: 760px) {
   .form-wrapper .new_demand .form-row .label,
   .form-wrapper .parcel_search .form-row .label,
@@ -611,6 +588,7 @@ h4 {
     width: 100%;
     text-align: left;
     margin-right: 15px; } }
+
 @media (max-width: 760px) {
   .send-proposal--form-wrapper .form-row .label,
   .transaction-form .form-row .label,
@@ -620,6 +598,7 @@ h4 {
     width: 100%;
     text-align: left;
     margin-right: 15px; } }
+
 @media (max-width: 760px) {
   .edit-profile-page .edit-profile-page--menu span {
     display: block;
@@ -629,186 +608,163 @@ h4 {
     display: block;
     float: none;
     margin-bottom: 20px; } }
+
 @media (max-width: 760px) {
   .add-company-box {
     padding: 10px;
     width: 90%;
     box-sizing: border-box; }
+    .add-company-box input {
+      width: 100%;
+      box-sizing: border-box; }
+    .add-company-box .registration_submit {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      display: block; } }
 
-  .add-company-box input {
-    width: 100%;
-    box-sizing: border-box; }
-
-  .add-company-box .registration_submit {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-    display: block; } }
 .credit-table .table-head-in-td,
 .table-purchase .table-head-in-td,
 .table-sales .table-head-in-td {
   display: none; }
-
 @media (max-width: 760px) {
   .credit-table,
   .table-purchase,
   .table-sales {
     width: 100%; }
+    .credit-table .table-head-in-td,
+    .table-purchase .table-head-in-td,
+    .table-sales .table-head-in-td {
+      display: inline-block; }
+    .credit-table thead,
+    .table-purchase thead,
+    .table-sales thead {
+      display: none; }
+    .credit-table tbody th, .credit-table tbody td,
+    .table-purchase tbody th,
+    .table-purchase tbody td,
+    .table-sales tbody th,
+    .table-sales tbody td {
+      display: block; }
+      .credit-table tbody th .table-head-in-td, .credit-table tbody td .table-head-in-td,
+      .table-purchase tbody th .table-head-in-td,
+      .table-purchase tbody td .table-head-in-td,
+      .table-sales tbody th .table-head-in-td,
+      .table-sales tbody td .table-head-in-td {
+        display: inline-block;
+        padding-right: 5px;
+        color: #5f5f5f;
+        font-size: 12px;
+        width: 120px;
+        position: relative;
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+        .credit-table tbody th .table-head-in-td + .star, .credit-table tbody td .table-head-in-td + .star,
+        .table-purchase tbody th .table-head-in-td + .star,
+        .table-purchase tbody td .table-head-in-td + .star,
+        .table-sales tbody th .table-head-in-td + .star,
+        .table-sales tbody td .table-head-in-td + .star {
+          display: inline-block; }
+      .credit-table tbody th .table-head-in-td:after, .credit-table tbody td .table-head-in-td:after,
+      .table-purchase tbody th .table-head-in-td:after,
+      .table-purchase tbody td .table-head-in-td:after,
+      .table-sales tbody th .table-head-in-td:after,
+      .table-sales tbody td .table-head-in-td:after {
+        display: inline-block;
+        content: ":";
+        margin-right: 10px; }
+      .credit-table tbody th .table-head-in-td--count, .credit-table tbody td .table-head-in-td--count,
+      .table-purchase tbody th .table-head-in-td--count,
+      .table-purchase tbody td .table-head-in-td--count,
+      .table-sales tbody th .table-head-in-td--count,
+      .table-sales tbody td .table-head-in-td--count {
+        padding-left: 15px;
+        margin: 0;
+        left: 0;
+        width: 20px;
+        height: 10px; }
+      .credit-table tbody th .table-head-in-td--count:after, .credit-table tbody td .table-head-in-td--count:after,
+      .table-purchase tbody th .table-head-in-td--count:after,
+      .table-purchase tbody td .table-head-in-td--count:after,
+      .table-sales tbody th .table-head-in-td--count:after,
+      .table-sales tbody td .table-head-in-td--count:after {
+        display: none; }
+    .credit-table tbody th .table-head-in-td,
+    .table-purchase tbody th .table-head-in-td,
+    .table-sales tbody th .table-head-in-td {
+      color: white; }
+    .credit-table tr:nth-child(even),
+    .table-purchase tr:nth-child(even),
+    .table-sales tr:nth-child(even) {
+      background-color: #f2f2f2; } }
 
-  .credit-table .table-head-in-td,
-  .table-purchase .table-head-in-td,
-  .table-sales .table-head-in-td {
-    display: inline-block; }
-
-  .credit-table thead,
-  .table-purchase thead,
-  .table-sales thead {
-    display: none; }
-
-  .credit-table tbody th, .credit-table tbody td,
-  .table-purchase tbody th,
-  .table-purchase tbody td,
-  .table-sales tbody th,
-  .table-sales tbody td {
-    display: block; }
-
-  .credit-table tbody th .table-head-in-td, .credit-table tbody td .table-head-in-td,
-  .table-purchase tbody th .table-head-in-td,
-  .table-purchase tbody td .table-head-in-td,
-  .table-sales tbody th .table-head-in-td,
-  .table-sales tbody td .table-head-in-td {
-    display: inline-block;
-    padding-right: 5px;
-    color: #5f5f5f;
-    font-size: 12px;
-    width: 120px;
-    position: relative;
-    box-sizing: border-box;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; }
-
-  .credit-table tbody th .table-head-in-td + .star, .credit-table tbody td .table-head-in-td + .star,
-  .table-purchase tbody th .table-head-in-td + .star,
-  .table-purchase tbody td .table-head-in-td + .star,
-  .table-sales tbody th .table-head-in-td + .star,
-  .table-sales tbody td .table-head-in-td + .star {
-    display: inline-block; }
-
-  .credit-table tbody th .table-head-in-td:after, .credit-table tbody td .table-head-in-td:after,
-  .table-purchase tbody th .table-head-in-td:after,
-  .table-purchase tbody td .table-head-in-td:after,
-  .table-sales tbody th .table-head-in-td:after,
-  .table-sales tbody td .table-head-in-td:after {
-    display: inline-block;
-    content: ":";
-    margin-right: 10px; }
-
-  .credit-table tbody th .table-head-in-td--count, .credit-table tbody td .table-head-in-td--count,
-  .table-purchase tbody th .table-head-in-td--count,
-  .table-purchase tbody td .table-head-in-td--count,
-  .table-sales tbody th .table-head-in-td--count,
-  .table-sales tbody td .table-head-in-td--count {
-    padding-left: 15px;
-    margin: 0;
-    left: 0;
-    width: 20px;
-    height: 10px; }
-
-  .credit-table tbody th .table-head-in-td--count:after, .credit-table tbody td .table-head-in-td--count:after,
-  .table-purchase tbody th .table-head-in-td--count:after,
-  .table-purchase tbody td .table-head-in-td--count:after,
-  .table-sales tbody th .table-head-in-td--count:after,
-  .table-sales tbody td .table-head-in-td--count:after {
-    display: none; }
-
-  .credit-table tbody th .table-head-in-td,
-  .table-purchase tbody th .table-head-in-td,
-  .table-sales tbody th .table-head-in-td {
-    color: white; }
-
-  .credit-table tr:nth-child(even),
-  .table-purchase tr:nth-child(even),
-  .table-sales tr:nth-child(even) {
-    background-color: #f2f2f2; } }
 @media (max-width: 760px) {
   .page-registration .login-box {
     width: 100%;
     margin: 0 auto;
     padding: 10px;
     box-sizing: border-box; }
+    .page-registration .login-box .field input {
+      width: 100%;
+      box-sizing: border-box; }
+    .page-registration .login-box .field .intl-tel-input {
+      display: block; } }
 
-  .page-registration .login-box .field input {
-    width: 100%;
-    box-sizing: border-box; }
-
-  .page-registration .login-box .field .intl-tel-input {
-    display: block; } }
 @media (max-width: 760px) {
   .fc-header-title h2 {
     display: block;
     width: 60px;
     line-height: 30px;
     font-size: 11px !important; } }
+
 .header .current_user_menu .dropdown-content {
   right: 0; }
-
 .header .menu-burger {
   display: none; }
-
 @media (max-width: 760px) {
   .header .c1 {
     width: 30%; }
-
-  .header .c1 .nav {
-    display: none;
-    width: 100%;
-    position: absolute;
-    background: #ed5a48;
-    top: 35px;
-    left: 0;
-    z-index: 10; }
-
-  .header .c1 .nav .dropbtn {
-    background-color: transparent; }
-
-  .header .c1 .nav .list_dropdown {
-    padding: 0;
-    width: 100% !important; }
-
-  .header .c1 .nav .dropdown.list_dropdown > span {
-    position: absolute;
-    right: 0;
-    top: 3px;
-    width: 43px; }
-
-  .header .c1 .nav .dropdown.list_dropdown > span img {
-    width: 12px; }
-
-  .header .c1 .nav li {
-    display: block;
-    float: none;
-    width: 100%; }
-
+    .header .c1 .nav {
+      display: none;
+      width: 100%;
+      position: absolute;
+      background: #ed5a48;
+      top: 35px;
+      left: 0;
+      z-index: 10; }
+      .header .c1 .nav .dropbtn {
+        background-color: transparent; }
+      .header .c1 .nav .list_dropdown {
+        padding: 0;
+        width: 100% !important; }
+      .header .c1 .nav .dropdown.list_dropdown > span {
+        position: absolute;
+        right: 0;
+        top: 3px;
+        width: 43px; }
+        .header .c1 .nav .dropdown.list_dropdown > span img {
+          width: 12px; }
+      .header .c1 .nav li {
+        display: block;
+        float: none;
+        width: 100%; }
   .header .current_user_menu .dropdown.nav-dropdown {
     width: 70%;
     padding-right: 40px;
     box-sizing: border-box;
     position: relative; }
-
-  .header .current_user_menu .dropdown.nav-dropdown span {
-    position: absolute;
-    right: 16px;
-    top: 13px;
-    width: 43px; }
-
-  .header .current_user_menu .dropdown.nav-dropdown span img {
-    width: 12px; }
-
+    .header .current_user_menu .dropdown.nav-dropdown span {
+      position: absolute;
+      right: 16px;
+      top: 13px;
+      width: 43px; }
+      .header .current_user_menu .dropdown.nav-dropdown span img {
+        width: 12px; }
   .header .current_user_menu .dropdown-content {
     right: 10px;
     z-index: 10; }
-
   .header .menu-burger {
     display: block;
     margin-top: 10px;
@@ -821,28 +777,25 @@ h4 {
     -webkit-background-size: cover;
     background-size: cover;
     cursor: pointer; }
-
-  .header .menu-burger.opened {
-    background-image: url("../assets/menu-close.png"); }
-
+    .header .menu-burger.opened {
+      background-image: url("../assets/menu-close.png"); }
   .header .c1 .nav.opened {
     display: block; } }
+
 @media (max-width: 760px) {
   .alert {
     padding: 0 15px; } }
+
 @media (max-width: 760px) {
   .tender-filter-block select {
     width: 100%;
     margin-bottom: 10px; }
-
   .tender-filter-block .from-to {
     display: block;
     margin-bottom: 5px; }
-
   .tender-filter-block input {
     display: block;
     width: 100%; }
-
   .tender-filter-block a.add {
     margin-top: 10px;
     /* position: relative; */
@@ -850,46 +803,38 @@ h4 {
     margin-bottom: 0px;
     display: block;
     height: 10px; } }
+
 @media (max-width: 760px) {
   .login-page {
     width: 100%;
     box-sizing: border-box; }
-
-  .login-page h6 {
-    font-size: 24px; }
-
-  .login-page .sub-heading {
-    font-size: 20px; }
-
-  .login-page p {
-    margin-bottom: 0; }
-
-  .login-page .login-box {
-    width: 90%;
-    box-sizing: border-box;
-    padding-left: 10px;
-    padding-right: 10px; }
-
-  .login-page .login-box .field input {
-    width: 100%; }
-
-  .login-page .login-box .alert {
-    padding: 0; }
-
-  .login-page .login-box p {
-    font-size: 20px; } }
+    .login-page h6 {
+      font-size: 24px; }
+    .login-page .sub-heading {
+      font-size: 20px; }
+    .login-page p {
+      margin-bottom: 0; }
+    .login-page .login-box {
+      width: 90%;
+      box-sizing: border-box;
+      padding-left: 10px;
+      padding-right: 10px; }
+      .login-page .login-box .field input {
+        width: 100%; }
+      .login-page .login-box .alert {
+        padding: 0; }
+      .login-page .login-box p {
+        font-size: 20px; } }
 @media (max-width: 760px) {
   .approve_list label {
     text-align: left;
     display: block;
     margin-bottom: 20px; }
-
-  .approve_list label select,
-  .approve_list label input {
-    display: block;
-    width: 100%;
-    margin: 5px 0 5px 0 !important; }
-
+    .approve_list label select,
+    .approve_list label input {
+      display: block;
+      width: 100%;
+      margin: 5px 0 5px 0 !important; }
   .approve_list #creditList_filter label:before {
     display: block;
     content: "";
@@ -902,40 +847,36 @@ h4 {
     background-repeat: no-repeat;
     -webkit-background-size: 14px;
     background-size: 14px; } }
+
 @media (max-width: 760px) {
   #chart-popup {
     height: 92%;
     top: 3%; }
-
-  #chart-popup .highcharts-container {
-    margin-left: 35px; }
-
-  #chart-popup > div {
-    overflow-y: scroll;
-    height: 100%;
-    border: 1px solid #e8e8e8; }
-
-  #chart-popup > div table {
-    display: block;
-    border: 0; }
-
-  #chart-popup > div table tbody {
-    display: block; }
-
-  #chart-popup > div table tbody td {
-    display: block;
-    width: 100%;
-    border: 0;
-    box-sizing: border-box; } }
+    #chart-popup .highcharts-container {
+      margin-left: 35px; }
+    #chart-popup > div {
+      overflow-y: scroll;
+      height: 100%;
+      border: 1px solid #e8e8e8; }
+      #chart-popup > div table {
+        display: block;
+        border: 0; }
+        #chart-popup > div table tbody {
+          display: block; }
+          #chart-popup > div table tbody td {
+            display: block;
+            width: 100%;
+            border: 0;
+            box-sizing: border-box; } }
 @media (min-width: 770px) and (max-width: 820px) {
   #chart-popup {
     height: 80%; }
+    #chart-popup > div {
+      overflow: scroll;
+      height: 100%;
+      display: block;
+      box-sizing: border-box; } }
 
-  #chart-popup > div {
-    overflow: scroll;
-    height: 100%;
-    display: block;
-    box-sizing: border-box; } }
 @media (max-width: 760px) {
   .approve_list #tenderList tr td:first-of-type .table-head-in-td,
   .approve_list .table-responsive tr td:first-of-type .table-head-in-td,
@@ -943,6 +884,7 @@ h4 {
   .tenderList .table-responsive tr td:first-of-type .table-head-in-td {
     min-height: 15px;
     float: left; } }
+
 input[type="button"],
 input[type="submit"],
 .btn-01,
@@ -962,7 +904,6 @@ input[type="submit"],
   .table-responsive .fa {
     font-size: 16px;
     float: right; }
-
   .credit-table .edit_field a,
   .table-responsive .edit_field a {
     text-transform: uppercase;
@@ -970,14 +911,13 @@ input[type="submit"],
     float: right;
     margin-top: 10px;
     margin-bottom: 10px; }
-
   .credit-table .edit_field a + a,
   .table-responsive .edit_field a + a {
     float: left; }
-
   .credit-table .table-head-in-td + img,
   .table-responsive .table-head-in-td + img {
     float: right; } }
+
 a.save_btn_block,
 a.edit_field,
 a.given_limit,
@@ -989,39 +929,33 @@ a.given_days {
 @media (max-width: 760px) {
   .credit-table tr td:first-of-type {
     display: none; }
-
   .credit-table .credit_edit_block {
     display: block;
     float: right;
     background-color: transparent; }
-
   .credit-table td.hide {
     display: none; }
-
   .credit-table .edit_field {
     overflow: hidden; }
+    .credit-table .edit_field input {
+      width: 100%;
+      box-sizing: border-box; }
+    .credit-table .edit_field .fa {
+      position: static;
+      margin-top: 10px;
+      display: block; } }
 
-  .credit-table .edit_field input {
-    width: 100%;
-    box-sizing: border-box; }
-
-  .credit-table .edit_field .fa {
-    position: static;
-    margin-top: 10px;
-    display: block; } }
 @media (max-width: 760px) {
   .yes-no-round-timer {
     display: block; }
+    .yes-no-round-timer + input {
+      float: left;
+      margin-top: 40px; }
+      .yes-no-round-timer + input + input {
+        float: right;
+        margin-top: 40px; } }
 
-  .yes-no-round-timer + input {
-    float: left;
-    margin-top: 40px; }
-
-  .yes-no-round-timer + input + input {
-    float: right;
-    margin-top: 40px; } }
 @media (max-width: 760px) {
   .flip-clock-wrapper {
     margin: 50px -10px 0 -10px; } }
 
-/*# sourceMappingURL=application.css.map */
