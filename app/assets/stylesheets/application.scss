@@ -21,6 +21,15 @@
  *= require intlTelInput
  */
 
+input, button, select, textarea {
+  line-height: normal;
+}
+
+.label {
+  font-weight: normal;
+  padding-left: 0;
+}
+
 .validation-error {
   color: red; }
 
