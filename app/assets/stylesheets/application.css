@@ -20,6 +20,13 @@
  *= require font-awesome
  *= require intlTelInput
  */
+input, button, select, textarea {
+  line-height: normal; }
+
+.label {
+  font-weight: normal;
+  padding-left: 0; }
+
 .validation-error {
   color: red; }
 
@@ -414,11 +421,9 @@ h4 {
 @media (max-width: 1030px) {
   .wrapper {
     width: 100%; } }
-/*@media (max-width: $wide) {*/
 .table-head-in-td {
   display: none; }
 
-/*}*/
 @media (max-width: 760px) {
   .thead-desktop {
     display: none !important; }
@@ -1023,5 +1028,57 @@ a.given_days {
 @media (max-width: 760px) {
   .flip-clock-wrapper {
     margin: 50px -10px 0 -10px; } }
+.wrapper {
+  width: 100%;
+  max-width: 1150px; }
+  @media (min-width: 1150px) {
+    .wrapper {
+      width: 1150px; } }
+
+.container {
+  width: 100% !important; }
+
+@media (max-width: 760px) {
+  .header .c1 .nav li,
+  .header .c1 .nav li.first {
+    width: 100%; }
+  .header .c1 .nav .dropdown.list_dropdown > span {
+    width: 12px; } }
+
+@media (min-width: 768px) {
+  .header .c1 .nav li,
+  .header .c1 .nav li.first {
+    box-sizing: content-box; }
+  .header .c1 .nav .list_dropdown {
+    box-sizing: content-box; }
+  .header .c1 .nav .dropdown.list_dropdown > span {
+    position: relative;
+    top: -2px; }
+  .header .c1 .nav li:hover, .header .c1 .nav li.active {
+    background-color: #C12E1C; }
+    .header .c1 .nav li:hover a, .header .c1 .nav li.active a {
+      background-color: #C12E1C; } }
+
+@media (min-width: 768px) {
+  .current_user_menu a:hover {
+    color: #fff;
+    text-decoration: none; } }
+
+.login-box {
+  box-sizing: content-box; }
+  .login-box .alert,
+  .login-box .alert.alert-success {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    font-size: 12px; }
+    @media (min-width: 768px) {
+      .login-box .alert,
+      .login-box .alert.alert-success {
+        font-size: 20px; } }
+  .login-box label {
+    font-weight: normal;
+    padding-left: 0; }
 
 /*# sourceMappingURL=application.css.map */

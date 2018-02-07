@@ -976,6 +976,7 @@ $tablet: 768px;
 $small: 760px;
 
 @media (max-width: $small) {}
+@media (min-width: $tablet) {}
 @media (min-width: $middle) {}
 @media (min-width: $wide) {}
 
@@ -1066,3 +1067,8 @@ $small: 760px;
     padding-left: 0;
   }
 }
+
+@media (max-width: $small) {}
+@media (min-width: $tablet) {}
+@media (min-width: $middle) {}
+@media (min-width: $wide) {}
