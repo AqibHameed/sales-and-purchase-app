@@ -1023,3 +1023,13 @@ $small: 760px;
     }
   }
 }
+
+//Current user menu desktop
+.current_user_menu {
+  @media (min-width: $tablet) {
+    a:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
