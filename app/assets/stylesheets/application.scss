@@ -412,11 +412,10 @@ h4 {
   .wrapper {
     width: 100%; } }
 
-/*@media (max-width: $wide) {*/
+
 .table-head-in-td {
   display: none; }
 
-/*}*/
 @media (max-width: 760px) {
   .thead-desktop {
     display: none !important; }
@@ -959,3 +958,26 @@ a.given_days {
   .flip-clock-wrapper {
     margin: 50px -10px 0 -10px; } }
 
+
+
+//Variables start
+$wide: 1030px;
+$middle: 769px;
+$small: 760px;
+
+@media (max-width: $small) {}
+@media (min-width: $middle) {}
+@media (min-width: $wide) {}
+
+.wrapper {
+  width: 100%;
+  max-width: 1150px;
+
+  @media (min-width: 1150px) {
+    width: 1150px;
+  }
+}
+
+.container {
+  width: 100% !important;
+}
