@@ -250,9 +250,10 @@ $(document).ready(function() {
 
   $('.broker-select').select2({})
 
-  $('#broker_id').on("change", function (e) {
-    broker_ids = $('#broker_id').val();
-    parcel_id = $('#broker_id').data('id')
+  $('.broker-select').on("change", function (e) {
+    alert('23232');
+    broker_ids = $(this).val();
+    parcel_id = $(this).data('id')
     $.ajax({
       url : '/share_with_brokers',
       data : { broker_ids: broker_ids, id: parcel_id }
