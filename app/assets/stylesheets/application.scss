@@ -981,3 +981,17 @@ $small: 760px;
 .container {
   width: 100% !important;
 }
+
+//Mobile menu
+.header .c1 .nav {
+  @media (max-width: $small) {
+    li,
+    li.first {
+      width: 100%;
+    }
+
+    .dropdown.list_dropdown>span {
+      width: 12px;
+    }
+  }
+}
