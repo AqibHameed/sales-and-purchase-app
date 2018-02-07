@@ -963,6 +963,7 @@ a.given_days {
 //Variables start
 $wide: 1030px;
 $middle: 769px;
+$tablet: 768px;
 $small: 760px;
 
 @media (max-width: $small) {}
@@ -992,6 +993,33 @@ $small: 760px;
 
     .dropdown.list_dropdown>span {
       width: 12px;
+    }
+  }
+}
+
+//Desktop menu
+.header .c1 .nav {
+  @media (min-width: $tablet) {
+    li,
+    li.first {
+      box-sizing: content-box;
+    }
+    .list_dropdown {
+      box-sizing: content-box;
+    }
+
+    .dropdown.list_dropdown>span {
+      //width: 12px;
+      position: relative;
+      top: -2px;
+    }
+
+    li:hover, li.active {
+      background-color: #C12E1C;
+
+      a {
+        background-color: #C12E1C;
+      }
     }
   }
 }
