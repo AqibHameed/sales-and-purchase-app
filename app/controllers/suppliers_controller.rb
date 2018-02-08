@@ -6,7 +6,7 @@ class SuppliersController < ApplicationController
   before_action :check_role_authorization, only: [:index, :trading, :credit ]
 
   def index
-    @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc).page params[:page]
+    @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc) #.page params[:page]
     @trading_document = TradingDocument.new
     @trading_parcel = TradingParcel.new
   end
