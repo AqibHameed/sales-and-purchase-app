@@ -121,6 +121,8 @@
   <% end %>
 </table>
 <%#= paginate @parcels %>
-<div class="parcel-detail">
-  <%= render partial: 'trading_parcels/parcel_visibility'%>
-</div>
+<% unless params[:controller] == 'customers' %>
+  <div class="parcel-detail">
+    <%= render partial: 'trading_parcels/parcel_visibility'%>
+  </div>
+<% end %>

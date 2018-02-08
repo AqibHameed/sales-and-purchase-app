@@ -8,11 +8,9 @@
       <div class="modal-body">
         <form class="form-horizontal">
           <div class="form-group">
-            <label class="col-sm-2 label">For sale:</label>
             <div class="col-sm-10">
-              <%#= check_box_tag %>
               <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-10">
                   <div class="checkbox">
                     <label>
                       <%= check_box_tag "sale_all", "sale_all", @parcel.try(:sale_all),  "data-id" => @parcel.try(:id), class: 'for_sale' %> All
@@ -21,7 +19,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-10">
                   <div class="checkbox">
                     <label>
                       <%= check_box_tag "sale_none", "sale_none", @parcel.try(:sale_none), "data-id" => @parcel.try(:id), class: 'for_sale' %> None
@@ -30,7 +28,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-10">
                   <div class="checkbox">
                     <label>
                       <%= check_box_tag "sale_broker", "sale_broker", @parcel.try(:sale_broker), "data-id" => @parcel.try(:id), class: 'for_sale' %> Broker
@@ -38,8 +36,11 @@
                   </div>
                 </div>
               </div>
+              <span class="broker-list <%=(@parcel.try(:sale_broker) == true) ? '' : 'hide' %>">
+                <%= select_tag "broker_id", options_for_select(list_of_brokers(current_customer), selected: @parcel.try(:broker_ids)), 'data-id' => @parcel.try(:id), include_blank: true, multiple: true, class: 'broker-select form-control' %>
+              </span>
               <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-10">
                   <div class="checkbox">
                     <label>
                       <%= check_box_tag "sale_credit", "sale_credit", @parcel.try(:sale_credit), "data-id" => @parcel.try(:id), class: 'for_sale' %> Credit Given
@@ -48,7 +49,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-10">
                   <div class="checkbox">
                     <label>
                       <%= check_box_tag "sale_demanded", "sale_demanded", @parcel.try(:sale_demanded), "data-id" => @parcel.try(:id), class: 'for_sale' %> Demanded
@@ -56,8 +57,6 @@
                   </div>
                 </div>
               </div>
-              
-              <%#= select_tag "for_sale", options_for_select(for_sale_options, TradingParcel.for_sales[@parcel.try(:for_sale)]), 'data-id' => @parcel.try(:id), class: 'form-control' %>
             </div>
           </div>
         </form>
