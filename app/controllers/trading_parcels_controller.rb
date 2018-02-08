@@ -54,7 +54,13 @@ class TradingParcelsController < ApplicationController
 
   def share_broker
     @parcel.update_column(:broker_ids, params[:broker_ids])
+  end
 
+  def parcel_detail
+    @parcel = TradingParcel.find(params[:id])
+    respond_to do |format|
+      format.js
+    end
   end
 
   private

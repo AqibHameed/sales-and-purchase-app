@@ -104,12 +104,7 @@
             <% if params[:controller] == 'customers' %>
               <td><%= link_to 'View', trading_parcel_path(parcel),data: {turbolinks: false} %></td>
             <% else %>
-              <td><%= select_tag "for_sale", options_for_select(for_sale_options, TradingParcel.for_sales[parcel.for_sale]), 'data-id' => parcel.id %>
-                <br/>
-                <span class="broker-list <%=(parcel.for_sale == 'broker') ? '' : 'hide' %>">
-                  <%= select_tag "broker_id", options_for_select(list_of_brokers(current_customer), selected: parcel.broker_ids), 'data-id' => parcel.id, include_blank: true, multiple: true, class: 'broker-select' %>
-                </span>
-              </td>
+              <td><%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %></td>
               <td>
                 <%= link_to 'Share', '#', 'data-id' => parcel.id, id: 'share', class: 'mr5',data: {turbolinks: false} %>
                 <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
@@ -126,5 +121,6 @@
   <% end %>
 </table>
 <%#= paginate @parcels %>
-
-
+<div class="parcel-detail">
+  <%= render partial: 'trading_parcels/parcel_visibility'%>
+</div>

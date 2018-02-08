@@ -226,27 +226,107 @@ function isNumber(evt) {
 }
 
 $(document).ready(function() {
-  // var val = $('#for_sale').val()
-  // if(val == "2"){
-  //   $('.broker-list').removeClass('hide')
-  // }else{
-  //   $('.broker-list').addClass('hide')
-  // }
-
-  $(document).on('change', '#for_sale', function() {
-    var val = $(this).val()
-    if(val == "2"){
-      $(this).parent('td').find('.broker-list').removeClass('hide')
-    }else{
-      $(this).parent('td').find('.broker-list').addClass('hide')
-    }
-    parcel_id = $(this).data('id');
-    val = $(this).val()
+  $(document).on('click', '.sale_visibility', function(){
+    id = $(this).data('id')
     $.ajax({
-      url: '/customers/'+parcel_id+'/check_for_sale?val='+val,
+      url : '/parcel_detail',
+      data : { id: id }
+    });
+  })
+
+  $(document).on('change', '#sale_all', function() {
+    if ($(this).is(':checked')) {
+      
+      $('#sale_broker').attr('disabled', true)
+      $('#sale_none').attr('disabled', true)
+      $('#sale_credit').attr('disabled', true)
+      $('#sale_demanded').attr('disabled', true)
+    } else {
+      $('#sale_broker').attr('disabled', false)
+      $('#sale_none').attr('disabled', false)
+      $('#sale_credit').attr('disabled', false)
+      $('#sale_demanded').attr('disabled', false)
+    }
+  })
+
+  $(document).on('change', '#sale_none', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_broker').attr('disabled', true)
+      $('#sale_all').attr('disabled', true)
+      $('#sale_credit').attr('disabled', true)
+      $('#sale_demanded').attr('disabled', true)
+    } else {
+      $('#sale_broker').attr('disabled', false)
+      $('#sale_all').attr('disabled', false)
+      $('#sale_credit').attr('disabled', false)
+      $('#sale_demanded').attr('disabled', false)
+    }
+  })
+
+  $(document).on('change', '#sale_broker', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_none').attr('disabled', true)
+      $('#sale_all').attr('disabled', true)
+      $('#sale_credit').attr('disabled', true)
+      $('#sale_demanded').attr('disabled', true)
+    } else {
+      $('#sale_none').attr('disabled', false)
+      $('#sale_all').attr('disabled', false)
+      $('#sale_credit').attr('disabled', false)
+      $('#sale_demanded').attr('disabled', false)
+    }
+  })
+
+  $(document).on('change', '#sale_demanded', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_none').attr('disabled', true)
+      $('#sale_all').attr('disabled', true)
+      $('#sale_broker').attr('disabled', true)
+      $('#sale_credit').attr('disabled', false)
+    } else {
+      $('#sale_none').attr('disabled', false)
+      $('#sale_all').attr('disabled', false)
+      $('#sale_credit').attr('disabled', false)
+      $('#sale_broker').attr('disabled', false)
+    }
+  })
+
+  $(document).on('change', '#sale_credit', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_none').attr('disabled', true)
+      $('#sale_all').attr('disabled', true)
+      $('#sale_broker').attr('disabled', true)
+      $('#sale_demanded').attr('disabled', false)
+    } else {
+      $('#sale_none').attr('disabled', false)
+      $('#sale_all').attr('disabled', false)
+      $('#sale_broker').attr('disabled', false)
+      $('#sale_demanded').attr('disabled', false)
+    }
+  })
+    
+  $(document).on('change', '.for_sale', function() {
+    var column = $(this).val()
+    var parcel_id = $(this).data('id');
+    if ($(this).is(':checked')) {
+      var val = true
+    } else {
+      var val = false
+    }
+    $.ajax({
+      url: '/customers/'+parcel_id+'/check_for_sale',
+      data: { val: val, col: column },
       type: "GET"
     })
-  });
+    
+    // if(val == "2"){
+    //   $(this).parent('td').find('.broker-list').removeClass('hide')
+    // }else{
+    //   $(this).parent('td').find('.broker-list').addClass('hide')
+    // }
+    // parcel_id = $(this).data('id');
+    // val = $(this).val()
+  })
 
   $('.broker-select').select2({})
 
@@ -257,7 +337,7 @@ $(document).ready(function() {
       url : '/share_with_brokers',
       data : { broker_ids: broker_ids, id: parcel_id }
     });
-  });
+  })
 });
 
 $(document).ready(function() {

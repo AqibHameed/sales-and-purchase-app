@@ -192,7 +192,7 @@ class CustomersController < ApplicationController
 
   def check_for_sale
     @trading_parcel = TradingParcel.find_by_id(params[:id])
-    @trading_parcel.update_attribute(:for_sale, params[:val].to_i)
+    @trading_parcel.update_attributes(params[:col].to_sym => params[:val])
   end
 
   def check_info_shared
