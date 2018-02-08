@@ -10,7 +10,9 @@
     <th>Sight</th>
     <th>Price</th>
     <th>Credit</th>
-    <th>Supplier</th>
+    <% if params[:controller] == 'customers' %>
+      <th>Supplier</th>
+    <% end %>
     <th>UID</th>
     <% unless params[:controller] == 'customers' %>
       <th>Demand</th>
@@ -46,7 +48,9 @@
            <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight %></td>
 
           <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
-          <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
+          <% if params[:controller] == 'customers' %>
+            <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
+          <% end %>
           <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
           <!-- <td><%=parcel.demand_count(parcel)%></td> -->
           <% if parcel.customer_id == current_customer.id %>
