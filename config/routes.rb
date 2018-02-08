@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   get '/can_update', to: 'tenders#round_updated'
   get '/get_timer', to: 'tenders#timer_value'
 
-
   get '/chat', to: 'chats#index'
   get '/video_chat', to: 'chat_vidoes#index'
 
@@ -203,7 +202,6 @@ Rails.application.routes.draw do
         post :company_limits, to: 'companies#list_company'
         post :forgot_password, to: "passwords#create"
       end
-
       get '/tender_parcel', to: 'tenders#tender_parcel'
       post '/stone_parcel', to: 'tenders#stone_parcel'
       get '/find_active_parcels', to: 'tenders#find_active_parcels'
@@ -232,7 +230,6 @@ Rails.application.routes.draw do
           post :upload
         end
       end
-
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
       post '/supplier_notification', to: 'api#supplier_notification'
@@ -246,7 +243,6 @@ Rails.application.routes.draw do
       get :round_completed
     end
   end
-
   root :to => 'tenders#index'
 
   get '/change_limits' => 'suppliers#change_limits', as: 'change_credit_limit'
@@ -256,6 +252,5 @@ Rails.application.routes.draw do
   get '/supplier_list' => 'suppliers#supplier_list'
   get '/update_chat_id',to: 'tenders#update_chat_id'
   get '/share_with_brokers', to: 'trading_parcels#share_broker'
-
-
+  get '/parcel_detail', to: 'trading_parcels#parcel_detail'
 end
