@@ -25,7 +25,10 @@ input, button, select, textarea {
 
 .label {
   font-weight: normal;
-  padding-left: 0; }
+  padding-left: 0;
+  color: #000;
+  font-size: 100%;
+}
 
 .validation-error {
   color: red; }
