@@ -33,3 +33,14 @@ if($('#sale_all').is(':checked')){
   $('#sale_broker').attr('disabled', true)
   $('#sale_demanded').attr('disabled', false)
 }
+
+
+$('.broker-select').select2({})
+  $('.broker-select').on("change", function (e) {
+    broker_ids = $(this).val();
+    parcel_id = $(this).data('id')
+    $.ajax({
+      url : '/share_with_brokers',
+      data : { broker_ids: broker_ids, id: parcel_id }
+    });
+  })

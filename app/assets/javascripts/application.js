@@ -236,11 +236,11 @@ $(document).ready(function() {
 
   $(document).on('change', '#sale_all', function() {
     if ($(this).is(':checked')) {
-      
       $('#sale_broker').attr('disabled', true)
       $('#sale_none').attr('disabled', true)
       $('#sale_credit').attr('disabled', true)
       $('#sale_demanded').attr('disabled', true)
+      $('.broker-list').addClass('hide')
     } else {
       $('#sale_broker').attr('disabled', false)
       $('#sale_none').attr('disabled', false)
@@ -255,6 +255,7 @@ $(document).ready(function() {
       $('#sale_all').attr('disabled', true)
       $('#sale_credit').attr('disabled', true)
       $('#sale_demanded').attr('disabled', true)
+      $('.broker-list').addClass('hide')
     } else {
       $('#sale_broker').attr('disabled', false)
       $('#sale_all').attr('disabled', false)
@@ -269,11 +270,13 @@ $(document).ready(function() {
       $('#sale_all').attr('disabled', true)
       $('#sale_credit').attr('disabled', true)
       $('#sale_demanded').attr('disabled', true)
+      $('.broker-list').removeClass('hide')
     } else {
       $('#sale_none').attr('disabled', false)
       $('#sale_all').attr('disabled', false)
       $('#sale_credit').attr('disabled', false)
       $('#sale_demanded').attr('disabled', false)
+      $('.broker-list').addClass('hide')
     }
   })
 
@@ -283,6 +286,7 @@ $(document).ready(function() {
       $('#sale_all').attr('disabled', true)
       $('#sale_broker').attr('disabled', true)
       $('#sale_credit').attr('disabled', false)
+      $('.broker-list').addClass('hide')
     } else {
       $('#sale_none').attr('disabled', false)
       $('#sale_all').attr('disabled', false)
@@ -297,6 +301,7 @@ $(document).ready(function() {
       $('#sale_all').attr('disabled', true)
       $('#sale_broker').attr('disabled', true)
       $('#sale_demanded').attr('disabled', false)
+      $('.broker-list').addClass('hide')
     } else {
       $('#sale_none').attr('disabled', false)
       $('#sale_all').attr('disabled', false)
