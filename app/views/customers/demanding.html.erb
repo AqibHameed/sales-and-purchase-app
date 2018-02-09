@@ -1,29 +1,33 @@
 <div class="form-wrapper">
-  <%= form_for @demanding_parcel, :url =>  demanding_create_customers_path , method: :post  do |f| %>
-    <div class="form-row">
-      <div class="label">Diamond Type: </div>
-      <div class="field">
-        <%= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
+  <% if @disable %>
+    <p>YOU ARE NOT ALLOW TO DEMAND, PLEASE CLEAR YOUR OVERDUE PAYMENT</p>
+  <% else %>
+    <%= form_for @demanding_parcel, :url =>  demanding_create_customers_path , method: :post  do |f| %>
+      <div class="form-row">
+        <div class="label">Diamond Type: </div>
+        <div class="field">
+          <%= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="label">Supplier: </div>
-      <div class="field">
-        <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand), { include_blank: true }, { class: 'input' } %>
+      <div class="form-row">
+        <div class="label">Supplier: </div>
+        <div class="field">
+          <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand), { include_blank: true }, { class: 'input' } %>
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="label">Description: </div>
-      <div class="field demand_desc">
-        <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
+      <div class="form-row">
+        <div class="label">Description: </div>
+        <div class="field demand_desc">
+          <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="label"></div>
-      <div class="field">
-        <%=f.submit 'Save', class: 'login-btn btn-02' %>
+      <div class="form-row">
+        <div class="label"></div>
+        <div class="field">
+          <%=f.submit 'Save', class: 'login-btn btn-02' %>
+        </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
 </div>
 <div class="clear20"></div>

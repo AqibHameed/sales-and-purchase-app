@@ -219,6 +219,23 @@ class Customer < ApplicationRecord
     Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 1)
   end
 
+  def is_overdue
+    date = Date.today
+    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+      true
+    else
+      false
+    end
+  end
+
+  def block_demands
+    Demand.where(customer_id: self.id).update_all(block: true)
+  end
+
+  def unblock_demands
+    Demand.where(customer_id: self.id).update_all(block: false)
+  end
+
   ## YES/NO ##
   def can_bid_on_parcel(type, round, tender, stone)
     #always allow on the first round

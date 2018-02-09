@@ -17,7 +17,6 @@
         <div class="label">Diamond Type: </div>
         <div class="field">
           <%= select_tag "trading_document_diamond_type", options_for_select(['Outside Goods', 'Sight']),  {class: 'input', include_blank: true} %>
-
         </div>
       </div>
 
@@ -158,7 +157,7 @@
   });
 
   $(document).on('change', '#trading_document_diamond_type', function(){
-    val = $('.single #trading_document_diamond_type').val()
+    val = $('#trading_document_diamond_type').val()
     if (val == 'Outside Goods'){
       $.ajax({
         url: '/supplier_demand_list',
@@ -175,11 +174,11 @@
   })
 
   $(document).on('change', '#trading_parcel_source', function(){
-    id = $('.single #trading_parcel_source').val()
+    id = $('#trading_parcel_source').val()
     $.ajax({
       url: '/supplier_demand_list',
       method: 'get',
       data: {id: id}
     })
   })
-  </script>
+</script>

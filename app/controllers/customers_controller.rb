@@ -153,6 +153,13 @@ class CustomersController < ApplicationController
   def demanding
     @demanding_parcel = Demand.new
     @my_demands = Demand.where(customer_id: current_customer.id)
+    if current_customer.is_overdue
+      current_customer.block_demands
+      @disable = true
+    else
+      current_customer.unblock_demands
+      @disable = false
+    end
   end
 
   def demanding_create
