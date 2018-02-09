@@ -35,7 +35,7 @@
     </tr>
     <tr class="parcel-details">
       <td> Credit</td>
-      <td><%= @transaction.trading_parcel.credit_period %> days (<%= (Date.today + (@transaction.trading_parcel.credit_period.to_i).days).strftime("%B %d, %Y") %>)</td>
+      <td><%= @transaction.trading_parcel.credit_period %> days (<%= (@transaction.created_at + (@transaction.trading_parcel.credit_period.to_i).days).strftime("%B %d, %Y") %>)</td>
     </tr>
     <tr>
       <td> Amount To Be paid</td>
