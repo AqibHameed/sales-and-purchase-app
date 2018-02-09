@@ -3,3 +3,4 @@ $('#tb_<%= @sight.id %>').html('<%= number_to_currency @bid.total %>');
 $('tr').removeClass('current_bid');
 $('.bid_form').html('').hide();
 removeMask();
+window.location.reload()
