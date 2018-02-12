@@ -34,21 +34,64 @@
 <div class="clear20"></div>
 
 <h3>Demand List</h3>
-<div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-    <tr>
-      <th></th>
-      <th>Description</th>
-      <th>Supplier</th>
-    </tr>
-    <% @my_demands.each do |demand| %>
-      <tr>
-        <td></td>
-        <td><%= demand.description %></td>
-        <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
-      </tr>
-    <% end %>
-  </table>
+<div class="row">
+  <div class="col-sm-4">
+    <h1>DTC</h1>
+    <div class="table no-padding">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+        <tr>
+          <th></th>
+          <th>Description</th>
+          <th>Supplier</th>
+        </tr>
+        <% @dtc_demands.each do |demand| %>
+          <tr>
+            <td></td>
+            <td><%= demand.description %></td>
+            <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <h1>Russian</h1>
+    <div class="table no-padding">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+        <tr>
+          <th></th>
+          <th>Description</th>
+          <th>Supplier</th>
+        </tr>
+        <% @russian_demands.each do |demand| %>
+          <tr>
+            <td></td>
+            <td><%= demand.description %></td>
+            <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <h1>Outside</h1>
+    <div class="table no-padding">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+        <tr>
+          <th></th>
+          <th>Description</th>
+          <th>Supplier</th>
+        </tr>
+        <% @outside_demands.each do |demand| %>
+          <tr>
+            <td></td>
+            <td><%= demand.description %></td>
+            <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
 </div>
 
 
