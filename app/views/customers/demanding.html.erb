@@ -18,9 +18,10 @@
       <div class="form-row">
         <div class="label">Description: </div>
         <div class="field demand_desc">
-          <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
+          <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input', multiple: true }%>
         </div>
       </div>
+      <div class="clear20"></div>
       <div class="form-row">
         <div class="label"></div>
         <div class="field">

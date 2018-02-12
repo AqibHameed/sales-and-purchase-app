@@ -154,20 +154,23 @@ class CustomersController < ApplicationController
     @demanding_parcel = Demand.new
     @my_demands = Demand.where(customer_id: current_customer.id)
     if current_customer.is_overdue
-      current_customer.block_demands
+      # current_customer.block_demands
       @disable = true
     else
-      current_customer.unblock_demands
+      # current_customer.unblock_demands
       @disable = false
     end
   end
 
   def demanding_create
     demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
-    @demanding_parcel = Demand.where(description: params[:demand][:description], customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
-      demand.weight = params[:demand][:weight]
-      demand.price = params[:demand][:price]
-      demand.diamond_type = params[:demand][:diamond_type]
+    description = params[:demand][:description].reject { |c| c.empty? }
+    description.each do |d|
+      @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+        demand.weight = params[:demand][:weight]
+        demand.price = params[:demand][:price]
+        demand.diamond_type = params[:demand][:diamond_type]
+      end
     end
     if @demanding_parcel.save
       flash[:notice] = "Demand created successfully."

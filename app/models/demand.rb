@@ -4,10 +4,13 @@ class Demand < ApplicationRecord
 
 
   def self.update_demands_block_unblock
-    # Demand.all.each do |d|
-    #   customer = d.customer
-    #   if customer.is_overdue
-    #     d.update_attribute()
-    # end
+    Demand.all.each do |d|
+      customer = d.customer
+      if customer.is_overdue
+        d.update_attribute(:block, true)
+      else
+        d.update_attribute(:block, false)
+      end
+    end
   end
 end

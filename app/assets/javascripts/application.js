@@ -374,6 +374,10 @@ $(document).ready(function() {
       $('.header .c1 .nav').toggleClass('opened');
     });
   }
+
+  $('#demand_description').select2({
+
+  })
 });
 
 
@@ -407,3 +411,6 @@ function ajaxRequest(url, data, callback, errorCallback, type) {
     });
 
 }
+
+
+
