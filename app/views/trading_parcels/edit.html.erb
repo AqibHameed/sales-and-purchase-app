@@ -1,3 +1,4 @@
+<% dt = @parcel.trading_document.diamond_type %>
 <div class="">
   <h3> Edit Parcel </h3>
   <div class="clear10"></div>
@@ -6,90 +7,96 @@
       <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select(['Outside Goods', 'Rough'], ['Sight', 'Sight']),  {class: 'input', include_blank: true} %>
+          <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  {class: 'input', include_blank: true} %>
+        </div>
+      </div>
+
+      <div class="rough_diamond <%=(dt == 'Rough') ? '' : 'hide'%>">
+        <div class="form-row">
+          <div class="label">Description</div>
+          <div class='field'>
+            <%#=f.text_field :description, class: 'input' %>
+            <%= f.select :description, options_for_select(parcel_list_for_demand(nil), @parcel.description), {include_blank: true}, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">Lot No</div>
+          <div class='field'>
+            <%=f.number_field :lot_no, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">No of stones</div>
+          <div class='field'>
+            <%=f.number_field :no_of_stones, class: 'input' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
+        <div class="form-row">
+          <div class="label">Source</div>
+          <div class='field'>
+            <%#=f.text_field :source, class: 'input' %>
+            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Box</div>
+          <div class='field'>
+            <%=f.text_field :box, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Box value</div>
+          <div class='field'>
+            <%=f.text_field :box_value, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Month Sight</div>
+          <div class='field'>
+            <%=f.text_field :sight, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Cost</div>
+          <div class='field'>
+            <%=f.text_field :cost, class: 'input' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="common">
+        <div class="form-row">
+          <div class="label">Carats</div>
+          <div class='field'>
+            <%=f.text_field :weight, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Credit</div>
+          <div class='field'>
+            <%=f.number_field :credit_period, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Avg Price:</div>
+          <div class='field'>
+            <%=f.text_field :price, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Amount:</div>
+          <div class="field">
+            <%= text_field_tag "amount", '', class: 'input' %>
+          </div>
         </div>
       </div>
 
       <div class="form-row">
-        <div class="label">Source</div>
-        <div class='field'>
-          <%#=f.text_field :source, class: 'input' %>
-          <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Description</div>
-        <div class='field'>
-          <%#=f.text_field :description, class: 'input' %>
-          <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Box</div>
-        <div class='field'>
-          <%=f.text_field :box, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Lot No</div>
-        <div class='field'>
-          <%=f.number_field :lot_no, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">No of stones</div>
-        <div class='field'>
-          <%=f.number_field :no_of_stones, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Carats</div>
-        <div class='field'>
-          <%=f.text_field :weight, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Box value</div>
-        <div class='field'>
-          <%=f.text_field :box_value, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Sight</div>
-        <div class='field'>
-          <%=f.text_field :sight, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Cost</div>
-        <div class='field'>
-          <%=f.text_field :cost, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Price</div>
-        <div class='field'>
-          <%=f.text_field :price, class: 'input' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="label">Credit</div>
-        <div class='field'>
-          <%=f.number_field :credit_period, class: 'input' %>
-        </div>
-      </div>
-
-       <div class="form-row">
         <div class="label"></div>
         <div class='field'>
           <%=f.submit 'Update', class: 'btn-01 login_btn' %>
@@ -103,18 +110,15 @@
 <script type="text/javascript">
   $(document).on('change', '#trading_document_diamond_type', function(){
     val = $(this).val()
-    if(val == "Outside Goods"){
+    if(val == "Rough"){
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
-      $('#trading_document_credit_field').val('E')
-      $('#trading_document_price_field').val('F')
+
     }else if(val == "Sight"){
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
-      $('#trading_document_credit_field').val('I')
-      $('#trading_document_price_field').val('H')
     }else{
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
@@ -136,8 +140,8 @@
   });
 
   $(document).on('change', '#trading_document_diamond_type', function(){
-    val = $('.single #trading_document_diamond_type').val()
-    if (val == 'Outside Goods'){
+    val = $('#trading_document_diamond_type').val()
+    if (val == 'Rough'){
       $.ajax({
         url: '/supplier_demand_list',
         method: 'get',
@@ -153,7 +157,7 @@
   })
 
   $(document).on('change', '#trading_parcel_source', function(){
-    id = $('.single #trading_parcel_source').val()
+    id = $('#trading_parcel_source').val()
     $.ajax({
       url: '/supplier_demand_list',
       method: 'get',

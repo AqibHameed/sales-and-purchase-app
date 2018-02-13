@@ -107,6 +107,9 @@ class SuppliersController < ApplicationController
   end
 
   def supplier_demand_list
+    if params[:id] == 'Rough'
+      params[:id] = 'Outside Goods'
+    end
     demand_supplier = DemandSupplier.where(name: params[:id]).first
     @demand_list = DemandList.where(demand_supplier_id: demand_supplier.id)
     respond_to do |format|
