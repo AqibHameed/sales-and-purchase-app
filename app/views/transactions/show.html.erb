@@ -73,53 +73,58 @@
     <%= link_to 'Message', new_message_path(id: @transaction.buyer_id), class: 'login-btn btn-02', data: {turbolinks: false}%>
   <% end %>
   <%if (!@transaction.paid? && @transaction.supplier_id == current_customer.id && @transaction.buyer_confirmed) %>
-    <%=link_to 'Enter Payment','#', id: 'place_amount', class: 'login-btn btn-02',data: {turbolinks: false} %>
+    <%=link_to 'Enter Payment','javascript:void(0)', id: 'place_amount', class: 'login-btn btn-02',data: {turbolinks: false} %>
   <%end%>
 </div>
 <div class="clear20"></div>
-<div class="form-wrapper">
-      <div id = 'show_form' class="hidden">
-        <%if @transaction.paid? %>
-          <p>Already Paid</p>
-        <%else%>
-          <% if @transaction.remaining_amount.nil? || @transaction.remaining_amount.blank? %>
-            <p>No dues are left</p>
-          <% else %>
-            <%= form_for @payment, url: payment_transactions_path do |f|%>
-              <div class="form-row">
-                <div class="label" style='width:33%!important'>
-                  Amount
-                </div>
-                <div class="field" style='width:60%!important'>
-                  <%= f.text_field :amount, :style => 'width:200px;', :placeholder => 'Amount', :class => "input-1" %><%=link_to 'Full Payment','javascript:void(0)',class: 'full_payment' %>
-                  <%= f.hidden_field :transaction_id, value: @transaction.id %>
-                  <div class="clear"></div>
-                  <div class="idt_terms_text"></div>
-                  <div class="form-row">
-                    <div class="label"></div>
-                    <div class='field'>
-                     <%=f.submit 'Pay', class: 'btn-02 login_btn ', id: 'transaction_submit' %>
-                    </div>
+<div class="container">
+  <div class="form-wrapper">
+    <div id='show_form' class="hide">
+      <%if @transaction.paid? %>
+        <p>Already Paid</p>
+      <%else%>
+        <% if @transaction.remaining_amount.nil? || @transaction.remaining_amount.blank? %>
+          <p>No dues are left</p>
+        <% else %>
+          <%= form_for @payment, url: payment_transactions_path do |f|%>
+            <div class="form-row">
+              <div class="label control-label">
+                Amount
+              </div>
+              <div class="field">
+                <%= f.text_field :amount, :placeholder => 'Amount', :class => "input-1 form-control col-sm-12" %>
+                <%=link_to 'Full Payment','javascript:void(0)', class: 'full_payment' %>
+                <%= f.hidden_field :transaction_id, value: @transaction.id %>
+                <div class="clear"></div>
+                <div class="idt_terms_text"></div>
+                <div class="form-row">
+                  <div class="label"></div>
+                  <div class='row field'>
+                   <%=f.submit 'Pay', class: 'btn-02 login_btn ', id: 'transaction_submit' %>
                   </div>
                 </div>
-                <div class="clear"></div>
               </div>
-            <% end %>
+              <div class="clear"></div>
+            </div>
           <% end %>
-        <%end%>
-      </div>
+        <% end %>
+      <%end%>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">
   $(document).ready(function() {
-     $('#show_form').hide();
-     $('#place_amount').click(function(e) {
+    // $('#show_form').hide();
+
+    $(document).on('click', '#place_amount', function(e) {
       e.preventDefault();
-      $('#show_form').toggle();
+      $('#show_form').toggleClass('hide')
     });
+    
     $('.full_payment').click(function(e){
-        e.preventDefault();
-        $('.input-1').val('<%=@transaction.remaining_amount%>')
-      });
+      e.preventDefault();
+      $('.input-1').val('<%=@transaction.remaining_amount%>')
+    });
   });
 </script>
