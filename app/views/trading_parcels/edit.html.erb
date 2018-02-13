@@ -164,4 +164,17 @@
       data: {id: id}
     })
   })
+
+  $(document).on('focusout','#trading_parcel_price', function(){
+    var carat = $('#trading_parcel_weight').val();
+    var price = $('#trading_parcel_price').val();
+    var amount = carat*price;
+    $('#amount').val(amount);
+  });
+  $(document).on('focusout','#trading_parcel_weight', function(){
+    var carat = $('#trading_parcel_weight').val();
+    var price = $('#trading_parcel_price').val();
+    var amount = carat*price;
+    $('#amount').val(amount);
+  });
 </script>

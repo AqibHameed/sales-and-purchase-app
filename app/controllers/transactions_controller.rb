@@ -113,6 +113,6 @@ class TransactionsController < ApplicationController
   end
 
   def update_transaction_params
-    params.require(:transaction).permit(:paid, :total_amount, :price, :invoice_no, :ready_for_buyer)
+    params.require(:transaction).permit(:paid, :total_amount, :price, :invoice_no, :ready_for_buyer, :created_at)
   end
 end
