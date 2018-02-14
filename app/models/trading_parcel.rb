@@ -42,8 +42,8 @@ class TradingParcel < ApplicationRecord
 
   def related_parcels(customer)
     networks = BrokerRequest.where(broker_id: customer.id, accepted: true).map { |e| e.seller_id } #. delete(customer.id.to_i)
-    connected_people = networks.delete(self.customer_id)
-    parcels = TradingParcel.where(description: description, customer_id: connected_people)
+    networks.delete(self.customer_id)
+    parcels = TradingParcel.where(description: description, customer_id: networks)
   end
 
   def send_mail_to_demanded
