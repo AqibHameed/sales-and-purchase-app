@@ -40,15 +40,15 @@
     <div class="table no-padding">
       <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
         <tr>
-          <th></th>
           <th>Description</th>
           <th>Supplier</th>
+          <th></th>
         </tr>
         <% @dtc_demands.each do |demand| %>
           <tr>
-            <td></td>
             <td><%= demand.description %></td>
             <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+            <td><%= link_to(image_tag("/assets/wrong.png", width: "15"), remove_demand_customer_path(id: demand.id), method: :delete)%></td>
           </tr>
         <% end %>
       </table>
@@ -59,15 +59,15 @@
     <div class="table no-padding">
       <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
         <tr>
-          <th></th>
           <th>Description</th>
           <th>Supplier</th>
+          <th></th>
         </tr>
         <% @russian_demands.each do |demand| %>
           <tr>
-            <td></td>
             <td><%= demand.description %></td>
             <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+            <td><%= link_to(image_tag("/assets/wrong.png", width: "15"), remove_demand_customer_path(id: demand.id), method: :delete)%></td>
           </tr>
         <% end %>
       </table>
@@ -78,15 +78,15 @@
     <div class="table no-padding">
       <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
         <tr>
-          <th></th>
           <th>Description</th>
           <th>Supplier</th>
+          <th></th>
         </tr>
         <% @outside_demands.each do |demand| %>
           <tr>
-            <td></td>
             <td><%= demand.description %></td>
             <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+            <td><%= link_to(image_tag("/assets/wrong.png", width: "15"), remove_demand_customer_path(id: demand.id), method: :delete)%></td>
           </tr>
         <% end %>
       </table>

@@ -172,6 +172,7 @@ class CustomersController < ApplicationController
         demand.weight = params[:demand][:weight]
         demand.price = params[:demand][:price]
         demand.diamond_type = params[:demand][:diamond_type]
+        demand.block = false
       end
     end
     if @demanding_parcel.save
@@ -213,6 +214,18 @@ class CustomersController < ApplicationController
       # do nothing
     else
       redirect_to root_path, notice: "You are not authorized."
+    end
+  end
+
+  def remove_demand
+    demand = Demand.where(id: params[:id]).first
+    if demand.present?
+      demand.destroy
+      flash[:notice] = "Dmeand deleted successfully."
+      redirect_to demanding_customers_path
+    else
+      flash[:error] = "No Record Found!"
+      redirect_to demanding_customers_path
     end
   end
 

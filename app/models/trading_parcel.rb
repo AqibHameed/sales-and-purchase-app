@@ -40,6 +40,12 @@ class TradingParcel < ApplicationRecord
     return count
   end
 
+  def related_parcels(customer)
+    networks = BrokerRequest.where(broker_id: customer.id, accepted: true).map { |e| e.seller_id } #. delete(customer.id.to_i)
+    connected_people = networks.delete(self.customer_id)
+    parcels = TradingParcel.where(description: description, customer_id: connected_people)
+  end
+
   def send_mail_to_demanded
     demands = Demand.where(description: self.description, demand_supplier_id: self.customer_id).map { |e| e.customer.email }
     TenderMailer.parcel_up_email(self, demands).deliver rescue logger.info "Error sending email"

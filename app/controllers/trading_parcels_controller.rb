@@ -63,6 +63,11 @@ class TradingParcelsController < ApplicationController
     end
   end
 
+  def related_seller
+    parcel = TradingParcel.where(id: params[:id]).first
+    @parcels = parcel.related_parcels(current_customer)
+  end
+
   private
   def trading_parcel_params
     params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight)

@@ -35,13 +35,13 @@
   })
 
   $(document).on('click', '.bulk_upload', function(){
-    $('.single #trading_document_diamond_type').val('')
+    $('#trading_document_diamond_type').val('')
     $('.bulk').removeClass('hide')
     $('.single').addClass('hide')
   })
 
   $(document).on('click', '.single_parcel', function(){
-    $('.bulk #trading_document_diamond_type').val('')
+    $('#trading_document_diamond_type').val('')
     $('.single').removeClass('hide')
     $('.bulk').addClass('hide')
   })

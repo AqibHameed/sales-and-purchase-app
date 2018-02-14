@@ -113,6 +113,7 @@ Rails.application.routes.draw do
       get :block_unblock_user
       post :create_sub_company
       get :check_for_sale
+      delete :remove_demand
     end
   end
 
@@ -161,6 +162,7 @@ Rails.application.routes.draw do
     member do
       get :message
       post :message_create
+      get :related_seller
     end
   end
   resources :transactions do
@@ -190,6 +192,7 @@ Rails.application.routes.draw do
       get :reject
       get :remove
       get :shared_parcels
+      get :dashboard
     end
   end
 

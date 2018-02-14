@@ -5,6 +5,10 @@ class BrokersController < ApplicationController
     @sellers = Customer.get_sellers
   end
 
+  def dashboard
+    @parcels = TradingParcel.all.select { |e| e.broker_ids.include? current_customer.id.to_s unless e.broker_ids.nil? }
+  end
+
   def send_request
     broker_request = BrokerRequest.where(broker_id: current_customer.id, seller_id: params[:s]).first_or_initialize do |br|
       br.accepted = false
