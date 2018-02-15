@@ -4,7 +4,7 @@ class TradingParcel < ApplicationRecord
   belongs_to :customer
   has_many :proposals
   has_one :my_transaction, class_name: 'Transaction'
-  belongs_to :trading_document
+  belongs_to :trading_document, optional: true
 
   validates :price, :credit_period, :weight, presence: true
   validates :price, :credit_period, :weight, numericality: true

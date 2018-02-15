@@ -30,31 +30,33 @@
             <%= f.hidden_field :customer_id, value: current_customer.id %>
           </div>
         </div>
+
         <div class="rough_diamond hide">
-        <div class="form-row">
-          <div class="label">
-            Lot No Column:
+          <div class="form-row">
+            <div class="label">
+              Lot No Column:
+            </div>
+            <div class="field">
+              <%= f.text_field :lot_no_field, :value => 'A', class: 'input' %>
+            </div>
           </div>
-          <div class="field">
-            <%= f.text_field :lot_no_field, :value => 'A', class: 'input' %>
+
+          <div class="form-row">
+            <div class="label"> Description Column:</div>
+            <div class="field">
+              <%= f.text_field :desc_field, :value => 'B', class: 'input' %>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="label"> No of Stones Column:</div>
+            <div class="field">
+              <%= f.text_field :no_of_stones_field, :value => 'C', class: 'input' %>
+            </div>
           </div>
         </div>
 
         <div class="form-row">
-          <div class="label"> Description Column:</div>
-          <div class="field">
-            <%= f.text_field :desc_field, :value => 'B', class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> No of Stones Column:</div>
-          <div class="field">
-            <%= f.text_field :no_of_stones_field, :value => 'C', class: 'input' %>
-          </div>
-        </div>
-      </div>
-       <div class="form-row">
           <div class="label">Carats Column: </div>
           <div class="field">
             <%= f.text_field :weight_field, :value => 'D', class: 'input' %>
@@ -68,7 +70,6 @@
             <%= f.text_field :credit_field, :value => 'E', class: 'input' %>
           </div>
         </div>
-
         <div class="form-row">
           <div class="label"> Price Column:</div>
           <div class="field">
@@ -257,10 +258,8 @@
     <% end %>
   </div>
 </div>
+
 <script>
-  
-
-
   // $(document).on('change', '#trading_parcel_source', function(){
   //   id = $('#trading_parcel_source').val()
   //   $.ajax({
