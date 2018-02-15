@@ -67,6 +67,12 @@ class BrokersController < ApplicationController
     end
   end
 
+  def demand
+    @parcel = TradingParcel.find(params[:id])
+    @demand = Demand.where(description: @parcel.description, block: false, deleted: false).where.not(customer_id: current_customer.id)
+    # @customers = Customer.unscoped.where(id: @demand.map(&:customer_id)).page params[:page]
+  end
+
   private
 
   def load_request

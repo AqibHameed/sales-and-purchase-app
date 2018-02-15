@@ -197,6 +197,9 @@ Rails.application.routes.draw do
       get :invite
       post :send_invite
     end
+    member do
+      get :demand
+    end
   end
 
   namespace :api do

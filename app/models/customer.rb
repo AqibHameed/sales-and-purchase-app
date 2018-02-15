@@ -27,6 +27,7 @@ class Customer < ApplicationRecord
   has_many :email_attachments
   has_many :sender, :class_name => 'Message', :foreign_key => 'sender_id'
   has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
+  has_many :broker_invites
 
   has_many :customer_roles
   # has_many :roles, through: :customer_roles
