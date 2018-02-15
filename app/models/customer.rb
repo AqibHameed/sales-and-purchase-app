@@ -189,6 +189,11 @@ class Customer < ApplicationRecord
     elsif self.role == "Broker"
       CustomerRole.create(role_id: 4, customer_id: self.id)
     end
+    invite = BrokerInvite.where(email: self.email).first
+    if invite.nil?
+    else
+      BrokerRequest.create(broker_id: invite.customer_id, seller_id: id, accepted: true)
+    end
   end
 
   def notify_by_supplier supplier

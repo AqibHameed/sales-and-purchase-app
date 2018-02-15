@@ -152,9 +152,9 @@ class CustomersController < ApplicationController
 
   def demanding
     @demanding_parcel = Demand.new
-    @dtc_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 1)
-    @russian_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 2)
-    @outside_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 3)
+    @dtc_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 1, deleted: false)
+    @russian_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 2, deleted: false)
+    @outside_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 3, deleted: false)
     if current_customer.is_overdue
       # current_customer.block_demands
       @disable = true
@@ -173,6 +173,7 @@ class CustomersController < ApplicationController
         demand.price = params[:demand][:price]
         demand.diamond_type = params[:demand][:diamond_type]
         demand.block = false
+        demand.deleted = false
       end
     end
     if @demanding_parcel.save
@@ -220,7 +221,7 @@ class CustomersController < ApplicationController
   def remove_demand
     demand = Demand.where(id: params[:id]).first
     if demand.present?
-      demand.destroy
+      demand.update_attributes(deleted: true)
       flash[:notice] = "Dmeand deleted successfully."
       redirect_to demanding_customers_path
     else

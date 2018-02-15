@@ -32,7 +32,7 @@ class TradingParcel < ApplicationRecord
   end
 
   def demand_count(parcel, customer)
-    count = Demand.where(description: parcel.description, block: false).where.not(customer_id: customer.id).count
+    count = Demand.where(description: parcel.description, block: false, deleted: false).where.not(customer_id: customer.id).count
     # customer_ids = demands.customer_ids
     # customer_ids.each do |id|
     #   Customer.check_overdue(id)

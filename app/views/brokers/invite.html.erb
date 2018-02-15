@@ -1,0 +1,32 @@
+<h3>Invite</h3>
+<div class="clear20"></div>
+<div class="row">
+  <%= form_for @broker_invite, url: send_invite_brokers_path, html: { class: 'form-horizontal'} do |f| %>
+    <div class="col-sm-offset-2 col-sm-10">
+      <% if @broker_invite.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@broker_invite.errors.count, "error") %> prohibited this invite from being send:</h2>
+          <ul>
+            <% @broker_invite.errors.each do |atr, msg| %>
+              <li>
+                <%= @broker_invite.errors.full_message(atr, msg) %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+    <div class="form-group">
+      <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+      <div class="col-sm-10">
+        <%=f.email_field :email, class: 'form-control', placeholder: "Email", required: true %>
+        <%=f.hidden_field :customer_id, value: current_customer.id, class: 'form-control', placeholder: "Email", required: true %>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <%=f.submit "Send", class: 'btn btn-danger' %>
+      </div>
+    </div>
+  <% end %>
+</div>

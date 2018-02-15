@@ -2,7 +2,7 @@ class TradingParcelsController < ApplicationController
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
-  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :check_authenticate_supplier, :share_broker]
+  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
 
   rescue_from ActiveRecord::RecordNotFound do
@@ -64,8 +64,13 @@ class TradingParcelsController < ApplicationController
   end
 
   def related_seller
-    parcel = TradingParcel.where(id: params[:id]).first
-    @parcels = parcel.related_parcels(current_customer)
+    @parcels = @parcel.related_parcels(current_customer)
+  end
+
+  def parcel_history
+    networks = BrokerRequest.where(broker_id: current_customer.id, accepted: true).map { |e| e.seller_id }
+    @past_demands = Demand.where(description: @parcel.description, customer_id: networks)
+    @past_sell = TradingParcel.where(description: @parcel.description, customer_id: networks, sold: false)
   end
 
   private

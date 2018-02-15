@@ -8,7 +8,7 @@
 	<tboady>
 		<% @parcels.each do |parcel| %>
 			<tr>
-				<td><%= parcel.description %></td>
+				<td><%= link_to parcel.description, parcel_history_trading_parcel_path(parcel) %></td>
 				<td><%= link_to parcel.related_parcels(current_customer).count, related_seller_trading_parcel_path(parcel), data: { turbolinks: false } %></td>
 				<td><%= link_to parcel.demand_count(parcel, current_customer), demand_supplier_path(id: parcel.id), data: { turbolinks: false } %></td>
 			</tr>

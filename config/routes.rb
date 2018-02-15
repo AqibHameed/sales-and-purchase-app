@@ -163,6 +163,7 @@ Rails.application.routes.draw do
       get :message
       post :message_create
       get :related_seller
+      get :parcel_history
     end
   end
   resources :transactions do
@@ -193,6 +194,8 @@ Rails.application.routes.draw do
       get :remove
       get :shared_parcels
       get :dashboard
+      get :invite
+      post :send_invite
     end
   end
 
