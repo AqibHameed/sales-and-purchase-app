@@ -1,0 +1,40 @@
+$('.parcel-detail').html("<%= j render 'parcel_details_modal' %>")
+$('#parcel_details_modal').modal('show')
+
+$(document).on('keyup focusout','#percent', function(){
+  var carat = parseFloat($('#carats').val());
+  var cost = parseFloat($('#cost').val());
+  var price = parseFloat($('#proposal_price').val());
+  var percent = parseFloat($('#percent').val());
+  calculate_prices(carat, cost, percent, price)
+});
+
+$(document).on('keyup focusout','#proposal_price', function(){
+  var carat = parseFloat($('#carats').val());
+  var cost = parseFloat($('#cost').val());
+  var price = parseFloat($('#proposal_price').val());
+  calculate_percents(carat, cost, price)
+});
+
+function calculate_prices(carat, cost, percent, price){
+  var avg_price = (percent/100)*cost + cost;
+  var amount = carat*avg_price;
+  console.log(cost)
+  console.log(percent)
+  console.log(avg_price)
+  if (isNaN(avg_price)){
+    $('#proposal_price').val('')
+  }else{
+    $('#proposal_price').val(avg_price)
+  }
+}
+
+function calculate_percents(carat, cost, price){
+  var percent = ((price - cost) * 100)/cost;
+  var amount = carat*price;
+  if (isNaN(percent)){
+    $('#percent').val('')
+  }else{
+    $('#percent').val(percent)
+  }
+}

@@ -6,14 +6,14 @@ class Proposal < ApplicationRecord
 
   enum status: [ :negotiated, :accepted, :rejected ]
 
-  validate :price_validation, :credit_validation
+  validate  :credit_validation
 
   def price_validation
     supplier_price = trading_parcel.price
     unless supplier_price.nil?
       buyer_price = supplier_price*(0.85)
       if price.to_f < buyer_price
-        errors[:base] << "Price should be less than 15% of supplier price. Please try again"
+        errors[:base] << "Price should not be less than 15% of supplier price. Please try again"
       end
     end
   end

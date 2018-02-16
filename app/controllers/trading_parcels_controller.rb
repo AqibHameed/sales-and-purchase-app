@@ -17,11 +17,11 @@ class TradingParcelsController < ApplicationController
       if params[:trading_parcel][:single_parcel].present?
         redirect_to single_parcel_supplier_path(@parcel), notice: 'Parcel created successfully'
       else
-        redirect_to suppliers_path, notice: 'Parcel created successfully'
+        redirect_to trading_customers_path, notice: 'Parcel created successfully'
       end
     else
       error = @parcel.errors.full_messages.first
-      redirect_to suppliers_path, notice: error
+      redirect_to trading_customers_path, notice: error
     end
   end
 
@@ -40,7 +40,7 @@ class TradingParcelsController < ApplicationController
   def update
     if @parcel.update_attributes(trading_parcel_params)
       flash[:notice] = 'Parcel updated successfully'
-      redirect_to suppliers_path
+      redirect_to trading_customers_path
     else
       render :edit
     end
@@ -49,7 +49,7 @@ class TradingParcelsController < ApplicationController
   def destroy
     @parcel.destroy
     flash[:notice] = 'Parcel deleted successfully'
-    redirect_to suppliers_path
+    redirect_to trading_customers_path
   end
 
   def share_broker
@@ -58,8 +58,15 @@ class TradingParcelsController < ApplicationController
 
   def parcel_detail
     @parcel = TradingParcel.find(params[:id])
-    respond_to do |format|
-      format.js
+    if params[:proposal] == "true"
+      @proposal = Proposal.new
+      respond_to do |format|
+        format.js { render 'parcel_detail_modal'}
+      end
+    else
+      respond_to do |format|
+        format.js
+      end
     end
   end
 
@@ -75,7 +82,7 @@ class TradingParcelsController < ApplicationController
 
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight)
+    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent)
   end
 
   def set_trading_parcel

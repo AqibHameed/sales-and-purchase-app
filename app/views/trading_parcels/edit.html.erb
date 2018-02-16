@@ -61,12 +61,6 @@
             <%=f.text_field :sight, class: 'input' %>
           </div>
         </div>
-        <div class="form-row">
-          <div class="label">Cost</div>
-          <div class='field'>
-            <%=f.text_field :cost, class: 'input' %>
-          </div>
-        </div>
       </div>
 
       <div class="common">
@@ -80,6 +74,18 @@
           <div class="label">Credit</div>
           <div class='field'>
             <%=f.number_field :credit_period, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Cost</div>
+          <div class='field'>
+            <%=f.text_field :cost, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Percent</div>
+          <div class='field'>
+            <%=f.text_field :percent, class: 'input' %>
           </div>
         </div>
         <div class="form-row">
@@ -177,4 +183,82 @@
     var amount = carat*price;
     $('#amount').val(amount);
   });
+
+  $(document).on('keyup focusout','#trading_parcel_percent', function(){
+    var carat = parseFloat($('#trading_parcel_weight').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var percent = parseFloat($('#trading_parcel_percent').val());
+    var price = parseFloat($('#trading_parcel_price').val());
+    calculate_price(carat, cost, percent, price)
+  });
+
+  $(document).on('keyup focusout','#trading_parcel_price', function(){
+    var carat = parseFloat($('#trading_parcel_weight').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var price = parseFloat($('#trading_parcel_price').val());
+    calculate_percent(carat, cost, price)
+  });
+
+  $(document).ready(function(){
+    var carat = $('#trading_parcel_weight').val();
+    var price = $('#trading_parcel_price').val();
+    var amount = carat*price;
+    $('#amount').val(amount);
+  })
+
+  function calculate_price(carat, cost, percent, price){
+    var avg_price = (percent/100)*cost + cost;
+    var amount = carat*avg_price;
+    if (isNaN(avg_price)){
+      $('#trading_parcel_price').val('')
+      $('#amount').val('');
+    }else{
+      $('#trading_parcel_price').val(avg_price)
+      $('#amount').val(amount);
+    }
+  }
+
+  function calculate_percent(carat, cost, price){
+    var percent = ((price - cost) * 100)/cost;
+    var amount = carat*price;
+    if (isNaN(percent)){
+      $('#trading_parcel_percent').val('')
+      $('#amount').val(amount);
+    }else{
+      $('#trading_parcel_percent').val(percent)
+      $('#amount').val(amount);
+    }
+  }
+
+  // function calculatePricePerCarat() {
+
+  //   var price_per_carat, weight, total_bid;
+
+  //   weight = parseFloat($('.parcel_weight').html());
+  //   total_bid = parseFloat($('.total_bid').val());
+
+  //   price_per_carat = total_bid / weight;
+
+  //   if (isNaN(price_per_carat)) {
+  //     $('.price_per_carat').val('');
+  //   } else {
+  //     price_per_carat = (Math.round(price_per_carat * 100) / 100);
+  //     $('.price_per_carat').val(price_per_carat);
+  //   }
+  // }
+
+  // function calculateTotalAmount() {
+  //   var weight, price_per_carat, total_bid;
+  //   weight = parseFloat($('.parcel_weight').html());
+  //   price_per_carat = parseFloat($('.price_per_carat').val());
+  //   total_bid = price_per_carat * weight;
+
+  //   if (isNaN(total_bid)) {
+  //     $('.total_bid').val('')
+  //   } else {
+  //     total_bid = (Math.round(total_bid * 100) / 100);
+  //     $('.total_bid').val(total_bid)
+
+  //   }
+  // }
 </script>

@@ -146,8 +146,10 @@ class CustomersController < ApplicationController
   end
 
   def trading
+    @proposal = Proposal.new
     customer_id = BlockUser.where(block_user_ids: current_customer.id).map { |e| e.customer_id }
     @parcels = TradingParcel.where(sold: false).where.not(customer_id: customer_id).where.not(customer_id: current_customer.id).order(created_at: :desc) #.page params[:page]
+    @my_parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc)
   end
 
   def demanding

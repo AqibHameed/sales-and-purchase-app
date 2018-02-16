@@ -196,13 +196,6 @@
         </div>
 
         <div class="form-row">
-          <div class="label"> Cost:</div>
-          <div class="field">
-            <%= f.text_field :cost, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
           <div class="label"> Box Value:</div>
           <div class="field">
             <%= f.text_field :box_value, class: 'input' %>
@@ -231,6 +224,20 @@
           <div class="label">Carats:</div>
           <div class="field">
             <%= f.text_field :weight, class: 'input', id: 'carat' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Cost:</div>
+          <div class="field">
+            <%= f.text_field :cost, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Percent:</div>
+          <div class="field">
+            <%= f.text_field :percent, class: 'input' %>
           </div>
         </div>
 
@@ -268,6 +275,45 @@
   //     data: {id: id}
   //   })
   // })
+
+  $(document).on('keyup focusout','#trading_parcel_percent', function(){
+    var carat = parseFloat($('#carat').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var percent = parseFloat($('#trading_parcel_percent').val());
+    var price = parseFloat($('#price').val());
+    calculate_price(carat, cost, percent, price)
+  });
+
+  $(document).on('keyup focusout','#price', function(){
+    var carat = parseFloat($('#carat').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var price = parseFloat($('#price').val());
+    calculate_percent(carat, cost, price)
+  });
+  
+  function calculate_price(carat, cost, percent, price){
+    var avg_price = (percent/100)*cost + cost;
+    var amount = carat*avg_price;
+    if (isNaN(avg_price)){
+      $('#price').val('')
+      $('#amount').val('');
+    }else{
+      $('#price').val(avg_price)
+      $('#amount').val(amount);
+    }
+  }
+
+  function calculate_percent(carat, cost, price){
+    var percent = ((price - cost) * 100)/cost;
+    var amount = carat*price;
+    if (isNaN(percent)){
+      $('#trading_parcel_percent').val('')
+      $('#amount').val(amount);
+    }else{
+      $('#trading_parcel_percent').val(percent)
+      $('#amount').val(amount);
+    }
+  }
 
   $(document).on('focusout','#price', function(){
     var carat = $('#carat').val();

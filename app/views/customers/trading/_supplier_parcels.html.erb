@@ -10,14 +10,9 @@
     <th>Sight</th>
     <th>Total $</th>
     <th>Days</th>
-    <% if params[:controller] == 'customers' %>
-      <th>Supplier</th>
-    <% end %>
     <th>UID</th>
-    <% unless params[:controller] == 'customers' %>
-      <th>Demand</th>
-      <th>For Sale</th>
-    <% end %>
+    <th>Demand</th>
+    <th>For Sale</th>
     <th></th>
   </tr>
   <% parcels.each.with_index(1) do |parcel, i|%>
@@ -46,25 +41,13 @@
           <td class="td-mobile-open"><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
           <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
            <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight %></td>
-
           <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
-          <% if params[:controller] == 'customers' %>
-            <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
-          <% end %>
           <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
-          <!-- <td><%=parcel.demand_count(parcel)%></td> -->
-          <% if parcel.customer_id == current_customer.id %>
-            <% if params[:controller] == 'customers' %>
-              <td><%= link_to "Let's buy", trading_parcel_path(parcel),data: {turbolinks: false} %></td>
-            <% else %>
-              <td>
-                <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-                <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
-              </td>
-            <% end %>
-          <% else %>
-            <td><%= link_to "Let's buy", trading_parcel_path(parcel),data: {turbolinks: false} %></td>
-          <% end %>
+          <td><%=parcel.demand_count(parcel)%></td>
+          <td>
+            <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
+            <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
+          </td>
         </tr>
       <% else %>
         <tr>
@@ -91,41 +74,16 @@
           <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
           <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
           <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
-          <% if params[:controller] == 'customers' %>
-            <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
-          <% end %>
           <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
-          <% unless params[:controller] == 'customers' %>
-            <td>
-              <%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id) %>
-            </td>
-          <% end %>
-          <% if parcel.customer_id == current_customer.id %>
-            <% if params[:controller] == 'customers' %>
-              <td><%= link_to "Let's buy", trading_parcel_path(parcel),data: {turbolinks: false} %></td>
-            <% else %>
-              <td><%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %></td>
-              <td>
-                <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-                <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-                <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
-              </td>
-            <% end %>
-          <% else %>
-            <td><%= link_to "Let's buy", 'javascript:void(0)', data: {turbolinks: false}, class: 'lets_buy', "data-id" => parcel.id %></td>
-          <% end %>
+          <td><%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id) %></td>
+          <td><%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %></td>
+          <td>
+            <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
+            <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
+            <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
+          </td>
         </tr>
       <% end %>
     <% end %>
   <% end %>
 </table>
-<%#= paginate @parcels %>
-<% unless params[:controller] == 'customers' %>
-  <div class="parcel-detail">
-    <%= render partial: 'trading_parcels/parcel_visibility'%>
-  </div>
-<% else %>
-  <div class="parcel-detail">
-    <%= render partial: 'trading_parcels/parcel_details_modal'%>
-  </div>
-<% end %>
