@@ -301,8 +301,6 @@ class Customer < ApplicationRecord
       field :company
       field :company_address
       field :phone
-      field :status
-      field :verified
     end
   end
 
