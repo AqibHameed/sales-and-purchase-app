@@ -14,7 +14,8 @@ module Api
             else
               parcel_image = ParcelImage.new(parcel_id: stone.id, image: params[:image], customer_id: current_customer.id)
               if parcel_image.save
-                render json: { success: true, message: "Image successfully uploaded.", response_code: 200 }
+                images = stone.parcel_images.where(customer_id: current_customer.id).map { |e| e.try(:image).try(:url)}
+                render json: { success: true, message: "Image successfully uploaded.", images: images, response_code: 200 }
               else
                 render json: { success: false, message: "Some error in upload. Please try again", response_code: 201 }
               end
