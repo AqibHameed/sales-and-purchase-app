@@ -82,7 +82,7 @@
     // },
     xAxis : {
       type: 'datetime',
-      categories: <%= raw @history.collect{ |t| [t.created_at.strftime("%B")] } %>
+      categories: <%= raw @history.collect{ |t| [t.created_at.strftime("%b-%Y")] } %>
     },
     yAxis : {
       min : 0,
