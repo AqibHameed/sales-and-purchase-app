@@ -19,7 +19,7 @@ $(document).on('keyup focusout','#proposal_price', function(){
 function calculate_prices(carat, cost, percent, price){
   var avg_price = (percent/100)*cost + cost;
   var amount = carat*avg_price;
-  var last_sold = '<%= @history.first.total_amount.to_f%>'
+  var last_sold = '<%= @history.first.total_amount.to_f rescue 0 %> '
   if (isNaN(avg_price)){
     $('#proposal_price').val('')
   }else{
@@ -32,7 +32,7 @@ function calculate_prices(carat, cost, percent, price){
 function calculate_percents(carat, cost, price){
   var percent = ((price - cost) * 100)/cost;
   var amount = carat*price;
-  var last_sold = '<%= @history.first.total_amount.to_f%>'
+  var last_sold = '<%= @history.try(:first).total_amount.to_f rescue 0 %>'
   if (isNaN(percent)){
     $('#percent').val('')
   }else{
@@ -44,17 +44,24 @@ function calculate_percents(carat, cost, price){
 
 
 function showDiff(amount, last_sold) {
-  var per_diff = 0
-
-  per_diff = 100 - (amount / last_sold * 100)
-  if (per_diff > 0) {
-    var color = 'green';
-    var type = 'Less'
-  } else {
+  if(last_sold == 0){
     var color = 'red';
     var type = 'High'
+    $('.difference').html(Math.abs(Math.round(100 * 100) / 100) + '% ' + type).css({
+      'color' : color
+    });
+  }else{
+    var per_diff = 0
+    per_diff = 100 - (amount / last_sold * 100)
+    if (per_diff > 0) {
+      var color = 'green';
+      var type = 'Less'
+    } else {
+      var color = 'red';
+      var type = 'High'
+    }
+    $('.difference').html(Math.abs(Math.round(per_diff * 100) / 100) + '% ' + type).css({
+      'color' : color
+    });
   }
-  $('.difference').html(Math.abs(Math.round(per_diff * 100) / 100) + '% ' + type).css({
-    'color' : color
-  });
 }
