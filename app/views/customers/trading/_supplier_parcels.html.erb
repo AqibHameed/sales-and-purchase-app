@@ -78,9 +78,16 @@
           <td><%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id) %></td>
           <td><%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %></td>
           <td>
-            <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-            <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-            <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
+            <%= link_to trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} do %>
+              <span class="fa fa-eye"></span>
+            <% end %>
+            <%= link_to edit_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} do %>
+              <span class="fa fa-edit"></span>
+            <% end %>
+            <%= link_to trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} do %>
+              <span class="fa fa-trash"></span>
+            <% end %>
+            <%= link_to 'Direct Sell', direct_sell_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
           </td>
         </tr>
       <% end %>

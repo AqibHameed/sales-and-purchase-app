@@ -1,5 +1,5 @@
 class TransactionsController < ApplicationController
-  layout 'supplier'
+  # layout 'supplier'
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   
@@ -12,9 +12,9 @@ class TransactionsController < ApplicationController
     @parcel = TradingParcel.new(parcel_transaction_params)
     if @parcel.save
       @parcel.my_transaction.set_due_date
-      redirect_to transactions_suppliers_path, notice: "Transaction added."
+      redirect_to root_url, notice: "Direct sell added."
     else
-      render :new
+      render 'trading_parcel/direct_sell'
       @parcel.build_my_transaction
     end
   end

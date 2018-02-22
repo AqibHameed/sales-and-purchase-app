@@ -82,6 +82,12 @@ class TradingParcelsController < ApplicationController
     @past_sell = TradingParcel.where(description: @parcel.description, customer_id: networks, sold: false)
   end
 
+  def direct_sell
+    @my_parcel = TradingParcel.find(params[:id])
+    @parcel = TradingParcel.new
+    @parcel.build_my_transaction
+  end
+
   private
   def trading_parcel_params
     params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent)

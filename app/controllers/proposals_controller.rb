@@ -1,5 +1,5 @@
 class ProposalsController < ApplicationController
-  layout 'supplier'
+  # layout 'supplier'
   before_action :authenticate_customer!
   before_action :set_proposal, only: [ :show, :edit, :delete, :update, :accept, :reject, :check_authenticate_person ]
   before_action :check_authenticate_person, only: [:edit]

@@ -1,0 +1,332 @@
+<%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
+<%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
+<% dt = @my_parcel.diamond_type%>
+<h3>Transaction </h3>
+
+<div class="transaction-form">
+  <div class="clear10"></div>
+  <div class="form-wrapper">
+    <%= nested_form_for @parcel, url: transactions_path do |p| %>
+      <% if @parcel.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@parcel.errors.count, "error") %> prohibited this transaction from being saved:</h2>
+          <ul>
+            <% @parcel.errors.each do |atr, msg| %>
+              <li>
+                <% if atr.to_s.include? "base" %>
+                  <%= msg %>
+                <% else %>
+                  <%= @parcel.errors.full_message(atr, msg) %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="clear20"></div>
+      <div class="form-row">
+        <div class="label">Diamond Type: </div>
+        <div class="field">
+          <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  { class: 'input', include_blank: true } %>
+        </div>
+      </div>
+      <div class="rough_diamond <%=(dt == 'Rough') ? '' : 'hide'%>">
+        <div class="form-row">
+          <div class="label">Description: </div>
+          <div class="field">
+            <%= p.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
+            <%= p.hidden_field :diamond_type, class: 'diamond_type_value'%>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">No of Stones: </div>
+          <div class="field">
+            <%= p.number_field :no_of_stones, value: @my_parcel.no_of_stones, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">Lot No: </div>
+          <div class="field">
+            <%= p.number_field :lot_no, value: @my_parcel.lot_no, class: 'input' %>
+          </div>
+        </div>
+      </div>
+      <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
+        <div class="form-row">
+          <div class="label"> Source: </div>
+          <div class="field">
+            <%= p.select :source, options_for_select(supplier_list_for_demand, @my_parcel.source), {include_blank: true}, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Box: </div>
+          <div class="field">
+            <%#= p.text_field :box, class: 'input' %>
+            <%= p.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Cost:</div>
+          <div class="field">
+            <%= p.text_field :cost, value: @my_parcel.cost, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Box Value:</div>
+          <div class="field">
+            <%= p.text_field :box_value, value: @my_parcel.box_value, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Month Sight:</div>
+          <div class="field">
+            <%= p.text_field :sight, value: @my_parcel.sight, class: 'input' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="common">
+        <div class="form-row">
+          <div class="label">Credit: </div>
+          <div class="field">
+            <%= p.number_field :credit_period, value: @my_parcel.credit_period, class: 'input' %>
+            <%= p.hidden_field :customer_id, value: current_customer.id %>
+            <%= p.hidden_field :sold, value: true %>
+          </div>
+        </div>
+
+        <div class="form-row carat-field">
+          <div class="label">Carats:</div>
+          <div class="field">
+            <%= p.text_field :weight, value: @my_parcel.weight, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Avg Price:</div>
+          <div class="field">
+            <%= p.text_field :price, value: @my_parcel.price, class: 'input' %>
+          </div>
+        </div>
+      
+        <%= p.fields_for :my_transaction do |f| %>
+          <div class="form-row">
+            <div class="label">Buyer:</div>
+            <div class='field'>
+              <%= f.select :buyer_id, customer_list_options, { include_blank: true }, class: 'input no-border' %>
+            </div>
+            <%= link_to 'invite', invite_transactions_path, :class => 'invite', :style=> "margin-right: 12px !important;" %>
+          </div>
+          <%= f.hidden_field :supplier_id, value: current_customer.id %>
+          <%= f.hidden_field :price, class: 'transactions-price' %>
+          <%= f.hidden_field :credit, class: 'transactions-credit' %>
+          <%= f.hidden_field :transaction_type, value: 'manual' %>
+          <%= f.hidden_field :weight, class: 'transactions-weight' %>
+          <%= f.hidden_field :diamond_type, class: 'diamond_type_value' %>
+          <%= f.hidden_field :buyer_confirmed, value: false %>
+          <div class="form-row">
+            <div class="label">Invoice Date:</div>
+            <div class='field'>
+              <%=f.text_field :created_at,  class: 'input date' %>
+            </div>
+          </div>
+          <div class="clear10"></div>
+          <div class="form-row">
+            <div class="label">Paid:</div>
+            <div class='field'>
+              <%=f.select :paid, options_for_select([[true, 1],[false, 0]]), { include_blank: true },  class: 'input' %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="clear"></div>
+      <div class="idt_terms_text"></div>
+      <div class="form-row">
+        <div class="label"></div>
+        <div class='field'>
+          <%=p.submit 'Submit', class: 'btn-01 login_btn disabled', id: 'transaction_submit' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div class="bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
+<div class="clear"></div>
+
+<script type="text/javascript">
+
+  $(document).ready(function (){
+    credit = $('#trading_parcel_credit_period').val()
+    price = $('#trading_parcel_price').val()
+    weight = $('#trading_parcel_weight').val()
+    $('.transactions-credit').val(credit)
+    $('.transactions-price').val(price)
+    $('.transactions-weight').val(weight)
+    $(".date").datepicker({
+      "dateFormat" : 'dd/mm/yy'
+    });
+    parcel_list($('#trading_document_diamond_type').val())
+    setTimeout(function(){ 
+      $('#trading_parcel_description').val('<%=@my_parcel.description%>')
+    }, 500);
+  })
+
+  $(document).on('click', '.invite', function(e) {
+    e.preventDefault()
+    var _this = $(this);
+    var top = $(this).position()['top'] - 300;
+    $.ajax({
+      url : '/transactions/invite',
+      type : 'GET',
+      success : function(response) {
+        console.log(response)
+        $('.bid_form').html(response).show()
+        $('tr').removeClass('current_bid');
+        $(_this).parents('tr').addClass('current_bid');
+
+      }
+    })
+  });
+
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $(this).val()
+    if(val == "Rough"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
+      // $('.transactions-weight').val('')
+      // $('#trading_parcel_weight').val('')
+      $('.diamond_type_value').val('Rough')
+    }else if(val == "Sight"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').removeClass('hide')
+      $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
+      // $('.transactions-weight').val('')
+      // $('#trading_parcel_weight').val('')
+      $('.diamond_type_value').val('Sight')
+    }else if(val == "Something Special"){
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.carat-field').addClass('hide')
+      $('#trading_parcel_description').val('Finance Transaction')
+      $('.transactions-weight').val(1)
+      $('#trading_parcel_weight').val(1)
+      $('.diamond_type_value').val('Finance')
+    }else{
+      $('.common').addClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+      // $('.carat-field').removeClass('hide')
+      $('#trading_parcel_description').val('')
+      // $('.transactions-weight').val('')
+      // $('#trading_parcel_weight').val('')
+    }
+  });
+
+  $(document).on('input', '#trading_parcel_credit_period', function() {
+    val = $(this).val()
+    $('.transactions-credit').val(val)
+  });
+
+  $(document).on('input', '#trading_parcel_price', function() {
+    val = $(this).val()
+    $('.transactions-price').val(val)
+  });
+
+  $(document).on('input', '#trading_parcel_weight', function() {
+    val = $(this).val()
+    $('.transactions-weight').val(val)
+  });
+
+  function add_icons_to_select(state) {
+    var originalOption = state.element;
+
+    if (!state.id) return state.text; // optgroup
+    return "<img class='customer_list_verified_icon' src='" + $(originalOption).data('icon') +"'/>" + " " + state.text;
+  }
+
+  $(document).ready(function(){
+    $("#trading_parcel_my_transaction_attributes_buyer_id").select2({
+      formatResult: add_icons_to_select,
+      formatSelection: add_icons_to_select
+    });
+
+    $('#transaction_submit').prop('disabled', true);
+  })
+
+  $(document.body).on("change", "#trading_parcel_my_transaction_attributes_buyer_id", function(){
+    text = "Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection."
+    
+    $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
+    toggle_checkbox()
+    // id = $(this).val()
+    // $.ajax({
+    //   url: '/verified_unverified',
+    //   type: 'GET',
+    //   data: {id: id},
+    //   success: function(data){
+    //     text = data.text
+    //     $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
+    //     toggle_checkbox()
+    //   }
+    // })
+  });
+
+  function toggle_checkbox() {
+    $('#read').click(function () {
+      //check if checkbox is checked
+      if ($(this).is(':checked')) {
+        $('#transaction_submit').removeClass('disabled');
+        $('#transaction_submit').prop('disabled', false);
+      } else {
+        $('#transaction_submit').addClass('disabled');
+        $('#transaction_submit').prop('disabled', true);
+      }
+    });
+  }
+
+  $(document).on('change', '#trading_parcel_source', function(){
+    id = $('#trading_parcel_source').val()
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+    })
+  })
+
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $('#trading_document_diamond_type').val()
+    parcel_list(val)
+  })
+
+  function parcel_list(doc_type) {
+    if (doc_type == 'Rough'){
+      $.ajax({
+        url: '/supplier_demand_list',
+        method: 'get',
+        data: {id: doc_type}
+      })
+    } else if (doc_type == 'Sight'){
+      $.ajax({
+        url: '/supplier_list',
+        method: 'get',
+        data: {diamond_type: doc_type}
+      })
+    }
+  }
+</script>
+<style>
+  .current_bid {
+    background-color: #E4E4E4 !important;
+  }
+
+</style>

@@ -164,6 +164,7 @@ Rails.application.routes.draw do
       post :message_create
       get :related_seller
       get :parcel_history
+      get :direct_sell
     end
   end
   resources :transactions do
