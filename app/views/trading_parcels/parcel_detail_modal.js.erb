@@ -19,22 +19,42 @@ $(document).on('keyup focusout','#proposal_price', function(){
 function calculate_prices(carat, cost, percent, price){
   var avg_price = (percent/100)*cost + cost;
   var amount = carat*avg_price;
-  console.log(cost)
-  console.log(percent)
-  console.log(avg_price)
+  var last_sold = '<%= @history.first.total_amount.to_f%>'
   if (isNaN(avg_price)){
     $('#proposal_price').val('')
   }else{
     $('#proposal_price').val(avg_price)
+    $('#total').val(amount)
   }
+  showDiff(amount, last_sold)
 }
 
 function calculate_percents(carat, cost, price){
   var percent = ((price - cost) * 100)/cost;
   var amount = carat*price;
+  var last_sold = '<%= @history.first.total_amount.to_f%>'
   if (isNaN(percent)){
     $('#percent').val('')
   }else{
     $('#percent').val(percent)
+    $('#total').val(amount)
   }
+  showDiff(amount, last_sold)
+}
+
+
+function showDiff(amount, last_sold) {
+  var per_diff = 0
+
+  per_diff = 100 - (amount / last_sold * 100)
+  if (per_diff > 0) {
+    var color = 'green';
+    var type = 'Less'
+  } else {
+    var color = 'red';
+    var type = 'High'
+  }
+  $('.difference').html(Math.abs(Math.round(per_diff * 100) / 100) + '% ' + type).css({
+    'color' : color
+  });
 }

@@ -62,6 +62,7 @@ class Transaction < ApplicationRecord
   def generate_and_add_uid
     uid = SecureRandom.hex(12)
     self.transaction_uid = uid
+    self.description = trading_parcel.description
     self.save(validate: false)
   end
 

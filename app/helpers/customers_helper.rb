@@ -24,4 +24,11 @@ module CustomersHelper
       end
     end
   end
+
+  def last_3_trading_avg(histories)
+    count = histories.count
+    total = histories.map { |e| e.total_amount  }.sum
+    avg = total/count rescue 0
+    number_with_precision(avg, precision: 2)
+  end
 end

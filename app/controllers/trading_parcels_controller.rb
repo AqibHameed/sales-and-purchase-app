@@ -58,6 +58,8 @@ class TradingParcelsController < ApplicationController
 
   def parcel_detail
     @parcel = TradingParcel.find(params[:id])
+    @history = Transaction.where(description: @parcel.description).where.not(buyer_id: current_customer.id).order(created_at: :desc).limit(3)
+    @data = [['OCT', 10], ['NOV', 15]]
     if params[:proposal] == "true"
       @proposal = Proposal.new
       respond_to do |format|
