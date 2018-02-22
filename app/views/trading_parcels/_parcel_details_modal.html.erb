@@ -71,7 +71,8 @@
   $('#container').highcharts({
     chart : {
       type : 'column',
-      width: 550
+      width: 500,
+      height: 300
     },
     title : {
       text : 'Past Trading History'
@@ -80,7 +81,8 @@
       // text : 'Source: WorldClimate.com'
     // },
     xAxis : {
-      category: 'datetime'
+      type: 'datetime',
+      categories: <%= raw @history.collect{ |t| [t.created_at.strftime("%B")] } %>
     },
     yAxis : {
       min : 0,
@@ -99,7 +101,7 @@
     },
     series : [{
       name : 'Sold Price',
-      data : <%= @history.collect{ |t| [t.total_amount.to_f] } %>
+      data : <%= raw @history.collect{ |t| [t.total_amount.to_f] } %>
 
     }]
   });

@@ -72,7 +72,7 @@
         <% end %>
         <td><%=link_to 'view' , transaction_path(transaction), data: {turbolinks: false}, class: link %></td>
         <% if current_user.id == transaction.supplier_id %>
-          <td><%=link_to 'Edit' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %></td>
+          <td><%=link_to 'Invoice' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %></td>
         <% end %>
       </tr>
       <% end %>
