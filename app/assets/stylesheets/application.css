@@ -67,6 +67,12 @@ a.remove {
   text-decoration: none;
   cursor: pointer; }
 
+.side-btn{
+  position: relative;
+  margin: 0 0 0 100px;
+  top: 23px;
+}
+
 .search-filter {
   border: 1px solid #B8B8B8;
   width: 150px; }

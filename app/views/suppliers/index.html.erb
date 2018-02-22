@@ -1,15 +1,18 @@
 <div class="dashboard">
-  <div class="links">
-    <%= link_to "Upload Bulk Parcel", 'javascript:void(0)', class: 'bulk_upload mr5' %>
-    <%= link_to "Create Single Parcel", 'javascript:void(0)', class: 'single_parcel' %>
+  <div class="links text-center">
+    <%= link_to "Upload Bulk Parcel", 'javascript:void(0)', class: 'bulk_upload mr5 btn btn-danger' %>
+    <%= link_to "Create Single Parcel", 'javascript:void(0)', class: 'single_parcel btn btn-danger' %>
   </div>
-  <%= render partial: 'trading_form' %>
+  <hr>
+  <center>
+    <%= render partial: 'trading_form' %>
+  </center>
   <div class="clear10"></div>
-  <h3>My Parcels</h3>
+  <!-- <h3>My Parcels</h3>
   <div class="clear10"></div>
   <div class="table">
-    <%= render partial: 'customers/trading/trading_parcels' , locals: { parcels: @parcels } %>
-  </div>
+    <%#= render partial: 'customers/trading/trading_parcels' , locals: { parcels: @parcels } %>
+  </div> -->
 </div>
 
 <script type="text/javascript">
