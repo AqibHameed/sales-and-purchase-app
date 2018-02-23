@@ -11,22 +11,44 @@
         </div>
       </div>
 
-      <div class="rough_diamond <%=(dt == 'Rough') ? '' : 'hide'%>">
+      <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
         <div class="form-row">
-          <div class="label">Description</div>
+          <div class="label">Source</div>
           <div class='field'>
-            <%#=f.text_field :description, class: 'input' %>
-            <%= f.select :description, options_for_select(parcel_list_for_demand(nil), @parcel.description), {include_blank: true}, class: 'input' %>
+            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="label">Box value</div>
+          <div class='field'>
+            <%=f.text_field :box_value, class: 'input' %>
           </div>
         </div>
 
+        <div class="form-row">
+          <div class="label">Month Sight</div>
+          <div class='field'>
+            <%=f.text_field :sight, class: 'input' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label">Description</div>
+        <div class='field'>
+          <%#=f.text_field :description, class: 'input' %>
+          <%= f.select :description, options_for_select(parcel_list_for_demand(nil), @parcel.description), {include_blank: true}, class: 'input' %>
+        </div>
+      </div>
+
+      <div class="rough_diamond <%=(dt == 'Rough') ? '' : 'hide'%>">
         <div class="form-row">
           <div class="label">Lot No</div>
           <div class='field'>
             <%=f.number_field :lot_no, class: 'input' %>
           </div>
         </div>
-
         <div class="form-row">
           <div class="label">No of stones</div>
           <div class='field'>
@@ -35,33 +57,7 @@
         </div>
       </div>
 
-      <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
-        <div class="form-row">
-          <div class="label">Source</div>
-          <div class='field'>
-            <%#=f.text_field :source, class: 'input' %>
-            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="label">Box</div>
-          <div class='field'>
-            <%=f.text_field :box, class: 'input' %>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="label">Box value</div>
-          <div class='field'>
-            <%=f.text_field :box_value, class: 'input' %>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="label">Month Sight</div>
-          <div class='field'>
-            <%=f.text_field :sight, class: 'input' %>
-          </div>
-        </div>
-      </div>
+      
 
       <div class="common">
         <div class="form-row">
@@ -147,28 +143,12 @@
 
   $(document).on('change', '#trading_document_diamond_type', function(){
     val = $('#trading_document_diamond_type').val()
-    if (val == 'Rough'){
-      $.ajax({
-        url: '/supplier_demand_list',
-        method: 'get',
-        data: {id: val}
-      })
-    } else if (val == 'Sight'){
-      $.ajax({
-        url: '/supplier_list',
-        method: 'get',
-        data: {diamond_type: val}
-      })
-    }
+    parcel_list(val)
   })
 
   $(document).on('change', '#trading_parcel_source', function(){
     id = $('#trading_parcel_source').val()
-    $.ajax({
-      url: '/supplier_demand_list',
-      method: 'get',
-      data: {id: id}
-    })
+    source_list(id)
   })
 
   $(document).on('focusout','#trading_parcel_price', function(){
@@ -204,6 +184,15 @@
     var price = $('#trading_parcel_price').val();
     var amount = carat*price;
     $('#amount').val(amount);
+    
+    parcel_list($('#trading_document_diamond_type').val())
+    setTimeout(function(){ 
+      $('#trading_parcel_description').val('<%=@parcel.description%>')
+    }, 500);
+    setTimeout(function(){ 
+      $('#trading_parcel_source').val('<%=@parcel.source%>')
+      source_list($('#trading_parcel_source').val())
+    }, 400);
   })
 
   function calculate_price(carat, cost, percent, price){
@@ -230,35 +219,27 @@
     }
   }
 
-  // function calculatePricePerCarat() {
+  function parcel_list(doc_type) {
+    if (doc_type == 'Rough'){
+      $.ajax({
+        url: '/supplier_demand_list',
+        method: 'get',
+        data: {id: doc_type}
+      })
+    } else if(doc_type == 'Sight'){
+      $.ajax({
+        url: '/supplier_list',
+        method: 'get',
+        data: {diamond_type: doc_type}
+      })
+    }
+  }
 
-  //   var price_per_carat, weight, total_bid;
-
-  //   weight = parseFloat($('.parcel_weight').html());
-  //   total_bid = parseFloat($('.total_bid').val());
-
-  //   price_per_carat = total_bid / weight;
-
-  //   if (isNaN(price_per_carat)) {
-  //     $('.price_per_carat').val('');
-  //   } else {
-  //     price_per_carat = (Math.round(price_per_carat * 100) / 100);
-  //     $('.price_per_carat').val(price_per_carat);
-  //   }
-  // }
-
-  // function calculateTotalAmount() {
-  //   var weight, price_per_carat, total_bid;
-  //   weight = parseFloat($('.parcel_weight').html());
-  //   price_per_carat = parseFloat($('.price_per_carat').val());
-  //   total_bid = price_per_carat * weight;
-
-  //   if (isNaN(total_bid)) {
-  //     $('.total_bid').val('')
-  //   } else {
-  //     total_bid = (Math.round(total_bid * 100) / 100);
-  //     $('.total_bid').val(total_bid)
-
-  //   }
-  // }
+  function source_list(id){
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+    })
+  }
 </script>
