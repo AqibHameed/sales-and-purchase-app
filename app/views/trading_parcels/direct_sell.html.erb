@@ -1,159 +1,130 @@
 <%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
 <%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
-<% dt = @my_parcel.diamond_type%>
+<% dt = @parcel.diamond_type%>
 <h3>Transaction </h3>
-
-<div class="transaction-form">
-  <div class="clear10"></div>
-  <div class="form-wrapper">
-    <%= nested_form_for @parcel, url: transactions_path do |p| %>
-      <% if @parcel.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@parcel.errors.count, "error") %> prohibited this transaction from being saved:</h2>
-          <ul>
-            <% @parcel.errors.each do |atr, msg| %>
-              <li>
-                <% if atr.to_s.include? "base" %>
-                  <%= msg %>
-                <% else %>
-                  <%= @parcel.errors.full_message(atr, msg) %>
-                <% end %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
+<%= form_for @transaction, url: save_direct_sell_trading_parcel_path(@parcel), html: { class: 'form-horizontal' } do |f| %>
+  <% if @transaction.errors.any? %>
+    <ul>
+      <% @transaction.errors.full_messages.each do |msg| %>
+        <li class="text-danger"><%= msg %></li>
       <% end %>
-      <div class="clear20"></div>
-      <div class="form-row">
-        <div class="label">Diamond Type: </div>
-        <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  { class: 'input', include_blank: true } %>
+    </ul>
+  <% end %>
+  <div class="clear10"></div>
+    <div class="form-group">
+      <label for="inputEmail3" class="col-sm-2 control-label">Diamond Type:</label>
+      <div class="col-sm-10">
+        <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  { class: 'form-control disabled', include_blank: true } %>
+      </div>
+    </div>
+    <div class="rough_diamond <%=(dt == 'Rough') ? '' : 'hide'%>">
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">Description:</label>
+        <div class="col-sm-10">
+          <%= text_field_tag "description", @parcel.description, class: 'form-control disabled' %>
         </div>
       </div>
-      <div class="rough_diamond <%=(dt == 'Rough') ? '' : 'hide'%>">
-        <div class="form-row">
-          <div class="label">Description: </div>
-          <div class="field">
-            <%= p.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
-            <%= p.hidden_field :diamond_type, class: 'diamond_type_value'%>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="label">No of Stones: </div>
-          <div class="field">
-            <%= p.number_field :no_of_stones, value: @my_parcel.no_of_stones, class: 'input' %>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="label">Lot No: </div>
-          <div class="field">
-            <%= p.number_field :lot_no, value: @my_parcel.lot_no, class: 'input' %>
-          </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">No of Stones::</label>
+        <div class="col-sm-10">
+          <%= text_field_tag "no_of_stones", @parcel.no_of_stones, class: 'form-control disabled' %>
         </div>
       </div>
-      <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
-        <div class="form-row">
-          <div class="label"> Source: </div>
-          <div class="field">
-            <%= p.select :source, options_for_select(supplier_list_for_demand, @my_parcel.source), {include_blank: true}, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Box: </div>
-          <div class="field">
-            <%#= p.text_field :box, class: 'input' %>
-            <%= p.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Cost:</div>
-          <div class="field">
-            <%= p.text_field :cost, value: @my_parcel.cost, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Box Value:</div>
-          <div class="field">
-            <%= p.text_field :box_value, value: @my_parcel.box_value, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Month Sight:</div>
-          <div class="field">
-            <%= p.text_field :sight, value: @my_parcel.sight, class: 'input' %>
-          </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">Lot No:</label>
+        <div class="col-sm-10">
+          <%= text_field_tag "lot_no", @parcel.lot_no, class: 'form-control disabled' %>
         </div>
       </div>
-
-      <div class="common">
-        <div class="form-row">
-          <div class="label">Credit: </div>
-          <div class="field">
-            <%= p.number_field :credit_period, value: @my_parcel.credit_period, class: 'input' %>
-            <%= p.hidden_field :customer_id, value: current_customer.id %>
-            <%= p.hidden_field :sold, value: true %>
-          </div>
-        </div>
-
-        <div class="form-row carat-field">
-          <div class="label">Carats:</div>
-          <div class="field">
-            <%= p.text_field :weight, value: @my_parcel.weight, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Avg Price:</div>
-          <div class="field">
-            <%= p.text_field :price, value: @my_parcel.price, class: 'input' %>
-          </div>
-        </div>
-      
-        <%= p.fields_for :my_transaction do |f| %>
-          <div class="form-row">
-            <div class="label">Buyer:</div>
-            <div class='field'>
-              <%= f.select :buyer_id, customer_list_options, { include_blank: true }, class: 'input no-border' %>
-            </div>
-            <%= link_to 'invite', invite_transactions_path, :class => 'invite', :style=> "margin-right: 12px !important;" %>
-          </div>
-          <%= f.hidden_field :supplier_id, value: current_customer.id %>
-          <%= f.hidden_field :price, class: 'transactions-price' %>
-          <%= f.hidden_field :credit, class: 'transactions-credit' %>
-          <%= f.hidden_field :transaction_type, value: 'manual' %>
-          <%= f.hidden_field :weight, class: 'transactions-weight' %>
-          <%= f.hidden_field :diamond_type, class: 'diamond_type_value' %>
-          <%= f.hidden_field :buyer_confirmed, value: false %>
-          <div class="form-row">
-            <div class="label">Invoice Date:</div>
-            <div class='field'>
-              <%=f.text_field :created_at,  class: 'input date' %>
-            </div>
-          </div>
-          <div class="clear10"></div>
-          <div class="form-row">
-            <div class="label">Paid:</div>
-            <div class='field'>
-              <%=f.select :paid, options_for_select([[true, 1],[false, 0]]), { include_blank: true },  class: 'input' %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-      <div class="clear"></div>
-      <div class="idt_terms_text"></div>
-      <div class="form-row">
-        <div class="label"></div>
-        <div class='field'>
-          <%=p.submit 'Submit', class: 'btn-01 login_btn disabled', id: 'transaction_submit' %>
+    </div>
+    <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label"> Source:</label>
+        <div class="col-sm-10">
+          <%= text_field_tag "source", @parcel.source, class: 'form-control disabled' %>
         </div>
       </div>
-    <% end %>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">Box:</label>
+        <div class="col-sm-10">
+          <%= text_field_tag "box", @parcel.box, class: 'form-control disabled' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">Cost:</label>
+        <div class="col-sm-10">
+          <%= text_field_tag "cost", @parcel.cost, class: 'form-control disabled' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">Box Value:</label>
+        <div class="col-sm-10">
+          <%= text_field_tag "box_value", @parcel.box_value, class: 'form-control disabled' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">Month Sight:</label>
+        <div class="col-sm-10">
+          <%= text_field_tag "sight", @parcel.sight, class: 'form-control disabled' %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">Credit:</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "credit", @parcel.credit_period, class: 'form-control disabled' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">Carats:</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "carat", @parcel.weight, class: 'form-control disabled' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">Avg Price:</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "avg_price", @parcel.price, class: 'form-control disabled' %>
+      </div>
+    </div>
+
+
+
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Buyer:</label>
+    <div class="col-sm-8">
+      <%= f.select :buyer_id, customer_list_options, { include_blank: true }, class: 'form-control no-border' %>
+    </div>
+    <div class="col-sm-2">
+      <%= link_to 'Invite', invite_transactions_path, :class => 'invite' %>
+    </div>
   </div>
-</div>
+  <div class="form-row">
+    <label for="inputEmail3" class="col-sm-2 control-label">Invoice Date:</label>
+    <div class='col-sm-10'>
+      <%=f.text_field :created_at,  class: 'form-control date' %>
+    </div>
+  </div>
+  <div class="clear10"></div>
+  <div class="form-row">
+    <label for="inputEmail3" class="col-sm-2 control-label">Paid:</label>
+    <div class='col-sm-10'>
+      <%= f.select :paid, options_for_select([[true, 1],[false, 0]]), { include_blank: true },  class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-row">
+  <label for="inputEmail3" class="col-sm-2 control-label"></label>
+  <div class='col-sm-10'>
+    <div class="idt_terms_text"></div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label"></label>
+    <div class='col-sm-8'>
+      <%=f.submit 'Submit', class: 'btn-01 login_btn disabled', id: 'transaction_submit' %>
+    </div>
+  </div>
+<% end %>
 <div class="bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
 <div class="clear"></div>
 
@@ -171,7 +142,7 @@
     });
     parcel_list($('#trading_document_diamond_type').val())
     setTimeout(function(){ 
-      $('#trading_parcel_description').val('<%=@my_parcel.description%>')
+      $('#trading_parcel_description').val('<%=@parcel.description%>')
     }, 500);
   })
 
@@ -255,7 +226,7 @@
   }
 
   $(document).ready(function(){
-    $("#trading_parcel_my_transaction_attributes_buyer_id").select2({
+    $("#transaction_buyer_id").select2({
       formatResult: add_icons_to_select,
       formatSelection: add_icons_to_select
     });
@@ -263,7 +234,7 @@
     $('#transaction_submit').prop('disabled', true);
   })
 
-  $(document.body).on("change", "#trading_parcel_my_transaction_attributes_buyer_id", function(){
+  $(document.body).on("change", "#transaction_buyer_id", function(){
     text = "Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection."
     
     $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')

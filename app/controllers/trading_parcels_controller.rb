@@ -2,7 +2,7 @@ class TradingParcelsController < ApplicationController
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
-  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history]
+  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
 
   rescue_from ActiveRecord::RecordNotFound do
@@ -83,9 +83,21 @@ class TradingParcelsController < ApplicationController
   end
 
   def direct_sell
-    @my_parcel = TradingParcel.find(params[:id])
-    @parcel = TradingParcel.new
-    @parcel.build_my_transaction
+    # @my_parcel = TradingParcel.find(params[:id])
+    @transaction = Transaction.new
+  end
+
+  def save_direct_sell
+    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], supplier_id: @parcel.customer_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
+                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual', 
+                                  created_at: params[:transaction][:created_at])
+    if @transaction.save
+      @transaction.set_due_date
+      @parcel.update_attributes(sold: true)
+      redirect_to root_path, notice: 'Transaction added successfully'
+    else
+      render :direct_sell
+    end
   end
 
   private

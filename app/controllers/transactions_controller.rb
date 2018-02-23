@@ -12,9 +12,9 @@ class TransactionsController < ApplicationController
     @parcel = TradingParcel.new(parcel_transaction_params)
     if @parcel.save
       @parcel.my_transaction.set_due_date
-      redirect_to root_url, notice: "Direct sell added."
+      redirect_to transactions_suppliers_path, notice: "Transaction added."
     else
-      render 'trading_parcel/direct_sell'
+      render :new
       @parcel.build_my_transaction
     end
   end
