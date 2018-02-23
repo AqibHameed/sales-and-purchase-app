@@ -157,13 +157,39 @@
         </div>
       </div>
 
-      <div class="rough_diamond hide">
+      <div class="sight_diamond hide">
         <div class="form-row">
-          <div class="label">Description: </div>
+          <div class="label"> Source: </div>
           <div class="field">
-            <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
+            <%#= f.text_field :source, class: 'input' %>
+            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
           </div>
         </div>
+
+        <!-- <div class="form-row">
+          <div class="label"> Box: </div>
+          <div class="field">
+            <%#= f.text_field :box, class: 'input' %>
+            <%#= f.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
+          </div>
+        </div> -->
+
+        <div class="form-row">
+          <div class="label"> Box Value:</div>
+          <div class="field">
+            <%= f.text_field :box_value, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Month Sight:</div>
+          <div class="field">
+            <%= f.text_field :sight, class: 'input' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="rough_diamond hide">
         <div class="form-row">
           <div class="label">No of Stones: </div>
           <div class="field">
@@ -178,35 +204,10 @@
         </div>
       </div>
 
-      <div class="sight_diamond hide">
-        <div class="form-row">
-          <div class="label"> Source: </div>
-          <div class="field">
-            <%#= f.text_field :source, class: 'input' %>
-            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Box: </div>
-          <div class="field">
-            <%#= f.text_field :box, class: 'input' %>
-            <%= f.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Box Value:</div>
-          <div class="field">
-            <%= f.text_field :box_value, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Month Sight:</div>
-          <div class="field">
-            <%= f.text_field :sight, class: 'input' %>
-          </div>
+      <div class="form-row">
+        <div class="label">Description: </div>
+        <div class="field">
+          <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
         </div>
       </div>
 
