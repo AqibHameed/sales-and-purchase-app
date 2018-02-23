@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby '2.3.1'
 
 gem 'rails', '5.1.0'
-# gem 'pg', '0.18'
+gem 'pg', '0.18'
 
 gem "mysql2"
 gem "devise"
@@ -31,7 +31,6 @@ gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
 gem "jquery-monthpicker-rails", "~> 1.0.0"
 gem 'countdown'
-
 
 group :assets do
   gem 'sass-rails'
@@ -62,3 +61,4 @@ gem 'intl-tel-input-rails'
 gem 'rufus-scheduler'
 gem "rails_admin_import"
 gem 'cancancan'
+gem 'cloudinary'
