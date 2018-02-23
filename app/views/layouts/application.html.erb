@@ -16,6 +16,8 @@
       <div class="clear20"></div>
       <%= render partial:  'layouts/supplier/flash' %>
       <div class='container'>
+        <%=link_to (image_tag "inbox.png", width: 65), messages_path, class: 'pull-right', data: {turbolinks: false} %>
+        <div class="clear"></div>
         <%= yield %>
       </div>
     </div>
