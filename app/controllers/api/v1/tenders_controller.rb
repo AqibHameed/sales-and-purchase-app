@@ -291,6 +291,7 @@ module Api
             :comments => stone_rating.try(:comments), 
             :valuation => stone_rating.try(:valuation),
             :parcel_rating => stone_rating.try(:parcel_rating),
+            :images => parcel_images(stone),
             :winners_data => historical_data(stone.try(:tender).try(:id), stone)
           }
         end
