@@ -161,7 +161,7 @@ module Api
             render json: { success: true, error: 'Something went wrong. Please try again with different image.', response_code: 201 }
           else
             render json: { success: true, parcels: active_parcel_data(@parcels.flatten), response_code: 200 }
-          end 
+          end
         end
       end
 
@@ -454,7 +454,7 @@ module Api
 
       def parcel_images(stone)
         if current_customer
-          stone.parcel_images.where(customer_id: current_customer.id).map { |e| e.try(:image).try(:url)}
+          stone.parcel_images.where(customer_id: current_customer.id).map { |e| e.try(:image_url)}.compact
         else
           []
         end

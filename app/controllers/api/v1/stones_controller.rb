@@ -12,9 +12,10 @@ module Api
             if stone.nil?
               render json: { errors: "Parcel not found.", response_code: 201 }
             else
-              parcel_image = ParcelImage.new(parcel_id: stone.id, image: params[:image], customer_id: current_customer.id)
+              upload = Cloudinary::Uploader.upload(params[:image])
+              parcel_image = ParcelImage.new(parcel_id: stone.id, customer_id: current_customer.id, image_url: upload["secure_url"])
               if parcel_image.save
-                images = stone.parcel_images.where(customer_id: current_customer.id).map { |e| e.try(:image).try(:url)}
+                images = stone.parcel_images.where(customer_id: current_customer.id).map { |e| e.try(:image_url)}.compact
                 render json: { success: true, message: "Image successfully uploaded.", images: images, response_code: 200 }
               else
                 render json: { success: false, message: "Some error in upload. Please try again", response_code: 201 }
