@@ -29,6 +29,7 @@ class ProposalsController < ApplicationController
   end
 
   def show
+    @info = []
   end
 
   def edit

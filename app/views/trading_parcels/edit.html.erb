@@ -3,7 +3,7 @@
   <h3> Edit Parcel </h3>
   <div class="clear10"></div>
   <div class="form-wrapper">
-    <%= form_for @parcel do |f| %>
+    <%= nested_form_for @parcel do |f| %>
       <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
@@ -100,15 +100,30 @@
             <%= f.text_area :comment, class: 'input' %>
           </div>
         </div>
-      </div>
-      <div class="clear10"></div>
-      <div class="form-row">
-        <div class="label"></div>
-        <div class='field'>
-          <%=f.submit 'Update', class: 'btn-01 login_btn' %>
-          <%=link_to 'Back', suppliers_path, class: 'btn-01 login_btn' %>
+        <div class="row">
+          <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
+            <table class="table table-hover">
+              <thead>
+                <th>Carats</th>
+                <th>Size</th>
+                <th>Percent</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><%=s.text_field :carats, class: 'form-control col-sm-3' %></td>
+                  <td><%=s.text_field :size, class: 'form-control col-sm-3' %></td>
+                  <td><%=s.text_field :percent, class: 'form-control col-sm-3' %></td>
+                  <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
+                </tr>
+              </tbody>
+            </table>
+          <% end %>
         </div>
       </div>
+      <div class="clear10"></div>
+      <%= f.link_to_add "Add Size", :parcel_size_infos, class: 'btn btn-sm btn-info' %>
+      <%=f.submit 'Update', class: 'btn-01 login_btn' %>
+      <%=link_to 'Back', suppliers_path, class: 'btn-01 login_btn' %>
     <% end %>
   </div>
 </div>

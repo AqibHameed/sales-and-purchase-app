@@ -22,8 +22,8 @@
       <td><%= @transaction.trading_parcel.cost.nil? ? 'N/A' : @transaction.trading_parcel.cost %></td>
     </tr>
     <tr>
-      <td> Box Value</td>
-      <td><%= (@transaction.trading_parcel.box_value.nil? || @transaction.trading_parcel.box_value.blank?) ? 'N/A' : @transaction.trading_parcel.box_value %></td>
+      <td> Box</td>
+      <td><%= (@transaction.trading_parcel.box.nil? || @transaction.trading_parcel.box.blank?) ? 'N/A' : @transaction.trading_parcel.box %><%=link_to "Size info", 'javascript:void(0)', class: 'pull-right size_info', "data-id" => @transaction.trading_parcel.try(:id) %></td>
     </tr>
     <tr>
       <td> Sight</td>
@@ -117,6 +117,9 @@
   </div>
 </div>
 
+<div class="size-info">
+  <%= render partial: 'trading_parcels/size_info' %>
+</div>
 <script type="text/javascript">
   $(document).ready(function() {
     // $('#show_form').hide();

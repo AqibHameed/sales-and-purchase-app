@@ -137,7 +137,7 @@
 <div class="single hide">
   <div class="clear10"></div>
   <div class="form-wrapper">
-    <%= form_for @trading_parcel do |f| %>
+    <%= nested_form_for @trading_parcel do |f| %>
       <% if @trading_parcel.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@trading_parcel.errors.count, "error") %> prohibited this auction from being saved:</h2>
@@ -263,12 +263,27 @@
           </div>
         </div>
         <div class="clear10"></div>
-        <div class="form-row">
-          <div class="label"></div>
-          <div class="field">
-            <%=f.submit 'Submit', class: 'login-btn btn-02' %>
-          </div>
+        <div class="row">
+          <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
+            <table class="table table-hover">
+              <thead>
+                <th>Carats</th>
+                <th>Size</th>
+                <th>Percent</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><%=s.text_field :carats, class: 'form-control col-sm-3' %></td>
+                  <td><%=s.text_field :size, class: 'form-control col-sm-3' %></td>
+                  <td><%=s.text_field :percent, class: 'form-control col-sm-3' %></td>
+                  <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
+                </tr>
+              </tbody>
+            </table>
+          <% end %>
         </div>
+        <%= f.link_to_add "Add Size", :parcel_size_infos, class: 'btn btn-sm btn-info' %>
+        <%=f.submit 'Submit', class: 'btn btn-md btn-danger' %>
       </div>
     <% end %>
   </div>

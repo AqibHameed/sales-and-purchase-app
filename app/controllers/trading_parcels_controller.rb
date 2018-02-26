@@ -2,7 +2,7 @@ class TradingParcelsController < ApplicationController
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
-  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history]
+  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history, :size_info]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
 
   rescue_from ActiveRecord::RecordNotFound do
@@ -27,6 +27,7 @@ class TradingParcelsController < ApplicationController
 
   def show
     @proposal = Proposal.new
+    @info = []
   end
 
   def edit
@@ -100,9 +101,17 @@ class TradingParcelsController < ApplicationController
     end
   end
 
+  def size_info
+    @info = @parcel.parcel_size_infos
+    respond_to do |format|
+      format.js
+    end
+  end
+
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment)
+    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment,
+                                              parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
   end
 
   def set_trading_parcel

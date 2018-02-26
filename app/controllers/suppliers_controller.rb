@@ -9,6 +9,7 @@ class SuppliersController < ApplicationController
     @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc) #.page params[:page]
     @trading_document = TradingDocument.new
     @trading_parcel = TradingParcel.new
+    @trading_parcel.parcel_size_infos.build
   end
 
   def trading
@@ -57,6 +58,7 @@ class SuppliersController < ApplicationController
 
   def single_parcel
     @parcel = TradingParcel.find(params[:id])
+    @info = []
   end
 
   def single_parcel_form

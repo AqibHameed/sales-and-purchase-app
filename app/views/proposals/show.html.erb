@@ -18,7 +18,7 @@
       </tr>
       <tr>
         <td> Comment by Seller </td>
-        <td><%= @proposal.trading_parcel.try(:comment) %></td>
+        <td><%= @proposal.trading_parcel.try(:comment) %><%=link_to "Size info", 'javascript:void(0)', class: 'pull-right size_info', "data-id" => @proposal.trading_parcel.try(:id) %></td>
       </tr>
     <tr>
       <td> Carats </td>
@@ -52,7 +52,9 @@
   <%= link_to 'Reject', reject_proposal_path(id: @proposal.id), class: 'btn-01 login_btn red', method: :put, data: {turbolinks: false}  %>
   <%= link_to 'Negotiate', edit_proposal_path(@proposal), class: 'btn-01 login_btn', data: {turbolinks: false} %>
 <% end %>
-
+<div class="size-info">
+  <%= render partial: 'trading_parcels/size_info' %>
+</div>
 <script type="text/javascript">
 $(document).on('click', '.accept-btn', function(){
   $(this).addClass('disabled')

@@ -3,6 +3,7 @@ class TradingParcel < ApplicationRecord
   paginates_per 25
   belongs_to :customer
   has_many :proposals
+  has_many :parcel_size_infos
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
 
@@ -11,6 +12,7 @@ class TradingParcel < ApplicationRecord
   after_create :generate_and_add_uid, :send_mail_to_demanded
 
   accepts_nested_attributes_for :my_transaction
+  accepts_nested_attributes_for :parcel_size_infos, :allow_destroy => true
 
   attr_accessor :single_parcel
 

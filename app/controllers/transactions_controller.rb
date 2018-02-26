@@ -67,6 +67,7 @@ class TransactionsController < ApplicationController
     @transaction = Transaction.find(params[:id])
     @payment = PartialPayment.new
     @payment_details = PartialPayment.where(transaction_id: params[:id])
+    @info = []
   end
 
   def edit

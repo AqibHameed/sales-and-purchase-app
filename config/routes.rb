@@ -166,6 +166,7 @@ Rails.application.routes.draw do
       get :parcel_history
       get :direct_sell
       post :save_direct_sell
+      get :size_info
     end
   end
   resources :transactions do
