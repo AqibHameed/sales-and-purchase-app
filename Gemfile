@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby '2.3.1'
 
 gem 'rails', '5.1.0'
-gem 'pg', '0.18'
+# gem 'pg', '0.18'
 
 gem "mysql2"
 gem "devise"
