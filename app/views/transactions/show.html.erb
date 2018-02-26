@@ -41,6 +41,10 @@
       <td> Amount To Be paid</td>
       <td><%= number_with_precision(@transaction.remaining_amount, precision: 2) %></td>
     </tr>
+    <tr>
+      <td> Comment</td>
+      <td><%= @transaction.trading_parcel.try(:comment) %></td>
+    </tr>
   </table>
   <div class="clear20"></div>
   <% if current_user.id == @transaction.buyer_id && @transaction.transaction_type == 'manual' && !@transaction.buyer_confirmed && get_status(@transaction) != 'Completed' %>

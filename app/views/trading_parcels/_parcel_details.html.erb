@@ -51,4 +51,8 @@
     <td> Credit</td>
     <td><%= @parcel.credit_period %> days (<%= (Date.today + (@parcel.credit_period.to_i).days).strftime("%B %d, %Y") %>)</td>
   </tr>
+  <tr>
+    <td> Comment</td>
+    <td><%= @parcel.try(:comment) %></td>
+  </tr>
 </table>

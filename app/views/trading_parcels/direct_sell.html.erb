@@ -11,85 +11,83 @@
     </ul>
   <% end %>
   <div class="clear10"></div>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Diamond Type:</label>
+    <div class="col-sm-10">
+      <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  { class: 'form-control disabled', include_blank: true } %>
+    </div>
+  </div>
+  <div class="rough_diamond <%=(dt == 'Rough') ? '' : 'hide'%>">
     <div class="form-group">
-      <label for="inputEmail3" class="col-sm-2 control-label">Diamond Type:</label>
+      <label for="inputPassword3" class="col-sm-2 control-label">Description:</label>
       <div class="col-sm-10">
-        <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  { class: 'form-control disabled', include_blank: true } %>
+        <%= text_field_tag "description", @parcel.description, class: 'form-control disabled' %>
       </div>
     </div>
-    <div class="rough_diamond <%=(dt == 'Rough') ? '' : 'hide'%>">
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Description:</label>
-        <div class="col-sm-10">
-          <%= text_field_tag "description", @parcel.description, class: 'form-control disabled' %>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">No of Stones::</label>
-        <div class="col-sm-10">
-          <%= text_field_tag "no_of_stones", @parcel.no_of_stones, class: 'form-control disabled' %>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Lot No:</label>
-        <div class="col-sm-10">
-          <%= text_field_tag "lot_no", @parcel.lot_no, class: 'form-control disabled' %>
-        </div>
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">No of Stones::</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "no_of_stones", @parcel.no_of_stones, class: 'form-control disabled' %>
       </div>
     </div>
-    <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label"> Source:</label>
-        <div class="col-sm-10">
-          <%= text_field_tag "source", @parcel.source, class: 'form-control disabled' %>
-        </div>
-      </div>
-      <!-- <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Box:</label>
-        <div class="col-sm-10">
-          <%#= text_field_tag "box", @parcel.box, class: 'form-control disabled' %>
-        </div>
-      </div> -->
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Cost:</label>
-        <div class="col-sm-10">
-          <%= text_field_tag "cost", @parcel.cost, class: 'form-control disabled' %>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Box Value:</label>
-        <div class="col-sm-10">
-          <%= text_field_tag "box_value", @parcel.box_value, class: 'form-control disabled' %>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword3" class="col-sm-2 control-label">Month Sight:</label>
-        <div class="col-sm-10">
-          <%= text_field_tag "sight", @parcel.sight, class: 'form-control disabled' %>
-        </div>
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">Lot No:</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "lot_no", @parcel.lot_no, class: 'form-control disabled' %>
       </div>
     </div>
+  </div>
+  <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label"> Source:</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "source", @parcel.source, class: 'form-control disabled' %>
+      </div>
+    </div>
+    <!-- <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">Box:</label>
+      <div class="col-sm-10">
+        <%#= text_field_tag "box", @parcel.box, class: 'form-control disabled' %>
+      </div>
+    </div> -->
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">Cost:</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "cost", @parcel.cost, class: 'form-control disabled' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">Box Value:</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "box_value", @parcel.box_value, class: 'form-control disabled' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputPassword3" class="col-sm-2 control-label">Month Sight:</label>
+      <div class="col-sm-10">
+        <%= text_field_tag "sight", @parcel.sight, class: 'form-control disabled' %>
+      </div>
+    </div>
+  </div>
 
-    <div class="form-group">
-      <label for="inputPassword3" class="col-sm-2 control-label">Credit:</label>
-      <div class="col-sm-10">
-        <%= text_field_tag "credit", @parcel.credit_period, class: 'form-control disabled' %>
-      </div>
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-2 control-label">Credit:</label>
+    <div class="col-sm-10">
+      <%= text_field_tag "credit", @parcel.credit_period, class: 'form-control disabled' %>
     </div>
-    <div class="form-group">
-      <label for="inputPassword3" class="col-sm-2 control-label">Carats:</label>
-      <div class="col-sm-10">
-        <%= text_field_tag "carat", @parcel.weight, class: 'form-control disabled' %>
-      </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-2 control-label">Carats:</label>
+    <div class="col-sm-10">
+      <%= text_field_tag "carat", @parcel.weight, class: 'form-control disabled' %>
     </div>
-    <div class="form-group">
-      <label for="inputPassword3" class="col-sm-2 control-label">Avg Price:</label>
-      <div class="col-sm-10">
-        <%= text_field_tag "avg_price", @parcel.price, class: 'form-control disabled' %>
-      </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-2 control-label">Avg Price:</label>
+    <div class="col-sm-10">
+      <%= text_field_tag "avg_price", @parcel.price, class: 'form-control disabled' %>
     </div>
-
-
+  </div>
 
   <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">Buyer:</label>
@@ -100,23 +98,24 @@
       <%= link_to 'Invite', invite_transactions_path, :class => 'invite' %>
     </div>
   </div>
-  <div class="form-row">
+  <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">Invoice Date:</label>
     <div class='col-sm-10'>
       <%=f.text_field :created_at,  class: 'form-control date' %>
     </div>
   </div>
   <div class="clear10"></div>
-  <div class="form-row">
+  <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">Paid:</label>
     <div class='col-sm-10'>
       <%= f.select :paid, options_for_select([[true, 1],[false, 0]]), { include_blank: true },  class: 'form-control' %>
     </div>
   </div>
-  <div class="form-row">
-  <label for="inputEmail3" class="col-sm-2 control-label"></label>
-  <div class='col-sm-10'>
-    <div class="idt_terms_text"></div>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label"></label>
+    <div class='col-sm-10'>
+      <div class="idt_terms_text"></div>
+    </div>
   </div>
   <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label"></label>

@@ -69,11 +69,15 @@
 	   	<%= get_number_of_customers(current_customer, amount, 'unavailable')%>
     </td>
   </tr>
-   <tr>
+  <tr>
     <td> Given No Credits</td>
     <td>
 	   	<%= get_count_no_credit(current_customer)%>
     </td>
+  </tr>
+  <tr>
+    <td> Comment</td>
+    <td><%= (@parcel.comment.nil? || @parcel.comment.blank?) ? 'N/A' : @parcel.comment %></td>
   </tr>
 </table>
 <div class="clear10"></div>

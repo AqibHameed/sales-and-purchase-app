@@ -102,7 +102,7 @@ class TradingParcelsController < ApplicationController
 
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent)
+    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment)
   end
 
   def set_trading_parcel

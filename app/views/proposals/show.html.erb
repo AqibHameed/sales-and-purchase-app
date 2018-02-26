@@ -16,6 +16,10 @@
         <td> Description </td>
         <td><%= @proposal.trading_parcel.try(:description) %></td>
       </tr>
+      <tr>
+        <td> Comment by Seller </td>
+        <td><%= @proposal.trading_parcel.try(:comment) %></td>
+      </tr>
     <tr>
       <td> Carats </td>
       <td><%= @proposal.trading_parcel.weight.nil? ? 'N/A' : number_with_precision(@proposal.trading_parcel.weight, precision: 2) %></td>
