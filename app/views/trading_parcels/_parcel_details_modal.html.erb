@@ -58,7 +58,8 @@
                 <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm'%>
               <% end %>
             </div>
-            <div class="col-lg-8" style="bottom: 25%;">
+            <%=link_to "Size info", 'javascript:void(0)', class: 'size_info', "data-id" => @parcel.try(:id) %>
+            <div class="col-lg-8">
               <p><b>Comment: </b></p>
               <ul class="list-group">
                 <li class="list-group-item"><%= @parcel.try(:comment) %></li>
@@ -69,6 +70,10 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="size-info">
+  <%= render partial: 'trading_parcels/size_info' %>
 </div>
 
 <script type="text/javascript">

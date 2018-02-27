@@ -77,7 +77,7 @@ class Customer < ApplicationRecord
   #           :presence => true , :reduce => true
 
   # send_account_creation_mail
-  after_create :add_user_to_tenders, :assign_role_to_customer
+  after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
@@ -152,6 +152,7 @@ class Customer < ApplicationRecord
     CreditLimit.where(supplier_id: supplier, buyer_id: self.id).first.present?
   end
 
+  ### callbacks ###
   def add_user_to_tenders
     customer_tenders = []
     Tender.all.each do |t|
@@ -197,6 +198,11 @@ class Customer < ApplicationRecord
     end
   end
 
+  def create_firebase_user
+    response = RestClient.post 'http://example.com/resource', { email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no }
+  end
+
+  ### callbacks ###
   def notify_by_supplier supplier
     SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false
   end

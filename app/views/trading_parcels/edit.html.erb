@@ -110,9 +110,9 @@
               </thead>
               <tbody>
                 <tr>
-                  <td><%=s.text_field :carats, class: 'form-control col-sm-3' %></td>
-                  <td><%=s.text_field :size, class: 'form-control col-sm-3' %></td>
-                  <td><%=s.text_field :percent, class: 'form-control col-sm-3' %></td>
+                  <td class="sub_c"><%=s.text_field :carats, class: 'form-control col-sm-3 sub_carats' %></td>
+                  <td class="sub_s"><%=s.text_field :size, class: 'form-control col-sm-3 sub_size' %></td>
+                  <td class="sub_per"><%=s.text_field :percent, class: 'form-control col-sm-3 sub_percent' %></td>
                   <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
                 </tr>
               </tbody>
@@ -263,4 +263,31 @@
       data: {id: id}
     })
   }
+
+  $(document).on('keyup focusout','.sub_carats', function(){
+    var self = $(this)
+    var total_carat = parseFloat($('#trading_parcel_weight').val());
+    var carat = parseFloat(self.val());
+    console.log(total_carat)
+    if(isNaN(total_carat)){
+      $('.sub_carats').val('')
+      $('.sub_percent').val('')
+      if($('.error-msg').length == 0){
+        $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
+      }
+    }else{
+      calculate_sub_size_percent(total_carat, carat, self)
+      $('.error-msg').remove()
+    }
+  });
+
+  function calculate_sub_size_percent(total_carat, carat, self){
+    percent = (carat)*total_carat/100
+    if (isNaN(percent)){
+      $(self).parent('td.sub_c').next('td').next('td').find('input').val('')
+    }else{
+      $(self).parent('td.sub_c').next('td').next('td').find('input').val(percent)
+    }
+  }
+
 </script>

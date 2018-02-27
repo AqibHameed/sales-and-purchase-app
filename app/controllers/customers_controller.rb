@@ -147,6 +147,7 @@ class CustomersController < ApplicationController
 
   def trading
     @history = []
+    @info = []
     @proposal = Proposal.new
     customer_id = BlockUser.where(block_user_ids: current_customer.id).map { |e| e.customer_id }
     @parcels = TradingParcel.where(sold: false).where.not(customer_id: customer_id).where.not(customer_id: current_customer.id).order(created_at: :desc) #.page params[:page]
