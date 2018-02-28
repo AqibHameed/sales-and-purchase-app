@@ -658,7 +658,11 @@ class Tender < ApplicationRecord
   end
 
   def send_tender_create_push
-    message = "New Tender Alert: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+    full_message = "New Tender Alert: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+    message = "New Tender Alert"
+    supplier_name = self.company.try(:name)
+    tender_name = self.name
+    dates = "#{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
     # Cusetomers
     customers_to_notify = SupplierNotification.where(supplier_id: self.company_id, notify: true).map { |e| e.customer_id }
     android_devices = Device.where(device_type: 'android', customer_id: customers_to_notify)
@@ -667,11 +671,11 @@ class Tender < ApplicationRecord
     ios_devices = Device.where(device_type: 'ios', customer_id: customers_to_notify)
 
     # Added notification
-    notification = Notification.create(title: 'new tender', description: message, tender_id: self.id)
+    notification = Notification.create(title: 'new tender', description: full_message, tender_id: self.id)
 
     # send android notification
     android_registration_ids = android_devices.map { |e| e.token }
-    Notification.send_android_notifications(android_registration_ids, message, self.id)
+    Notification.send_android_notifications(android_registration_ids, message, supplier_name, tender_name, dates, self.id)
 
     # # send iOS notification
     # ios_registration_ids = ios_devices.map { |e| e.token }
