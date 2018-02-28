@@ -272,7 +272,7 @@
     if(isNaN(total_carat)){
       $('.sub_carats').val('')
       $('.sub_percent').val('')
-      if($('.error-msg').length == 0){
+      if($(this).next('.error-msg').length == 0){
         $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
       }
     }else{
@@ -281,12 +281,37 @@
     }
   });
 
+  $(document).on('keyup focusout','.sub_percent', function(){
+    var self = $(this)
+    var total_carat = parseFloat($('#trading_parcel_weight').val());
+    var per = parseFloat(self.val());
+    if(isNaN(total_carat)){
+      $('.sub_carats').val('')
+      $('.sub_percent').val('')
+      if($(this).next('.error-msg').length == 0){
+        $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
+      }
+    }else{
+      calculate_sub_size_carats(total_carat, per, self)
+      $('.error-msg').remove()
+    }
+  });
+
   function calculate_sub_size_percent(total_carat, carat, self){
-    percent = (carat)*total_carat/100
+    percent = carat*100/total_carat    
     if (isNaN(percent)){
       $(self).parent('td.sub_c').next('td').next('td').find('input').val('')
     }else{
       $(self).parent('td.sub_c').next('td').next('td').find('input').val(percent)
+    }
+  }
+
+  function calculate_sub_size_carats(total_carat, per, self){
+    carats = (per/100)*total_carat
+    if (isNaN(carats)){
+      $(self).parents('tr').find('td.sub_c').find('input').val('')
+    }else{
+      $(self).parents('tr').find('td.sub_c').find('input').val(carats)
     }
   }
 
