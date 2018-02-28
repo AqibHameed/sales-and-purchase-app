@@ -62,3 +62,4 @@ gem 'rufus-scheduler'
 gem "rails_admin_import"
 gem 'cancancan'
 gem 'cloudinary'
+gem 'rest-client'
