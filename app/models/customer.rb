@@ -210,7 +210,6 @@ class Customer < ApplicationRecord
     # response = RestClient.post 'https://us-central1-clarity-staging.cloudfunctions.net/createFirUser', { email: u.email, first_name: u.first_name, last_name: u.last_name, company: u.company, mobile_no: u.mobile_no, password: u.mobile_no || 'password' }
     # data = JSON.parse(response)
     # u.update_attributes(firebase_uid: data["user"]["uid"])
-end
   end
 
   ### callbacks ###
