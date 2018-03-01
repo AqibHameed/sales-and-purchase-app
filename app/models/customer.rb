@@ -200,16 +200,12 @@ class Customer < ApplicationRecord
 
   def create_firebase_user
     begin
-      response = RestClient.post 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCNQbyO399oA26_5YUKiAp-c8dbVUVkRwI', { email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no }.to_json, {content_type: :json}
+      response = RestClient.post 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCNQbyO399oA26_5YUKiAp-c8dbVUVkRwI', { email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no, address: '', city: '', postal_code: '' }.to_json, {content_type: :json}
       data = JSON.parse(response)
       self.update_attributes(firebase_uid: data["localId"])
     rescue RestClient::ExceptionWithResponse => e
       puts e.response
     end
-    # Customer.all.each do |u|
-    # response = RestClient.post 'https://us-central1-clarity-staging.cloudfunctions.net/createFirUser', { email: u.email, first_name: u.first_name, last_name: u.last_name, company: u.company, mobile_no: u.mobile_no, password: u.mobile_no || 'password' }
-    # data = JSON.parse(response)
-    # u.update_attributes(firebase_uid: data["user"]["uid"])
   end
 
   ### callbacks ###
