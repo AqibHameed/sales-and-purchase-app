@@ -2,9 +2,9 @@ class Notification < ApplicationRecord
   has_many :customer_notifications
 
 
-  def self.send_android_notifications(registration_ids, message, id)
+  def self.send_android_notifications(registration_ids, message, supplier_name, tender_name, dates, id)
     fcm = FCM.new(ENV['FCM_KEY'])
-    options = { data: { message: message, id: id }, collapse_key: "IDT" }
+    options = { data: { message: message, supplier_name: supplier_name, tender_name: tender_name, dates: dates, tender_id: id }, collapse_key: "IDT" }
     response = fcm.send(registration_ids, options)
   end
 
