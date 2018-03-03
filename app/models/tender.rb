@@ -676,7 +676,7 @@ class Tender < ApplicationRecord
 
     # send android notification
     android_registration_ids = android_devices.map { |e| e.token }
-    Notification.send_android_notifications(android_registration_ids, message, supplier_name, tender_name, dates, self.id)
+    Notification.send_android_notifications(android_registration_ids, full_message, message, supplier_name, tender_name, dates, self.id)
 
     # # send iOS notification
     # ios_registration_ids = ios_devices.map { |e| e.token }
