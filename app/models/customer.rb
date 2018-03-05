@@ -76,7 +76,7 @@ class Customer < ApplicationRecord
   #           :presence => true , :reduce => true
 
   # send_account_creation_mail
-  after_create :add_user_to_tenders, :assign_role_to_customer
+  after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
@@ -188,6 +188,16 @@ class Customer < ApplicationRecord
       CustomerRole.create(role_id: 2, customer_id: self.id)
     elsif self.role == "Broker"
       CustomerRole.create(role_id: 4, customer_id: self.id)
+    end
+  end
+
+  def create_firebase_user
+    begin
+      response = RestClient.post 'https://us-central1-buddy-6305d.cloudfunctions.net/createFirUser?key=0115aaf701379d933d26d3d6512df9ff2df35a7f', { email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no, address: '', city: '', postal_code: '' }.to_json, {content_type: :json}
+      data = JSON.parse(response)
+      self.update_attributes(firebase_uid: data["user"]["uid"])
+    rescue RestClient::ExceptionWithResponse => e
+      puts e.response
     end
   end
 
