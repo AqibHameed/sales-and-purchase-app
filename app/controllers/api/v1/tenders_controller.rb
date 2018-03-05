@@ -51,7 +51,7 @@ module Api
       end
 
       def closed
-        col_str = "close_date < '#{Time.zone.now}'"
+        col_str = "close_date < '#{Time.zone.now}' AND close_date > '#{4.month.ago}'"
         if params[:location] || params[:month] || params[:supplier]
           col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
