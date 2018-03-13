@@ -256,6 +256,20 @@ class Customer < ApplicationRecord
   end
   ###############
 
+  def generate_jwt_token
+    service_account_email = ENV['service_account_email']
+    private_key = OpenSSL::PKey::RSA.new ENV['private_key']
+    now_seconds = Time.now.to_i
+    payload = {:iss => ENV['service_account_email'],
+               :sub => ENV['service_account_email'],
+               :aud => "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
+               :iat => now_seconds,
+               :exp => now_seconds+(60*60), # Maximum expiration time is one hour
+               :uid => self.id.to_s}
+    token = JWT.encode payload, ENV['private_key'], "RS256"
+    token
+  end
+
   rails_admin do
     list do
       # field :verified, :toggle
