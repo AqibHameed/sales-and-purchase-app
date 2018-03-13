@@ -266,7 +266,7 @@ class Customer < ApplicationRecord
                :iat => now_seconds,
                :exp => now_seconds+(60*60), # Maximum expiration time is one hour
                :uid => self.id.to_s}
-    token = JWT.encode payload, ENV['private_key'], "RS256"
+    token = JWT.encode payload, private_key, "RS256"
     token
   end
 
