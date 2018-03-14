@@ -1,0 +1,24 @@
+<h3><%= @customer.company %>'s Info</h3>
+
+
+<div class="clear20"></div>
+<div class="form-group">
+  <%= form_for @sub_company_limit, url: save_limit_sub_company_path(id: @customer.id) do |f| %>
+    <div class="form-row">
+      <div class="control-label">Limit:</div>
+      <div class="field">
+        <%= f.number_field :credit_limit, class: 'form-control' %></p>
+        <%= f.hidden_field :customer_id, value: @customer.id %>
+        <%= f.hidden_field :parent_id, value: current_customer.id %>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%= f.submit "Submit", class: 'btn-02 login-btn' %>
+        </div>
+    </div>
+    <div class="clear"></div>
+  <% end %>
+</div>

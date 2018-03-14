@@ -1,0 +1,19 @@
+<h1><%= link_to "Invite more", invite_sub_companies_path, data: { turbolinks: false }, class: 'pull-right' %></h1>
+<h3>My sub companies</h3>
+<div class="clear10"></div>
+<table class="table table-bordered table-responsive">
+  <thead>
+    <th>S No.</th>
+    <th>Sub Company</th>
+    <th>Name</th>
+  </thead>
+  <tbody>
+    <% @sub_companies.each_with_index do |c, i| %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= link_to c.company, limit_sub_company_path(id: c.id) %></td>
+        <td><%= c.name %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

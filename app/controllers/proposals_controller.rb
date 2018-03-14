@@ -59,7 +59,7 @@ class ProposalsController < ApplicationController
         flash[:notice] = "Proposal accepted."
         respond_to do |format|
           format.js { render js: "window.location = '/proposals'"}
-          format.html { redirect_to root_path }
+          format.html { redirect_to trading_customers_path }
         end
       end
       @trading_parcel = @proposal.trading_parcel.dup
@@ -76,7 +76,7 @@ class ProposalsController < ApplicationController
       flash[:notice] = "Proposal rejected"
       respond_to do |format|
         format.js { render js: "window.location = '/proposals'"}
-        format.html { redirect_to root_path }
+        format.html { redirect_to trading_customers_path }
       end
     end
   end
@@ -104,7 +104,7 @@ class ProposalsController < ApplicationController
       # do nothing
     else
       flash[:notice] = "You have already sent proposal to other party."
-      redirect_back fallback_location: root_path
+      redirect_back fallback_location: trading_customers_path
     end
   end
 

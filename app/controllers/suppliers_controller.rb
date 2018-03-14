@@ -146,7 +146,7 @@ class SuppliersController < ApplicationController
     if current_customer.has_role?('Seller') || current_customer.has_role?('Broker')
       # do nothing
     else
-      redirect_to root_path, notice: 'You are not authorized.'
+      redirect_to trading_customers_path, notice: 'You are not authorized.'
     end
   end
 end

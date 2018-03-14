@@ -1,6 +1,7 @@
 class CustomersController < ApplicationController
 
   before_action :authenticate_customer!
+  # before_action :authenticate_admin!
   before_action :check_info_shared, only: [:shared_info]
   before_action :check_role_authorization, only: [:trading, :demanding]
 
@@ -74,7 +75,7 @@ class CustomersController < ApplicationController
         @transactions = Transaction.overdue_received_transaction(@customer.id) + Transaction.overdue_sent_transaction(@customer.id)
       end
     else
-      redirect_to root_path
+      redirect_to trading_customers_path
     end
   end
 
@@ -139,7 +140,7 @@ class CustomersController < ApplicationController
     if @customer.update(password_params)
       bypass_sign_in(@customer)
       flash[:notice] = "Password changed successfully."
-      redirect_to root_path
+      redirect_to trading_customers_path
     else
       render 'change_password'
     end
@@ -218,7 +219,7 @@ class CustomersController < ApplicationController
     if check.present?
       # do nothing
     else
-      redirect_to root_path, notice: "You are not authorized."
+      redirect_to trading_customers_path, notice: "You are not authorized."
     end
   end
 
@@ -252,10 +253,14 @@ class CustomersController < ApplicationController
   end
 
   def check_role_authorization
-    if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker')
+    if current_admin.present?
       # do nothing
     else
-      redirect_to root_path, notice: 'You are not authorized.'
+      if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker')
+        # do nothing
+      else
+        redirect_to trading_customers_path, notice: 'You are not authorized.'
+      end
     end
   end
 

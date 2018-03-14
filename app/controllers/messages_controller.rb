@@ -19,7 +19,7 @@ class MessagesController < ApplicationController
     @message.sender_id = current_customer.id
 
     if @message.save
-      redirect_to root_path, notice: "Message is successfully send"
+      redirect_to trading_customers_path, notice: "Message is successfully send"
     end
   end
 private

@@ -10,10 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+ActiveRecord::Schema.define(version: 20180314122943) do
 
-ActiveRecord::Schema.define(version: 20170814114600) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
-  create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -32,10 +34,10 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
-  create_table "auction_rounds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "auction_rounds", force: :cascade do |t|
     t.integer "round_no"
-    t.float "min_bid", limit: 24
-    t.float "max_bid", limit: 24
+    t.float "min_bid"
+    t.float "max_bid"
     t.integer "auction_id"
     t.datetime "started_at"
     t.boolean "completed", default: false
@@ -43,32 +45,31 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "auctions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "auctions", force: :cascade do |t|
     t.datetime "time"
-    t.float "min_bid", limit: 24
+    t.float "min_bid"
     t.integer "tender_id"
     t.integer "round_time"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "is_started", default: false
     t.boolean "started", default: false
     t.boolean "completed", default: false
     t.integer "loosers_per_round"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "evaluating_round_id"
   end
 
-  create_table "bid_calculations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "bid_calculations", force: :cascade do |t|
     t.integer "stone_id"
     t.integer "customer_id"
     t.boolean "responce"
     t.integer "round"
-    t.float "system_price", limit: 24
+    t.float "system_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "bids", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.float "total", limit: 24
+  create_table "bids", force: :cascade do |t|
+    t.float "total"
     t.text "message"
     t.datetime "bid_date"
     t.bigint "tender_id"
@@ -77,23 +78,37 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.datetime "updated_at", null: false
     t.integer "no_of_parcels"
     t.integer "stone_id"
-    t.float "price_per_carat", limit: 24
+    t.float "price_per_carat"
     t.integer "auction_round_id"
     t.integer "sight_id"
     t.integer "percentage_over_cost"
     t.index ["customer_id"], name: "index_bids_on_customer_id"
-    t.index ["stone_id"], name: "index_bids_on_stone_id"
     t.index ["tender_id"], name: "index_bids_on_tender_id"
   end
 
-  create_table "block_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "block_users", force: :cascade do |t|
     t.integer "customer_id"
     t.string "block_user_ids"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "companies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "broker_invites", force: :cascade do |t|
+    t.string "email"
+    t.integer "customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "broker_requests", force: :cascade do |t|
+    t.integer "broker_id"
+    t.integer "seller_id"
+    t.boolean "accepted"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "companies", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -113,7 +128,7 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.integer "market_limit"
   end
 
-  create_table "contact_people", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "contact_people", force: :cascade do |t|
     t.string "name", null: false
     t.string "designation", null: false
     t.integer "company_id"
@@ -125,16 +140,17 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "credit_limits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "credit_limits", force: :cascade do |t|
     t.integer "supplier_id"
     t.integer "buyer_id"
-    t.decimal "credit_limit", precision: 10
-    t.decimal "market_limit", precision: 10
+    t.decimal "credit_limit"
+    t.decimal "market_limit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "reference_id"
   end
 
-  create_table "customer_comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "customer_comments", force: :cascade do |t|
     t.text "description"
     t.bigint "customer_id"
     t.bigint "tender_id"
@@ -146,7 +162,16 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.index ["tender_id"], name: "index_customer_comments_on_tender_id"
   end
 
-  create_table "customer_pictures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "customer_notifications", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.bigint "notification_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_customer_notifications_on_customer_id"
+    t.index ["notification_id"], name: "index_customer_notifications_on_notification_id"
+  end
+
+  create_table "customer_pictures", force: :cascade do |t|
     t.string "picture_file_name"
     t.string "picture_content_type"
     t.integer "picture_file_size"
@@ -161,7 +186,7 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.index ["tender_id"], name: "index_customer_pictures_on_tender_id"
   end
 
-  create_table "customer_ratings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "customer_ratings", force: :cascade do |t|
     t.integer "star"
     t.bigint "customer_id"
     t.bigint "tender_id"
@@ -173,7 +198,14 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.index ["tender_id"], name: "index_customer_ratings_on_tender_id"
   end
 
-  create_table "customers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "customer_roles", force: :cascade do |t|
+    t.integer "customer_id"
+    t.integer "role_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "customers", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: ""
     t.string "reset_password_token"
@@ -200,23 +232,32 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.text "company_address"
     t.string "phone_2"
     t.string "mobile_no"
-    t.string "invitation_token", limit: 60
+    t.string "authentication_token"
+    t.boolean "verified", default: false
+    t.string "certificate_file_name"
+    t.string "certificate_content_type"
+    t.integer "certificate_file_size"
+    t.datetime "certificate_updated_at"
+    t.string "invitation_token"
+    t.datetime "invitation_created_at"
     t.datetime "invitation_sent_at"
     t.datetime "invitation_accepted_at"
     t.integer "invitation_limit"
     t.string "invited_by_type"
     t.bigint "invited_by_id"
-    t.string "auth_token", default: ""
-    t.string "authentication_token"
+    t.integer "invitations_count", default: 0
+    t.string "chat_id", default: "-1"
+    t.string "firebase_uid"
+    t.integer "parent_id"
     t.index ["email"], name: "index_customers_on_email", unique: true
     t.index ["invitation_token"], name: "index_customers_on_invitation_token", unique: true
+    t.index ["invitations_count"], name: "index_customers_on_invitations_count"
     t.index ["invited_by_id"], name: "index_customers_on_invited_by_id"
+    t.index ["invited_by_type", "invited_by_id"], name: "index_customers_on_invited_by_type_and_invited_by_id"
     t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
   end
 
-  end
-
-  create_table "customers_tenders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "customers_tenders", force: :cascade do |t|
     t.bigint "tender_id"
     t.bigint "customer_id"
     t.datetime "created_at", null: false
@@ -224,11 +265,17 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.boolean "confirmed", default: false
     t.index ["customer_id"], name: "index_customers_tenders_on_customer_id"
     t.index ["tender_id"], name: "index_customers_tenders_on_tender_id"
-    t.index ["invited_by_type", "invited_by_id"], name: "index_customers_on_invited_by_type_and_invited_by_id"
-    t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
   end
 
-  create_table "delayed_jobs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "days_limits", force: :cascade do |t|
+    t.integer "supplier_id"
+    t.integer "buyer_id"
+    t.decimal "days_limit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
     t.text "handler", null: false
@@ -243,15 +290,66 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
-  create_table "devices", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "demand_lists", force: :cascade do |t|
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "demand_supplier_id"
+  end
+
+  create_table "demand_suppliers", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "diamond_type"
+  end
+
+  create_table "demands", force: :cascade do |t|
+    t.string "description"
+    t.float "weight"
+    t.float "price"
+    t.bigint "customer_id"
+    t.string "diamond_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "demand_supplier_id"
+    t.boolean "block"
+    t.boolean "deleted"
+    t.index ["customer_id"], name: "index_demands_on_customer_id"
+  end
+
+  create_table "devices", force: :cascade do |t|
     t.integer "customer_id"
     t.string "token"
-    t.string "type"
+    t.string "device_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "news", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "email_attachments", force: :cascade do |t|
+    t.string "file_file_name"
+    t.string "file_content_type"
+    t.integer "file_file_size"
+    t.datetime "file_updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "customer_id"
+    t.integer "tender_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "sender_id"
+    t.bigint "receiver_id"
+    t.string "message"
+    t.string "message_type"
+    t.string "subject"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_id"], name: "index_messages_on_receiver_id"
+    t.index ["sender_id"], name: "index_messages_on_sender_id"
+  end
+
+  create_table "news", force: :cascade do |t|
     t.string "title"
     t.text "url"
     t.datetime "date"
@@ -262,7 +360,7 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "notes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "notes", force: :cascade do |t|
     t.integer "tender_id"
     t.integer "customer_id"
     t.string "key"
@@ -274,20 +372,78 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.integer "sight_id"
   end
 
-  create_table "proposals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "notifications", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.bigint "tender_id"
+    t.bigint "customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_notifications_on_customer_id"
+    t.index ["tender_id"], name: "index_notifications_on_tender_id"
+  end
+
+  create_table "parcel_images", force: :cascade do |t|
+    t.integer "parcel_id"
+    t.string "image_file_name"
+    t.string "image_content_type"
+    t.integer "image_file_size"
+    t.datetime "image_updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "customer_id"
+    t.string "image_url"
+  end
+
+  create_table "parcel_size_infos", force: :cascade do |t|
+    t.string "carats"
+    t.string "size"
+    t.string "percent"
+    t.integer "trading_parcel_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "partial_payments", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.bigint "transaction_id"
+    t.decimal "amount", precision: 16, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_partial_payments_on_customer_id"
+    t.index ["transaction_id"], name: "index_partial_payments_on_transaction_id"
+  end
+
+  create_table "pre_registration_documents", force: :cascade do |t|
+    t.string "document_file_name"
+    t.string "document_content_type"
+    t.integer "document_file_size"
+    t.datetime "document_updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "pre_registrations", force: :cascade do |t|
+    t.string "company_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "proposals", force: :cascade do |t|
     t.integer "buyer_id"
     t.integer "supplier_id"
     t.integer "trading_parcel_id"
-    t.decimal "price", precision: 10
+    t.decimal "price"
     t.integer "credit"
     t.text "notes"
     t.integer "status", default: 0
     t.integer "action_for"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "broker_id"
   end
 
-  create_table "rails_admin_histories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "rails_admin_histories", force: :cascade do |t|
     t.text "message"
     t.string "username"
     t.integer "item"
@@ -299,7 +455,7 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
-  create_table "ratings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "ratings", force: :cascade do |t|
     t.integer "tender_id"
     t.integer "customer_id"
     t.string "key"
@@ -309,7 +465,13 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.string "flag_type", default: "Imp"
   end
 
-  create_table "round_loosers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "round_loosers", force: :cascade do |t|
     t.integer "stone_id"
     t.integer "customer_id"
     t.integer "bid_id"
@@ -319,7 +481,7 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.integer "auction_id"
   end
 
-  create_table "round_winners", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "round_winners", force: :cascade do |t|
     t.integer "customer_id"
     t.integer "auction_round_id"
     t.integer "bid_id"
@@ -329,7 +491,16 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.integer "auction_id"
   end
 
-  create_table "sights", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "shareds", force: :cascade do |t|
+    t.bigint "shared_to_id"
+    t.bigint "shared_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shared_by_id"], name: "index_shareds_on_shared_by_id"
+    t.index ["shared_to_id"], name: "index_shareds_on_shared_to_id"
+  end
+
+  create_table "sights", force: :cascade do |t|
     t.string "stone_type"
     t.string "source"
     t.string "box"
@@ -344,18 +515,30 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.datetime "updated_at", null: false
     t.integer "tender_id"
     t.string "sight_reserved_price"
-    t.float "yes_no_system_price", limit: 24
-    t.float "stone_winning_price", limit: 24
+    t.float "yes_no_system_price"
+    t.float "stone_winning_price"
     t.boolean "interest", default: true
+    t.integer "status", default: 0
+    t.float "starting_price"
   end
 
-  create_table "stones", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "stone_ratings", force: :cascade do |t|
+    t.integer "stone_id"
+    t.integer "customer_id"
+    t.string "comments"
+    t.string "valuation"
+    t.integer "parcel_rating"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "stones", force: :cascade do |t|
     t.string "stone_type"
     t.integer "no_of_stones"
-    t.float "size", limit: 24
-    t.float "weight", limit: 24
+    t.float "size"
+    t.float "weight"
     t.decimal "carat", precision: 10, scale: 5
-    t.float "purity", limit: 24
+    t.float "purity"
     t.string "color"
     t.boolean "polished"
     t.bigint "tender_id"
@@ -364,30 +547,55 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.integer "deec_no"
     t.integer "lot_no"
     t.text "description"
-    t.float "system_price", limit: 24
+    t.float "system_price"
     t.boolean "lot_permission"
     t.string "comments"
     t.string "valuation"
     t.integer "parcel_rating"
-    t.float "yes_no_system_price", limit: 24
-    t.boolean "interest", default: true
     t.integer "reserved_price"
-    t.float "stone_winning_price", limit: 24
+    t.float "yes_no_system_price"
+    t.float "stone_winning_price"
+    t.integer "status", default: 0
+    t.float "starting_price"
     t.index ["tender_id"], name: "index_stones_on_tender_id"
   end
 
-  create_table "temp_stones", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "sub_company_credit_limits", force: :cascade do |t|
+    t.integer "customer_id"
+    t.integer "credit_limit"
+    t.integer "parent_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "supplier_mines", force: :cascade do |t|
+    t.string "name"
+    t.bigint "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_supplier_mines_on_company_id"
+  end
+
+  create_table "supplier_notifications", force: :cascade do |t|
+    t.integer "supplier_id"
+    t.bigint "customer_id"
+    t.boolean "notify"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_supplier_notifications_on_customer_id"
+  end
+
+  create_table "temp_stones", force: :cascade do |t|
     t.integer "tender_id"
     t.integer "lot_no"
     t.string "description"
     t.integer "no_of_stones"
-    t.float "carat", limit: 24
+    t.float "carat"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["tender_id"], name: "index_stones_on_tender_id"
   end
 
-  create_table "tender_notifications", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "tender_notifications", force: :cascade do |t|
     t.integer "customer_id"
     t.integer "tender_id"
     t.boolean "notify"
@@ -395,18 +603,17 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "tender_winners", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "tender_winners", force: :cascade do |t|
     t.integer "tender_id"
     t.integer "lot_no"
     t.string "selling_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "description"
-    t.float "avg_selling_price", limit: 24
-    t.index ["tender_id"], name: "index_tender_winners_on_tender_id"
+    t.float "avg_selling_price"
   end
 
-  create_table "tenders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "tenders", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.datetime "open_date"
@@ -445,6 +652,10 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.string "country"
     t.string "city"
     t.string "tender_type", default: "", null: false
+    t.datetime "bidding_start"
+    t.datetime "bidding_end"
+    t.string "timezone"
+    t.integer "supplier_mine_id"
     t.string "diamond_type"
     t.string "sight_document_file_name"
     t.string "sight_document_content_type"
@@ -465,9 +676,14 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.integer "round_duration"
     t.string "sight_reserved_field"
     t.integer "rounds_between_duration"
+    t.datetime "round_open_time"
+    t.integer "round", default: 1
+    t.boolean "updated_after_round"
+    t.string "sight_starting_price_field"
+    t.string "stone_starting_price_field"
   end
 
-  create_table "trading_documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "trading_documents", force: :cascade do |t|
     t.string "document_file_name"
     t.string "document_content_type"
     t.integer "document_file_size"
@@ -492,13 +708,13 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.index ["customer_id"], name: "index_trading_documents_on_customer_id"
   end
 
-  create_table "trading_parcels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "trading_parcels", force: :cascade do |t|
     t.integer "lot_no"
     t.string "description"
     t.integer "no_of_stones"
-    t.decimal "weight", precision: 10
+    t.decimal "weight", precision: 16, scale: 2
     t.integer "credit_period"
-    t.decimal "price", precision: 10
+    t.decimal "price"
     t.integer "company_id"
     t.bigint "customer_id"
     t.bigint "trading_document_id"
@@ -510,28 +726,48 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.string "source"
     t.string "box"
     t.boolean "sold", default: false
+    t.string "uid"
+    t.string "diamond_type"
+    t.text "broker_ids"
+    t.boolean "sale_all", default: false
+    t.boolean "sale_none", default: true
+    t.boolean "sale_broker", default: false
+    t.boolean "sale_credit", default: false
+    t.boolean "sale_demanded", default: false
+    t.decimal "percent", precision: 16, scale: 2
+    t.text "comment"
     t.index ["customer_id"], name: "index_trading_parcels_on_customer_id"
     t.index ["trading_document_id"], name: "index_trading_parcels_on_trading_document_id"
   end
 
-  create_table "transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "transactions", force: :cascade do |t|
     t.integer "buyer_id"
     t.integer "supplier_id"
     t.integer "trading_parcel_id"
     t.datetime "due_date"
-    t.decimal "price", precision: 10
+    t.decimal "price"
     t.integer "credit"
-    t.boolean "paid"
+    t.boolean "paid", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "buyer_confirmed", default: false
+    t.text "reject_reason"
+    t.datetime "reject_date"
+    t.string "transaction_type"
+    t.decimal "remaining_amount", precision: 16, scale: 2
+    t.string "transaction_uid"
+    t.string "diamond_type"
+    t.decimal "total_amount", precision: 16, scale: 2
+    t.string "invoice_no"
+    t.boolean "ready_for_buyer"
+    t.string "description"
   end
 
-  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "versions", force: :cascade do |t|
     t.string "versioned_type"
     t.bigint "versioned_id"
     t.string "user_type"
     t.bigint "user_id"
-    t.string "tender_type", default: "Blind", null: false
     t.string "user_name"
     t.text "modifications"
     t.integer "number"
@@ -545,55 +781,46 @@ ActiveRecord::Schema.define(version: 20170814114600) do
     t.index ["tag"], name: "index_versions_on_tag"
     t.index ["user_id", "user_type"], name: "index_versions_on_user_id_and_user_type"
     t.index ["user_name"], name: "index_versions_on_user_name"
-    t.index ["versioned_id", "versioned_type"], name: "index_versions_on_versioned_id_and_versioned_type"
-  end
-
-  create_table "winners", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer "tender_id"
-    t.integer "customer_id"
-    t.integer "bid_id"
-    t.integer "stone_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "sight_id"
     t.index ["user_type", "user_id"], name: "index_versions_on_user_type_and_user_id"
     t.index ["versioned_id", "versioned_type"], name: "index_versions_on_versioned_id_and_versioned_type"
     t.index ["versioned_type", "versioned_id"], name: "index_versions_on_versioned_type_and_versioned_id"
   end
 
-  create_table "winners", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "winners", force: :cascade do |t|
     t.bigint "tender_id"
     t.bigint "customer_id"
     t.bigint "bid_id"
     t.bigint "stone_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sight_id"
     t.index ["bid_id"], name: "index_winners_on_bid_id"
     t.index ["customer_id"], name: "index_winners_on_customer_id"
     t.index ["stone_id"], name: "index_winners_on_stone_id"
     t.index ["tender_id"], name: "index_winners_on_tender_id"
   end
 
-  create_table "yes_no_buyer_interests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "yes_no_buyer_interests", force: :cascade do |t|
     t.bigint "tender_id"
     t.bigint "stone_id"
     t.bigint "sight_id"
     t.bigint "customer_id"
     t.datetime "bid_open_time"
+    t.datetime "bid_close_time"
     t.integer "round"
     t.string "reserved_price"
     t.boolean "interest", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "bid_close_time"
-    t.boolean "buyer_left", default: false
+    t.boolean "buyer_left", default: true
+    t.integer "place_bid", default: 1
     t.index ["customer_id"], name: "index_yes_no_buyer_interests_on_customer_id"
     t.index ["sight_id"], name: "index_yes_no_buyer_interests_on_sight_id"
     t.index ["stone_id"], name: "index_yes_no_buyer_interests_on_stone_id"
     t.index ["tender_id"], name: "index_yes_no_buyer_interests_on_tender_id"
   end
 
-  create_table "yes_no_buyer_winners", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "yes_no_buyer_winners", force: :cascade do |t|
     t.bigint "tender_id"
     t.bigint "stone_id"
     t.bigint "sight_id"

@@ -205,6 +205,17 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :sub_companies, only: [:index] do
+    collection do
+      get :invite
+      post :send_invite
+    end
+    member do
+      get :limit
+      post :save_limit
+    end
+  end
+
   namespace :api do
     namespace :v1 do
       devise_scope :customer do
@@ -255,7 +266,7 @@ Rails.application.routes.draw do
       get :round_completed
     end
   end
-  root :to => 'customers#trading'
+  root :to => 'tenders#index'
 
   get '/change_limits' => 'suppliers#change_limits', as: 'change_credit_limit'
   get '/trading_history' => 'tenders#trading_history', as: 'trading_history'

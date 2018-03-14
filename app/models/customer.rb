@@ -78,6 +78,8 @@ class Customer < ApplicationRecord
 
   # send_account_creation_mail
   after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
+  after_invitation_accepted :set_roles_to_customer
+
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
@@ -284,6 +286,27 @@ class Customer < ApplicationRecord
     BrokerRequest.where(seller_id: self.id, accepted: true)
   end
   ###############
+
+  def generate_jwt_token
+    if Rails.env == "production"
+      service_account_email = ENV['service_account_email']
+      private_key = OpenSSL::PKey::RSA.new ENV['private_key']
+      now_seconds = Time.now.to_i
+      payload = {:iss => ENV['service_account_email'],
+                 :sub => ENV['service_account_email'],
+                 :aud => "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
+                 :iat => now_seconds,
+                 :exp => now_seconds+(60*60), # Maximum expiration time is one hour
+                 :uid => self.id.to_s}
+      token = JWT.encode payload, private_key, "RS256"
+      token
+    end
+  end
+
+  def set_roles_to_customer
+    CustomerRole.create(role_id: 1, customer_id: self.id)
+    CustomerRole.create(role_id: 2, customer_id: self.id)
+  end
 
   rails_admin do
     list do

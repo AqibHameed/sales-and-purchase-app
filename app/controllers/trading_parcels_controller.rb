@@ -96,7 +96,7 @@ class TradingParcelsController < ApplicationController
     if @transaction.save
       @transaction.set_due_date
       @parcel.update_attributes(sold: true)
-      redirect_to root_path, notice: 'Transaction added successfully'
+      redirect_to trading_customers_path, notice: 'Transaction added successfully'
     else
       render :direct_sell
     end

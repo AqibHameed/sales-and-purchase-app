@@ -1,0 +1,2 @@
+class SubCompanyCreditLimit < ApplicationRecord
+end
