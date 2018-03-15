@@ -23,16 +23,30 @@ class SubCompaniesController < ApplicationController
 
   def limit
     @customer = Customer.find(params[:id])
-    @sub_company_limit = SubCompanyCreditLimit.new
+    @sub_company_limit = SubCompanyCreditLimit.where(customer_id: @customer.id).first
+    if @sub_company_limit.nil?
+      @sub_company_limit = SubCompanyCreditLimit.new
+    end
   end
 
   def save_limit
-    @sub_company_limit = SubCompanyCreditLimit.new(sub_company_limit_params)
-    if @sub_company_limit.save
-      flash[:notice] = "Limit added successfully."
-      redirect_to sub_companies_path
+    customer = Customer.find(params[:id])
+    @sub_company_limit = SubCompanyCreditLimit.where(customer_id: customer.id).first
+    if @sub_company_limit.nil?
+      @sub_company_limit = SubCompanyCreditLimit.new(sub_company_limit_params)
+      if @sub_company_limit.save
+        flash[:notice] = "Limit added successfully."
+        redirect_to sub_companies_path
+      else
+        render :limit
+      end
     else
-      render :limit
+      if @sub_company_limit.update_attributes(sub_company_limit_params)
+        flash[:notice] = "Limit updated successfully."
+        redirect_to sub_companies_path
+      else
+        render :limit
+      end
     end
   end
 
