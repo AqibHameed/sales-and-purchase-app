@@ -24,7 +24,7 @@ class SessionsController <  Devise::SessionsController
           if resource.has_role?('Broker')
             redirect_to dashboard_brokers_path, notice: 'Signed in successfully.'
           else
-            redirect_to '/', notice: 'Signed in successfully.'
+            redirect_to trading_customers_path, notice: 'Signed in successfully.'
           end
         else
           redirect_to login_path, notice: 'Invalid email or password'
