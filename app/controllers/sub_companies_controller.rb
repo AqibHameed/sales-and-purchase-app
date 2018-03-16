@@ -50,6 +50,17 @@ class SubCompaniesController < ApplicationController
     end
   end
 
+  def set_limit
+    @customer = Customer.find(params[:id])
+    @sub_company_limit = SubCompanyCreditLimit.where(customer_id: @customer.id).first
+    if @sub_company_limit.nil?
+      @sub_company_limit = SubCompanyCreditLimit.new
+    end
+    respond_to do |format|
+      format.js
+    end
+  end
+
   private
   def sub_company_limit_params
     params.require(:sub_company_credit_limit).permit(:customer_id, :parent_id, :credit_limit)

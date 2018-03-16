@@ -209,6 +209,7 @@ Rails.application.routes.draw do
     collection do
       get :invite
       post :send_invite
+      get :set_limit
     end
     member do
       get :limit

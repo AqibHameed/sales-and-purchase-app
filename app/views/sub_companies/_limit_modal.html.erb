@@ -1,0 +1,13 @@
+<div class="modal fade" id="limit" style="width: 600px; height: 250px; margin-left: 350px; margin-top: 130px;" >
+  <div class="modal-header">
+    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h2 class="modal-title">Limit</h2>
+  </div>
+  <div class="modal-body">
+    <%= select_tag "limit",options_for_select(LIMIT), :class => 'selected-limit form-control', prompt: 'Please select' %>
+  </div>
+</div>
+
+

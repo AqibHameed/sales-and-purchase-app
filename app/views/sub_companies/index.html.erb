@@ -14,8 +14,22 @@
         <td><%= i + 1 %></td>
         <td><%= link_to c.company, limit_sub_company_path(id: c.id) %></td>
         <td><%= c.name %></td>
-        <td><%= c.sub_company_credit_limit.try(:credit_limit) rescue 0 %></td>
+        <td><%= link_to 'Set Limit', 'javascript:void(0)', class: 'set-limit', "data-id" => c.id %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+<%= render :partial => 'limit_modal' %>
+
+<script type='text/javascript'>
+  // $(document).on('click', ".set-limit", function(){
+  //   $('#limit').modal('show');
+  // });
+  $(document).on('click', '.set-limit', function(){
+    id = $(this).data('id')
+    $.ajax({
+      url : '/sub_companies/set_limit',
+      data : { id: id }
+    });
+  })
+</script>

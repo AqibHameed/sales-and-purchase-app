@@ -69,3 +69,4 @@ end
 SHAPES = ['Round', 'Pear']
 COLOR = Array('D'..'M')
 PURITY = ['if', 'vvs1', 'vvs2', 'vs1', 'vs2', 'si1', 'si2', 'si3', 'i1', 'i2', 'i3']
+LIMIT  = ['General', 'Yours', 'Specific']
