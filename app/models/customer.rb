@@ -46,7 +46,9 @@ class Customer < ApplicationRecord
   has_many :supplier_days_limits, :foreign_key => "supplier_id", :class_name => "DaysLimit"
   has_many :brokers, :foreign_key => "broker_id", :class_name => "BrokerRequest"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "BrokerRequest"
-  has_one :sub_company_credit_limit
+  has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
+  has_many :sub_company_customers
+
 
 
   # Setup accessible (or protected) attributes for your model

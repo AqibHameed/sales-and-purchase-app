@@ -1,1 +1,41 @@
+$('.set-limit-modal').html("<%= j render partial: 'limit_modal' %>")
 $('#limit').modal('show');
+$(document).on('change', '#selected-limit', function(){
+  if ($('#selected-limit').val() == "General") {
+    $('.limit-set-modal').html("<%= j render partial: 'limit' %>");
+    $('#limit').css({'height': '300px'});
+    $('.set-customers').html('')
+  }
+  else if ($('#selected-limit').val() == "Specific") {
+    setModalValue();
+    $('.limit-set-modal').html('');
+    $('.set-customers').html("<%= j render partial: 'customers' %>");
+  }
+  else{
+    setModalValue();
+    $('.limit-set-modal').html('');
+    $('.set-customers').html('');
+  }
+  $('#credit_type').val($('#selected-limit').val())
+});
+$(document).on('click', '.close', function(){
+  setModalValue();
+  $('.limit-set-modal').html('');
+  $('.set-customers').html('')
+});
+
+$(document).on('change', '#selected-customer', function(){
+  $('.limit-set-modal').html("<%= j render partial: 'limit' %>");
+  $('#customer_id').val($('#selected-customer').val())
+  $('#credit_limit').val()
+  $('#credit_type').val($('#selected-limit').val())
+  $('#limit').css({'height': '400px'});
+});
+
+function setModalValue() {
+  $('#limit').css({'height': '250px'});
+  $('#credit_limit').val('')
+  $('#customer_id').val('')
+  $('#parent_id').val('')
+  $('#customer_id').val('')
+}

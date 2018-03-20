@@ -210,10 +210,7 @@ Rails.application.routes.draw do
       get :invite
       post :send_invite
       get :set_limit
-    end
-    member do
-      get :limit
-      post :save_limit
+      get :save_limit
     end
   end
 

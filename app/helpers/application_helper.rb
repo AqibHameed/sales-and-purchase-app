@@ -400,5 +400,9 @@ module ApplicationHelper
     current_customer.my_brokers.map { |e| [e.broker.name, e.broker.id]  }
   end
 
+  def all_customers
+    Customer.all.map{|customer| [customer.company, customer.id]}
+  end
+
 end
 

@@ -1,0 +1,44 @@
+<h5><%= @customer.company %>'s Info</h5>
+
+<div class="clear20"></div>
+<div class="form-group">
+  <%#= form_for @sub_company_limit, url: save_limit_sub_company_path(id: @customer.id), method: :post do |f| %>
+    <div class="form-row">
+      <div class="control-label">Limit:</div>
+      <div class="field">
+        <%= text_field_tag :credit_limit, '', class: 'form-control' %></p>
+        <%= hidden_field_tag :sub_company_id, '', value: @customer.id %>
+        <%= hidden_field_tag :customer_id, '', value: '' %>
+        <%= hidden_field_tag :parent_id, '', value: current_customer.id %>
+        <%= hidden_field_tag :credit_type, '', value: '' %>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%= submit_tag "Submit", class: 'btn-02 login-btn submit-limit' %>
+      </div>
+    </div>
+    <div class="clear"></div>
+  <%# end %>
+</div>
+
+<script type='text/javascript'>
+  $(document).on('click', '.submit-limit', function(){
+    data = {}
+    data['id'] = '<%=@customer.id%>',
+    data['credit_limit'] = $('#credit_limit').val(),
+    data['parent_id'] = $('#parent_id').val(),
+    data['credit_type'] = $('#credit_type').val(),
+    data['customer_id'] = $('#customer_id').val(),
+    data['sub_company_id'] = $('#sub_company_id').val()
+    $.ajax({
+      url : "/sub_companies/save_limit",
+      data : { sub_company_credit_limit: data },
+      success: function(){
+        window.location.href = '/sub_companies'
+      }
+    });
+  })
+</script>
