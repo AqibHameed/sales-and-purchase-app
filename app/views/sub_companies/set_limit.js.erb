@@ -4,6 +4,9 @@ $(document).on('change', '#selected-limit', function(){
   if ($('#selected-limit').val() == "General") {
     $('.limit-set-modal').html("<%= j render partial: 'limit' %>");
     $('#limit').css({'height': '300px'});
+    if ('<%=@sub_company_limit.try(:credit_type)%>' == 'General'){
+      $('#credit_limit').val('<%=@sub_company_limit.sub_company_customers.first.try(:credit_limit)%>')
+    }
     $('.set-customers').html('')
   }
   else if ($('#selected-limit').val() == "Specific") {
