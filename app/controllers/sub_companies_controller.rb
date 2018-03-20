@@ -1,4 +1,5 @@
 class SubCompaniesController < ApplicationController
+  require 'ostruct'
 
   def index
     @sub_companies = Customer.where(parent_id: current_customer.id)
@@ -75,6 +76,29 @@ class SubCompaniesController < ApplicationController
     end
     respond_to do |format|
       format.js
+    end
+  end
+
+  def show_all_customers
+    scc_limits = SubCompanyCreditLimit.find_by(id: params[:id])
+    sccs = scc_limits.sub_company_customers
+    @customers = []
+    sccs.each do |scc|
+      object = OpenStruct.new
+      object.customer = Customer.find_by(id: scc.try(:customer_id))
+      object.credit_limit =scc.try(:credit_limit)
+      object.sub_company_customer_id =scc.try(:id)
+      object.sub_company_credit_limit_id =params[:id]
+      @customers << object
+    end
+  end
+
+  def remove_customer_limit
+    sub_company_customer = SubCompanyCustomer.find_by(id: params[:id])
+    sub_company_customer.destroy
+
+    respond_to do |format|
+      format.html { redirect_to show_all_customers_sub_company_url(params[:sub_company_credit_limit_id]), notice: 'Customer was successfully destroyed.' }
     end
   end
 

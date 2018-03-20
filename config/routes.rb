@@ -207,10 +207,14 @@ Rails.application.routes.draw do
 
   resources :sub_companies, only: [:index] do
     collection do
-      get :invite
+      get  :invite
       post :send_invite
-      get :set_limit
-      get :save_limit
+      get  :set_limit
+      get  :save_limit
+      delete :remove_customer_limit
+    end
+    member do
+      get :show_all_customers
     end
   end
 
