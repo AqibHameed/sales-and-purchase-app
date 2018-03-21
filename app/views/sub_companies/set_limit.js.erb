@@ -18,6 +18,10 @@ $(document).on('change', '#selected-limit', function(){
     setModalValue();
     $('.limit-set-modal').html('');
     $('.set-customers').html('');
+    // $('#limit').css({'height': '300px'});
+    // $('.limit-set-modal').html("<%= j render partial: 'limit' %>");
+    // $('#credit_limit').prop("disabled", true);
+
   }
   $('#credit_type').val($('#selected-limit').val())
 });

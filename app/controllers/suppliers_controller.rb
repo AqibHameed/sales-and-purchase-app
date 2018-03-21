@@ -77,6 +77,7 @@ class SuppliersController < ApplicationController
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
     @customers = Customer.unscoped.where.not(id: current_customer.id) #.page params[:page]
+    @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id).try(:credit_type)
   end
 
   def change_limits
@@ -89,13 +90,17 @@ class SuppliersController < ApplicationController
     if current_customer.parent_id.present?
       sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
       if sub_company_limit.credit_type == "General"
-        general_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id).first
-        limit = general_limit.credit_limit
+        # general_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id).first
+        limit = sub_company_limit.credit_limit
       elsif sub_company_limit.credit_type == "Specific"
-        specific_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id, customer_id: params[:buyer_id]).first
-        if specific_limit.present?
-          limit = specific_limit.credit_limit
-        else
+        # specific_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id, customer_id: params[:buyer_id]).first
+        # if specific_limit.present?
+        #   limit = specific_limit.credit_limit
+        # else
+        #   cl.errors.add(:credit_limit, "not set by parent company")
+        # end
+        limit = cl.credit_limit
+        unless limit.present?
           cl.errors.add(:credit_limit, "not set by parent company")
         end
       else

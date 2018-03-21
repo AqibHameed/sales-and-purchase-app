@@ -23,7 +23,7 @@ class SubCompaniesController < ApplicationController
   end
 
   def save_limit
-    customer = Customer.find( params[:sub_company_credit_limit][:id])
+    customer = Customer.find(params[:sub_company_credit_limit][:id])
 
     @sub_company_limit = SubCompanyCreditLimit.where(sub_company_id: customer.id).first
     if @sub_company_limit.nil?
@@ -49,22 +49,34 @@ class SubCompaniesController < ApplicationController
   end
 
   def set_limit_customers(object, type)
-    @subcompanycustomer = SubCompanyCustomer.where(sub_company_credit_limit_id: object.id)
+    # @subcompanycustomer = SubCompanyCustomer.where(sub_company_credit_limit_id: object.id)
+    # unless type == 'Specific' && params[:sub_company_credit_limit][:credit_type] == 'Specific'
+    #   @subcompanycustomer.destroy_all
+    # end
+    # if params[:sub_company_credit_limit][:credit_type] == 'Specific'
+    #   cust_ids = params[:sub_company_credit_limit][:customer_id].split(',')
+    #   cust_ids.each do |cust_id|
+    #     sc_cust = SubCompanyCustomer.find_by(customer_id: cust_id, sub_company_credit_limit_id: object.id)
+    #     if sc_cust.present?
+    #       sc_cust.update(credit_limit: params[:sub_company_credit_limit][:credit_limit])
+    #     else
+    #       SubCompanyCustomer.create(customer_id: cust_id, sub_company_credit_limit_id: object.id, credit_limit: params[:sub_company_credit_limit][:credit_limit])
+    #     end
+    #   end
+    # else
+    #   SubCompanyCustomer.create(sub_company_credit_limit_id: object.id, credit_limit: params[:sub_company_credit_limit][:credit_limit])
+    # end
+    @creditlimits = CreditLimit.where(supplier_id: object.try(:sub_company_id))
     unless type == 'Specific' && params[:sub_company_credit_limit][:credit_type] == 'Specific'
-      @subcompanycustomer.destroy_all
+      @creditlimits.destroy_all
     end
     if params[:sub_company_credit_limit][:credit_type] == 'Specific'
       cust_ids = params[:sub_company_credit_limit][:customer_id].split(',')
       cust_ids.each do |cust_id|
-        sc_cust = SubCompanyCustomer.find_by(customer_id: cust_id, sub_company_credit_limit_id: object.id)
-        if sc_cust.present?
-          sc_cust.update(credit_limit: params[:sub_company_credit_limit][:credit_limit])
-        else
-          SubCompanyCustomer.create(customer_id: cust_id, sub_company_credit_limit_id: object.id, credit_limit: params[:sub_company_credit_limit][:credit_limit])
-        end
+        credit_limit = CreditLimit.where(buyer_id: cust_id, supplier_id: params[:sub_company_credit_limit][:sub_company_id]).first_or_initialize
+        credit_limit.credit_limit = params[:sub_company_credit_limit][:credit_limit].to_f
+        credit_limit.save!
       end
-    else
-      SubCompanyCustomer.create(sub_company_credit_limit_id: object.id, credit_limit: params[:sub_company_credit_limit][:credit_limit])
     end
   end
 
@@ -81,11 +93,13 @@ class SubCompaniesController < ApplicationController
 
   def show_all_customers
     scc_limits = SubCompanyCreditLimit.find_by(id: params[:id])
-    sccs = scc_limits.sub_company_customers
+    # sccs = scc_limits.sub_company_customers
+    sccs = CreditLimit.where(supplier_id: scc_limits.try(:sub_company_id))
     @customers = []
     sccs.each do |scc|
       object = OpenStruct.new
-      object.customer = Customer.find_by(id: scc.try(:customer_id))
+      # object.customer = Customer.find_by(id: scc.try(:customer_id))
+      object.customer = Customer.find_by(id: scc.try(:buyer_id))
       object.credit_limit =scc.try(:credit_limit)
       object.sub_company_customer_id =scc.try(:id)
       object.sub_company_credit_limit_id =params[:id]
@@ -94,7 +108,8 @@ class SubCompaniesController < ApplicationController
   end
 
   def remove_customer_limit
-    sub_company_customer = SubCompanyCustomer.find_by(id: params[:id])
+    # sub_company_customer = SubCompanyCustomer.find_by(id: params[:id])
+    sub_company_customer = CreditLimit.find_by(id: params[:id])
     sub_company_customer.destroy
 
     respond_to do |format|
@@ -104,6 +119,6 @@ class SubCompaniesController < ApplicationController
 
   private
   def sub_company_limit_params
-    params.require(:sub_company_credit_limit).permit(:parent_id, :credit_type, :sub_company_id, :id)
+    params.require(:sub_company_credit_limit).permit(:parent_id, :credit_type, :sub_company_id, :id, :credit_limit)
   end
 end
