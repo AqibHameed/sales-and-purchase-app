@@ -193,7 +193,7 @@ class Customer < ApplicationRecord
 
   def create_firebase_user
     begin
-      response = RestClient.post 'https://us-central1-buddy-6305d.cloudfunctions.net/createFirUser?key=0115aaf701379d933d26d3d6512df9ff2df35a7f', { email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no, address: '', city: '', postal_code: '' }.to_json, {content_type: :json}
+      response = RestClient.post 'https://us-central1-buddy-6305d.cloudfunctions.net/createFirUser?key=0115aaf701379d933d26d3d6512df9ff2df35a7f', { id: id, email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no, address: '', city: '', postal_code: '' }.to_json, {content_type: :json}
       data = JSON.parse(response)
       self.update_attributes(firebase_uid: data["user"]["uid"])
     rescue RestClient::ExceptionWithResponse => e
