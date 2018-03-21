@@ -88,31 +88,36 @@ class SuppliersController < ApplicationController
     end
     if current_customer.parent_id.present?
       sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
-      if sub_company_limit.present?
-        if sub_company_limit.credit_type == "General"
-          general_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id).first
-          limit = general_limit.credit_limit
-        elsif sub_company_limit.credit_type == "Specific"
-          specific_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id, customer_id: params[:buyer_id]).first
+      if sub_company_limit.credit_type == "General"
+        general_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id).first
+        limit = general_limit.credit_limit
+      elsif sub_company_limit.credit_type == "Specific"
+        specific_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id, customer_id: params[:buyer_id]).first
+        if specific_limit.present?
           limit = specific_limit.credit_limit
         else
-          limit = 0
-        end
-        if limit.to_f < total_limit.to_f
-          cl.errors.add(:credit_limit, "can't be greater than assigned value")
-        else
-          cl.credit_limit  = total_limit
+          cl.errors.add(:credit_limit, "not set by parent company")
         end
       else
+        # limit = 0
         cl.errors.add(:credit_limit, "not set by parent company")
       end
+      if limit.to_f < total_limit.to_f
+        cl.errors.add(:credit_limit, "can't be greater than assigned value")
+      else
+        cl.credit_limit  = total_limit.to_f
+      end
     else
-      cl.credit_limit  = total_limit
+      cl.credit_limit  = total_limit.to_f
     end
-    if cl.save
-      render json: { message: 'Credit Limit updated.', value: cl.credit_limit }
+    if cl.errors.any?
+      render json: { message: cl.errors.full_messages.first, value: nil, errors: true }
     else
-      render json: { message: cl.errors.full_messages.first, value: '' }
+      if cl.save
+        render json: { message: 'Credit Limit updated.', value: cl.credit_limit, errors: false }
+      else
+        render json: { message: cl.errors.full_messages.first, value: nil, errors: true }
+      end
     end
   end
 
