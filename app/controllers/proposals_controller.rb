@@ -11,16 +11,23 @@ class ProposalsController < ApplicationController
 
   def create
     @proposal = Proposal.new(proposal_params)
-    if @proposal.save
-      # Sent an email to supplier
-      Message.create_new(@proposal)
+    @proposal.check_sub_company_limit(current_customer)
 
-      flash[:notice] = "Proposal sent to supplier."
-      redirect_to trading_customers_path
+    if @proposal.errors.any?
+        flash[:notice] = @proposal.errors.full_messages.first
+        redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
     else
-      error = @proposal.errors.full_messages.first
-      flash[:notice] = error
-      redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
+      if @proposal.save
+        # Sent an email to supplier
+        Message.create_new(@proposal)
+
+        flash[:notice] = "Proposal sent to supplier."
+        redirect_to trading_customers_path
+      else
+        error = @proposal.errors.full_messages.first
+        flash[:notice] = error
+        redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
+      end
     end
   end
 

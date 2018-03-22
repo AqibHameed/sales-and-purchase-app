@@ -77,7 +77,7 @@ class SuppliersController < ApplicationController
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
     @customers = Customer.unscoped.where.not(id: current_customer.id) #.page params[:page]
-    @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id).try(:credit_type)
+    @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
   end
 
   def change_limits

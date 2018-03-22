@@ -49,6 +49,32 @@ class Proposal < ApplicationRecord
       # end
     # end
   end
+
+  def check_sub_company_limit(current_customer)
+    scc = SubCompanyCreditLimit.where(sub_company_id: self.supplier_id).first
+    if scc.try(:credit_type) == 'Yours'
+      cl = CreditLimit.where(supplier_id: scc.try(:parent_id), buyer_id: current_customer.id).first
+      if cl.present?
+        credit_limit = cl.credit_limit
+        transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false, buyer_confirmed: true)
+        @amount = []
+        transactions.each do |t|
+          @amount << t.remaining_amount
+        end
+        used_amt = @amount.sum
+        get_weight = self.trading_parcel.weight.blank? ? 1 : self.trading_parcel.weight
+        if self.trading_parcel.diamond_type == 'Rough'
+          total_price = self.trading_parcel.price.to_f * get_weight.to_f
+        else
+          total_price = self.trading_parcel.price.to_f * get_weight.to_f
+        end
+        available_limit = credit_limit.to_f - used_amt.to_f
+        if total_price.to_f > available_limit
+          self.errors.add(:credit_limit, "is not enough to buy this")
+        end
+      end
+    end
+  end
 end
 
 
