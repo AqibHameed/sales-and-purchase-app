@@ -1,5 +1,6 @@
 class SubCompaniesController < ApplicationController
   require 'ostruct'
+  before_action :authenticate_logged_in_user!
 
   def index
     @sub_companies = Customer.where(parent_id: current_customer.id)
