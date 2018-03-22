@@ -16,7 +16,7 @@
   <div class="form-row">
     <div class="label"></div>
     <div class="field">
-      <%= submit_tag "Submit", class: 'btn-02 login-btn submit-limit' %>
+      <%= link_to "Submit", 'javascript:void(0)', class: 'btn-02 login-btn submit-limit', data: { confirm: "Are you sure want to reset limit?" }%>
     </div>
   </div>
   <div class="clear"></div>

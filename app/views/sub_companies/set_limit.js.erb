@@ -5,7 +5,7 @@ $(document).on('change', '#selected-limit', function(){
     $('.limit-set-modal').html("<%= j render partial: 'limit' %>");
     $('#limit').css({'height': '300px'});
     if ('<%=@sub_company_limit.try(:credit_type)%>' == 'General'){
-      $('#credit_limit').val('<%=@sub_company_limit.sub_company_customers.first.try(:credit_limit)%>')
+      $('#credit_limit').val('<%=@sub_company_limit.try(:credit_limit)%>')
     }
     $('.set-customers').html('')
   }
@@ -18,9 +18,9 @@ $(document).on('change', '#selected-limit', function(){
     setModalValue();
     $('.limit-set-modal').html('');
     $('.set-customers').html('');
-    // $('#limit').css({'height': '300px'});
-    // $('.limit-set-modal').html("<%= j render partial: 'limit' %>");
-    // $('#credit_limit').prop("disabled", true);
+    $('#limit').css({'height': '300px'});
+    $('.limit-set-modal').html("<%= j render partial: 'limit' %>");
+    $('#credit_limit').prop("disabled", true);
 
   }
   $('#credit_type').val($('#selected-limit').val())

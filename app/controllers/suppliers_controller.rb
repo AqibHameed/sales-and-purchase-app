@@ -82,6 +82,7 @@ class SuppliersController < ApplicationController
 
   def change_limits
     cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
+    total_clms = CreditLimit.where(supplier_id: current_customer.id).sum(:credit_limit)
     if cl.credit_limit.nil?
       total_limit = params[:limit].to_f
     else
@@ -90,25 +91,17 @@ class SuppliersController < ApplicationController
     if current_customer.parent_id.present?
       sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
       if sub_company_limit.credit_type == "General"
-        # general_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id).first
         limit = sub_company_limit.credit_limit
       elsif sub_company_limit.credit_type == "Specific"
-        # specific_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id, customer_id: params[:buyer_id]).first
-        # if specific_limit.present?
-        #   limit = specific_limit.credit_limit
-        # else
-        #   cl.errors.add(:credit_limit, "not set by parent company")
-        # end
         limit = cl.credit_limit
         unless limit.present?
           cl.errors.add(:credit_limit, "not set by parent company")
         end
       else
-        # limit = 0
         cl.errors.add(:credit_limit, "not set by parent company")
       end
-      if limit.to_f < total_limit.to_f
-        cl.errors.add(:credit_limit, "can't be greater than assigned value")
+      if limit.to_f < (total_limit.to_f + total_clms.to_f)
+        cl.errors.add(:credit_limit, "can't be greater than assigned limit")
       else
         cl.credit_limit  = total_limit.to_f
       end

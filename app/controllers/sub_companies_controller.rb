@@ -49,23 +49,6 @@ class SubCompaniesController < ApplicationController
   end
 
   def set_limit_customers(object, type)
-    # @subcompanycustomer = SubCompanyCustomer.where(sub_company_credit_limit_id: object.id)
-    # unless type == 'Specific' && params[:sub_company_credit_limit][:credit_type] == 'Specific'
-    #   @subcompanycustomer.destroy_all
-    # end
-    # if params[:sub_company_credit_limit][:credit_type] == 'Specific'
-    #   cust_ids = params[:sub_company_credit_limit][:customer_id].split(',')
-    #   cust_ids.each do |cust_id|
-    #     sc_cust = SubCompanyCustomer.find_by(customer_id: cust_id, sub_company_credit_limit_id: object.id)
-    #     if sc_cust.present?
-    #       sc_cust.update(credit_limit: params[:sub_company_credit_limit][:credit_limit])
-    #     else
-    #       SubCompanyCustomer.create(customer_id: cust_id, sub_company_credit_limit_id: object.id, credit_limit: params[:sub_company_credit_limit][:credit_limit])
-    #     end
-    #   end
-    # else
-    #   SubCompanyCustomer.create(sub_company_credit_limit_id: object.id, credit_limit: params[:sub_company_credit_limit][:credit_limit])
-    # end
     @creditlimits = CreditLimit.where(supplier_id: object.try(:sub_company_id))
     unless type == 'Specific' && params[:sub_company_credit_limit][:credit_type] == 'Specific'
       @creditlimits.destroy_all
@@ -93,12 +76,10 @@ class SubCompaniesController < ApplicationController
 
   def show_all_customers
     scc_limits = SubCompanyCreditLimit.find_by(id: params[:id])
-    # sccs = scc_limits.sub_company_customers
     sccs = CreditLimit.where(supplier_id: scc_limits.try(:sub_company_id))
     @customers = []
     sccs.each do |scc|
       object = OpenStruct.new
-      # object.customer = Customer.find_by(id: scc.try(:customer_id))
       object.customer = Customer.find_by(id: scc.try(:buyer_id))
       object.credit_limit =scc.try(:credit_limit)
       object.sub_company_customer_id =scc.try(:id)
@@ -108,10 +89,8 @@ class SubCompaniesController < ApplicationController
   end
 
   def remove_customer_limit
-    # sub_company_customer = SubCompanyCustomer.find_by(id: params[:id])
     sub_company_customer = CreditLimit.find_by(id: params[:id])
     sub_company_customer.destroy
-
     respond_to do |format|
       format.html { redirect_to show_all_customers_sub_company_url(params[:sub_company_credit_limit_id]), notice: 'Customer was successfully destroyed.' }
     end
