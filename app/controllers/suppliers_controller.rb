@@ -88,6 +88,8 @@ class SuppliersController < ApplicationController
     else
       total_limit = cl.credit_limit + params[:limit].to_f
     end
+    cl.errors.add(:credit_limit, "should not be negative ") if total_limit < 0
+
     if current_customer.parent_id.present?
       sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
       if sub_company_limit.credit_type == "General"
