@@ -78,6 +78,10 @@ module ApplicationHelper
     end
   end
 
+  def get_remaining_limit(total_limit, assigned_limit)
+    total_limit.to_f - assigned_limit.to_f
+  end
+
   # def get_credit_purchase_percentage(count,total)
   #  return (count/total)*100
   # end
@@ -185,12 +189,25 @@ module ApplicationHelper
   end
 
   def get_credit_limit(buyer, supplier)
-    cl = CreditLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
+    if current_customer.parent_id?
+      sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: supplier.id)
+      if sub_company_limit.credit_type == "Yours"
+        cl = credit_limit(buyer.id, current_customer.parent_id)
+      else
+        cl = credit_limit(buyer.id, supplier.id)
+      end
+    else
+      cl = credit_limit(buyer.id, supplier.id)
+    end
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
       0.00
     else
       number_with_precision((cl.credit_limit), precision: 2)
     end
+  end
+
+  def credit_limit(buyer_id, supplier_id)
+    CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
   end
 
   def get_days_limit(buyer, supplier)
