@@ -9,9 +9,10 @@
   <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path, data: {turbolinks: false}  %>: <%= number_to_currency(overall_credit_given(current_customer)) %></p>
   <%if @type.try(:credit_type) == 'Specific' && @type.present? %>
     <%= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
-  <% elsif @type.try(:credit_type) == 'General'&& @type.present? %>
-    <p><h1>General limit:</h1>
-    <%= number_to_currency(@type.try(:credit_limit)) %></p>
+  <% elsif @type.try(:credit_type) == 'General' && @type.present? %>
+    <p><h2>General limit:</h2>
+    Total Credit: <%=@type.try(:credit_limit)%><br>
+    Credit remaining: <%= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
   <% end %>
   <div class="approve_list">
     <%= render partial: 'approve_customers_list' %>
