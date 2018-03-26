@@ -191,7 +191,7 @@ module ApplicationHelper
   def get_credit_limit(buyer, supplier)
     if current_customer.parent_id?
       sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: supplier.id)
-      if sub_company_limit.credit_type == "Yours"
+      if sub_company_limit.try(:credit_type) == "Yours"
         cl = credit_limit(buyer.id, current_customer.parent_id)
       else
         cl = credit_limit(buyer.id, supplier.id)
