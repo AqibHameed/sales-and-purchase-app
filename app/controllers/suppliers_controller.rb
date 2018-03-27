@@ -92,9 +92,9 @@ class SuppliersController < ApplicationController
 
     if current_customer.parent_id.present?
       sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
-      if sub_company_limit.credit_type == "General"
+      if sub_company_limit.try(:credit_type) == "General"
         limit = sub_company_limit.credit_limit
-      elsif sub_company_limit.credit_type == "Specific"
+      elsif sub_company_limit.try(:credit_type) == "Specific"
         limit = cl.credit_limit
         unless limit.present?
           cl.errors.add(:credit_limit, "not set by parent company")
