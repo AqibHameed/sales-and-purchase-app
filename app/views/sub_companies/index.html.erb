@@ -1,0 +1,40 @@
+<div class="col-md-12">
+  <h1><%= link_to "Invite more", invite_sub_companies_path, data: { turbolinks: false }, class: 'pull-right mt10' %></h1>
+  <h3>My sub companies</h3>
+  <div class="clear10"></div>
+  <table class="table table-bordered table-responsive">
+    <thead>
+      <th>S No.</th>
+      <th>Sub Company</th>
+      <th>Name</th>
+      <th>Limit</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <% @sub_companies.each_with_index do |c, i| %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= c.company%></td>
+          <td><%= c.name %></td>
+          <td><%= link_to 'Set Limit', 'javascript:void(0)', class: 'set-limit', "data-id" => c.id %></td>
+          <%if c.try(:sub_company_credit_limit).try(:credit_type) == 'Specific'%>
+            <td><%= link_to 'Click', show_all_customers_sub_company_path(c)%></td>
+          <%else%>
+          <td></td>
+          <%end%>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div class="set-limit-modal">
+</div>
+<script type='text/javascript'>
+  $(document).on('click', '.set-limit', function(){
+    id = $(this).data('id')
+    $.ajax({
+      url : '/sub_companies/set_limit',
+      data : { id: id }
+    });
+  })
+</script>

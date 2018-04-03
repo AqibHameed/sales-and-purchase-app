@@ -10,3 +10,10 @@ scheduler.cron '* * * * *' do
   Tender.update_round_prices
 end
 
+# scheduler.every '5m' do
+#   Demand.update_demands_block_unblock
+# end
+
+scheduler.every '5m' do
+  Demand.update_demands_block_unblock
+end

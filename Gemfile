@@ -25,7 +25,7 @@ gem "nested_form"
 gem 'active_model_serializers'
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
-
+gem 'bootstrap-sass'
 gem 'delayed_job_active_record'
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'

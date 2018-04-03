@@ -1,0 +1,21 @@
+<div class="dashboard">
+  <h3> Demands </h3>
+  <div class="clear10"></div>
+  <h5><%= @parcel.description %></h5>
+  <div class="table">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id='sellerList' class="tablesorter table-responsive">
+      <thead class="thead-desktop">
+        <th>Name</th>
+        <th>Company</th>
+        <th>Contact No.</th>
+      </thead>
+      <% @demand.each do |d| %>
+        <tr>
+          <td><%= d.customer.name %></td>
+          <td><%= d.customer.company %></td>
+          <td><%= d.customer.mobile_no %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

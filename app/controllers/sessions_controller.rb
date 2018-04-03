@@ -21,10 +21,10 @@ class SessionsController <  Devise::SessionsController
         if resource
           set_flash_message(:notice, :signed_in) if is_flashing_format?
           sign_in(resource_name, resource)
-          if resource.sign_in_count == 1
-            redirect_to login_path, notice: 'Signed in successfully.'
+          if resource.has_role?('Broker')
+            redirect_to dashboard_brokers_path, notice: 'Signed in successfully.'
           else
-            redirect_to '/', notice: 'Signed in successfully.'
+            redirect_to trading_customers_path, notice: 'Signed in successfully.'
           end
         else
           redirect_to login_path, notice: 'Invalid email or password'

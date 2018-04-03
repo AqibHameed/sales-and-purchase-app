@@ -392,5 +392,17 @@ module ApplicationHelper
     end
   end
 
+  def for_sale_options
+    [['All', '0'], ['None', '1'], ['Broker', '2'], ['Credit Given', '3'], ['Demanded', '4']]
+  end
+
+  def list_of_brokers(current_customer)
+    current_customer.my_brokers.map { |e| [e.broker.name, e.broker.id]  }
+  end
+
+  def all_customers
+    Customer.all.map{|customer| [customer.company, customer.id]}
+  end
+
 end
 

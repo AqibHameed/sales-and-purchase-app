@@ -8,55 +8,55 @@
 <body>
 <div class="wrapper login-page">
     <div class="center">
-      <center><%= image_tag "original.jpg", width: '35%' %>
-      <h1 style="font-size: 40px;">Clarity</h1>
-      </center></div>
-     <div class="clear10"></div>
-     <div class="login-box">
-        <p style="color:red; font-size:13px;" class='error_msg'>
-          <%= render partial:  'layouts/supplier/flash' %>
-        </p>
-        <p class="clear10"></p>
-      <% customer = Customer.new %>
-      <%= form_for(customer, :url => session_path(customer), :html => {:class => 'login_form'} ) do |f| %>
-       <% if @c_user  %>
-          <div class="c_user">
-            <strong><%= @c_user.try(:name) %></strong><br/>
-            <%= @c_user.try(:email) %>
-            <%= hidden_field_tag 'customer[login]', @c_user.try(:email) %>
-            <%= hidden_field_tag 'admin[login]', @c_user.try(:email) %>
-          </div>
-          <div class="clear10"></div>
-          <div class="field">
-            <%= f.password_field :password, :autocomplete => :off, :placeholder => "Password" %>
-            <%= hidden_field_tag 'admin[password]' %>
-          </div>
-        <% else %>
-          <div class="label">Email/Mobile No.</div>
-          <div class="field">
-            <%= f.text_field :login %>
-             <%= hidden_field_tag 'admin[login]' %>
-          </div>
-          <div class="clear10"></div>
-          <div class="label">Password</div>
-          <div class="field">
-            <%= f.password_field :password, :autocomplete => :off %>
-            <%= hidden_field_tag 'admin[password]' %>
-          </div>
-        <% end %>
-        <div class="clear20"></div>
-        <div>
-          <%= link_to "Forgot Password ?", "customers/password/new", :class=> "forgot_password" %>
-          <%= link_to "Login as different User", login_path(:key => "d_user"), :class=> "diff_user" if cookies[:c_user] %>
-          <!-- <a href="tender-dashboard.html" class="btn-02">Login</a> -->
+    <center><%= image_tag "original.jpg", width: '35%' %>
+    <h1 style="font-size: 40px;">Clarity</h1>
+    </center></div>
+    <div class="clear10"></div>
+    <div class="login-box">
+      <p style="color:red; font-size:13px;" class='error_msg'>
+        <%= render partial:  'layouts/supplier/flash' %>
+      </p>
+      <p class="clear10"></p>
+    <% customer = Customer.new %>
+    <%= form_for(customer, :url => session_path(customer), :html => {:class => 'login_form'} ) do |f| %>
+     <% if @c_user  %>
+        <div class="c_user">
+          <strong><%= @c_user.try(:name) %></strong><br/>
+          <%= @c_user.try(:email) %>
+          <%= hidden_field_tag 'customer[login]', @c_user.try(:email) %>
+          <%= hidden_field_tag 'admin[login]', @c_user.try(:email) %>
         </div>
         <div class="clear10"></div>
-        <div class="btns-groups">
-          <%= f.submit 'Login', :class => 'btn-02 login-btn login_submit' %>
-          <%= link_to 'Register', 'javascript:void(0)', :class => 'btn-02 login-btn register_url', data: { turbolink: false } %>
+        <div class="field">
+          <%= f.password_field :password, :autocomplete => :off, :placeholder => "Password" %>
+          <%= hidden_field_tag 'admin[password]' %>
         </div>
-        <% end %>
-     </div>
+      <% else %>
+        <div class="label">Email/Mobile No.</div>
+        <div class="field">
+          <%= f.text_field :login %>
+           <%= hidden_field_tag 'admin[login]' %>
+        </div>
+        <div class="clear10"></div>
+        <div class="label">Password</div>
+        <div class="field">
+          <%= f.password_field :password, :autocomplete => :off %>
+          <%= hidden_field_tag 'admin[password]' %>
+        </div>
+      <% end %>
+      <div class="clear20"></div>
+      <div>
+        <%= link_to "Forgot Password ?", "customers/password/new", :class=> "forgot_password" %>
+        <%= link_to "Login as different User", login_path(:key => "d_user"), :class=> "diff_user" if cookies[:c_user] %>
+        <!-- <a href="tender-dashboard.html" class="btn-02">Login</a> -->
+      </div>
+      <div class="clear10"></div>
+      <div class="btns-groups">
+        <%= f.submit 'Login', :class => 'btn-02 login-btn login_submit' %>
+        <%= link_to 'Register', 'javascript:void(0)', :class => 'btn-02 login-btn register_url', data: { turbolink: false } %>
+      </div>
+      <% end %>
+   </div>
 </div>
 
 
@@ -66,34 +66,32 @@
     $(document).on('click', '.register_url', function(e){
       window.location = '/customers/sign_up'
     })
-    
-  //   $(document).on('click', '.login_submit', function(e){
-  //     e.preventDefault();
-  //     $('.error_msg').html('')
+    //   $(document).on('click', '.login_submit', function(e){
+    //     e.preventDefault();
+    //     $('.error_msg').html('')
 
-  //     $('#admin_login').val($('#customer_login').val())
-  //     $('#admin_password').val($('#customer_password').val())
-
-
-  //     var valuesToSubmit = $('.login_form').serialize();
-  //     $.ajax({
-  //       url: $('.login_form').attr('action'), //sumbits it to the given url of the form
-  //       data: valuesToSubmit,
-  //       type: 'post',
-  //       dataType: 'script',
-  //       // success: function(response){ window.location.href = response },
-  //       complete: function(response){
-  //         if(response.status==200){
-  //           window.location.href = response.responseText
-  //         }else{
-  //           $('.error_msg').html(response.responseText)
-  //         }
-  //       }
-  //     });
+    //     $('#admin_login').val($('#customer_login').val())
+    //     $('#admin_password').val($('#customer_password').val())
 
 
-  //   })
+    //     var valuesToSubmit = $('.login_form').serialize();
+    //     $.ajax({
+    //       url: $('.login_form').attr('action'), //sumbits it to the given url of the form
+    //       data: valuesToSubmit,
+    //       type: 'post',
+    //       dataType: 'script',
+    //       // success: function(response){ window.location.href = response },
+    //       complete: function(response){
+    //         if(response.status==200){
+    //           window.location.href = response.responseText
+    //         }else{
+    //           $('.error_msg').html(response.responseText)
+    //         }
+    //       }
+    //     });
 
+
+    //   })
   })
 
 </script>

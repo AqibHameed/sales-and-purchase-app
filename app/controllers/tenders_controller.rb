@@ -18,7 +18,7 @@ class TendersController < ApplicationController
     @tender = @company.tenders.new(tender_params)
     if @tender.save
       @stone = @tender.stones.create(stone_type: params[:stone_type], no_of_stones: params[:no_of_stones], size: params[:size], weight: params[:weight], carat: params[:carat], deec_no: params[:deec_no], lot_no: params[:lot_no], description: params[:description], system_price: params[:system_price],lot_permission: params[:lot_permission])
-      redirect_to root_path
+      redirect_to trading_customers_path
     else
       render 'new'
     end

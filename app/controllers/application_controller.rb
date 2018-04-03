@@ -29,19 +29,18 @@ class ApplicationController < ActionController::Base
   end
 
   before_action :set_user_language
-  def after_sign_in_path_for(resource)
-    set_cookies_for_user(resource) if !cookies[:c_user]
-    if resource.is_a?(Admin)
-      '/admins'
-    else resource.is_a?(Customer)
-      if resource.sign_in_count == 1
-        # change_password_customers_path
-        login_path
-      else
-        root_path
-      end
-    end
-  end
+  # def after_sign_in_path_for(resource)
+  #   set_cookies_for_user(resource) if !cookies[:c_user]
+  #   if resource.is_a?(Admin)
+  #     '/admins'
+  #   else resource.is_a?(Customer)
+  #     if resource.has_role?('Broker')
+  #       dashboard_brokers_path
+  #     else
+  #       root_path
+  #     end
+  #   end
+  # end
 
   def set_cookies_for_user(resource)
     cookies[:c_user] = {value: resource.email, expires: 2.year.from_now}

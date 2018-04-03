@@ -1,5 +1,5 @@
 class TransactionsController < ApplicationController
-  layout 'supplier'
+  # layout 'supplier'
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   
@@ -67,6 +67,7 @@ class TransactionsController < ApplicationController
     @transaction = Transaction.find(params[:id])
     @payment = PartialPayment.new
     @payment_details = PartialPayment.where(transaction_id: params[:id])
+    @info = []
   end
 
   def edit
@@ -113,6 +114,6 @@ class TransactionsController < ApplicationController
   end
 
   def update_transaction_params
-    params.require(:transaction).permit(:paid, :total_amount, :price, :invoice_no, :ready_for_buyer)
+    params.require(:transaction).permit(:paid, :total_amount, :price, :invoice_no, :ready_for_buyer, :created_at)
   end
 end

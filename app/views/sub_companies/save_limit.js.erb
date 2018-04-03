@@ -1,0 +1,8 @@
+if('<% @success %>' == true){
+  '<% flash[:notice] = "Limit added successfully." %>'
+  window.location.href = '/sub_companies'
+}
+
+if('<% @errors.present? %>'){
+  alert('<%=@errors %>')
+}

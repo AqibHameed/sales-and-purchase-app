@@ -3,80 +3,41 @@
   <div class="menu-burger"></div>
     <nav class="nav">
       <ul>
-        <li class="first" onClick=" window.location.href = '/' ">
-          <%= link_to 'Home', root_path, :class => 'home', data: { turbolinks: false } %>
-        </li>
-        <li>
-          <%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
-        </li>
         <% if current_customer %>
-          <li>
-            <div class="dropdown list_dropdown" style="width: 68px;">
-              <a id="dropbtn" class="dropbtn"> History </a>
-              <span><%=image_tag "down-arrow.png", width: '18%' %></span>
-              <div id="myDropdown" class="list-dropdown-content">
-                <%= link_to 'Auction', history_tenders_path, data: { turbolinks: false } %>
-                <%= link_to 'Trading', trading_history_path, data: { turbolinks: false } %>
-              </div>
-            </div>
-          </li>
-          <!-- <li>
-            <%#= link_to 'Inbox', proposals_path, data: { turbolinks: false } %>
-          </li> -->
-          <li>
-            <%= link_to 'Inbox', messages_path, data: { turbolinks: false } %>
-          </li>
-          <!-- <li>
-            <%#= link_to 'Auctions', auctions_path, data: { turbolinks: false } %>
-          </li> -->
-          <% if can? :access, :buy %>
-            <li>
-              <div class="dropdown list_dropdown">
-                <a id="dropbtn" class="dropbtn"> Buy </a>
-                <span><%=image_tag "down-arrow.png", width: '25%' %></span>
-                <div id="myDropdown" class="list-dropdown-content">
-                  <%= link_to 'Trade', trading_customers_path, data: { turbolinks: false } %>
-                  <%= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %>
-                  <%#= link_to 'Credit', credit_customers_path, data: { turbolinks: false } %>
-                </div>
-              </div>
-            </li>
-          <% end %>
-          <% if can? :access, :sell %>
-            <li>
-              <div class="dropdown list_dropdown">
-                <a id="dropbtn" class="dropbtn"> Sell </a>
-                <span><%=image_tag "down-arrow.png", width: '25%' %></span>
-                <div id="myDropdown" class="list-dropdown-content">
-                  <%= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %>
-                  <%= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
-                  <%= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
-                </div>
-              </div>
-            </li>
-            <% if current_customer.has_role?('Seller') %>
-              <li>
-                <%= link_to 'Manage Brokers', requests_brokers_path, data: { turbolinks: false } %>
-              </li>
-            <% end %>
-          <% end %>
           <% if can? :access, :broker %>
-            <li>
-              <div class="dropdown list_dropdown">
-                <a id="dropbtn" class="dropbtn"> Broker </a>
-                <span><%=image_tag "down-arrow.png", width: '25%' %></span>
-                <div id="myDropdown" class="list-dropdown-content">
-                  <%= link_to 'Requests', brokers_path, data: { turbolinks: false } %>
-                  <%#= link_to 'Credit', credit_suppliers_path, data: { turbolinks: false } %>
-                  <%#= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %>
-                </div>
-              </div>
+            <li class="first broker_home">
+              <%= link_to 'Home', dashboard_brokers_path, :class => 'home', data: { turbolinks: false } %>
             </li>
+            <li class="">
+              <%= link_to 'Network', brokers_path, :class => 'home', data: { turbolinks: false } %>
+            </li>
+            <!-- <li><%#= link_to 'Parcels', shared_parcels_brokers_path, data: { turbolinks: false } %></li> -->
+            <li>
+              <%= link_to 'Invite', invite_brokers_path, data: { turbolinks: false } %>
+            </li>
+          <% else %>
+            <li class="first" onClick=" window.location.href = '/customers/trading' ">
+              <%= link_to 'Home', trading_customers_path, :class => 'home', data: { turbolinks: false } %>
+            </li>
+            <!-- <li>
+              <%#= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
+            </li> -->
+            <li><%= link_to 'History', trading_history_path, data: { turbolinks: false } %></li>
+            <% if can? :access, :buy %>
+              <li><%= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %></li>
+            <% end %>
+            <% if can? :access, :sell %>
+              <li><%= link_to 'Network', credit_suppliers_path, data: { turbolinks: false } %></li>
+            <% end %>
+            <li><%= link_to 'Invite',  '#' , data: { turbolinks: false } %></li>
           <% end %>
         <% end %>
-        <!-- <li>
-        <a href="#">Reports</a>
-        </li> -->
+          <!-- <li><%#= link_to 'Inbox', messages_path, data: { turbolinks: false } %></li> -->
+          <!-- <li><%#= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %></li> -->
+          <!-- <li><%#= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %></li> -->
+          <!-- <li>
+          <a href="#">Reports</a>
+          </li> -->
         <% if current_admin %>
           <!-- <li>
             <%#= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
@@ -97,25 +58,38 @@
             <%= link_to 'Demand List', add_demand_list_suppliers_path, data: { turbolinks: false } %>
           </li>
         <% end %>
+        <%# end %>
       </ul>
     </nav>
   </div>
 
-
-
-  <% if current_user %>
-  <div class="current_user_menu">
-    <div class="dropdown nav-dropdown">
-      <a id="dropbtn" class="dropbtn">Welcome <%= current_user.name %></a>
-      <span><%=image_tag "down-arrow.png", width: '4%' %></span>
-      <div id="myDropdown" class="dropdown-content">
-        <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
-        <%= link_to 'Info', info_customers_path, data: { turbolinks: false } unless current_admin %>
-        <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
-        <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
+  <% if current_customer %>
+    <div class="current_user_menu">
+      <div class="dropdown nav-dropdown">
+        <a id="dropbtn" class="dropbtn">Welcome <%= current_customer.name %></a>
+        <span><%=image_tag "down-arrow.png", width: '4%' %></span>
+        <div id="myDropdown" class="dropdown-content">
+          <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
+          <%= link_to 'Info', info_customers_path, data: { turbolinks: false } unless current_admin %>
+          <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
+          <%= link_to 'Manage Brokers', requests_brokers_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
+          <%= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } %>
+          <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
+        </div>
       </div>
     </div>
-  </div>
+  <% else %>
+    <div class="current_user_menu">
+      <div class="current_user_menu">
+      <div class="dropdown nav-dropdown">
+        <a id="dropbtn" class="dropbtn">Welcome <%= current_admin.name %></a>
+        <span><%=image_tag "down-arrow.png", width: '4%' %></span>
+        <div id="myDropdown" class="dropdown-content">
+          <%= link_to 'Logout', destroy_admin_session_path, :method => :delete %>
+        </div>
+      </div>
+    </div>
+    </div>
   <% end %>
   <div class="clear"></div>
 </div>
@@ -162,7 +136,6 @@
   $(document).ready(function() {
     $('nav.nav ul li a').each(function() {
       var href = $(this).attr('href');
-      //alert(href)
       //alert(window.location.pathname)
       if (window.location.pathname == href) {
         $(this).parent().addClass('active')
@@ -171,6 +144,10 @@
         if((window.location.pathname == "/bids/tender_unsuccess") || (window.location.pathname == "/bids/tender_success") || (window.location.pathname == "/bids/tender_total")) {
           $(".bids_list").addClass('active')
      }
+    })
+
+    $(document).on('click', '.broker_home', function(){
+      window.location.replace('/brokers/dashboard');
     })
 
     $(".mobile-menu-icon").click(function() {

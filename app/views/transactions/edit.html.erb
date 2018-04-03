@@ -39,7 +39,7 @@
         <div class="form-row">
           <div class="label">Avg Price:</div>
           <div class='field'>
-            <%=f.text_field :price, value: @transaction.price,  class: 'input' %>
+            <%=f.text_field :price, value: @transaction.price,  class: 'input disabled' %>
           </div>
         </div>
         <div class="form-row">
@@ -51,7 +51,7 @@
         <div class="form-row">
           <div class="label">Amount:</div>
           <div class='field'>
-            <%=f.text_field :total_amount, value: @transaction.total_amount,  class: 'input' %>
+            <%=f.text_field :total_amount, value: @transaction.total_amount,  class: 'input disabled' %>
           </div>
         </div>
         <div class="form-row">
@@ -61,11 +61,18 @@
           </div>
         </div>
         <div class="form-row">
+          <div class="label">Invoice Date:</div>
+          <div class='field'>
+            <%=f.text_field :created_at, value: @transaction.created_at.strftime("%d/%m/%Y"),  class: 'form-control date-picker' %>
+          </div>
+        </div>
+        <div class="form-row">
           <div class="label">Send to Buyer:</div>
           <div class='field'>
             <%=f.check_box :ready_for_buyer,  class: 'input' %>
           </div>
         </div>
+        
       </div>
       <div class="clear"></div>
       <div class="form-row">
@@ -81,6 +88,12 @@
 <div class="clear"></div>
 
 <script type="text/javascript">
+  $(document).ready(function (){
+    $(".date-picker").datepicker({
+      "dateFormat" : 'dd/mm/yy'
+    });
+  })
+
   $(document).on('focusout','#transaction_price', function(){
     var carat = $('#weight').val();
     var price = $('#transaction_price').val();

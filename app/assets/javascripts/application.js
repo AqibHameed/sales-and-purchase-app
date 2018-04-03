@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_nested_form
 //= require jquery_ujs
+//= require bootstrap-sprockets
 //= require dataTables/jquery.dataTables
 //= require fancybox
 //= require jquery.dataTables.min.js
@@ -225,21 +226,127 @@ function isNumber(evt) {
 }
 
 $(document).ready(function() {
-  $(document).on('change', '#for_sale', function() {
-    parcel_id = $(this).val();
+  $(document).on('click', '.sale_visibility', function(){
+    id = $(this).data('id')
+    $.ajax({
+      url : '/parcel_detail',
+      data : { id: id }
+    });
+  })
+
+  $(document).on('change', '#sale_all', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_broker').attr('disabled', true)
+      $('#sale_none').attr('disabled', true)
+      $('#sale_credit').attr('disabled', true)
+      $('#sale_demanded').attr('disabled', true)
+      $('.broker-list').addClass('hide')
+    } else {
+      $('#sale_broker').attr('disabled', false)
+      $('#sale_none').attr('disabled', false)
+      $('#sale_credit').attr('disabled', false)
+      $('#sale_demanded').attr('disabled', false)
+    }
+  })
+
+  $(document).on('change', '#sale_none', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_broker').attr('disabled', true)
+      $('#sale_all').attr('disabled', true)
+      $('#sale_credit').attr('disabled', true)
+      $('#sale_demanded').attr('disabled', true)
+      $('.broker-list').addClass('hide')
+    } else {
+      $('#sale_broker').attr('disabled', false)
+      $('#sale_all').attr('disabled', false)
+      $('#sale_credit').attr('disabled', false)
+      $('#sale_demanded').attr('disabled', false)
+    }
+  })
+
+  $(document).on('change', '#sale_broker', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_none').attr('disabled', true)
+      $('#sale_all').attr('disabled', true)
+      $('#sale_credit').attr('disabled', true)
+      $('#sale_demanded').attr('disabled', true)
+      $('.broker-list').removeClass('hide')
+    } else {
+      $('#sale_none').attr('disabled', false)
+      $('#sale_all').attr('disabled', false)
+      $('#sale_credit').attr('disabled', false)
+      $('#sale_demanded').attr('disabled', false)
+      $('.broker-list').addClass('hide')
+    }
+  })
+
+  $(document).on('change', '#sale_demanded', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_none').attr('disabled', true)
+      $('#sale_all').attr('disabled', true)
+      $('#sale_broker').attr('disabled', true)
+      $('#sale_credit').attr('disabled', false)
+      $('.broker-list').addClass('hide')
+    } else {
+      $('#sale_none').attr('disabled', false)
+      $('#sale_all').attr('disabled', false)
+      $('#sale_credit').attr('disabled', false)
+      $('#sale_broker').attr('disabled', false)
+    }
+  })
+
+  $(document).on('change', '#sale_credit', function() {
+    if ($(this).is(':checked')) {
+      $('#sale_none').attr('disabled', true)
+      $('#sale_all').attr('disabled', true)
+      $('#sale_broker').attr('disabled', true)
+      $('#sale_demanded').attr('disabled', false)
+      $('.broker-list').addClass('hide')
+    } else {
+      $('#sale_none').attr('disabled', false)
+      $('#sale_all').attr('disabled', false)
+      $('#sale_broker').attr('disabled', false)
+      $('#sale_demanded').attr('disabled', false)
+    }
+  })
+    
+  $(document).on('change', '.for_sale', function() {
+    var column = $(this).val()
+    var parcel_id = $(this).data('id');
+    if ($(this).is(':checked')) {
+      var val = true
+    } else {
+      var val = false
+    }
     $.ajax({
       url: '/customers/'+parcel_id+'/check_for_sale',
+      data: { val: val, col: column },
       type: "GET"
     })
-  });
+    
+    // if(val == "2"){
+    //   $(this).parent('td').find('.broker-list').removeClass('hide')
+    // }else{
+    //   $(this).parent('td').find('.broker-list').addClass('hide')
+    // }
+    // parcel_id = $(this).data('id');
+    // val = $(this).val()
+  })
+
+  $('.broker-select').select2({})
+
+  $('.broker-select').on("change", function (e) {
+    broker_ids = $(this).val();
+    parcel_id = $(this).data('id')
+    $.ajax({
+      url : '/share_with_brokers',
+      data : { broker_ids: broker_ids, id: parcel_id }
+    });
+  })
 });
 
-
-
 $(document).ready(function() {
-
   // Responsive tables data show
-
   $(document).on('click', '.table-responsive .table-head-in-td', function(){
     $(this).closest('tr').toggleClass('opened');
   });
@@ -248,44 +355,67 @@ $(document).ready(function() {
     $(this).closest('tr').toggleClass('opened');
   });
 
-  // Mobile menu
 
-  if($('.menu-burger').length){
-      $('.menu-burger').click(function(){
-        $(this).toggleClass('opened');
-        $('.header .c1 .nav').toggleClass('opened');
+  if($('.table-responsive').length){
+      $('.table-responsive .table-head-in-td').click(function(){
+        $(this).closest('tr').toggleClass('opened');
+      });
+  }
+  if($('.table-responsive').length){
+      $('.table-responsive .td-mobile-count').click(function(){
+        $(this).closest('tr').toggleClass('opened');
       });
   }
 
+  // Mobile menu
+  if($('.menu-burger').length){
+    $('.menu-burger').click(function(){
+      $(this).toggleClass('opened');
+      $('.header .c1 .nav').toggleClass('opened');
+    });
+  }
+
+  $('#demand_description').select2({
+
+  })
 });
 
+
 function ajaxRequest(url, data, callback, errorCallback, type) {
-    if(typeof type == 'undefined') {
-        type = 'GET'
+  if(typeof type == 'undefined') {
+    type = 'GET'
+  }
+  if (typeof errorCallback == 'undefined') {
+    errorCallback = false
+  }
+  if (!data) {
+    data = {};
+  }
+  $.ajax({
+    url : url,
+    type : type,
+    data : data,
+    success: function (data) {
+      if(typeof callback == 'function') {
+        callback(data);
+      }
+    },
+    error: function (jqXHR, textStatus,errorThrown) {
+      console.log(jqXHR, textStatus, errorThrown);
+      if(errorCallback !== false && typeof callback == 'function') {
+          errorCallback(jqXHR, textStatus,errorThrown);
+      } else {
+          alert('An error occurred: ' + textStatus + ' ' + errorThrown);
+      }
     }
-    if (typeof errorCallback == 'undefined') {
-        errorCallback = false
-    }
-    if (!data) {
-        data = {};
-    }
-    $.ajax({
-        url : url,
-        type : type,
-        data : data,
-        success: function (data) {
-            if(typeof callback == 'function') {
-                callback(data);
-            }
-        },
-        error: function (jqXHR, textStatus,errorThrown) {
-            console.log(jqXHR, textStatus, errorThrown);
-            if(errorCallback !== false && typeof callback == 'function') {
-                errorCallback(jqXHR, textStatus,errorThrown);
-            } else {
-                alert('An error occurred: ' + textStatus + ' ' + errorThrown);
-            }
-        }
-    });
+  });
 
 }
+
+
+$(document).on('click', '.size_info', function(){
+  id = $(this).data('id')
+  $.ajax({
+    url : '/trading_parcels/'+id+'/size_info',
+  });
+})

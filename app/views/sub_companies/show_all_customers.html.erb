@@ -1,0 +1,24 @@
+<div class="col-md-12">
+  <h3>Customers</h3>
+  <div class="clear10"></div>
+  <table class="table table-bordered table-responsive">
+    <thead>
+      <th>S No.</th>
+      <th>Customer Name</th>
+      <th>Company Name</th>
+      <th>Limit</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <%@customers.each_with_index do |customer, i|%>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= customer.try(:customer).try(:name)%></td>
+          <td><%= customer.try(:customer).try(:company)%></td>
+          <td><%= customer.try(:credit_limit)%></td>
+          <td><%= link_to 'Remove', remove_customer_limit_sub_companies_path(id: customer.try(:sub_company_customer_id), sub_company_credit_limit_id: customer.try(:sub_company_credit_limit_id)), method: :delete%></td>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
+</div>

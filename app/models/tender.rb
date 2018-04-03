@@ -593,7 +593,6 @@ class Tender < ApplicationRecord
         # TenderMailer.send_tender_close_notification(tender, customer).deliver rescue logger.info "Error sending email"
       end
     end
-
     save_winners
   end
 

@@ -1,0 +1,20 @@
+<h3> Invite Sub Company</h3>
+<div class="clear20"></div>
+<div class="form-group">
+  <%= form_tag(send_invite_sub_companies_path, :method => :post) do %>
+    <div class="form-row">
+      <div class="control-label">Email:</div>
+      <div class="field">
+        <%= text_field_tag "email", '', class: 'form-control' %></p>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%= submit_tag "Send", class: 'btn-02 login-btn' %>
+        </div>
+    </div>
+    <div class="clear"></div>
+  <% end %>
+</div>

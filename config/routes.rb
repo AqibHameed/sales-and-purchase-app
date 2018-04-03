@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   get '/can_update', to: 'tenders#round_updated'
   get '/get_timer', to: 'tenders#timer_value'
 
-
   get '/chat', to: 'chats#index'
   get '/video_chat', to: 'chat_vidoes#index'
 
@@ -114,6 +113,7 @@ Rails.application.routes.draw do
       get :block_unblock_user
       post :create_sub_company
       get :check_for_sale
+      delete :remove_demand
     end
   end
 
@@ -162,6 +162,11 @@ Rails.application.routes.draw do
     member do
       get :message
       post :message_create
+      get :related_seller
+      get :parcel_history
+      get :direct_sell
+      post :save_direct_sell
+      get :size_info
     end
   end
   resources :transactions do
@@ -190,6 +195,26 @@ Rails.application.routes.draw do
       get :accept
       get :reject
       get :remove
+      get :shared_parcels
+      get :dashboard
+      get :invite
+      post :send_invite
+    end
+    member do
+      get :demand
+    end
+  end
+
+  resources :sub_companies, only: [:index] do
+    collection do
+      get  :invite
+      post :send_invite
+      get  :set_limit
+      get  :save_limit
+      delete :remove_customer_limit
+    end
+    member do
+      get :show_all_customers
     end
   end
 
@@ -202,7 +227,6 @@ Rails.application.routes.draw do
         post :company_limits, to: 'companies#list_company'
         post :forgot_password, to: "passwords#create"
       end
-
       get '/tender_parcel', to: 'tenders#tender_parcel'
       post '/stone_parcel', to: 'tenders#stone_parcel'
       get '/find_active_parcels', to: 'tenders#find_active_parcels'
@@ -231,7 +255,6 @@ Rails.application.routes.draw do
           post :upload
         end
       end
-
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
       post '/supplier_notification', to: 'api#supplier_notification'
@@ -245,7 +268,6 @@ Rails.application.routes.draw do
       get :round_completed
     end
   end
-
   root :to => 'tenders#index'
 
   get '/change_limits' => 'suppliers#change_limits', as: 'change_credit_limit'
@@ -254,6 +276,6 @@ Rails.application.routes.draw do
   get '/supplier_demand_list' => 'suppliers#supplier_demand_list'
   get '/supplier_list' => 'suppliers#supplier_list'
   get '/update_chat_id',to: 'tenders#update_chat_id'
-
-
+  get '/share_with_brokers', to: 'trading_parcels#share_broker'
+  get '/parcel_detail', to: 'trading_parcels#parcel_detail'
 end

@@ -6,9 +6,10 @@ class SuppliersController < ApplicationController
   before_action :check_role_authorization, only: [:index, :trading, :credit ]
 
   def index
-    @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc).page params[:page]
+    @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc) #.page params[:page]
     @trading_document = TradingDocument.new
     @trading_parcel = TradingParcel.new
+    @trading_parcel.parcel_size_infos.build
   end
 
   def trading
@@ -24,7 +25,7 @@ class SuppliersController < ApplicationController
 
   def demand
     @parcel = TradingParcel.find(params[:id])
-    @demand = Demand.where(description: @parcel.description).where.not(customer_id: current_customer.id)
+    @demand = Demand.where(description: @parcel.description, block: false, deleted: false).where.not(customer_id: current_customer.id)
     @customers = Customer.unscoped.where(id: @demand.map(&:customer_id)).page params[:page]
   end
 
@@ -57,6 +58,7 @@ class SuppliersController < ApplicationController
 
   def single_parcel
     @parcel = TradingParcel.find(params[:id])
+    @info = []
   end
 
   def single_parcel_form
@@ -80,9 +82,32 @@ class SuppliersController < ApplicationController
   def change_limits
     cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
     if cl.credit_limit.nil?
-      cl.credit_limit = params[:limit]
+      total_limit = params[:limit].to_f
     else
-      cl.credit_limit = cl.credit_limit + params[:limit].to_f
+      total_limit = cl.credit_limit + params[:limit].to_f
+    end
+    if current_customer.parent_id.present?
+      sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
+      if sub_company_limit.present?
+        if sub_company_limit.credit_type == "General"
+          general_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id).first
+          limit = general_limit.credit_limit
+        elsif sub_company_limit.credit_type == "Specific"
+          specific_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id, customer_id: params[:buyer_id]).first
+          limit = specific_limit.credit_limit
+        else
+          limit = 0
+        end
+        if limit.to_f < total_limit.to_f
+          cl.errors.add(:credit_limit, "can't be greater than assigned value")
+        else
+          cl.credit_limit  = total_limit
+        end
+      else
+        cl.errors.add(:credit_limit, "not set by parent company")
+      end
+    else
+      cl.credit_limit  = total_limit
     end
     if cl.save
       render json: { message: 'Credit Limit updated.', value: cl.credit_limit }
@@ -107,6 +132,9 @@ class SuppliersController < ApplicationController
   end
 
   def supplier_demand_list
+    if params[:id] == 'Rough'
+      params[:id] = 'Outside Goods'
+    end
     demand_supplier = DemandSupplier.where(name: params[:id]).first
     @demand_list = DemandList.where(demand_supplier_id: demand_supplier.id)
     respond_to do |format|
@@ -141,7 +169,7 @@ class SuppliersController < ApplicationController
     if current_customer.has_role?('Seller') || current_customer.has_role?('Broker')
       # do nothing
     else
-      redirect_to root_path, notice: 'You are not authorized.'
+      redirect_to trading_customers_path, notice: 'You are not authorized.'
     end
   end
 end

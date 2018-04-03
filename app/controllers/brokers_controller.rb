@@ -5,6 +5,10 @@ class BrokersController < ApplicationController
     @sellers = Customer.get_sellers
   end
 
+  def dashboard
+    @parcels = TradingParcel.all.select { |e| e.broker_ids.include? current_customer.id.to_s unless e.broker_ids.nil? }
+  end
+
   def send_request
     broker_request = BrokerRequest.where(broker_id: current_customer.id, seller_id: params[:s]).first_or_initialize do |br|
       br.accepted = false
@@ -44,10 +48,41 @@ class BrokersController < ApplicationController
     redirect_to requests_brokers_path
   end
 
+  def shared_parcels
+    @parcels = TradingParcel.all.select { |e| e.broker_ids.include? current_customer.id.to_s unless e.broker_ids.nil? }
+  end
+
+  def invite
+    @broker_invite = BrokerInvite.new
+  end
+
+  def send_invite
+    @broker_invite = BrokerInvite.new(broker_invite_params)
+    if @broker_invite.save
+      CustomerMailer.broker_invite_email(@broker_invite).deliver #rescue logger.info "Error sending email"
+      flash[:success] = "Invite sent successfully"
+      redirect_to dashboard_brokers_path
+    else
+      render :invite
+    end
+  end
+
+  def demand
+    @parcel = TradingParcel.find(params[:id])
+    @demand = Demand.where(description: @parcel.description, block: false).where.not(customer_id: current_customer.id)
+    # @customers = Customer.unscoped.where(id: @demand.map(&:customer_id)).page params[:page]
+  end
+
   private
 
   def load_request
     @broker_request = BrokerRequest.find(params[:id])
   end
+
+  def broker_invite_params
+    params.require(:broker_invite).permit(:email, :customer_id)
+  end
 end
-    
+
+
+

@@ -1,0 +1,120 @@
+<div class="modal fade bs-example-modal-lg" id="parcel_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Parcel Details</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="col-lg-8 col-sm-8 col-xs-12" id="container">
+            </div>
+            <div class="col-lg-4">
+              <% total = @parcel.try(:price)*@parcel.try(:weight) rescue 0 %>
+              <p><b>Supplier:</b> <%= @parcel.try(:customer).try(:company) %></p>
+              <p><b>Lot No.:</b> <%= @parcel.try(:lot_no) %></p>
+              <p><b>Description:</b> <%= @parcel.try(:description) %></p>
+              <p><b>Carats:</b> <%= @parcel.try(:weight) %></p>
+              <p><b>Cost:</b> <%= @parcel.try(:cost) %></p>
+              <p><b>Avg Price:</b> <%= @parcel.try(:price) %></p>
+              <p><b>Credit:</b> <%= @parcel.try(:credit_period) %></p>
+              <p><b>Percent:</b> <%= @parcel.try(:percent)  %>%</p>
+              <p><b>Last Avg. selling Price:</b> <%=   %></p>
+              <p><b>Avg. Price for last 3 sell:</b> <%=last_3_trading_avg(@history)  %></p>
+              <%= form_for @proposal do |f| %>
+                <div class="form-row">
+                  <div class="row control-label col-sm-3">%</div>
+                  <div class=' col-sm-9'>
+                    <%=text_field_tag "percent", @parcel.try(:percent), class: 'form-control' %>
+                  </div>
+                </div>
+                <div class="clear10"></div>
+                <div class="form-row">
+                  <div class="row control-label col-sm-3">Avg. price:</div>
+                  <div class=' col-sm-9'>
+                    <%=f.text_field :price, value: @parcel.try(:price), class: 'form-control' %>
+                  </div>
+                </div>
+                <div class="clear10"></div>
+                <div class="form-row">
+                  <div class="row control-label col-sm-3">Total $:</div>
+                  <div class=' col-sm-9'>
+                    <%=text_field_tag "total", total, class: 'form-control' %>
+                  </div>
+                </div>
+                <div class="clear10"></div>
+                <div class="form-row">
+                  <p>% diff from last sold price: <span class="difference"></span></p>
+                </div>
+                <%=f.hidden_field :buyer_id, value: current_customer.id %>
+                <%=f.hidden_field :supplier_id, value: @parcel.try(:customer_id) %>
+                <%=f.hidden_field :action_for, value: @parcel.try(:customer_id) %>
+                <%=f.hidden_field :trading_parcel_id, value: @parcel.try(:id) %>
+                <%=hidden_field_tag :carats,  @parcel.try(:weight) %>
+                <%=hidden_field_tag :cost,  @parcel.try(:cost) %>
+                <%=hidden_field_tag :avg_price,  @parcel.try(:price) %>
+                <div class="clear10"></div>
+                <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm'%>
+              <% end %>
+            </div>
+            <%=link_to "Size info", 'javascript:void(0)', class: 'size_info', "data-id" => @parcel.try(:id) %>
+            <div class="col-lg-8">
+              <p><b>Comment: </b></p>
+              <ul class="list-group">
+                <li class="list-group-item"><%= @parcel.try(:comment) %></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="size-info">
+  <%= render partial: 'trading_parcels/size_info' %>
+</div>
+
+<script type="text/javascript">
+
+  $('#container').highcharts({
+    chart : {
+      type : 'column',
+      width: 500,
+      height: 300
+    },
+    title : {
+      text : 'Past Trading History'
+    },
+    // subtitle : {
+      // text : 'Source: WorldClimate.com'
+    // },
+    xAxis : {
+      type: 'datetime',
+      categories: <%= raw @history.collect{ |t| [t.created_at.strftime("%b-%Y")] } %>
+    },
+    yAxis : {
+      min : 0,
+      title : {
+        text : 'Price in $'
+      }
+    },
+    tooltip : {
+      pointFormat: 'Last sold price: <b>${point.y:.1f}</b>'
+    },
+    plotOptions : {
+      column : {
+        pointPadding : 0.2,
+        borderWidth : 0
+      }
+    },
+    series : [{
+      name : 'Sold Price',
+      data : <%= raw @history.collect{ |t| [t.total_amount.to_f] } %>
+
+    }]
+  });
+  
+
+</script>

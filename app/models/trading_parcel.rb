@@ -1,16 +1,22 @@
 class TradingParcel < ApplicationRecord
+  serialize :broker_ids
   paginates_per 25
   belongs_to :customer
   has_many :proposals
+  has_many :parcel_size_infos
   has_one :my_transaction, class_name: 'Transaction'
+  belongs_to :trading_document, optional: true
 
   validates :price, :credit_period, :weight, presence: true
   validates :price, :credit_period, :weight, numericality: true
   after_create :generate_and_add_uid, :send_mail_to_demanded
 
   accepts_nested_attributes_for :my_transaction
+  accepts_nested_attributes_for :parcel_size_infos, :allow_destroy => true
 
   attr_accessor :single_parcel
+
+  enum for_sale: [ :to_all, :to_none, :broker, :credit_given, :demanded ]
 
   def self.search_by_filters(params, current_customer)
     parcels = TradingParcel.where.not(customer_id: current_customer.id).order(created_at: :desc)
@@ -19,7 +25,6 @@ class TradingParcel < ApplicationRecord
     parcels = parcels.where(no_of_stones: params[:no_of_stones]) unless params[:no_of_stones].blank?
     parcels = parcels.where(weight: params[:weight]) unless params[:weight].blank?
     parcels = parcels.where(credit_period: params[:credit_period]) unless params[:credit_period].blank?
-
   end
 
   def generate_and_add_uid
@@ -29,12 +34,18 @@ class TradingParcel < ApplicationRecord
   end
 
   def demand_count(parcel, customer)
-    count = Demand.where(description: parcel.description, demand_supplier_id: parcel.customer_id).where.not(customer_id: customer.id).count
+    count = Demand.where(description: parcel.description, block: false, deleted: false).where.not(customer_id: customer.id).count
     # customer_ids = demands.customer_ids
     # customer_ids.each do |id|
     #   Customer.check_overdue(id)
     # end
     return count
+  end
+
+  def related_parcels(customer)
+    networks = BrokerRequest.where(broker_id: customer.id, accepted: true).map { |e| e.seller_id } #. delete(customer.id.to_i)
+    networks.delete(self.customer_id)
+    parcels = TradingParcel.where(description: description, customer_id: networks)
   end
 
   def send_mail_to_demanded

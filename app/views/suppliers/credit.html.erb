@@ -1,6 +1,6 @@
 <%#= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
 <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
-
+<div class="error-message"><span></span></div>
 <% if params[:name].present? %>
   <%= render partial: 'list_company' %>
 <%end%>
@@ -62,8 +62,11 @@
       dataType: 'json',
       data: {limit: value, buyer_id: user_id},
       success:function(data){
-
+        if (data.value){
         window.location.reload()
+        } else {
+          // $('.error-message').find('span').text(data.message)
+        }
         // $(self).parents('tr').find('td.credit_limit').removeClass('hide')
         // $(self).parents('tr').find('td.edit_field').addClass('hide')
         // $(self).parents('tr').find('td.credit_limit').html('<a href="#" class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></a><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')

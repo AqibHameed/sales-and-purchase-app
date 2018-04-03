@@ -1,6 +1,7 @@
 class TradingDocument < ApplicationRecord
   include DocumentUrl
 	belongs_to :customer
+  has_one :trading_parcel
 
 	has_attached_file :document
   do_not_validate_attachment_file_type :document

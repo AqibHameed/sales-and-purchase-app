@@ -6,14 +6,14 @@ class Proposal < ApplicationRecord
 
   enum status: [ :negotiated, :accepted, :rejected ]
 
-  validate :price_validation, :credit_validation
+  validate  :credit_validation
 
   def price_validation
     supplier_price = trading_parcel.price
     unless supplier_price.nil?
       buyer_price = supplier_price*(0.85)
       if price.to_f < buyer_price
-        errors[:base] << "Price should be less than 15% of supplier price. Please try again"
+        errors[:base] << "Price should not be less than 15% of supplier price. Please try again"
       end
     end
   end
@@ -21,7 +21,7 @@ class Proposal < ApplicationRecord
   def credit_validation
     limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
     if limit.nil?
-      errors[:base] << "You haven't given any limit to selected customer. Please <a href = '/suppliers/credit'>click here</a> to assign.".html_safe
+      errors[:base] << "Supplier haven't given any limit to you. Request credits from below".html_safe
     else
       credit_limit = limit.credit_limit
       transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false, buyer_confirmed: true)

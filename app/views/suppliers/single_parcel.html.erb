@@ -19,7 +19,7 @@
   </tr>
   <tr>
     <td> Box </td>
-    <td><%= (@parcel.box.nil? || @parcel.box.blank?) ? 'N/A' : @parcel.box %></td>
+    <td><%= (@parcel.box.nil? || @parcel.box.blank?) ? 'N/A' : @parcel.box %><%=link_to "Size info", 'javascript:void(0)', class: 'pull-right size_info', "data-id" => @parcel.try(:id) %></td>
   </tr>
   <tr>
     <td> Carats</td>
@@ -69,14 +69,22 @@
 	   	<%= get_number_of_customers(current_customer, amount, 'unavailable')%>
     </td>
   </tr>
-   <tr>
+  <tr>
     <td> Given No Credits</td>
     <td>
 	   	<%= get_count_no_credit(current_customer)%>
     </td>
+  </tr>
+  <tr>
+    <td> Comment</td>
+    <td><%= (@parcel.comment.nil? || @parcel.comment.blank?) ? 'N/A' : @parcel.comment %></td>
   </tr>
 </table>
 <div class="clear10"></div>
 <%=link_to 'Add Another', single_parcel_form_suppliers_path, class: 'login-btn btn-02', data: {turbolinks: false} %>
 <%=link_to 'Done', suppliers_path, class: 'login-btn btn-02', data: {turbolinks: false} %>
 </div><br>
+
+<div class="size-info">
+  <%= render partial: 'trading_parcels/size_info' %>
+</div>

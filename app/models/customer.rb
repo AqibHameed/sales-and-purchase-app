@@ -27,6 +27,7 @@ class Customer < ApplicationRecord
   has_many :email_attachments
   has_many :sender, :class_name => 'Message', :foreign_key => 'sender_id'
   has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
+  has_many :broker_invites
 
   has_many :customer_roles
   # has_many :roles, through: :customer_roles
@@ -45,6 +46,9 @@ class Customer < ApplicationRecord
   has_many :supplier_days_limits, :foreign_key => "supplier_id", :class_name => "DaysLimit"
   has_many :brokers, :foreign_key => "broker_id", :class_name => "BrokerRequest"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "BrokerRequest"
+  has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
+  has_many :sub_company_customers
+
 
 
   # Setup accessible (or protected) attributes for your model
@@ -77,6 +81,8 @@ class Customer < ApplicationRecord
 
   # send_account_creation_mail
   after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
+  after_invitation_accepted :set_roles_to_customer
+
   default_scope { order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
@@ -151,6 +157,7 @@ class Customer < ApplicationRecord
     CreditLimit.where(supplier_id: supplier, buyer_id: self.id).first.present?
   end
 
+  ### callbacks ###
   def add_user_to_tenders
     customer_tenders = []
     Tender.all.each do |t|
@@ -189,6 +196,11 @@ class Customer < ApplicationRecord
     elsif self.role == "Broker"
       CustomerRole.create(role_id: 4, customer_id: self.id)
     end
+    invite = BrokerInvite.where(email: self.email).first
+    if invite.nil?
+    else
+      BrokerRequest.create(broker_id: invite.customer_id, seller_id: id, accepted: true)
+    end
   end
 
   def create_firebase_user
@@ -201,6 +213,7 @@ class Customer < ApplicationRecord
     end
   end
 
+  ### callbacks ###
   def notify_by_supplier supplier
     SupplierNotification.where(customer_id: self.id, supplier_id: supplier.id).first.notify rescue false
   end
@@ -229,6 +242,23 @@ class Customer < ApplicationRecord
     Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 1)
   end
 
+  def is_overdue
+    date = Date.today
+    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+      true
+    else
+      false
+    end
+  end
+
+  def block_demands
+    Demand.where(customer_id: self.id).update_all(block: true)
+  end
+
+  def unblock_demands
+    Demand.where(customer_id: self.id).update_all(block: false)
+  end
+
   ## YES/NO ##
   def can_bid_on_parcel(type, round, tender, stone)
     #always allow on the first round
@@ -254,20 +284,31 @@ class Customer < ApplicationRecord
   def is_broker(seller)
     BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
   end
+
+  def my_brokers
+    BrokerRequest.where(seller_id: self.id, accepted: true)
+  end
   ###############
 
   def generate_jwt_token
-    service_account_email = ENV['service_account_email']
-    private_key = OpenSSL::PKey::RSA.new ENV['private_key']
-    now_seconds = Time.now.to_i
-    payload = {:iss => ENV['service_account_email'],
-               :sub => ENV['service_account_email'],
-               :aud => "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
-               :iat => now_seconds,
-               :exp => now_seconds+(60*60), # Maximum expiration time is one hour
-               :uid => self.id.to_s}
-    token = JWT.encode payload, private_key, "RS256"
-    token
+    if Rails.env == "production"
+      service_account_email = ENV['service_account_email']
+      private_key = OpenSSL::PKey::RSA.new ENV['private_key']
+      now_seconds = Time.now.to_i
+      payload = {:iss => ENV['service_account_email'],
+                 :sub => ENV['service_account_email'],
+                 :aud => "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
+                 :iat => now_seconds,
+                 :exp => now_seconds+(60*60), # Maximum expiration time is one hour
+                 :uid => self.id.to_s}
+      token = JWT.encode payload, private_key, "RS256"
+      token
+    end
+  end
+
+  def set_roles_to_customer
+    CustomerRole.create(role_id: 1, customer_id: self.id)
+    CustomerRole.create(role_id: 2, customer_id: self.id)
   end
 
   rails_admin do
@@ -298,8 +339,6 @@ class Customer < ApplicationRecord
       field :company
       field :company_address
       field :phone
-      field :status
-      field :verified
     end
   end
 

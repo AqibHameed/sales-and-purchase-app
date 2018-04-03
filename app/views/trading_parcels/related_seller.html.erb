@@ -1,0 +1,19 @@
+<h3>Suppliers</h3>
+<h5><%= @parcel.description %></h5>
+<table class="table table-bordered table-striped table-responsive ">
+  <thead class="dark-header">
+    <td>Name</td>
+    <td>Company</td>
+    <td>Contact No.</td>
+  </thead>
+  <tboady>
+    <% @parcels.each do |parcel| %>
+      <tr>
+        <td><%= parcel.customer.name %></td>
+        <td><%= parcel.customer.company %></td>
+        <td><%= parcel.customer.mobile_no %></td>
+      </tr>
+    <% end %>
+  </tboady>
+
+</table>

@@ -128,8 +128,7 @@ class BidsController < ApplicationController
     end
   end
 
-  def update
-    
+  def update   
     if params[:stone_id]
 
       @bid = Bid.find(params[:id])
@@ -164,13 +163,11 @@ class BidsController < ApplicationController
           format.html {redirect_to @bid.sight.tender}
         end
       end
-
-    end
-      
+    end    
   end
 
   def place_new
-     if params[:stone_id]
+    if params[:stone_id]
       @stone = Stone.find(params[:stone_id])
       tender = @stone.tender
       past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)

@@ -16,7 +16,7 @@
       <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select(['Rough', 'Sight']),  {class: 'input', include_blank: true} %>
+          <%= select_tag "trading_document_diamond_type", options_for_select(['Outside Goods', 'Sight']),  {class: 'input', include_blank: true} %>
         </div>
       </div>
 
@@ -24,7 +24,7 @@
         <div class="form-row">
           <div class="label">Description: </div>
           <div class="field">
-            <%= f.text_field :description,  class: 'input' %>
+            <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
           </div>
         </div>
         <div class="form-row">
@@ -45,14 +45,14 @@
         <div class="form-row">
           <div class="label"> Source: </div>
           <div class="field">
-            <%= f.text_field :source, class: 'input' %>
+            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
           </div>
         </div>
 
         <div class="form-row">
           <div class="label"> Box: </div>
           <div class="field">
-            <%= f.text_field :box, class: 'input' %>
+            <%= f.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
           </div>
         </div>
 
@@ -96,9 +96,16 @@
         </div>
 
         <div class="form-row">
-          <div class="label"> Price:</div>
+          <div class="label">Avg Price:</div>
           <div class="field">
-            <%= f.text_field :price, class: 'input' %>
+            <%= f.text_field :price, class: 'input', id: 'price' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">Amount:</div>
+          <div class="field">
+            <%= text_field_tag "amount", '', class: 'input' %>
           </div>
         </div>
 
@@ -117,7 +124,7 @@
 <script type="text/javascript">
   $(document).on('change', '#trading_document_diamond_type', function(){
     val = $(this).val()
-    if(val == "Rough"){
+    if(val == "Outside Goods"){
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
@@ -135,4 +142,43 @@
       $('.sight_diamond').addClass('hide')
     }
   })
-  </script>
+
+  $(document).on('focusout','#price', function(){
+    var carat = $('#trading_parcel_weight').val();
+    var price = $('#price').val();
+    var amount = carat*price;
+    $('#amount').val(amount);
+  });
+  $(document).on('focusout','#trading_parcel_weight', function(){
+    var carat = $('#trading_parcel_weight').val();
+    var price = $('#price').val();
+    var amount = carat*price;
+    $('#amount').val(amount);
+  });
+
+  $(document).on('change', '#trading_document_diamond_type', function(){
+    val = $('#trading_document_diamond_type').val()
+    if (val == 'Outside Goods'){
+      $.ajax({
+        url: '/supplier_demand_list',
+        method: 'get',
+        data: {id: val}
+      })
+    } else if (val == 'Sight'){
+      $.ajax({
+        url: '/supplier_list',
+        method: 'get',
+        data: {diamond_type: val}
+      })
+    }
+  })
+
+  $(document).on('change', '#trading_parcel_source', function(){
+    id = $('#trading_parcel_source').val()
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+    })
+  })
+</script>

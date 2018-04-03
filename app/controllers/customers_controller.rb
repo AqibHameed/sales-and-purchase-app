@@ -1,6 +1,7 @@
 class CustomersController < ApplicationController
 
   before_action :authenticate_customer!
+  # before_action :authenticate_admin!
   before_action :check_info_shared, only: [:shared_info]
   before_action :check_role_authorization, only: [:trading, :demanding]
 
@@ -74,7 +75,7 @@ class CustomersController < ApplicationController
         @transactions = Transaction.overdue_received_transaction(@customer.id) + Transaction.overdue_sent_transaction(@customer.id)
       end
     else
-      redirect_to root_path
+      redirect_to trading_customers_path
     end
   end
 
@@ -139,28 +140,46 @@ class CustomersController < ApplicationController
     if @customer.update(password_params)
       bypass_sign_in(@customer)
       flash[:notice] = "Password changed successfully."
-      redirect_to root_path
+      redirect_to trading_customers_path
     else
       render 'change_password'
     end
   end
 
   def trading
+    @history = []
+    @info = []
+    @proposal = Proposal.new
     customer_id = BlockUser.where(block_user_ids: current_customer.id).map { |e| e.customer_id }
-    @parcels = TradingParcel.where(sold: false, for_sale: true).where.not(customer_id: customer_id).order(created_at: :desc).page params[:page]
+    @parcels = TradingParcel.where(sold: false).where.not(customer_id: customer_id).where.not(customer_id: current_customer.id).order(created_at: :desc) #.page params[:page]
+    @my_parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc)
   end
 
   def demanding
     @demanding_parcel = Demand.new
-    @my_demands = Demand.where(customer_id: current_customer.id)
+    @dtc_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 1, deleted: false)
+    @russian_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 2, deleted: false)
+    @outside_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 3, deleted: false)
+    if current_customer.is_overdue
+      # current_customer.block_demands
+      @disable = true
+    else
+      # current_customer.unblock_demands
+      @disable = false
+    end
   end
 
   def demanding_create
     demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
-    @demanding_parcel = Demand.where(description: params[:demand][:description], customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
-      demand.weight = params[:demand][:weight]
-      demand.price = params[:demand][:price]
-      demand.diamond_type = params[:demand][:diamond_type]
+    description = params[:demand][:description].reject { |c| c.empty? }
+    description.each do |d|
+      @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+        demand.weight = params[:demand][:weight]
+        demand.price = params[:demand][:price]
+        demand.diamond_type = params[:demand][:diamond_type]
+        demand.block = false
+        demand.deleted = false
+      end
     end
     if @demanding_parcel.save
       flash[:notice] = "Demand created successfully."
@@ -192,7 +211,7 @@ class CustomersController < ApplicationController
 
   def check_for_sale
     @trading_parcel = TradingParcel.find_by_id(params[:id])
-    @trading_parcel.update_attribute(:for_sale, !@trading_parcel.for_sale)
+    @trading_parcel.update_attributes(params[:col].to_sym => params[:val])
   end
 
   def check_info_shared
@@ -200,7 +219,19 @@ class CustomersController < ApplicationController
     if check.present?
       # do nothing
     else
-      redirect_to root_path, notice: "You are not authorized."
+      redirect_to trading_customers_path, notice: "You are not authorized."
+    end
+  end
+
+  def remove_demand
+    demand = Demand.where(id: params[:id]).first
+    if demand.present?
+      demand.update_attributes(deleted: true)
+      flash[:notice] = "Dmeand deleted successfully."
+      redirect_to demanding_customers_path
+    else
+      flash[:error] = "No Record Found!"
+      redirect_to demanding_customers_path
     end
   end
 
@@ -222,10 +253,14 @@ class CustomersController < ApplicationController
   end
 
   def check_role_authorization
-    if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker')
+    if current_admin.present?
       # do nothing
     else
-      redirect_to root_path, notice: 'You are not authorized.'
+      if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker')
+        # do nothing
+      else
+        redirect_to trading_customers_path, notice: 'You are not authorized.'
+      end
     end
   end
 

@@ -30,31 +30,33 @@
             <%= f.hidden_field :customer_id, value: current_customer.id %>
           </div>
         </div>
+
         <div class="rough_diamond hide">
-        <div class="form-row">
-          <div class="label">
-            Lot No Column:
+          <div class="form-row">
+            <div class="label">
+              Lot No Column:
+            </div>
+            <div class="field">
+              <%= f.text_field :lot_no_field, :value => 'A', class: 'input' %>
+            </div>
           </div>
-          <div class="field">
-            <%= f.text_field :lot_no_field, :value => 'A', class: 'input' %>
+
+          <div class="form-row">
+            <div class="label"> Description Column:</div>
+            <div class="field">
+              <%= f.text_field :desc_field, :value => 'B', class: 'input' %>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="label"> No of Stones Column:</div>
+            <div class="field">
+              <%= f.text_field :no_of_stones_field, :value => 'C', class: 'input' %>
+            </div>
           </div>
         </div>
 
         <div class="form-row">
-          <div class="label"> Description Column:</div>
-          <div class="field">
-            <%= f.text_field :desc_field, :value => 'B', class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> No of Stones Column:</div>
-          <div class="field">
-            <%= f.text_field :no_of_stones_field, :value => 'C', class: 'input' %>
-          </div>
-        </div>
-      </div>
-       <div class="form-row">
           <div class="label">Carats Column: </div>
           <div class="field">
             <%= f.text_field :weight_field, :value => 'D', class: 'input' %>
@@ -68,7 +70,6 @@
             <%= f.text_field :credit_field, :value => 'E', class: 'input' %>
           </div>
         </div>
-
         <div class="form-row">
           <div class="label"> Price Column:</div>
           <div class="field">
@@ -121,7 +122,7 @@
             <%= f.select :sheet_no, (1..20).to_a, {}, class: 'input' %>
           </div>
         </div>
-
+        <div class="clear10"></div>
         <div class="form-row">
           <div class="label"></div>
           <div class="field">
@@ -136,7 +137,7 @@
 <div class="single hide">
   <div class="clear10"></div>
   <div class="form-wrapper">
-    <%= form_for @trading_parcel do |f| %>
+    <%= nested_form_for @trading_parcel do |f| %>
       <% if @trading_parcel.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@trading_parcel.errors.count, "error") %> prohibited this auction from being saved:</h2>
@@ -151,17 +152,44 @@
       <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select(['Outside Goods', 'Sight']),  {class: 'input', include_blank: true} %>
+          <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']]),  {class: 'input', include_blank: true} %>
+
+        </div>
+      </div>
+
+      <div class="sight_diamond hide">
+        <div class="form-row">
+          <div class="label"> Source: </div>
+          <div class="field">
+            <%#= f.text_field :source, class: 'input' %>
+            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
+          </div>
+        </div>
+
+        <!-- <div class="form-row">
+          <div class="label"> Box: </div>
+          <div class="field">
+            <%#= f.text_field :box, class: 'input' %>
+            <%#= f.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
+          </div>
+        </div> -->
+
+        <div class="form-row">
+          <div class="label"> Box Value:</div>
+          <div class="field">
+            <%= f.text_field :box_value, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Month Sight:</div>
+          <div class="field">
+            <%= f.text_field :sight, class: 'input' %>
+          </div>
         </div>
       </div>
 
       <div class="rough_diamond hide">
-        <div class="form-row">
-          <div class="label">Description: </div>
-          <div class="field">
-            <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
-          </div>
-        </div>
         <div class="form-row">
           <div class="label">No of Stones: </div>
           <div class="field">
@@ -176,42 +204,10 @@
         </div>
       </div>
 
-      <div class="sight_diamond hide">
-        <div class="form-row">
-          <div class="label"> Source: </div>
-          <div class="field">
-            <%#= f.text_field :source, class: 'input' %>
-            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Box: </div>
-          <div class="field">
-            <%#= f.text_field :box, class: 'input' %>
-            <%= f.select :box, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input' } %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Cost:</div>
-          <div class="field">
-            <%= f.text_field :cost, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Box Value:</div>
-          <div class="field">
-            <%= f.text_field :box_value, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label"> Month Sight:</div>
-          <div class="field">
-            <%= f.text_field :sight, class: 'input' %>
-          </div>
+      <div class="form-row">
+        <div class="label">Description: </div>
+        <div class="field">
+          <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
         </div>
       </div>
 
@@ -233,6 +229,20 @@
         </div>
 
         <div class="form-row">
+          <div class="label"> Cost:</div>
+          <div class="field">
+            <%= f.text_field :cost, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label"> Percent:</div>
+          <div class="field">
+            <%= f.text_field :percent, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
           <div class="label">Avg Price:</div>
           <div class="field">
             <%= f.text_field :price, class: 'input', id: 'price' %>
@@ -247,19 +257,39 @@
         </div>
 
         <div class="form-row">
-          <div class="label"></div>
+          <div class="label">Comment:</div>
           <div class="field">
-            <%=f.submit 'Submit', class: 'login-btn btn-02' %>
+            <%= f.text_area :comment, class: 'input' %>
           </div>
         </div>
+        <div class="clear10"></div>
+        <div class="row">
+          <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
+            <table class="table table-hover">
+              <thead>
+                <th>Carats</th>
+                <th>Size</th>
+                <th>Percent</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="sub_c"><%=s.text_field :carats, class: 'form-control col-sm-3 sub_carats' %></td>
+                  <td class="sub_s"><%=s.text_field :size, class: 'form-control col-sm-3 sub_size' %></td>
+                  <td class="sub_per"><%=s.text_field :percent, class: 'form-control col-sm-3 sub_percent' %></td>
+                  <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
+                </tr>
+              </tbody>
+            </table>
+          <% end %>
+        </div>
+        <%= f.link_to_add "Add Size", :parcel_size_infos, class: 'btn btn-sm btn-info' %>
+        <%=f.submit 'Submit', class: 'btn btn-md btn-danger' %>
       </div>
     <% end %>
   </div>
 </div>
+
 <script>
-  
-
-
   // $(document).on('change', '#trading_parcel_source', function(){
   //   id = $('#trading_parcel_source').val()
   //   $.ajax({
@@ -269,16 +299,107 @@
   //   })
   // })
 
+  $(document).on('keyup focusout','#trading_parcel_percent', function(){
+    var carat = parseFloat($('#carat').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var percent = parseFloat($('#trading_parcel_percent').val());
+    var price = parseFloat($('#price').val());
+    calculate_price(carat, cost, percent, price)
+  });
+
+  $(document).on('keyup focusout','#price', function(){
+    var carat = parseFloat($('#carat').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var price = parseFloat($('#price').val());
+    calculate_percent(carat, cost, price)
+  });
+
+  $(document).on('keyup focusout','.sub_carats', function(){
+    var self = $(this)
+    var total_carat = parseFloat($('#carat').val());
+    var carat = parseFloat(self.val());
+    console.log(total_carat)
+    if(isNaN(total_carat)){
+      $('.sub_carats').val('')
+      $('.sub_percent').val('')
+      if($(this).next('.error-msg').length == 0){
+        $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
+      }
+    }else{
+      calculate_sub_size_percent(total_carat, carat, self)
+      $('.error-msg').remove()
+    }
+  });
+
+  $(document).on('keyup focusout','.sub_percent', function(){
+    var self = $(this)
+    var total_carat = parseFloat($('#carat').val());
+    var per = parseFloat(self.val());
+    if(isNaN(total_carat)){
+      $('.sub_carats').val('')
+      $('.sub_percent').val('')
+      if($(this).next('.error-msg').length == 0){
+        $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
+      }
+    }else{
+      calculate_sub_size_carats(total_carat, per, self)
+      $('.error-msg').remove()
+    }
+  });
+  
+  function calculate_price(carat, cost, percent, price){
+    var avg_price = (percent/100)*cost + cost;
+    var amount = carat*avg_price;
+    if (isNaN(avg_price)){
+      $('#price').val('')
+      $('#amount').val('');
+    }else{
+      $('#price').val(avg_price)
+      $('#amount').val(amount);
+    }
+  }
+
+  function calculate_percent(carat, cost, price){
+    var percent = ((price - cost) * 100)/cost;
+    var amount = carat*price;
+    if (isNaN(percent)){
+      $('#trading_parcel_percent').val('')
+      $('#amount').val(amount);
+    }else{
+      $('#trading_parcel_percent').val(percent)
+      $('#amount').val(amount);
+    }
+  }
+
   $(document).on('focusout','#price', function(){
     var carat = $('#carat').val();
     var price = $('#price').val();
     var amount = carat*price;
     $('#amount').val(amount);
   });
+
   $(document).on('focusout','#carat', function(){
     var carat = $('#carat').val();
     var price = $('#price').val();
     var amount = carat*price;
     $('#amount').val(amount);
   });
+
+  function calculate_sub_size_percent(total_carat, carat, self){
+    percent = (carat*100)/total_carat
+    if (isNaN(percent)){
+      $(self).parent('td.sub_c').next('td').next('td').find('input').val('')
+    }else{
+      $(self).parent('td.sub_c').next('td').next('td').find('input').val(percent)
+    }
+  }
+
+  function calculate_sub_size_carats(total_carat, per, self){
+    carats = (per/100)*total_carat
+    if (isNaN(carats)){
+      $(self).parents('tr').find('td.sub_c').find('input').val('')
+    }else{
+      $(self).parents('tr').find('td.sub_c').find('input').val(carats)
+    }
+  }
 </script>

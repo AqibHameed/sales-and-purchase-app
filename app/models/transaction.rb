@@ -43,7 +43,7 @@ class Transaction < ApplicationRecord
     trading_parcel = proposal.trading_parcel
     Transaction.create(buyer_id: proposal.buyer_id, supplier_id: proposal.supplier_id,
                       trading_parcel_id: proposal.trading_parcel_id, price: proposal.price,
-                      credit: proposal.credit, due_date: Date.today + (proposal.credit).days,
+                      credit: proposal.credit, due_date: Date.today + (trading_parcel.credit_period).days,
                       paid: false, buyer_confirmed: true, created_at: Time.now, diamond_type: trading_parcel.diamond_type)
   end
 
@@ -62,6 +62,7 @@ class Transaction < ApplicationRecord
   def generate_and_add_uid
     uid = SecureRandom.hex(12)
     self.transaction_uid = uid
+    self.description = trading_parcel.description
     self.save(validate: false)
   end
 

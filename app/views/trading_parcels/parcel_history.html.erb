@@ -1,0 +1,40 @@
+<h3>History</h3>
+<div class="clear20"></div>
+<div class="row">
+  <div class="col-lg-12 col-sm-12">
+    <h5><%=@parcel.description%></h5>
+    <div class="row col-lg-6 col-sm-6 col-xs-12">
+      <table class="table table-bordered table-striped table-responsive ">
+        <thead class="dark-header">
+          <td>Buyer Name</td>
+          <td>Contact No.</td>
+        </thead>
+        <tboady>
+          <% @past_demands.each do |parcel| %>
+            <tr>
+              <td><%= parcel.customer.name %></td>
+              <td><%= parcel.customer.mobile_no %></td>
+            </tr>
+          <% end %>
+        </tboady>
+      </table>
+    </div>
+    <div class="col-lg-6 col-sm-6 col-xs-12">
+      <table class="table table-bordered table-striped table-responsive ">
+        <thead class="dark-header">
+          <td>Seller Name</td>
+          <td>Contact No.</td>
+        </thead>
+        <tboady>
+          <% @past_sell.each do |parcel| %>
+            <tr>
+              <td><%= parcel.customer.name %></td>
+              <td><%= parcel.customer.mobile_no %></td>
+            </tr>
+          <% end %>
+        </tboady>
+      </table>
+    </div>
+  </div>
+</div>
+
