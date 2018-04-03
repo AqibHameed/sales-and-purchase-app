@@ -77,42 +77,47 @@ class SuppliersController < ApplicationController
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
     @customers = Customer.unscoped.where.not(id: current_customer.id) #.page params[:page]
+    @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
   end
 
   def change_limits
     cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
+    total_clms = CreditLimit.where(supplier_id: current_customer.id).sum(:credit_limit)
     if cl.credit_limit.nil?
       total_limit = params[:limit].to_f
     else
       total_limit = cl.credit_limit + params[:limit].to_f
     end
+    cl.errors.add(:credit_limit, "should not be negative ") if total_limit < 0
+
     if current_customer.parent_id.present?
       sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
-      if sub_company_limit.present?
-        if sub_company_limit.credit_type == "General"
-          general_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id).first
-          limit = general_limit.credit_limit
-        elsif sub_company_limit.credit_type == "Specific"
-          specific_limit = SubCompanyCustomer.where(sub_company_credit_limit_id: sub_company_limit.id, customer_id: params[:buyer_id]).first
-          limit = specific_limit.credit_limit
-        else
-          limit = 0
-        end
-        if limit.to_f < total_limit.to_f
-          cl.errors.add(:credit_limit, "can't be greater than assigned value")
-        else
-          cl.credit_limit  = total_limit
+      if sub_company_limit.try(:credit_type) == "General"
+        limit = sub_company_limit.credit_limit
+      elsif sub_company_limit.try(:credit_type) == "Specific"
+        limit = cl.credit_limit
+        unless limit.present?
+          cl.errors.add(:credit_limit, "not set by parent company")
         end
       else
         cl.errors.add(:credit_limit, "not set by parent company")
       end
+      if limit.to_f < (total_limit.to_f + total_clms.to_f)
+        cl.errors.add(:credit_limit, "can't be greater than assigned limit")
+      else
+        cl.credit_limit  = total_limit.to_f
+      end
     else
-      cl.credit_limit  = total_limit
+      cl.credit_limit  = total_limit.to_f
     end
-    if cl.save
-      render json: { message: 'Credit Limit updated.', value: cl.credit_limit }
+    if cl.errors.any?
+      render json: { message: cl.errors.full_messages.first, value: nil, errors: true }
     else
-      render json: { message: cl.errors.full_messages.first, value: '' }
+      if cl.save
+        render json: { message: 'Credit Limit updated.', value: cl.credit_limit, errors: false }
+      else
+        render json: { message: cl.errors.full_messages.first, value: nil, errors: true }
+      end
     end
   end
 

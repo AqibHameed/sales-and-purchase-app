@@ -1,8 +1,17 @@
 class HomeController < ApplicationController
+  before_action :current_customer, only: [:login]
   include ApplicationHelper
 
   layout false
-  
+
+  def current_customer
+    if params[:auth_token].present?
+      @c_user ||= Customer.find_by_authentication_token(params[:auth_token])
+      sign_in(@c_user)
+      redirect_to root_path
+    end
+  end
+
   def login
     cookies.delete :c_user if params[:key] && cookies[:c_user]
     @c_user = Customer.find_by_email(cookies[:c_user]) || Admin.find_by_email(cookies[:c_user]) if cookies[:c_user]
