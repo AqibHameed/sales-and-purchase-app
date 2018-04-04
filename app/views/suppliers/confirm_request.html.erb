@@ -1,0 +1,27 @@
+<h1>Confirm Requests</h1>
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter table-responsive">
+    <thead class="thead-desktop">
+       <th>SN.</th>
+      <th>Company </th>
+      <th>Buyer</th>
+      <th>Limit</th>
+      <th></th>
+    </thead>
+    <% if @confirm_requests.nil? %>
+       <h1> There is no request to confirm</h1>
+    <% else %>
+        <% @confirm_requests.each.with_index(1) do |request, i|%>
+          <tr>
+            <td><%= i%></td>
+            <% if request.id.nil? %>
+            <% else %>
+              <td><%= request.buyer.company %></td>
+              <td><%= request.buyer.first_name %></td>
+              <td><%= request.limit %></td>
+               <td><%= link_to "View", show_request_suppliers_path(id: request.id) %></td>
+            <% end %>
+        <% end %>
+    <% end %>
+  </table>
+</div>

@@ -151,6 +151,14 @@ Rails.application.routes.draw do
       get :transactions
       get :profile
       get :credit
+      get :credit_request
+      get :confirm_request
+      get :show_request
+      get :accept_request
+      delete :decline_request
+      patch :update_request
+      post :save_credit_request
+      get :add_fields
       get :credit_given_list
       get :single_parcel_form
       get :add_demand_list

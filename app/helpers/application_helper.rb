@@ -421,5 +421,9 @@ module ApplicationHelper
     Customer.all.map{|customer| [customer.company, customer.id]}
   end
 
+  def list_of_customers(current_customer)
+    customer = Customer.where("id != ? OR id != ? OR parent_id != ? ", current_customer.parent_id , current_customer.id, current_customer.id)
+    customer.map{|customer| [customer.first_name, customer.id]}
+  end
 end
 

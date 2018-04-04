@@ -1,0 +1,56 @@
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter table-responsive">
+     <% if @request.id.nil? %>
+      <% else %>
+      <%= hidden_field_tag :id, @request.id %>
+      <tr><td>Company: </td><td><%= @request.buyer.company %></td></tr>
+      <tr><td>Buyer: </td><td><%= @request.buyer.first_name %></td></tr>
+      <tr><td>Requested Limit: </td> <td><%= text_field_tag :login_aei, "#{@request.limit}", class: 'limit',
+       disabled: true %> </td>
+      </tr>
+     <% end %>
+  </table>
+</div>
+
+<div class="btn-toolbar">
+  <% unless @request.approve %>
+    <div class='btn-group'>
+      <%= link_to "Accept", accept_request_suppliers_path(id: @request.id), class: 'btn btn-success btn-lg' %>
+    </div>
+    <div class='btn-group'>
+     <%= button_to "Decline", decline_request_suppliers_path(id: @request.id), class: 'btn btn-danger btn-lg', :method => :delete, :confirm => "You sure?",  :title => "Delete "%>
+    </div>
+    <div class='edit-btn-group'>
+     <%= link_to "Edit","javascript:void(0)", class: 'btn btn-default btn-lg' %>
+    </div>
+    <div class='update-btn-group'>
+     <%= link_to "Update", 'javascript:void(0)', class: 'btn btn-default btn-lg' %>
+    </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+ $(".edit-btn-group").click(function(){
+  $("#login_aei").prop('disabled', false);
+ });
+
+$(".update-btn-group").click(function(){
+  id = $('#id').val();
+  limit = $('#login_aei').val();
+  $.ajax({
+    url: '/suppliers/update_request',
+    type: 'PATCH',
+    data: {
+       id: id,
+      limit: limit
+      },
+    success:function(){
+      //I assume you want to do something on controller action execution success?
+      $(this).addClass('done');
+    }
+  })
+});
+
+
+
+</script>

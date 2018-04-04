@@ -28,6 +28,8 @@ class Customer < ApplicationRecord
   has_many :sender, :class_name => 'Message', :foreign_key => 'sender_id'
   has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
   has_many :broker_invites
+  has_many :credit_requests, dependent: :destroy
+  accepts_nested_attributes_for :credit_requests, :allow_destroy => true
 
   has_many :customer_roles
   # has_many :roles, through: :customer_roles

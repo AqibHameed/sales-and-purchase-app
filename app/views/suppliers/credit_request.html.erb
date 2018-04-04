@@ -1,0 +1,93 @@
+
+<div class="jumbotron">
+<div class="error"><%= @error %></div>
+ <%= nested_form_for @customer, :url => save_credit_request_suppliers_path  do |f| %>
+
+    <%= f.hidden_field :first_name, value: current_customer.first_name %>
+    <%= f.hidden_field :company, value: current_customer.company %>
+    <%= f.hidden_field :mobile_no, value: current_customer.mobile_no %>
+    <%= f.fields_for :credit_requests do |c| %>
+    <%= c.label :Buyer %>
+    <%= c.select :buyer_id, options_for_select(list_of_customers(current_customer)), {}, :class => 'selected-buyer'%>
+    <%= c.hidden_field :customer_id, value: current_customer.id %>
+    <%= c.hidden_field :parent_id, value: current_customer.parent_id %>
+    <%= c.label :limit %>
+    <%= c.text_field :limit, :class => 'limit' %>
+    <%= c.link_to_remove '', :class => 'glyphicon glyphicon-remove' %>
+    <% end %>
+    <p><%= f.link_to_add "Add More ", :credit_requests %></p>
+    <%= f.button :Submit, type: :submit, class: 'btn btn-primary', disabled: true, id: 'submit' %>
+ <% end %>
+</div>
+
+
+
+<div class="table">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditRequest" class=" table-responsive">
+    <thead class="thead-desktop">
+       <th>SN.</th>
+      <th>Company </th>
+      <th>Buyer</th>
+      <th>Limit</th>
+    </thead>
+    <% @credit_requests.each.with_index(1) do |request, i|%>
+    <tbody>
+      <tr>
+        <% if request.id.nil? %>
+        <% else %>
+          <td><%= i%></td>
+          <td><%= request.buyer.company %></td>
+          <td><%= request.buyer.first_name %></td>
+          <td><%= request.limit %></td>
+        <% end %>
+      </tr>
+    </tbody>
+    <% end %>
+  </table>
+</div>
+
+<script type="text/javascript">
+ $(document).on('click', '.company_profile', function(e) {
+    e.preventDefault()
+    var _this = $(this);
+    id = $(this).data('id')
+    var top = $(this).position()['top'] - 300;
+    $.ajax({
+      url : '/suppliers/profile',
+      type : 'GET',
+      data: {id: id},
+      success : function(response) {
+        console.log(response)
+        $('.bid_form').html(response).show()
+        // $('.bid_form').css('margin-top', top + 'px' )
+        $('tr').removeClass('current_bid');
+        $(_this).parents('tr').addClass('current_bid');
+      }
+    })
+  });
+
+  $(".selected-customer").select2({ });
+
+  $(document).on('click', '.add_nested_fields', function(){
+   $(".selected-buyer").select2({ });
+   });
+
+
+ $(document).on('change', '.limit', function() {
+   var limit =$(this).val();
+   var selected_buyer = $(".selected-buyer").val();
+    if(limit !='' && selected_buyer != '') {
+    $('#submit').prop('disabled',false);
+    }
+ });
+
+
+
+
+
+</script>
+<style>
+  .current_bid {
+    background-color: #E4E4E4 !important;
+  }
+</style>
