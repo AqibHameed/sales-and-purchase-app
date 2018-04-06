@@ -74,19 +74,22 @@
    });
 
   $(document).ready(function() {
-       $('#submit').attr('disabled','disabled');
+    $('#submit').attr('disabled','disabled');
   });
 
-  $(document).on('focusout', '.limit', function() {
-    if($(".limit").val() != '') {
-       $('#submit').removeAttr('disabled');
+  $(document).on('keypress', '.limit', function() {
+    if($(this).val() != '') {
+      $('#submit').removeAttr('disabled');
     }
     else {
-    $('#submit').attr('disabled','disabled');
+      $('#submit').attr('disabled','disabled');
     }
   });
 
 
+  $(document).on('click', '#add_more', function(){
+    $('#submit').attr('disabled','disabled');
+  })
 
 </script>
 <style>
