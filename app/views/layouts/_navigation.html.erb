@@ -32,9 +32,7 @@
             <% end %>
             <li><%= link_to 'Invite',  '#' , data: { turbolinks: false } %></li>
             <% if current_customer.parent_id.nil? %>
-              <li>
-                <%= link_to 'Confirm Request', confirm_request_suppliers_path, data: { turbolinks: false } %>
-              </li>
+
             <% else %>
              <li>
                 <%= link_to 'Credit Request', credit_request_suppliers_path, data: { turbolinks: false } %>
