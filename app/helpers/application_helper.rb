@@ -382,6 +382,10 @@ module ApplicationHelper
     "#{link_to('Click Here', Rails.application.routes.url_helpers.requests_brokers_path)}"
   end
 
+  def view_confirm_request
+   "#{link_to('Click Here', Rails.application.routes.url_helpers.confirm_request_suppliers_path )}"
+  end
+
   def check_round stones
     # YesNoBuyerInterest.where(stone_id: stones.map { |e| e.id }).empty
   end
@@ -422,8 +426,17 @@ module ApplicationHelper
   end
 
   def list_of_customers(current_customer)
-    customer = Customer.where("id != ? OR id != ? OR parent_id != ? ", current_customer.parent_id , current_customer.id, current_customer.id)
-    customer.map{|customer| [customer.first_name, customer.id]}
+    # customer = Customer.where("id != ? OR id != ? OR parent_id != ? ", current_customer.parent_id , current_customer.id, current_customer.id)
+    array = []
+    requests = current_customer.credit_requests
+    requests.each do |req|
+      unless req.buyer.nil?
+       array.push(req.buyer.id)
+      end
+    end
+    array.push(current_customer.id)
+    array.push(current_customer.parent_id)
+    customer = Customer.where(" id NOT IN (?) ",  array)
+    customer.map{|customer| [customer.company, customer.id]}
   end
 end
-

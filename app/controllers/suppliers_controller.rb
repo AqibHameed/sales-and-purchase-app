@@ -88,17 +88,19 @@ class SuppliersController < ApplicationController
   end
 
   def save_credit_request
-   if current_customer.update_attributes(credit_request_params)
-     flash[:notice] = "successfully send"
-     redirect_to credit_request_suppliers_path
-   else
-     flash[:notice] = "Error:   Invalid Entry"
-     redirect_to credit_request_suppliers_path
-   end
+    if current_customer.update_attributes(credit_request_params)
+      Message.create_new_credit_request(current_customer)
+      flash[:notice] = "successfully send"
+      redirect_to credit_request_suppliers_path
+    else
+      flash[:notice] = "Error:   Invalid Entry"
+      redirect_to credit_request_suppliers_path
+    end
   end
 
   def confirm_request
-    @confirm_requests = CreditRequest.where(parent_id: current_customer.id)
+    @confirm_requests = CreditRequest.where(parent_id: current_customer.id, approve: false)
+
   end
 
   def show_request
@@ -106,9 +108,10 @@ class SuppliersController < ApplicationController
   end
 
   def accept_request
+    @confirm_requests = CreditRequest.where(parent_id: current_customer.id)
     request = CreditRequest.find(params[:id])
     credit_limit = CreditLimit.new(
-      supplier_id: request.customer_id,
+      supplier_id: request.parent_id,
       buyer_id: request.buyer_id,
       credit_limit: request.limit
     )
@@ -116,22 +119,22 @@ class SuppliersController < ApplicationController
       request.approve = true
       request.save
       flash[:notice] = "Request Accepted"
-      redirect_to show_request_suppliers_path(id: request.id)
+      redirect_to confirm_request_suppliers_path
     else
       flash[:notice] = "Request is not accepted"
-      redirect_to show_request_suppliers_path(id: request.id)
+      redirect_to confirm_request_suppliers_path
     end
   end
 
   def decline_request
-    @confirm_requests = CreditRequest.where(parent_id: current_customer.id)
+    @confirm_requests = CreditRequest.where(parent_id: current_customer.id, approve: false)
     request = CreditRequest.find(params[:id])
     if request.destroy
       flash[:notice] = "request is declined"
       render confirm_request_suppliers_path
     else
       flash[:notice] = "request is not declined"
-      redirect_to show_request_suppliers_path
+      redirect_to confirm_request_suppliers_path
     end
   end
 
@@ -247,6 +250,6 @@ class SuppliersController < ApplicationController
   end
 
   def credit_request_params
-    params.require(:customer).permit(:first_name, :company, :mobile_no, credit_requests_attributes: [:buyer_id, :limit, :customer_id, :parent_id, :_destroy])
+    params.require(:customer).permit(:first_name, :company, :mobile_no, credit_requests_attributes: [:buyer_id, :limit, :approve, :customer_id, :parent_id, :_destroy])
   end
 end

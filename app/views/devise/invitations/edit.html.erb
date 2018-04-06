@@ -19,7 +19,8 @@
   <%= f.text_field :company %></p>
 
   <p><%= f.label :mobile_no %><br />
-  <%= f.text_field :mobile_no %></p>
+  <%= f.hidden_field :mobile_no %>
+  <input type="tel" id="mobile_no"></p>
 
   <p><%= f.submit t("devise.invitations.edit.submit_button"), class: 'btn-02 login-btn' %></p>
 <% end %>

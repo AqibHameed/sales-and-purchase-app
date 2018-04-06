@@ -51,7 +51,7 @@ module Api
       end
 
       def closed
-        col_str = "close_date < '#{Time.zone.now}'"
+        col_str = "close_date < '#{Time.zone.now}' AND close_date > '#{4.month.ago}'"
         if params[:location] || params[:month] || params[:supplier]
           col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
@@ -168,7 +168,7 @@ module Api
       def tender_winners
         tender_winners = TenderWinner.where(tender_id: params[:tender_id])
         if tender_winners.empty?
-          render json: { tender_winners: [], response_code: 201 }
+          render json: { tender_winners: [], response_code: 200 }
         else
           render json: {tender_winners: tender_winners_data(tender_winners), response_code: 200}
         end

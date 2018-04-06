@@ -18,10 +18,53 @@
             <% else %>
               <td><%= request.buyer.company %></td>
               <td><%= request.buyer.first_name %></td>
-              <td><%= request.limit %></td>
-               <td><%= link_to "View", show_request_suppliers_path(id: request.id) %></td>
+                <td class="days_limit">
+                <!-- <span class="table-head-in-td">Overdue Limit</span> -->
+                <a href="javascript:void(0)" class="given_days">
+                <%= request.limit %>
+                <i class="fa fa-edit pull-right" id='days_edit'></i></a>
+                <a href="javascript:void(0)" class="edit_days hide"><%=text_field_tag "credit_limit", '', 'data-id'=> request.id, placeholder: 'Enter Limit' %>
+                <i class="fa fa-check-square-o save_date_btn"></i></a>
+               </td>
+              <td>
+                <div class="btn-toolbar">
+                  <% unless request.approve %>
+                    <div >
+                      <%= link_to "Accept", accept_request_suppliers_path(id: request.id), class: 'btn btn-success btn-xs' %>
+                    </div>
+                    <div class='btn-group'>
+                     <%= button_to "Decline", decline_request_suppliers_path(id: request.id), class: 'btn btn-danger btn-xs', :method => :delete, :confirm => "You sure?",  :title => "Delete "%>
+                    </div>
+
+                  <% end %>
+                </div>
+              </td>
             <% end %>
         <% end %>
     <% end %>
   </table>
 </div>
+
+<script type="text/javascript">
+ $(document).on('click', '#days_edit', function(){
+    $(this).parents('.days_limit').find('.given_days').addClass('hide')
+    $(this).parents('.days_limit').find('.edit_days').removeClass('hide')
+  })
+
+  $(document).on('click', '.save_date_btn', function(){
+    id = $(this).parents('.edit_days').find('#credit_limit').data('id')
+    limit = $(this).parents('.edit_days').find('#credit_limit').val()
+    $.ajax({
+      url: '/suppliers/update_request',
+      type: 'PATCH',
+      data: {
+        id: id,
+        limit: limit
+      },
+    success:function(){
+      $(this).addClass('done');
+    } })
+  })
+
+
+</script>

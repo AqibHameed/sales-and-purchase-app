@@ -43,9 +43,13 @@ module Api
       def notification_history_data(notifications)
         @data = []
         notifications.each do |n|
+          separate_desc = n.notification.description.split(':')
           @data << {
             title: n.notification.title,
-            description: n.notification.description,
+            supplier_name: separate_desc[1].strip,
+            tender_name: separate_desc[2].strip,
+            dates: separate_desc[3].strip,
+            tender_id: n.notification.try(:tender_id),
             created_at: n.notification.created_at
           }
         end

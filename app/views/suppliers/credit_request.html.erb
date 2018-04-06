@@ -13,9 +13,10 @@
     <%= c.hidden_field :parent_id, value: current_customer.parent_id %>
     <%= c.label :limit %>
     <%= c.text_field :limit, :class => 'limit' %>
+    <%= c.hidden_field :approve, value: 0 %>
     <%= c.link_to_remove '', :class => 'glyphicon glyphicon-remove' %>
     <% end %>
-    <p><%= f.link_to_add "Add More ", :credit_requests %></p>
+    <p><%= f.link_to_add "Add More ", :credit_requests, id: 'add_more' %></p>
     <%= f.button :Submit, type: :submit, class: 'btn btn-primary', disabled: true, id: 'submit' %>
  <% end %>
 </div>
@@ -72,16 +73,18 @@
    $(".selected-buyer").select2({ });
    });
 
+  $(document).ready(function() {
+       $('#submit').attr('disabled','disabled');
+  });
 
- $(document).on('change', '.limit', function() {
-   var limit =$(this).val();
-   var selected_buyer = $(".selected-buyer").val();
-    if(limit !='' && selected_buyer != '') {
-    $('#submit').prop('disabled',false);
+  $(document).on('focusout', '.limit', function() {
+    if($(".limit").val() != '') {
+       $('#submit').removeAttr('disabled');
     }
- });
-
-
+    else {
+    $('#submit').attr('disabled','disabled');
+    }
+  });
 
 
 

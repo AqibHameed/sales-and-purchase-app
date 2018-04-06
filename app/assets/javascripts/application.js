@@ -123,7 +123,11 @@ $(document).ready(function() {
 
 $(document).on('click', '.signup-btn', function(){
   $("#customer_mobile_no").val($("#mobile_no").intlTelInput("getNumber"))
-})
+});
+
+$(document).on('click', '.login-btn', function(){
+  $("#customer_mobile_no").val($("#mobile_no").intlTelInput("getNumber"))
+});
 
 // function myFunction() {
 //   $("#myDropdown").toggleClass("show");
