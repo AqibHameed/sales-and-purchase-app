@@ -266,6 +266,23 @@ module ApplicationHelper
     number_with_precision(transaction_amt, precision: 2)
   end
 
+  def get_market_limit(buyer, supplier)
+    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.today, false, true)
+    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.today, false, true)
+
+    @amount = []
+    pendings.each do |t|
+      @amount << t.remaining_amount
+    end
+    overdues.each do |o|
+      @amount << o.remaining_amount
+    end
+    pending_amt = @amount.sum
+    number_with_precision(pending_amt, precision: 2)
+  end
+
+
+
   def overall_credit_received(customer)
     current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)
     number_with_precision((current_limit), precision: 2)
