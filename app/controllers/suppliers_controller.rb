@@ -78,6 +78,8 @@ class SuppliersController < ApplicationController
     end
     @customers = Customer.unscoped.where.not(id: current_customer.id) #.page params[:page]
     @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
+    # @companies_groups = CompaniesGroup.where(seller_id: current_customer.id)
+    @companies_groups = CompaniesGroup.joins(:companies_customer).select("companies_groups.id, companies_groups.group_name, customers.id as customer_id, customers.company as company_name, customers.first_name as first_name, customers.last_name as last_name").where("companies_groups.seller_id = ?", current_customer.id)
   end
 
 

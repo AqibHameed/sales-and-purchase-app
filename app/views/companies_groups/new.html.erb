@@ -1,0 +1,25 @@
+<%= form_for @companies_group, url: companies_groups_path, html: { class: 'form-horizontal'} do |f| %>
+  <div class="form-row">
+   <h5>Group Name</h5>
+    <div class='field'>
+      <%=f.text_field :group_name, class: 'form-control', placeholder: "Enter Group Name", required: true, style: 'width: 500px;' %>
+    </div>
+  </div>
+  <div class="form-row">
+    <h5>Please Select Customers</h5>
+    <div class='field'>
+      <%= f.select :customer_id, options_for_select(all_customers), { }, { class: 'selected-customer form-control select2', multiple: true, style: 'width: 500px;' }%>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class='field'>
+      <%=f.submit "Create Group", class: 'btn btn-danger', style: 'margin-top: 15px;' %>
+    </div>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+  $("#companies_group_customer_id").select2({
+    multiple: true
+  });
+</script>

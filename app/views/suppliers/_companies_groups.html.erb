@@ -1,0 +1,42 @@
+<h3>Comapany Groups</h3>
+<div class="container">
+  <% @companies_groups.each_with_index do |companies_group,index| %>
+      <div class="panel panel-default">
+        <div class="panel-heading clickable"><h5 style="color: #ED5A48;"><%= companies_group.try(:group_name)%></h5></div>
+        <div class=" panel-collapse collapse">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <h3>Customers</h3>
+              <div class="clear10"></div>
+              <table class="table table-bordered table-responsive">
+                <thead>
+                  <th>Customer Name</th>
+                  <th>Company Name</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><%= companies_group.try(:first_name)%>&nbsp;<%= companies_group.try(:last_name)%></td>
+                    <td><%= companies_group.try(:company_name)%></td>
+                    <td>
+                    <%= link_to companies_group_path(id: companies_group.try(:id)), method: :delete do %>
+                      <%= image_tag("/assets/wrong.png", width: "15", class: 'image_block') %>
+                    <%end%>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+  $(document).on('click', '.clickable', function (e){
+    object =  $(this).parents('.panel').find('.panel-collapse')
+    object.collapse('toggle')
+    object.height('');
+  })
+</script>

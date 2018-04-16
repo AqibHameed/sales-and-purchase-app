@@ -124,6 +124,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :companies_groups
+
   resources :stones do
     resources :bids do
       collection do

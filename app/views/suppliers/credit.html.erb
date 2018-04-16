@@ -1,23 +1,37 @@
 <%#= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
-<div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
-<% if params[:name].present? %>
-  <%= render partial: 'list_company' %>
-<%end%>
-<div class="clear10"></div>
-<div class="">
-  <h2>Approve Customers</h2>
-  <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path, data: {turbolinks: false}  %>: <%= number_to_currency(overall_credit_given(current_customer)) %></p>
-  <%if @type.try(:credit_type) == 'Specific' %>
-    <%= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
-  <% elsif @type.try(:credit_type) == 'General'%>
-    <p><h2>General limit:</h2>
-    Total Credit: <%=@type.try(:credit_limit)%><br>
-    Credit remaining: <%= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
-  <% end %>
-  <div class="approve_list">
-    <%= render partial: 'approve_customers_list' %>
+<div class="bs-example">
+  <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#sectionA">Network</a></li>
+      <li><a data-toggle="tab" href="#sectionB">Companies Group</a></li>
+  </ul>
+  <div class="tab-content">
+    <div id="sectionA" class="tab-pane fade in active">
+      <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
+        <% if params[:name].present? %>
+          <%= render partial: 'list_company' %>
+        <%end%>
+        <div class="clear10"></div>
+        <div class="">
+          <h2>Approve Customers</h2>
+          <%= link_to 'Create Companies Group', new_companies_group_path, data: { turbolinks: false } %>
+          <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path, data: {turbolinks: false}  %>: <%= number_to_currency(overall_credit_given(current_customer)) %></p>
+          <%if @type.try(:credit_type) == 'Specific' %>
+            <%= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
+          <% elsif @type.try(:credit_type) == 'General'%>
+            <p><h2>General limit:</h2>
+            Total Credit: <%=@type.try(:credit_limit)%><br>
+            Credit remaining: <%= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
+          <% end %>
+          <div class="approve_list">
+            <%= render partial: 'approve_customers_list' %>
+          </div>
+          <%#= paginate @customers %>
+        </div>
+    </div>
+    <div id="sectionB" class="tab-pane fade">
+    <%= render partial: 'companies_groups' %>
+    </div>
   </div>
-  <%#= paginate @customers %>
 </div>
 
 
