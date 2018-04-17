@@ -25,7 +25,7 @@ class CompaniesGroupsController < ApplicationController
     companies_group = CompaniesGroup.find_by(id: params[:id])
     companies_group.destroy
     flash[:notice] = 'Customer was successfully destroyed.'
-    rredirect_to new_companies_group_path
+    redirect_to new_companies_group_path
   end
 
   private

@@ -73,6 +73,7 @@ class SuppliersController < ApplicationController
   end
 
   def credit
+    @group_names = []
     if params[:name].present?
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
@@ -80,6 +81,7 @@ class SuppliersController < ApplicationController
     @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
     # @companies_groups = CompaniesGroup.where(seller_id: current_customer.id)
     @companies_groups = CompaniesGroup.joins(:companies_customer).select("companies_groups.id, companies_groups.group_name, customers.id as customer_id, customers.company as company_name, customers.first_name as first_name, customers.last_name as last_name").where("companies_groups.seller_id = ?", current_customer.id)
+    @group_names = CompaniesGroup.all.map(&:group_name).uniq
   end
 
 
@@ -148,7 +150,7 @@ class SuppliersController < ApplicationController
      end
    else
      flash[:notice] = "Something is wrong."
-     redirect_to show_request_suppliers_path
+     redirect_to confirm_request_suppliers_path
    end
   end
 
