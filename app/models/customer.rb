@@ -344,5 +344,17 @@ class Customer < ApplicationRecord
     end
   end
 
+  def check_group_overdue(supplier_id)
+    is_overdue = false
+    if companies_customers.present?
+      group_customers = CompaniesGroup.where(group_name: companies_customers.first.group_name)
+      group_customers.each do |group_customer|
+        if group_customer.companies_customer.has_overdue_transaction_of_30_days(supplier_id)
+          is_overdue = true
+        end
+      end
+    end
+    return is_overdue
+  end
 end
 

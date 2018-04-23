@@ -94,20 +94,4 @@ RailsAdmin.config do |config|
 
   # Now you probably need to tour the wiki a bit: https://github.com/sferik/rails_admin/wiki
   # Anyway, here is how RailsAdmin saw your application's models when you ran the initializer:
-
-  config.model CustomerRole do
-    list do
-      field :id
-      field :customer do
-        queryable true
-        searchable [:first_name, :last_name]
-      end
-      field :role do
-        queryable true
-        searchable :name
-      end
-      field :created_at
-      field :updated_at
-    end
-  end
 end
