@@ -96,7 +96,7 @@
                 Amount
               </div>
               <div class="field">
-                <%= f.text_field :amount, :placeholder => 'Amount', :class => "input-1 form-control col-sm-12" %>
+                <%= f.text_field :amount, :placeholder => 'Amount', :class => "input-1 form-control col-sm-12", required: true %>
                 <%=link_to 'Full Payment','javascript:void(0)', class: 'full_payment' %>
                 <%= f.hidden_field :transaction_id, value: @transaction.id %>
                 <div class="clear"></div>
