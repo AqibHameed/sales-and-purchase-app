@@ -281,7 +281,9 @@ module ApplicationHelper
     number_with_precision(pending_amt, precision: 2)
   end
 
-
+  def get_market_limit_from_credit_limit_table(buyer, supplier)
+    CreditLimit.where(supplier_id: supplier.id, buyer_id: buyer.id).first.market_limit.to_i rescue 0
+  end
 
   def overall_credit_received(customer)
     current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)

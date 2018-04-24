@@ -356,5 +356,15 @@ class Customer < ApplicationRecord
     end
     return is_overdue
   end
+
+  def check_market_limit_overdue(market_limit_overdue, supplier_id)
+    cl = CreditLimit.where(supplier_id: supplier_id, buyer_id: self.id).first
+    customer_market_limit = cl.market_limit
+    if market_limit_overdue.to_i < customer_market_limit.to_i
+      return false
+    else
+      return true
+    end
+  end
 end
 

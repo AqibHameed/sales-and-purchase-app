@@ -501,6 +501,8 @@ h4 {
     vertical-align: top; }
 
   .table-responsive tr td .edit_field,
+  .table-responsive tr td .given_market_limit,
+  .table-responsive tr td .edit_market_limit,
   .table-responsive tr td .given_days,
   .table-responsive tr td .edit_days {
     overflow: hidden;
@@ -509,11 +511,15 @@ h4 {
 
   .table-responsive tr td .edit_field.hide,
   .table-responsive tr td .given_days.hide,
+  .table-responsive tr td .given_market_limit.hide,
+  .table-responsive tr td .edit_market_limit.hide,
   .table-responsive tr td .edit_days.hide {
     display: none; }
 
   .table-responsive tr td .edit_field input,
   .table-responsive tr td .given_days input,
+  .table-responsive tr td .given_market_limit input,
+  .table-responsive tr td .edit_market_limit input,
   .table-responsive tr td .edit_days input {
     width: 100%;
     box-sizing: border-box;
@@ -1012,6 +1018,8 @@ a.edit_field,
 a.given_limit,
 a.edit_days,
 a.credit_edit_block,
+a.given_market_limit,
+a.edit_market_limit,
 a.given_days {
   color: black; }
 

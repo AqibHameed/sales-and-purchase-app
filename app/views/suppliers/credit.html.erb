@@ -72,6 +72,11 @@
     $(this).parents('.days_limit').find('.edit_days').removeClass('hide')
   })
 
+  $(document).on('click', '#market_limit_edit', function(){
+    $(this).parents('.market_limit').find('.given_market_limit').addClass('hide')
+    $(this).parents('.market_limit').find('.edit_market_limit').removeClass('hide')
+  })
+
   $(document).on('click', '.save_btn_2', function(){
     self = $(this)
     value = $(this).parent('.edit_field').find('#limit').val()
@@ -114,6 +119,25 @@
     })
   })
 
+  $(document).on('click', '.save_market_limit_btn', function(){
+    self = $(this)
+    value = $(this).parent('.edit_market_limit').find('#market_limit').val()
+    user_id = $(this).parent('.edit_market_limit').find('#market_limit').data('id')
+    $.ajax({
+      url: '<%=change_market_limit_path %>',
+      method: 'get',
+      dataType: 'json',
+      data: {market_limit: value, buyer_id: user_id},
+      success:function(data){
+        if (data.errors){
+          $(self).parents('tr').find('span.market-limit-error-message').text(data.message)
+        } else {
+          $(self).parents('tr').find('span.market-limit-error-message').text('')
+          window.location.reload()
+        }
+      }
+    })
+  })
   // $(document).on('click', '.search_link', function(){
   //   $('.search-form').slideToggle();
   // })

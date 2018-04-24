@@ -211,6 +211,18 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def change_market_limit
+    buyer = Customer.find(params[:buyer_id])
+    cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_create
+    cl.credit_limit = 0 unless cl.credit_limit.present?
+    cl.market_limit = params[:market_limit]
+    if cl.save!
+      render json: { message: 'Market Limit updated.', value: view_context.get_market_limit(buyer, current_customer) }
+    else
+      render json: { message: cl.errors.full_messages.first, value: '' }
+    end
+  end
+
   def supplier_demand_list
     if params[:id] == 'Rough'
       params[:id] = 'Outside Goods'
