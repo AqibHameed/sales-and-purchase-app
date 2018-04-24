@@ -69,7 +69,11 @@
           <% end %>
         </tr>
       <% else %>
-        <tr>
+        <%if current_customer.id == parcel.customer_id%>
+          <tr style="background: #ffff99;">
+        <%else%>
+          <tr>
+        <%end%>
           <td class="td-mobile-count">
             <div class="lefter">
               <%= index_count(params[:page].to_i) + i %>
