@@ -22,25 +22,25 @@
               <p><b>Percent:</b> <%= @parcel.try(:percent)  %>%</p>
               <p><b>Last Avg. selling Price:</b> <%=   %></p>
               <p><b>Avg. Price for last 3 sell:</b> <%=last_3_trading_avg(@history)  %></p>
-              <%= form_for @proposal do |f| %>
+              <%= form_for @proposal, html: { class: "proposalform" } do |f| %>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">%</div>
                   <div class=' col-sm-9'>
-                    <%=text_field_tag "percent", @parcel.try(:percent), class: 'form-control' %>
+                    <%=text_field_tag "percent", @parcel.try(:percent), class: 'form-control', required: true %>
                   </div>
                 </div>
                 <div class="clear10"></div>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Avg. price:</div>
                   <div class=' col-sm-9'>
-                    <%=f.text_field :price, value: @parcel.try(:price), class: 'form-control' %>
+                    <%=f.text_field :price, value: @parcel.try(:price), class: 'form-control', required: true %>
                   </div>
                 </div>
                 <div class="clear10"></div>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Total $:</div>
                   <div class=' col-sm-9'>
-                    <%=text_field_tag "total", total, class: 'form-control' %>
+                    <%=text_field_tag "total", total, class: 'form-control', required: true %>
                   </div>
                 </div>
                 <div class="clear10"></div>
@@ -56,6 +56,7 @@
                 <%=hidden_field_tag :avg_price,  @parcel.try(:price) %>
                 <div class="clear10"></div>
                   <div class="parcel-details">
+                    <span class="error-message" style="margin: 0px 0px 6px 5px; color: red;"></span></br>
                     <%if @parcel.present?%>
                       <% if (current_customer.id == @parcel.try(:customer_id))  %>
                       <% elsif current_customer.is_blocked_by_supplier(@parcel.try(:customer_id)) %>
@@ -72,13 +73,14 @@
                       <% elsif current_customer.check_group_overdue(@parcel.try(:customer_id)) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything. Your group customer have overdue.</p>
                       <% else %>
-                        <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm'%>
+                        <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit'%>
                       <% end %>
                     <% else %>
-                        <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm'%>
+                        <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit'%>
                       <% end %>
                   </div>
                 </div>
+                  <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm submit-form hide'%>
               <% end %>
             </div>
             <%=link_to "Size info", 'javascript:void(0)', class: 'size_info', "data-id" => @parcel.try(:id) %>
@@ -138,6 +140,17 @@
 
     }]
   });
-  
+
+  $(document).ready(function(){
+    $('#form-submit').on('click', function(e) {
+      if ((parseInt($('#percent').val()) == 0) || (parseInt($('#proposal_price').val()) == 0) || (parseInt($('#total').val()) == 0)){
+        $('.error-message').text("Please enter value greater than 0")
+      } else if (($('#percent').val() == '') || ($('#proposal_price').val() == '') || ($('#total').val() == '')){
+        $('.error-message').text("Value cannot be blank...");
+      } else {
+        $('form.proposalform').submit();
+      }
+    })
+  });
 
 </script>
