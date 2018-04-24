@@ -158,11 +158,7 @@ class SuppliersController < ApplicationController
   def change_limits
     cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
     total_clms = CreditLimit.where(supplier_id: current_customer.id).sum(:credit_limit)
-    if cl.credit_limit.nil?
-      total_limit = params[:limit].to_f
-    else
-      total_limit = cl.credit_limit + params[:limit].to_f
-    end
+    total_limit = params[:limit].to_f
     cl.errors.add(:credit_limit, "should not be negative ") if total_limit < 0
 
     if current_customer.parent_id.present?
