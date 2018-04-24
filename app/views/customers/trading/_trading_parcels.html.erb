@@ -109,7 +109,7 @@
           <% end %>
           <% if parcel.customer_id == current_customer.id %>
             <% if params[:controller] == 'customers' %>
-              <td><%= link_to "Let's buy", trading_parcel_path(parcel),data: {turbolinks: false} %></td>
+              <td><%#= link_to "Let's buy", trading_parcel_path(parcel),data: {turbolinks: false} %></td>
             <% else %>
               <td><%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %></td>
               <td>
@@ -119,7 +119,9 @@
               </td>
             <% end %>
           <% else %>
-            <td><%= link_to "Let's buy", 'javascript:void(0)', data: {turbolinks: false}, class: 'lets_buy', "data-id" => parcel.id %></td>
+            <td>
+              <%= link_to "Let's buy", 'javascript:void(0)', data: {turbolinks: false}, class: 'lets_buy', "data-id" => parcel.id %>
+            </td>
           <% end %>
         </tr>
       <% end %>
