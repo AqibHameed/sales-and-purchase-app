@@ -25,7 +25,13 @@ class CompaniesGroupsController < ApplicationController
     companies_group = CompaniesGroup.find_by(id: params[:id])
     companies_group.destroy
     flash[:notice] = 'Customer was successfully destroyed.'
-    redirect_to new_companies_group_path
+  end
+
+  def delete_group
+    companies_groups= CompaniesGroup.where(group_name: params[:name])
+    companies_groups.destroy_all
+    flash[:notice] = 'Group was successfully destroyed.'
+    redirect_to credit_suppliers_path
   end
 
   private
