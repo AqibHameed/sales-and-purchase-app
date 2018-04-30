@@ -31,6 +31,13 @@
                 </div>
                 <div class="clear10"></div>
                 <div class="form-row">
+                  <div class="row control-label col-sm-3">Credit:</div>
+                  <div class=' col-sm-9'>
+                    <%=f.text_field :credit, value: @parcel.try(:credit), class: 'form-control', required: true %>
+                  </div>
+                </div>
+                <div class="clear10"></div>
+                <div class="form-row">
                   <div class="row control-label col-sm-3">Avg. price:</div>
                   <div class=' col-sm-9'>
                     <%=f.text_field :price, value: @parcel.try(:price), class: 'form-control', required: true %>
