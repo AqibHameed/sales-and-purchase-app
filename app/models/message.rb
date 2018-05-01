@@ -13,6 +13,13 @@ class Message < ApplicationRecord
     Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.supplier_id, message_type: "Proposal")
   end
 
+  def self.create_new_message(proposal, current_customer)
+    @message  = "#{proposal.notes} </br>"
+    @message << "#{ApplicationController.helpers.view_proposal_details(proposal, current_customer)}"
+
+    Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.supplier_id, message_type: "Proposal")
+  end
+
   def self.create_new_negotiate(proposal, current_customer)
     @message  = "#{proposal.notes} </br>"
     @message << "For more Details about proposal, #{ApplicationController.helpers.view_proposal(proposal)}"

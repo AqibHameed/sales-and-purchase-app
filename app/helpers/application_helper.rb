@@ -397,6 +397,12 @@ module ApplicationHelper
     "#{link_to('Click Here', Rails.application.routes.url_helpers.proposal_path(proposal))}"
   end
 
+  def view_proposal_details proposal, current_customer
+    ac = ActionController::Base.new()
+    rendered_string = ac.render_to_string partial: 'proposals/proposal_details', locals: { proposal: proposal, current_customer: current_customer}
+    return rendered_string
+  end
+
   def view_request
     "#{link_to('Click Here', Rails.application.routes.url_helpers.requests_brokers_path)}"
   end
