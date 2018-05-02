@@ -8,7 +8,17 @@ class HomeController < ApplicationController
     if params[:auth_token].present?
       @c_user ||= Customer.find_by_authentication_token(params[:auth_token])
       sign_in(@c_user)
-      redirect_to root_path
+      if params[:route] == 'trading'
+        redirect_to trading_customers_path
+      elsif params[:route] == 'demanding'
+        redirect_to demanding_customers_path
+      elsif params[:route] == 'credit'
+        redirect_to credit_customers_path
+      elsif params[:route] == 'messages'
+        redirect_to messages_path
+      else
+        redirect_to root_path
+      end
     end
   end
 
