@@ -17,12 +17,12 @@
             </li>
 
           <% else %>
-            <li class="first" onClick=" window.location.href = '/customers/trading' ">
+            <li class="first" onClick=" window.location.href = '/' ">
               <%= link_to 'Home', trading_customers_path, :class => 'home', data: { turbolinks: false } %>
             </li>
-            <!-- <li>
-              <%#= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
-            </li> -->
+            <li>
+              <%= link_to 'Dashboard', trading_customers_path, data: { turbolinks: false } %>
+            </li>
             <li><%= link_to 'History', trading_history_path, data: { turbolinks: false } %></li>
             <% if can? :access, :buy %>
               <li><%= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %></li>
