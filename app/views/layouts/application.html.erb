@@ -8,6 +8,7 @@
     <%= stylesheet_link_tag "jquery.dataTables.css", :media => "all"  unless controller.controller_name == 'calculator' %>
     <%= javascript_include_tag "application" %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quickblox/2.5.4/quickblox.min.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118651902-1"></script>
     <%= csrf_meta_tags %>
   </head>
   <body>
@@ -23,3 +24,13 @@
     </div>
   </body>
 </html>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script type="text/javascript">
+// <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+ gtag('config', 'UA-118651902-1');
+</script>
