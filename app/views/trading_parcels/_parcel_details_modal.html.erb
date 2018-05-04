@@ -154,7 +154,7 @@
     $('#form-submit').on('click', function(e) {
       if ((parseInt($('#percent').val()) == 0) || (parseInt($('#proposal_price').val()) == 0) || (parseInt($('#total').val()) == 0)){
         $('.error-message').text("Please enter value greater than 0")
-      } else if (($('#percent').val() == '') || ($('#proposal_price').val() == '') || ($('#total').val() == '')){
+      } else if ($('#percent').val() == '' || $('#proposal_price').val() == '' || $('#total').val() == '' || $('#proposal_credit').val() == ''){
         $('.error-message').text("Value cannot be blank...");
       } else {
         $('form.proposalform').submit();
