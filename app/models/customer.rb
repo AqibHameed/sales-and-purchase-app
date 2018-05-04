@@ -362,6 +362,7 @@ class Customer < ApplicationRecord
     customer_market_limit = cl.market_limit
     if market_limit_overdue.to_i < customer_market_limit.to_i
       return false
+    elsif customer_market_limit.to_i == 0
     else
       return true
     end
