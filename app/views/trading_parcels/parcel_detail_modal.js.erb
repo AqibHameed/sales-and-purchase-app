@@ -20,14 +20,16 @@ function calculate_prices(carat, cost, percent, price){
   var avg_price = (percent/100)*cost + cost;
   var amount = carat*avg_price;
   var last_sold = '<%= @history.first.total_amount.to_f rescue 0 %> '
-  if (isNaN(avg_price)){
-    if('<%= @parcel.try(:weight) %>' > 0){
+  if('<%= @parcel.try(:weight) %>' > 0){
+    if (isNaN(avg_price)){
       $('#proposal_price').val('')
-    }
-  }else{
-    if('<%= @parcel.try(:weight) %>' > 0){
+    }else{
       $('#proposal_price').val(avg_price)
     }
+  }
+  if(isNaN(amount)){
+    $('#total').val('')
+  }else{
     $('#total').val(amount)
   }
   showDiff(amount, last_sold)
@@ -37,14 +39,16 @@ function calculate_percents(carat, cost, price){
   var percent = ((price - cost) * 100)/cost;
   var amount = carat*price;
   var last_sold = '<%= @history.try(:first).total_amount.to_f rescue 0 %>'
-  if (isNaN(percent)){
-    if ('<%= @parcel.try(:cost) %>' > 0){
+  if ('<%= @parcel.try(:cost) %>' > 0){
+    if (isNaN(percent)){
       $('#percent').val('')
-    }
-  }else{
-    if ('<%= @parcel.try(:cost) %>' > 0){
+    }else{
       $('#percent').val(percent)
     }
+  }
+  if(isNaN(amount)){
+    $('#total').val('')
+  }else{
     $('#total').val(amount)
   }
   showDiff(amount, last_sold)
