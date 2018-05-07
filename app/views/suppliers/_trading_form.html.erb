@@ -137,18 +137,10 @@
 <div class="single hide">
   <div class="clear10"></div>
   <div class="form-wrapper">
-    <%= nested_form_for @trading_parcel do |f| %>
-      <% if @trading_parcel.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@trading_parcel.errors.count, "error") %> prohibited this auction from being saved:</h2>
-          <ul>
-            <% @trading_parcel.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-
+    <%= nested_form_for @trading_parcel, remote: true do |f| %>
+    <div class="tranding-parcel-errors">
+      <%= render partial: 'tranding_parcel_errors' %>
+    </div>
       <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
@@ -346,7 +338,7 @@
       $('.error-msg').remove()
     }
   });
-  
+
   function calculate_price(carat, cost, percent, price){
     var avg_price = (percent/100)*cost + cost;
     var amount = carat*avg_price;

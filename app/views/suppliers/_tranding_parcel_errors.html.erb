@@ -1,0 +1,10 @@
+<% if @trading_parcel.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@trading_parcel.errors.count, "error") %> prohibited this auction from being saved:</h2>
+    <ul>
+      <% @trading_parcel.errors.full_messages.each do |message| %>
+        <li class="text-danger"><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
