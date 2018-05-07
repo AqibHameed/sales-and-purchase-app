@@ -1,7 +1,9 @@
 <div class="table">
   <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter table-responsive">
     <thead class="thead-desktop">
+      <th>Customer Name </th>
       <th>Company </th>
+      <th>Addess</th>
       <th>Total Limit</th>
       <th>Used Limit</th>
       <th>Available Limit</th>
@@ -12,8 +14,16 @@
     </thead>
     <% @customers.each.with_index(1) do |customer, i|%>
       <tr>
+        <td>
+          <span class="table-head-in-td">Customer Name</span>
+          <%=customer.name%>
+        </td>
         <td><span class="table-head-in-td">Company</span>
         <%= link_to customer.company, profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
+        <td>
+          <span class="table-head-in-td">Addess</span>
+          <%=customer.try(:company_address)%>
+        </td>
         <td class="credit_limit">
         <span class="table-head-in-td">Total Limit</span>
           <a href="javascript:void(0)" class="given_limit">

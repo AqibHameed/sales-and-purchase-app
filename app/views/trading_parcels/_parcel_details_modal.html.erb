@@ -26,7 +26,11 @@
                 <div class="form-row">
                   <div class="row control-label col-sm-3">%</div>
                   <div class=' col-sm-9'>
-                    <%=text_field_tag "percent", @parcel.try(:percent), class: 'form-control', required: true %>
+                    <%if @parcel.try(:cost) == 0%>
+                      <%=text_field_tag "percent", 'N/A', class: 'form-control', style: 'background-color: grey;', disabled: true%>
+                    <%else%>
+                      <%=text_field_tag "percent", @parcel.try(:percent), class: 'form-control', required: true %>
+                    <%end%>
                   </div>
                 </div>
                 <div class="clear10"></div>
@@ -40,7 +44,11 @@
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Avg. price:</div>
                   <div class=' col-sm-9'>
+                  <%if @parcel.try(:weight) == 0%>
+                    <%=f.text_field :price, value: 'N/A', class: 'form-control', style: 'background-color: grey;', disabled: true%>
+                  <%else%>
                     <%=f.text_field :price, value: @parcel.try(:price), class: 'form-control', required: true %>
+                  <%end%>
                   </div>
                 </div>
                 <div class="clear10"></div>
@@ -156,6 +164,8 @@
         $('.error-message').text("Please enter value greater than 0")
       } else if ($('#percent').val() == '' || $('#proposal_price').val() == '' || $('#total').val() == '' || $('#proposal_credit').val() == ''){
         $('.error-message').text("Value cannot be blank...");
+      }else if ( !$.isNumeric($('#percent').val()) || !$.isNumeric($('#proposal_price').val()) || !$.isNumeric($('#total').val()) || !$.isNumeric($('#proposal_credit').val()) ){
+        $('.error-message').text("Please enter numeric value...");
       } else {
         $('form.proposalform').submit();
       }
