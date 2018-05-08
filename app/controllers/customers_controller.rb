@@ -169,6 +169,32 @@ class CustomersController < ApplicationController
     end
   end
 
+  def demanding_search
+    @demanding_parcel = Demand.new
+    if params[:demand].present?
+      if params[:demand][:description].present?
+        description = params[:demand][:description].reject { |c| c.empty? }
+      else
+        description = ''
+      end
+      @parcels = TradingParcel.where("trading_parcels.diamond_type = ? or trading_parcels.source = ? or trading_parcels.description IN (?)", params[:demand][:diamond_type], params[:demand][:supplier], description).page(params[:page]).per(25)
+    else
+      @parcels = TradingParcel.all.page(params[:page]).per(25)
+    end
+  end
+
+  # def search_demand_list
+  #   if params[:description].present?
+  #     description = params[:description].reject { |c| c.empty? }
+  #   else
+  #     description = ''
+  #   end
+  #   @parcels = TradingParcel.where("trading_parcels.diamond_type = ? or trading_parcels.source = ? or trading_parcels.description IN (?)", params[:diamond_type], params[:supplier], description).page(params[:page]).per(5)
+  #   respond_to do |format|
+  #     format.js
+  #   end
+  # end
+
   def demanding_create
     demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
     description = params[:demand][:description].reject { |c| c.empty? }
