@@ -180,9 +180,9 @@ class CustomersController < ApplicationController
       else
         description = ''
       end
-      @parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? or trading_parcels.source = ? or trading_parcels.description IN (?)", params[:demand][:diamond_type], params[:demand][:supplier], description).page(params[:page]).per(25)
+      @parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? or trading_parcels.source = ? or trading_parcels.description IN (?)", params[:demand][:diamond_type], params[:demand][:supplier], description) #.page(params[:page]).per(25)
     else
-      @parcels = TradingParcel.where(sold: false).page(params[:page]).per(25)
+      @parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
     end
   end
 
