@@ -1,15 +1,7 @@
-<%parcels.each_with_index do |parcel, index|%>
-  <tr>
-    <td><%= index+1%></td>
-    <td><%= get_description(parcel) if parcel %></td>
-    <td><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
-    <td><%= number_with_precision(parcel.weight, precision: 2) %></td>
-    <td><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
-    <td><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
-    <td><%= (parcel.percent.nil? || parcel.percent.blank?) ? 'N/A' : parcel.percent %></td>
-    <td><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
-    <td><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
-    <td><%= parcel.price*parcel.weight %></td>
-    <td><%= parcel.credit_period %></td>
-  </tr>
-<%end%>
+<div class="dashboard">
+  <h2>Trading</h2>
+  <div class="clear10"></div>
+  <div class="table trading-parcel-table">
+    <%= render partial: 'customers/trading/trading_parcels', locals: { parcels: @parcels } %>
+  </div>
+</div>

@@ -170,6 +170,9 @@ class CustomersController < ApplicationController
   end
 
   def demanding_search
+    @history = []
+    @info = []
+    @proposal = Proposal.new
     @demanding_parcel = Demand.new
     if params[:demand].present?
       if params[:demand][:description].present?
@@ -177,23 +180,11 @@ class CustomersController < ApplicationController
       else
         description = ''
       end
-      @parcels = TradingParcel.where("trading_parcels.diamond_type = ? or trading_parcels.source = ? or trading_parcels.description IN (?)", params[:demand][:diamond_type], params[:demand][:supplier], description).page(params[:page]).per(25)
+      @parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? or trading_parcels.source = ? or trading_parcels.description IN (?)", params[:demand][:diamond_type], params[:demand][:supplier], description).page(params[:page]).per(25)
     else
-      @parcels = TradingParcel.all.page(params[:page]).per(25)
+      @parcels = TradingParcel.where(sold: false).page(params[:page]).per(25)
     end
   end
-
-  # def search_demand_list
-  #   if params[:description].present?
-  #     description = params[:description].reject { |c| c.empty? }
-  #   else
-  #     description = ''
-  #   end
-  #   @parcels = TradingParcel.where("trading_parcels.diamond_type = ? or trading_parcels.source = ? or trading_parcels.description IN (?)", params[:diamond_type], params[:supplier], description).page(params[:page]).per(5)
-  #   respond_to do |format|
-  #     format.js
-  #   end
-  # end
 
   def demanding_create
     demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
@@ -213,6 +204,27 @@ class CustomersController < ApplicationController
     else
       flash[:notice] = "Something went wrong. Please try again."
       redirect_to demanding_customers_path
+    end
+  end
+
+  def demand_from_search
+    demand_supplier = DemandSupplier.where(name: params[:demand_supplier]).first
+    description = params[:description].reject { |c| c.empty? }
+    description.each do |d|
+      @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+        demand.weight = params[:weight]
+        demand.price = params[:price]
+        demand.diamond_type = params[:diamond_type]
+        demand.block = false
+        demand.deleted = false
+      end
+    end
+    if @demanding_parcel.save
+      flash[:notice] = "Demand created successfully."
+      redirect_to demanding_search_customers_path
+    else
+      flash[:notice] = "Something went wrong. Please try again."
+      redirect_to demanding_search_customers_path
     end
   end
 

@@ -138,3 +138,13 @@
     <%= render partial: 'trading_parcels/parcel_details_modal'%>
   </div>
 <% end %>
+
+<script type="text/javascript">
+  $(document).on('click', '.lets_buy', function(){
+    id = $(this).data('id')
+    $.ajax({
+      url : '/parcel_detail',
+      data : { id: id, proposal: true }
+    });
+  })
+</script>

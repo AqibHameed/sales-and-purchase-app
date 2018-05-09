@@ -107,8 +107,9 @@ Rails.application.routes.draw do
       get :info
       post :shared
       get :transaction_list
-      get :demanding_search
+      get :demanding_search, path: 'search'
       get :search_demand_list
+      get :demand_from_search
     end
     member do
       get :add_company
