@@ -34,7 +34,6 @@
   <div class="clear20"></div>
   <% if @parcels.present? %>
     <%= render partial: 'customers/demanding_search_table_data', locals: { parcels: @parcels} %>
-    <%= paginate @parcels %>
   <% else %>
     <p>No result found!</p>
     <% demand_supplier = params[:demand][:demand_supplier_id] %>
