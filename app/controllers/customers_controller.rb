@@ -180,7 +180,7 @@ class CustomersController < ApplicationController
       else
         description = ''
       end
-      @parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? or trading_parcels.source = ? or trading_parcels.description IN (?)", params[:demand][:diamond_type], params[:demand][:supplier], description) #.page(params[:page]).per(25)
+      @parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?)", params[:demand][:diamond_type], params[:demand][:supplier], description) #.page(params[:page]).per(25)
     else
       @parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
     end
@@ -210,21 +210,27 @@ class CustomersController < ApplicationController
   def demand_from_search
     demand_supplier = DemandSupplier.where(name: params[:demand_supplier]).first
     description = params[:description].reject { |c| c.empty? }
-    description.each do |d|
-      @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
-        demand.weight = params[:weight]
-        demand.price = params[:price]
-        demand.diamond_type = params[:diamond_type]
-        demand.block = false
-        demand.deleted = false
-      end
-    end
-    if @demanding_parcel.save
-      flash[:notice] = "Demand created successfully."
+    if params[:demand_supplier].blank? || params[:description].blank?
+      puts "===================demand supplier is blank"
+      flash[:alert] = "Please fill the parameters"
       redirect_to demanding_search_customers_path
     else
-      flash[:notice] = "Something went wrong. Please try again."
-      redirect_to demanding_search_customers_path
+      description.each do |d|
+        @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+          demand.weight = params[:weight]
+          demand.price = params[:price]
+          demand.diamond_type = params[:diamond_type]
+          demand.block = false
+          demand.deleted = false
+        end
+      end
+      if @demanding_parcel.save!
+        flash[:notice] = "Demand created successfully."
+        redirect_to demanding_search_customers_path
+      else
+        flash[:notice] = "Something went wrong. Please try again."
+        redirect_to demanding_search_customers_path
+      end
     end
   end
 
