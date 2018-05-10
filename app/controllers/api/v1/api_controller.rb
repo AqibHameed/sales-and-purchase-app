@@ -99,7 +99,7 @@ class Api::V1::ApiController < ApplicationController
 
   def customer_list
     customers = Customer.all
-    render json: { customers: customers.as_json(only: [:first_name, :last_name, :email, :company, :chat_id]), response_code: 200}
+    render json: { customers: customers.as_json(only: [:id, :first_name, :last_name, :email, :company, :chat_id]), response_code: 200}
   end
 
   def update_chat_id

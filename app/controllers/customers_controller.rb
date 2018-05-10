@@ -211,7 +211,6 @@ class CustomersController < ApplicationController
     demand_supplier = DemandSupplier.where(name: params[:demand_supplier]).first
     description = params[:description].reject { |c| c.empty? }
     if params[:demand_supplier].blank? || params[:description].blank?
-      puts "===================demand supplier is blank"
       flash[:alert] = "Please fill the parameters"
       redirect_to demanding_search_customers_path
     else
