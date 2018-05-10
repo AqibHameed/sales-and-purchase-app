@@ -104,7 +104,24 @@ $(document).ready(function() {
     //   { "orderable": false, "targets": 6 }
     // ]
   });
-  
+
+  $('#tenderList').DataTable({
+    // "paging": false,
+    "pageLength": 25,
+    "bLengthChange": false,
+    "bInfo" : false,
+    "bFilter" :false
+    // "columnDefs": [
+    //   { "orderable": false, "targets": 0 },
+    //   { "orderable": false, "targets": 1 },
+    //   { "orderable": false, "targets": 2 },
+    //   { "orderable": false, "targets": 3 },
+    //   { "orderable": false, "targets": 4 },
+    //   { "orderable": false, "targets": 5 },
+    //   { "orderable": false, "targets": 6 }
+    // ]
+  });
+
   // $(document).click(function(e){
   //   if (!e.target.matches('.dropbtn')) {
   //     var dropdowns = $(".dropdown-content");

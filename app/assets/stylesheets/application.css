@@ -161,6 +161,15 @@ div.title1 {
   padding: 8px;
   text-align: left; }
 
+#tenderList thead th {
+  border-top: 1px solid #e8e8e8;
+  border-right: 1px solid #e8e8e8;
+  font-weight: bold;
+  background: #5f5f5f;
+  color: #ffffff;
+  padding: 8px;
+  text-align: left; }
+
 #sellerList thead th {
   border-top: 1px solid #e8e8e8;
   border-right: 1px solid #e8e8e8;

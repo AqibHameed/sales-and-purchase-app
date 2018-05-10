@@ -5,7 +5,7 @@ class Customer < ApplicationRecord
   # :lockable, :timeoutable and :omniauthable
   attr_accessor :login, :role
 
-  devise :invitable, :database_authenticatable, :registerable,
+  devise :invitable, :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
 
   # validates :auth_token, uniqueness: true
