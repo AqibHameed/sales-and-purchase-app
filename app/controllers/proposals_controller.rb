@@ -36,11 +36,12 @@ class ProposalsController < ApplicationController
   end
 
   def show
-    @info = []
+    @info = @proposal.trading_parcel.parcel_size_infos
   end
 
   def edit
     @parcel = @proposal.trading_parcel
+    @info = @proposal.trading_parcel.parcel_size_infos
   end
 
   def update
