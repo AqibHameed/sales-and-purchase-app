@@ -13,6 +13,13 @@ class Message < ApplicationRecord
     Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.supplier_id, message_type: "Proposal")
   end
 
+  def self.create_new_message(proposal, current_customer)
+    @message  = "#{proposal.notes} </br>"
+    @message << "#{ApplicationController.helpers.view_proposal_details(proposal, current_customer)}"
+
+    Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.supplier_id, message_type: "Proposal")
+  end
+
   def self.create_new_negotiate(proposal, current_customer)
     @message  = "#{proposal.notes} </br>"
     @message << "For more Details about proposal, #{ApplicationController.helpers.view_proposal(proposal)}"
@@ -27,4 +34,10 @@ class Message < ApplicationRecord
     @message  = "A new broker sent you a request. Please #{ApplicationController.helpers.view_request} to accept"
     Message.create(subject: "You have a new broker request", message: @message, sender_id: request.broker_id, receiver_id: request.seller_id, message_type: "Broker Request")
   end
+
+  def self.create_new_credit_request(current_customer)
+    @message  = "A new credit request sent to you. Please #{ApplicationController.helpers.view_confirm_request} to accept"
+    Message.create(subject: "You have a new credit request", message: @message, sender_id: current_customer.id, receiver_id: current_customer.parent_id, message_type: "Credit Request")
+  end
+
 end

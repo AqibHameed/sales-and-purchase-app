@@ -19,7 +19,7 @@ class ProposalsController < ApplicationController
     else
       if @proposal.save
         # Sent an email to supplier
-        Message.create_new(@proposal)
+        Message.create_new_message(@proposal, current_customer)
 
         flash[:notice] = "Proposal sent to supplier."
         redirect_to trading_customers_path
@@ -36,11 +36,12 @@ class ProposalsController < ApplicationController
   end
 
   def show
-    @info = []
+    @info = @proposal.trading_parcel.parcel_size_infos
   end
 
   def edit
     @parcel = @proposal.trading_parcel
+    @info = @proposal.trading_parcel.parcel_size_infos
   end
 
   def update

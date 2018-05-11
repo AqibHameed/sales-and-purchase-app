@@ -14,14 +14,21 @@ class TradingParcelsController < ApplicationController
     @parcel = TradingParcel.new(trading_parcel_params)
     if @parcel.save
       @parcel.update_column(:diamond_type, params[:trading_document_diamond_type])
+      flash[:notice] = "Parcel created successfully"
       if params[:trading_parcel][:single_parcel].present?
-        redirect_to single_parcel_supplier_path(@parcel), notice: 'Parcel created successfully'
+        respond_to do |format|
+          format.js {render :js => "window.location.href='"+single_parcel_supplier_path(@parcel)+"'"}
+        end
       else
-        redirect_to trading_customers_path, notice: 'Parcel created successfully'
+        respond_to do |format|
+          format.js {render :js => "window.location.href='"+trading_customers_path+"'"}
+        end
       end
     else
-      error = @parcel.errors.full_messages.first
-      redirect_to trading_customers_path, notice: error
+      @trading_parcel = @parcel
+      respond_to do |format|
+        format.js
+      end
     end
   end
 
@@ -91,7 +98,7 @@ class TradingParcelsController < ApplicationController
 
   def save_direct_sell
     @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], supplier_id: @parcel.customer_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
-                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual', 
+                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
                                   created_at: params[:transaction][:created_at])
     if @transaction.save
       @transaction.set_due_date

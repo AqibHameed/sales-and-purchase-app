@@ -69,8 +69,8 @@ a.remove {
 
 .side-btn{
   position: relative;
-  margin: 0 0 0 100px;
-  top: 23px;
+  margin: 0 0 0 130px;
+  top: 27px;
 }
 
 .search-filter {
@@ -153,6 +153,15 @@ div.title1 {
   margin-top: 50px; }
 
 #creditList thead th {
+  border-top: 1px solid #e8e8e8;
+  border-right: 1px solid #e8e8e8;
+  font-weight: bold;
+  background: #5f5f5f;
+  color: #ffffff;
+  padding: 8px;
+  text-align: left; }
+
+#tenderList thead th {
   border-top: 1px solid #e8e8e8;
   border-right: 1px solid #e8e8e8;
   font-weight: bold;
@@ -501,6 +510,8 @@ h4 {
     vertical-align: top; }
 
   .table-responsive tr td .edit_field,
+  .table-responsive tr td .given_market_limit,
+  .table-responsive tr td .edit_market_limit,
   .table-responsive tr td .given_days,
   .table-responsive tr td .edit_days {
     overflow: hidden;
@@ -509,11 +520,15 @@ h4 {
 
   .table-responsive tr td .edit_field.hide,
   .table-responsive tr td .given_days.hide,
+  .table-responsive tr td .given_market_limit.hide,
+  .table-responsive tr td .edit_market_limit.hide,
   .table-responsive tr td .edit_days.hide {
     display: none; }
 
   .table-responsive tr td .edit_field input,
   .table-responsive tr td .given_days input,
+  .table-responsive tr td .given_market_limit input,
+  .table-responsive tr td .edit_market_limit input,
   .table-responsive tr td .edit_days input {
     width: 100%;
     box-sizing: border-box;
@@ -1012,6 +1027,8 @@ a.edit_field,
 a.given_limit,
 a.edit_days,
 a.credit_edit_block,
+a.given_market_limit,
+a.edit_market_limit,
 a.given_days {
   color: black; }
 

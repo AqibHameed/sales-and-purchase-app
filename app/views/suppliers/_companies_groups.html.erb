@@ -1,0 +1,65 @@
+<h3>Company Groups</h3>
+<div class="container">
+      <% @group_names.each do |name| %>
+      <div class="panel panel-default">
+        <div class="panel-heading clickable">
+           <h5 style="color: #ED5A48;"><%= name %></h5>
+          <div class="pull-right group-delete" style="margin-top: -28px;">
+            <%= link_to delete_group_companies_groups_path(name: name) do %>
+              <%= image_tag("/assets/wrong.png", width: "15", class: 'image_block') %>
+            <%end%>
+          </div>
+        </div>
+        <div class=" panel-collapse collapse">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <h3>Customers</h3>
+              <div class="clear10"></div>
+              <table class="table table-bordered table-responsive">
+                <thead>
+                  <th>Customer Name</th>
+                  <th>Company Name</th>
+                  <th>Credit Limit</th>
+                  <th>Overdue Limit</th>
+                  <th>Market Limit</th>
+                  <th>Available Limit</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  <% @companies_groups.each_with_index do |companies_group,index| %>
+                    <% if companies_group.group_name == name %>
+                      <tr>
+                        <td><%= companies_group.try(:first_name)%>&nbsp;<%= companies_group.try(:last_name)%></td>
+                        <td><%= companies_group.try(:company_name)%></td>
+                        <td><%= number_to_currency(get_credit_limit(companies_group.companies_customer, current_customer)) %></td>
+                        <td><%= get_days_limit(companies_group.companies_customer, current_customer) %></td>
+                        <td><%= get_market_limit(companies_group.companies_customer, current_customer)%></td>
+                        <td><%= number_to_currency(get_available_credit_limit(companies_group.companies_customer, current_customer)) %></td>
+                        <td>
+                        <%= link_to companies_group_path(id: companies_group.try(:id)), method: :delete do %>
+                          <%= image_tag("/assets/wrong.png", width: "15", class: 'image_block') %>
+                        <%end%>
+                        </td>
+                      </tr>
+                    <% end %>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+  $(document).on('click', '.clickable', function (e){
+    if ($(e.target).hasClass("group-delete")){
+      // do nothing
+    } else {
+      object =  $(this).parents('.panel').find('.panel-collapse')
+      object.collapse('toggle')
+      object.height('');
+    }
+  })
+</script>

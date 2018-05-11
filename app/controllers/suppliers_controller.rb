@@ -73,21 +73,92 @@ class SuppliersController < ApplicationController
   end
 
   def credit
+    @group_names = []
     if params[:name].present?
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
     @customers = Customer.unscoped.where.not(id: current_customer.id) #.page params[:page]
     @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
+    # @companies_groups = CompaniesGroup.where(seller_id: current_customer.id)
+    @companies_groups = CompaniesGroup.joins(:companies_customer).select("companies_groups.id, companies_groups.group_name, customers.id as customer_id, customers.company as company_name, customers.first_name as first_name, customers.last_name as last_name").where("companies_groups.seller_id = ?", current_customer.id)
+    @group_names = CompaniesGroup.all.map(&:group_name).uniq
   end
+
+
+  def credit_request
+    @customer = Customer.new
+    current_customer.credit_requests.build
+    @credit_requests = current_customer.credit_requests
+  end
+
+  def save_credit_request
+    if current_customer.update_attributes(credit_request_params)
+      Message.create_new_credit_request(current_customer)
+      flash[:notice] = "successfully send"
+      redirect_to credit_request_suppliers_path
+    else
+      flash[:notice] = "Error:   Invalid Entry"
+      redirect_to credit_request_suppliers_path
+    end
+  end
+
+  def confirm_request
+    @confirm_requests = CreditRequest.where(parent_id: current_customer.id, approve: false)
+
+  end
+
+  def show_request
+    @request = CreditRequest.find(params[:id])
+  end
+
+  def accept_request
+    @confirm_requests = CreditRequest.where(parent_id: current_customer.id)
+    request = CreditRequest.find(params[:id])
+    credit_limit = CreditLimit.new(
+      supplier_id: request.parent_id,
+      buyer_id: request.buyer_id,
+      credit_limit: request.limit
+    )
+    if credit_limit.save
+      request.approve = true
+      request.save
+      flash[:notice] = "Request Accepted"
+      redirect_to confirm_request_suppliers_path
+    else
+      flash[:notice] = "Request is not accepted"
+      redirect_to confirm_request_suppliers_path
+    end
+  end
+
+  def decline_request
+    @confirm_requests = CreditRequest.where(parent_id: current_customer.id, approve: false)
+    request = CreditRequest.find(params[:id])
+    if request.destroy
+      flash[:notice] = "request is declined"
+      render confirm_request_suppliers_path
+    else
+      flash[:notice] = "request is not declined"
+      redirect_to confirm_request_suppliers_path
+    end
+  end
+
+  def update_request
+   @request = CreditRequest.find(params[:id])
+   if @request.update_attributes(:limit => params[:limit])
+     respond_to do |format|
+      format.js
+     end
+   else
+     flash[:notice] = "Something is wrong."
+     redirect_to confirm_request_suppliers_path
+   end
+  end
+
 
   def change_limits
     cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
     total_clms = CreditLimit.where(supplier_id: current_customer.id).sum(:credit_limit)
-    if cl.credit_limit.nil?
-      total_limit = params[:limit].to_f
-    else
-      total_limit = cl.credit_limit + params[:limit].to_f
-    end
+    total_limit = params[:limit].to_f
     cl.errors.add(:credit_limit, "should not be negative ") if total_limit < 0
 
     if current_customer.parent_id.present?
@@ -136,6 +207,18 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def change_market_limit
+    buyer = Customer.find(params[:buyer_id])
+    cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_create
+    cl.credit_limit = 0 unless cl.credit_limit.present?
+    cl.market_limit = params[:market_limit]
+    if cl.save!
+      render json: { message: 'Market Limit updated.', value: view_context.get_market_limit(buyer, current_customer) }
+    else
+      render json: { message: cl.errors.full_messages.first, value: '' }
+    end
+  end
+
   def supplier_demand_list
     if params[:id] == 'Rough'
       params[:id] = 'Outside Goods'
@@ -176,5 +259,9 @@ class SuppliersController < ApplicationController
     else
       redirect_to trading_customers_path, notice: 'You are not authorized.'
     end
+  end
+
+  def credit_request_params
+    params.require(:customer).permit(:first_name, :company, :mobile_no, credit_requests_attributes: [:buyer_id, :limit, :approve, :customer_id, :parent_id, :_destroy])
   end
 end

@@ -15,21 +15,36 @@
             <li>
               <%= link_to 'Invite', invite_brokers_path, data: { turbolinks: false } %>
             </li>
+
           <% else %>
             <li class="first" onClick=" window.location.href = '/customers/trading' ">
               <%= link_to 'Home', trading_customers_path, :class => 'home', data: { turbolinks: false } %>
             </li>
-            <!-- <li>
-              <%#= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
-            </li> -->
+            <li>
+              <%= link_to 'Dashboard', trading_customers_path, data: { turbolinks: false } %>
+            </li>
+            <li>
+              <%= link_to 'Tenders', root_path, data: { turbolinks: false } %>
+            </li>
             <li><%= link_to 'History', trading_history_path, data: { turbolinks: false } %></li>
             <% if can? :access, :buy %>
               <li><%= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %></li>
             <% end %>
             <% if can? :access, :sell %>
-              <li><%= link_to 'Network', credit_suppliers_path, data: { turbolinks: false } %></li>
+              <li><%= link_to 'Approve Clients', credit_suppliers_path, data: { turbolinks: false } %></li>
             <% end %>
             <li><%= link_to 'Invite',  '#' , data: { turbolinks: false } %></li>
+            <% if current_customer.parent_id.nil? %>
+
+            <% else %>
+             <li>
+                <%= link_to 'Credit Request', credit_request_suppliers_path, data: { turbolinks: false } %>
+              </li>
+
+            <% end %>
+            <li>
+              <%= link_to 'Search', demanding_search_customers_path, data: { turbolinks: false } %>
+            </li>
           <% end %>
         <% end %>
           <!-- <li><%#= link_to 'Inbox', messages_path, data: { turbolinks: false } %></li> -->

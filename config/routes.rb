@@ -107,6 +107,9 @@ Rails.application.routes.draw do
       get :info
       post :shared
       get :transaction_list
+      get :demanding_search, path: 'search'
+      get :search_demand_list
+      get :demand_from_search
     end
     member do
       get :add_company
@@ -121,6 +124,12 @@ Rails.application.routes.draw do
     collection do
       get :list_company
       post :company_limits
+    end
+  end
+
+  resources :companies_groups do
+    collection do
+      get :delete_group
     end
   end
 
@@ -151,6 +160,14 @@ Rails.application.routes.draw do
       get :transactions
       get :profile
       get :credit
+      get :credit_request
+      get :confirm_request
+      get :show_request
+      get :accept_request
+      delete :decline_request
+      patch :update_request
+      post :save_credit_request
+      get :add_fields
       get :credit_given_list
       get :single_parcel_form
       get :add_demand_list
@@ -271,6 +288,7 @@ Rails.application.routes.draw do
   root :to => 'tenders#index'
 
   get '/change_limits' => 'suppliers#change_limits', as: 'change_credit_limit'
+  get '/change_market_limit' => 'suppliers#change_market_limit', as: 'change_market_limit'
   get '/trading_history' => 'tenders#trading_history', as: 'trading_history'
   get '/change_days_limits' => 'suppliers#change_days_limits', as: 'change_days_limit'
   get '/supplier_demand_list' => 'suppliers#supplier_demand_list'

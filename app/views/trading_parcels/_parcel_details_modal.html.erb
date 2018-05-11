@@ -4,6 +4,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Parcel Details</h4>
+        <%=link_to "Size info", 'javascript:void(0)', class: 'btn btn-success btn-xs size_info pull-right', "data-id" => @parcel.try(:id) %>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -22,25 +23,40 @@
               <p><b>Percent:</b> <%= @parcel.try(:percent)  %>%</p>
               <p><b>Last Avg. selling Price:</b> <%=   %></p>
               <p><b>Avg. Price for last 3 sell:</b> <%=last_3_trading_avg(@history)  %></p>
-              <%= form_for @proposal do |f| %>
+              <%= form_for @proposal, html: { class: "proposalform" } do |f| %>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">%</div>
                   <div class=' col-sm-9'>
-                    <%=text_field_tag "percent", @parcel.try(:percent), class: 'form-control' %>
+                    <%if @parcel.try(:cost) == 0 || !@parcel.try(:cost).present?%>
+                      <%=text_field_tag "percent", 'N/A', class: 'form-control', style: 'background-color: grey;', disabled: true%>
+                    <%else%>
+                      <%=text_field_tag "percent", @parcel.try(:percent), class: 'form-control', required: true %>
+                    <%end%>
+                  </div>
+                </div>
+                <div class="clear10"></div>
+                <div class="form-row">
+                  <div class="row control-label col-sm-3">Credit:</div>
+                  <div class=' col-sm-9'>
+                    <%=f.text_field :credit, value: @parcel.try(:credit), class: 'form-control', required: true %>
                   </div>
                 </div>
                 <div class="clear10"></div>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Avg. price:</div>
                   <div class=' col-sm-9'>
-                    <%=f.text_field :price, value: @parcel.try(:price), class: 'form-control' %>
+                  <%if @parcel.try(:weight) == 0 || !@parcel.try(:weight).present? %>
+                    <%=f.text_field :price, value: 'N/A', class: 'form-control', style: 'background-color: grey;', disabled: true%>
+                  <%else%>
+                    <%=f.text_field :price, value: @parcel.try(:price), class: 'form-control', required: true %>
+                  <%end%>
                   </div>
                 </div>
                 <div class="clear10"></div>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Total $:</div>
                   <div class=' col-sm-9'>
-                    <%=text_field_tag "total", total, class: 'form-control' %>
+                    <%=text_field_tag "total", total, class: 'form-control', required: true %>
                   </div>
                 </div>
                 <div class="clear10"></div>
@@ -55,10 +71,36 @@
                 <%=hidden_field_tag :cost,  @parcel.try(:cost) %>
                 <%=hidden_field_tag :avg_price,  @parcel.try(:price) %>
                 <div class="clear10"></div>
-                <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm'%>
+                  <div class="parcel-details">
+                    <span class="error-message" style="margin: 0px 0px 6px 5px; color: red;"></span></br>
+                    <%if @parcel.present?%>
+                      <% if (current_customer.id == @parcel.try(:customer_id))  %>
+                      <% elsif current_customer.is_blocked_by_supplier(@parcel.try(:customer_id)) %>
+                        <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
+                      <% elsif !current_customer.has_limit(@parcel.try(:customer_id)) %>
+                        <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has not given credit limit to you.
+                        <%= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:customer_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
+                      <% elsif current_customer.has_overdue_transaction_of_30_days(@parcel.try(:customer_id)) %>
+                        <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p>
+                      <% elsif grey_buy_btn(current_customer.id, @parcel.try(:customer_id)) %>
+                        <%= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
+                        <p style="margin: -14px 0px 6px 65px; color: red;">Credit limit is 0. Please contact supplier
+                        <%= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:customer_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
+                      <% elsif current_customer.check_group_overdue(@parcel.try(:customer_id)) %>
+                        <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything. Your group customer have overdue.</p>
+                      <% elsif current_customer.check_market_limit_overdue(get_market_limit(current_customer, @parcel.try(:customer_id)), @parcel.try(:customer_id)) %>
+                        <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything, due to your Market limit overdue.</p>
+                      <% else %>
+                        <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit'%>
+                      <% end %>
+                    <% else %>
+                        <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit'%>
+                      <% end %>
+                  </div>
+                </div>
+                  <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm submit-form hide'%>
               <% end %>
             </div>
-            <%=link_to "Size info", 'javascript:void(0)', class: 'size_info', "data-id" => @parcel.try(:id) %>
             <div class="col-lg-8">
               <p><b>Comment: </b></p>
               <ul class="list-group">
@@ -115,6 +157,19 @@
 
     }]
   });
-  
+
+  $(document).ready(function(){
+    $('#form-submit').on('click', function(e) {
+      if ((parseInt($('#percent').val()) == 0) || (parseInt($('#proposal_price').val()) == 0) || (parseInt($('#total').val()) == 0)){
+        $('.error-message').text("Please enter value greater than 0")
+      } else if ($('#percent').val() == '' || $('#proposal_price').val() == '' || $('#total').val() == '' || $('#proposal_credit').val() == ''){
+        $('.error-message').text("Value cannot be blank...");
+      }else if ( !$.isNumeric($('#percent').val()) || !$.isNumeric($('#proposal_price').val()) || !$.isNumeric($('#total').val()) || !$.isNumeric($('#proposal_credit').val()) ){
+        $('.error-message').text("Please enter numeric value...");
+      } else {
+        $('form.proposalform').submit();
+      }
+    })
+  });
 
 </script>

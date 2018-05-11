@@ -97,3 +97,13 @@
     <% end %>
   <% end %>
 </table>
+
+<% unless params[:controller] == 'customers' %>
+  <div class="parcel-detail">
+    <%= render partial: 'trading_parcels/parcel_visibility'%>
+  </div>
+<% else %>
+  <div class="parcel-detail">
+    <%= render partial: 'trading_parcels/parcel_details_modal'%>
+  </div>
+<% end %>

@@ -5,7 +5,7 @@ class Customer < ApplicationRecord
   # :lockable, :timeoutable and :omniauthable
   attr_accessor :login, :role
 
-  devise :invitable, :database_authenticatable, :registerable,
+  devise :invitable, :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
 
   # validates :auth_token, uniqueness: true
@@ -28,6 +28,8 @@ class Customer < ApplicationRecord
   has_many :sender, :class_name => 'Message', :foreign_key => 'sender_id'
   has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
   has_many :broker_invites
+  has_many :credit_requests, dependent: :destroy
+  accepts_nested_attributes_for :credit_requests, :allow_destroy => true
 
   has_many :customer_roles
   # has_many :roles, through: :customer_roles
@@ -47,6 +49,9 @@ class Customer < ApplicationRecord
   has_many :brokers, :foreign_key => "broker_id", :class_name => "BrokerRequest"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "BrokerRequest"
   has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
+
+  has_many :companies_customers, :foreign_key => "customer_id", :class_name => "CompaniesGroup"
+  has_many :sellers, :foreign_key => "seller_id", :class_name => "CompaniesGroup"
 
   # Setup accessible (or protected) attributes for your model
   # attr_accessible :email, :password, :password_confirmation, :remember_me,
@@ -339,5 +344,28 @@ class Customer < ApplicationRecord
     end
   end
 
+  def check_group_overdue(supplier_id)
+    is_overdue = false
+    if companies_customers.present?
+      group_customers = CompaniesGroup.where(group_name: companies_customers.first.group_name)
+      group_customers.each do |group_customer|
+        if group_customer.companies_customer.has_overdue_transaction_of_30_days(supplier_id)
+          is_overdue = true
+        end
+      end
+    end
+    return is_overdue
+  end
+
+  def check_market_limit_overdue(market_limit_overdue, supplier_id)
+    cl = CreditLimit.where(supplier_id: supplier_id, buyer_id: self.id).first
+    customer_market_limit = cl.market_limit
+    if market_limit_overdue.to_i < customer_market_limit.to_i
+      return false
+    elsif customer_market_limit.to_i == 0
+    else
+      return true
+    end
+  end
 end
 

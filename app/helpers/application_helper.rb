@@ -266,6 +266,25 @@ module ApplicationHelper
     number_with_precision(transaction_amt, precision: 2)
   end
 
+  def get_market_limit(buyer, supplier)
+    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.today, false, true)
+    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.today, false, true)
+
+    @amount = []
+    pendings.each do |t|
+      @amount << t.remaining_amount
+    end
+    overdues.each do |o|
+      @amount << o.remaining_amount
+    end
+    pending_amt = @amount.sum
+    number_with_precision(pending_amt, precision: 2)
+  end
+
+  def get_market_limit_from_credit_limit_table(buyer, supplier)
+    CreditLimit.where(supplier_id: supplier.id, buyer_id: buyer.id).first.market_limit.to_i rescue 0
+  end
+
   def overall_credit_received(customer)
     current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)
     number_with_precision((current_limit), precision: 2)
@@ -378,8 +397,18 @@ module ApplicationHelper
     "#{link_to('Click Here', Rails.application.routes.url_helpers.proposal_path(proposal))}"
   end
 
+  def view_proposal_details proposal, current_customer
+    ac = ActionController::Base.new()
+    rendered_string = ac.render_to_string partial: 'proposals/proposal_details', locals: { proposal: proposal, current_customer: current_customer}
+    return rendered_string
+  end
+
   def view_request
     "#{link_to('Click Here', Rails.application.routes.url_helpers.requests_brokers_path)}"
+  end
+
+  def view_confirm_request
+   "#{link_to('Click Here', Rails.application.routes.url_helpers.confirm_request_suppliers_path )}"
   end
 
   def check_round stones
@@ -421,5 +450,18 @@ module ApplicationHelper
     Customer.all.map{|customer| [customer.company, customer.id]}
   end
 
+  def list_of_customers(current_customer)
+    # customer = Customer.where("id != ? OR id != ? OR parent_id != ? ", current_customer.parent_id , current_customer.id, current_customer.id)
+    array = []
+    requests = current_customer.credit_requests
+    requests.each do |req|
+      unless req.buyer.nil?
+       array.push(req.buyer.id)
+      end
+    end
+    array.push(current_customer.id)
+    array.push(current_customer.parent_id)
+    customer = Customer.where(" id NOT IN (?) ",  array)
+    customer.map{|customer| [customer.company, customer.id]}
+  end
 end
-
