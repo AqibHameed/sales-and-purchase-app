@@ -1,0 +1,65 @@
+<div class="form-wrapper">
+  <%= form_for @demanding_parcel, url: demanding_search_customers_path, method: :get do |f| %>
+    <div class="form-row">
+      <div class="label">Diamond Type: </div>
+      <div class="field">
+        <%#= select_tag "demand_diamond_type", options_for_select(['Outside Goods', 'Sight']),  { class: 'input', include_blank: true } %>
+        <%= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label">Supplier: </div>
+      <div class="field">
+        <%#= select_tag "demand_demand_supplier_id", options_for_select(supplier_list_for_demand),  { class: 'input', include_blank: true } %>
+        <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand), { include_blank: true }, { class: 'input' } %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label">Description: </div>
+      <div class="field demand_desc">
+        <%#= select_tag "demand_description", options_for_select(parcel_list_for_demand(nil)),  { class: 'input', include_blank: true, multiple: true } %>
+        <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input', multiple: true }%>
+      </div>
+    </div>
+    <div class="clear20"></div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%#= link_to 'Search', 'javascript:void(0)', class: 'btn-02 login-btn search'  %>
+        <%=f.submit 'Search', class: 'login-btn btn-02' %>
+        <%=link_to 'Reset', demanding_search_customers_path, class: 'btn btn-default' %>
+      </div>
+    </div>
+  <% end %>
+  <div class="clear20"></div>
+  <% if @parcels.present? %>
+    <%= render partial: 'customers/demanding_search_table_data', locals: { parcels: @parcels} %>
+  <% else %>
+    <p>No result found!</p>
+    <% demand_supplier = params[:demand][:demand_supplier_id] %>
+    <% diamond_type = params[:demand][:diamond_type] %>
+    <% description = params[:demand][:description] %>
+    <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false} %>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+
+  $(document).on('change', '#demand_diamond_type', function(){
+    type = $('#demand_diamond_type').val()
+    $.ajax({
+      url: '/supplier_list',
+      method: 'get',
+      data: {diamond_type: type}
+    })
+  })
+
+  $(document).on('change', '#demand_demand_supplier_id', function(){
+    id = $('#demand_demand_supplier_id').val()
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+  })
+})
+</script>
