@@ -1,6 +1,6 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter table-responsive">
   <thead class="thead-desktop">
-    <th></th>
+    <!-- <th></th> -->
     <th>Description</th>
     <th>No. of Stones</th>
     <th>Carats</th>
@@ -11,6 +11,7 @@
     <th>Sight</th>
     <th>Total $</th>
     <th>Days</th>
+    <th></th>
     <% if params[:controller] == 'customers' %>
       <th>Supplier</th>
     <% end %>
@@ -22,15 +23,12 @@
     <th></th>
   </thead>
   <!-- <tbody> -->
-    <% j = 1 %>
     <% parcels.each.with_index(1) do |parcel, i|%>
       <% if check_parcel_visibility(parcel, current_customer) %>
         <% if parcel.sold %>
           <tr style="background: #ccc;">
             <td class="td-mobile-count">
               <div class="lefter">
-                <%= j %>
-                <% j = j+1%>
                 <%#= index_count(params[:page].to_i) + i %>
               </div>
               <div class="righter">
@@ -80,8 +78,6 @@
           <%end%>
             <td class="td-mobile-count">
               <div class="lefter">
-                <%= j %>
-                <% j = j+1 %>
                 <%#= index_count(params[:page].to_i) + i %>
               </div>
               <div class="righter">
@@ -158,6 +154,8 @@
  $('#tenderList').DataTable({
     "pageLength": 25,
     "bFilter" :false,
-    "bInfo" : false
+    "bInfo" : false,
+    // order: [0, 'asc'] [1, 'asc']
+ //     aaSorting: [[0, 'asc']]
   });
 </script>
