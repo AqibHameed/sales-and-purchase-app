@@ -1,6 +1,6 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter table-responsive">
   <thead class="thead-desktop">
-    <!-- <th></th> -->
+    <th></th>
     <th>Description</th>
     <th>No. of Stones</th>
     <th>Carats</th>
@@ -11,7 +11,6 @@
     <th>Sight</th>
     <th>Total $</th>
     <th>Days</th>
-    <th></th>
     <% if params[:controller] == 'customers' %>
       <th>Supplier</th>
     <% end %>
@@ -78,7 +77,7 @@
           <%end%>
             <td class="td-mobile-count">
               <div class="lefter">
-                <%#= index_count(params[:page].to_i) + i %>
+                <%#= index_count(params[:page].to_i) + j %>
               </div>
               <div class="righter">
                 <div class="top">
@@ -154,8 +153,6 @@
  $('#tenderList').DataTable({
     "pageLength": 25,
     "bFilter" :false,
-    "bInfo" : false,
-    // order: [0, 'asc'] [1, 'asc']
- //     aaSorting: [[0, 'asc']]
+    "bInfo" : false
   });
 </script>
