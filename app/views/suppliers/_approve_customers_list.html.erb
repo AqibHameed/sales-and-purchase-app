@@ -97,6 +97,13 @@
         }
       })
     });
+
+ $(document).ready(function()
+ {
+  var oTable = $('#creditList').dataTable();
+  oTable.fnSort( [ [3,'desc'] ] );
+ });
+
 </script>
 <style>
   .current_bid {
