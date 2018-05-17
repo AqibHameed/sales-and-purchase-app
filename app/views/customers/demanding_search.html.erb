@@ -27,7 +27,7 @@
       <div class="field">
         <%#= link_to 'Search', 'javascript:void(0)', class: 'btn-02 login-btn search'  %>
         <%=f.submit 'Search', class: 'login-btn btn-02' %>
-        <%=link_to 'Reset', demanding_search_customers_path, class: 'btn btn-default' %>
+        <%=link_to 'Reset', demanding_search_customers_path, class: 'btn btn-default', data: { turbolinks: false } %>
       </div>
     </div>
   <% end %>
@@ -39,7 +39,7 @@
     <% demand_supplier = params[:demand][:demand_supplier_id] %>
     <% diamond_type = params[:demand][:diamond_type] %>
     <% description = params[:demand][:description] %>
-    <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false} %>
+    <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false } %>
   <% end %>
 </div>
 
