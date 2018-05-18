@@ -9,14 +9,14 @@
 
         <table class="table table-striped table-responsive">
           <thead>
-            <th>Carats</th>
+            <!-- <th>Carats</th> -->
             <th>Size</th>
             <th>%</th>
           </thead>
           <tbody>
             <% @info.each do |i| %>
               <tr>
-                <td><%= i.try(:carats)%></td>
+                <!-- <td><%#= i.try(:carats)%></td> -->
                 <td><%= i.try(:size)%></td>
                 <td><%= i.try(:percent)%></td>
               </tr>

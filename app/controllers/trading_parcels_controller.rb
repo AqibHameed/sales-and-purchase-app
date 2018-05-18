@@ -13,7 +13,7 @@ class TradingParcelsController < ApplicationController
   def create
     @parcel = TradingParcel.new(trading_parcel_params)
     if @parcel.save
-      @parcel.update_column(:diamond_type, params[:trading_document_diamond_type])
+      # @parcel.update_column(:diamond_type, params[:trading_document_diamond_type])
       flash[:notice] = "Parcel created successfully"
       if params[:trading_parcel][:single_parcel].present?
         respond_to do |format|
@@ -118,7 +118,7 @@ class TradingParcelsController < ApplicationController
 
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment,
+    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
   end
 

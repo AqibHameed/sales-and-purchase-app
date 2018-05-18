@@ -6,9 +6,9 @@ class TradingParcel < ApplicationRecord
   has_many :parcel_size_infos
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
-
-  validates :price, :credit_period, :weight, presence: true
-  validates :price, :credit_period, :weight, numericality: true
+  validates :source, presence: true, if: :diamond_type_is_sight?
+  validates :credit_period, :total_value, :description, presence: true
+  validates :price, :credit_period, :weight, :total_value, numericality: true
   after_create :generate_and_add_uid, :send_mail_to_demanded
 
   accepts_nested_attributes_for :my_transaction
@@ -17,6 +17,10 @@ class TradingParcel < ApplicationRecord
   attr_accessor :single_parcel
 
   enum for_sale: [ :to_all, :to_none, :broker, :credit_given, :demanded ]
+
+  def diamond_type_is_sight?
+     self.diamond_type == "Sight"
+  end
 
   def self.search_by_filters(params, current_customer)
     parcels = TradingParcel.where.not(customer_id: current_customer.id).order(created_at: :desc)

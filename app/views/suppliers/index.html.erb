@@ -1,7 +1,7 @@
 <div class="dashboard">
   <div class="links text-center">
-    <%= link_to "Upload Bulk Parcel", 'javascript:void(0)', class: 'bulk_upload mr5 btn btn-danger' %>
-    <%= link_to "Create Single Parcel", 'javascript:void(0)', class: 'single_parcel btn btn-danger' %>
+    <%#= link_to "Upload Bulk Parcel", 'javascript:void(0)', class: 'bulk_upload mr5 btn btn-danger' %>
+    <%#= link_to "Create Single Parcel", 'javascript:void(0)', class: 'single_parcel btn btn-danger' %>
   </div>
   <hr>
   <center>
@@ -16,7 +16,7 @@
 </div>
 
 <script type="text/javascript">
-  $(document).on('change', '#trading_document_diamond_type', function(){
+  $(document).on('change', '#trading_parcel_diamond_type', function(){
     val = $(this).val()
     if(val == "Rough"){
       $('.common').removeClass('hide')
@@ -28,6 +28,7 @@
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
       $('#trading_document_credit_field').val('I')
       $('#trading_document_price_field').val('H')
     }else{
@@ -37,20 +38,20 @@
     }
   })
 
-  $(document).on('click', '.bulk_upload', function(){
-    $('#trading_document_diamond_type').val('')
-    $('.bulk').removeClass('hide')
-    $('.single').addClass('hide')
-  })
+  // $(document).on('click', '.bulk_upload', function(){
+  //   $('#trading_document_diamond_type').val('')
+  //   $('.bulk').removeClass('hide')
+  //   $('.single').addClass('hide')
+  // })
 
-  $(document).on('click', '.single_parcel', function(){
-    $('#trading_document_diamond_type').val('')
-    $('.single').removeClass('hide')
-    $('.bulk').addClass('hide')
-  })
+  // $(document).on('click', '.single_parcel', function(){
+  //   $('#trading_document_diamond_type').val('')
+  //   $('.single').removeClass('hide')
+  //   $('.bulk').addClass('hide')
+  // })
 
-  $(document).on('change', '#trading_document_diamond_type', function(){
-    val = $('.single #trading_document_diamond_type').val()
+  $(document).on('change', '#trading_parcel_diamond_type', function(){
+    val = $('.single #trading_parcel_diamond_type').val()
     if (val == 'Rough'){
       $.ajax({
         url: '/supplier_demand_list',
