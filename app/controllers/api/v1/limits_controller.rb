@@ -2,7 +2,7 @@ module Api
   module V1
     class LimitsController < ApiController
       before_action :current_customer
-      skip_before_action :verify_authenticity_token, only: [:add_credit_limit, :add_market_limit, :add_overdue_limit]
+      skip_before_action :verify_authenticity_token, only: [:add_credit_limit, :add_market_limit, :add_overdue_limit, :block, :unblock]
 
       def add_credit_limit
         if current_customer
@@ -77,6 +77,28 @@ module Api
             else
               render json: { success: false, message: dl.errors.full_messages }
             end
+          end
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+      def block
+        if current_customer
+          BlockUser.where(block_user_ids: params[:customer_id], customer_id: current_customer.id).first_or_create
+          render json: { success: true }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+      def unblock
+        if current_customer
+          b = BlockUser.where(block_user_ids: params[:customer_id], customer_id: current_customer.id).first
+          if b.nil?
+            render json: { success: false, message: 'Customer already unblocked or not found' }
+          else
+            render json: { success: true }
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
