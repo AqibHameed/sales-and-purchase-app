@@ -272,6 +272,13 @@ Rails.application.routes.draw do
           post :upload
         end
       end
+      resources :limits do
+        collection do
+          post :add_credit_limit
+          post :add_market_limit
+          post :add_overdue_limit
+        end
+      end
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
       post '/supplier_notification', to: 'api#supplier_notification'
