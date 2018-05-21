@@ -1,3 +1,6 @@
+<% if params[:demand].present? %>
+  <p><%= parcels.count %> result found!</p>
+<%end %>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter table-responsive">
   <thead class="thead-desktop">
     <th></th>
@@ -23,7 +26,7 @@
   </thead>
   <!-- <tbody> -->
     <% parcels.each.with_index(1) do |parcel, i|%>
-      <% if check_parcel_visibility(parcel, current_customer) %>
+      <%# if check_parcel_visibility(parcel, current_customer) %>
         <% if parcel.sold %>
           <tr style="background: #ccc;">
             <td class="td-mobile-count">
@@ -126,7 +129,7 @@
             <% end %>
           </tr>
         <% end %>
-      <% end %>
+      <%# end %>
     <% end %>
   <!-- </tbody> -->
 </table>
@@ -153,6 +156,7 @@
  $('#tenderList').DataTable({
     "pageLength": 25,
     "bFilter" :false,
-    "bInfo" : false
+    "bLengthChange": false
+    // "bInfo" : false
   });
 </script>

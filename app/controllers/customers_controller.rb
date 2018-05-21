@@ -175,19 +175,44 @@ class CustomersController < ApplicationController
     @proposal = Proposal.new
     @demanding_parcel = Demand.new
     if params[:demand].present?
-      if params[:demand][:description].present?
-        description = params[:demand][:description].reject { |c| c.empty? }
+      full_description = params[:demand][:description].reject { |c| c.empty? }
+      if full_description.present?
+        description = full_description
       else
-        description = ''
+        # description = ''
+        if params[:demand][:diamond_type] == "Outside Goods"
+          description = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ?", "Rough", "").pluck(:description)
+        else
+          description = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ?", params[:demand][:diamond_type], params[:demand][:demand_supplier_id]).pluck(:description)
+        end
       end
       if params[:demand][:diamond_type] == "Outside Goods"
-        @parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?)", "Rough", "", description)
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?)", "Rough", "", description)
       else
-        @parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?) or trading_parcels.box IN (?)", params[:demand][:diamond_type], params[:demand][:demand_supplier_id], description, description) #.page(params[:page]).per(25)
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?) or trading_parcels.box IN (?)", params[:demand][:diamond_type], params[:demand][:demand_supplier_id], description, description) #.page(params[:page]).per(25)
       end
+   else
+    parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
+   end
+
+    aa = parcels.where("(customer_id = #{current_customer.id}) OR (sale_all = true) OR (sale_none = false) OR (sale_broker = true and broker_ids IN (#{current_customer.id.to_s}) ) OR (sale_credit = true) OR (sale_demanded = true)")
+    ss = aa.where(sale_demanded: true)
+    if ss.exists?
+      demand = Demand.where(description: aa.pluck(:description), customer_id: current_customer.id)
+      @parcels1 = aa.where(description: demand.pluck(:description))
     else
-      @parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
+      @parcels1 = aa
     end
+    mm = aa.where(sale_credit: true)
+    credit_limit = CreditLimit.where(supplier_id: aa.pluck(:customer_id),buyer_id: current_customer.id)
+    if credit_limit.exists?
+      @parcels2 = mm.where("customer_id not in ?",credit_limit.pluck(:supplier_id))
+    else
+      @parcels2 = mm
+    end
+    @parcels = @parcels1+@parcels2
+    @parcels = @parcels.uniq
+
   end
 
   def demanding_create
