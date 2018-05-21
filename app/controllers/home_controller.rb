@@ -16,6 +16,8 @@ class HomeController < ApplicationController
         redirect_to credit_customers_path
       elsif params[:route] == 'messages'
         redirect_to messages_path
+      elsif params[:route] == 'search'
+        redirect_to demanding_search_customers_path
       else
         redirect_to root_path
       end
