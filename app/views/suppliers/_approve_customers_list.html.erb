@@ -3,7 +3,7 @@
     <thead class="thead-desktop">
       <th>Customer Name </th>
       <th>Company </th>
-      <th>Addess</th>
+      <!-- <th>Addess</th> -->
       <th>Total Limit</th>
       <th>Used Limit</th>
       <th>Available Limit</th>
@@ -20,13 +20,14 @@
         </td>
         <td><span class="table-head-in-td">Company</span>
         <%= link_to customer.company, profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
-        <td>
+       <!--  <td>
           <span class="table-head-in-td">Addess</span>
-          <%=customer.try(:company_address)%>
-        </td>
+          <%#=customer.try(:company_address)%>
+        </td> -->
+
         <td class="credit_limit">
         <span class="table-head-in-td">Total Limit</span>
-          <a href="javascript:void(0)" class="given_limit">
+          <a href="javascript:void(0)" class="given_limit" id='credit_edit'>
             <%= number_to_currency(get_credit_limit(customer, current_customer)) %>
           <%if @type.try(:credit_type) == 'Specific' || @type.try(:credit_type) == 'Yours'%>
             <i class="fa fa-edit pull-right" id='credit_edit' style="display: none"></i>
@@ -45,7 +46,7 @@
         <td><span class="table-head-in-td">Available Limit</span><%= number_to_currency(get_available_credit_limit(customer, current_customer)) rescue 'N/A' %></td>
         <td class="days_limit">
           <span class="table-head-in-td">Overdue Limit</span>
-            <a href="javascript:void(0)" class="given_days">
+            <a href="javascript:void(0)" class="given_days" id='days_edit'>
               <%= get_days_limit(customer, current_customer) %>
               <i class="fa fa-edit pull-right" id='days_edit'></i>
             </a>
@@ -59,7 +60,7 @@
         </td>
         <td class="market_limit">
           <span class="table-head-in-td">Market Limit</span>
-          <a href="javascript:void(0)" class="given_market_limit">
+          <a href="javascript:void(0)" class="given_market_limit" id='market_limit_edit'>
             <%= get_market_limit_from_credit_limit_table(customer,current_customer)%>
             <i class="fa fa-edit pull-right" id='market_limit_edit'></i>
           </a>
