@@ -36,7 +36,7 @@
           </a>
           <span class="edit_field hide">
             <%=number_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %>
-            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false }%>
+            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2", data: { confirm: 'Are you sure?'}%> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false }%>
           </span>
           </br>
           <span class="error-message" style="color: red;"></span>
@@ -49,11 +49,14 @@
               <%= get_days_limit(customer, current_customer) %>
               <i class="fa fa-edit pull-right" id='days_edit'></i>
             </a>
-            <a href="javascript:void(0)" class="edit_days hide">
-              <%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days' %>
-              <i class="fa fa-check-square-o save_date_btn"></i>
-            </a>
-          </td>
+            <span class="edit_days hide">
+              <!-- <a href="javascript:void(0)" class="edit_days hide"> -->
+                <%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days' %>
+                <%=link_to 'Add', 'javascript:void(0)', class: "save_date_btn", data: { confirm: 'Are you sure?'} %> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
+                <!-- <i class="fa fa-check-square-o save_date_btn"></i> -->
+              <!-- </a> -->
+            </span>
+        </td>
         <td class="market_limit">
           <span class="table-head-in-td">Market Limit</span>
           <a href="javascript:void(0)" class="given_market_limit">

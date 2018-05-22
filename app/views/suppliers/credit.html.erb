@@ -39,14 +39,17 @@
   $(document).on('click', '.image_block', function(){
     self = $(this)
     id = $(this).data('id')
-    $.ajax({
-      url: '<%= block_unblock_user_customer_path(current_user)%>',
-      method: 'get',
-      data: {status: 'block', block_user_id: id},
-      success:function(){
-        // $(self).parents('tr').fadeOut( "slow" );
-      }
-    })
+    var r = confirm("Are you sure!");
+    if (r == true) {
+      $.ajax({
+        url: '<%= block_unblock_user_customer_path(current_user)%>',
+        method: 'get',
+        data: {status: 'block', block_user_id: id},
+        success:function(){
+          // $(self).parents('tr').fadeOut( "slow" );
+        }
+      })
+    }
   })
 
   $(document).on('click', '.image_approve', function(){
