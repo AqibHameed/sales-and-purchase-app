@@ -2,7 +2,11 @@ module Api
   module V1
     class LimitsController < ApiController
       before_action :current_customer
-      skip_before_action :verify_authenticity_token, only: [:add_credit_limit, :add_market_limit, :add_overdue_limit, :block, :unblock]
+      skip_before_action :verify_authenticity_token, only: [:add_credit_limit, :add_market_limit, :add_overdue_limit, :block, :unblock, :credit_limit_list]
+
+      include ActionView::Helpers::NumberHelper
+      include ActionView::Helpers::TextHelper
+      include ApplicationHelper
 
       def add_credit_limit
         if current_customer
@@ -104,6 +108,20 @@ module Api
           render json: { errors: "Not authenticated", response_code: 201 }
         end
       end
+
+      def credit_limit_list
+        @data = []
+        if current_customer
+          cl = CreditLimit.where(supplier_id: current_customer.id)
+          cl.each do |c|
+            @data << { company: c.buyer.company, total_limit: get_credit_limit(c.buyer, current_customer), used_limit: get_used_credit_limit(c.buyer, current_customer), available_limit: get_available_credit_limit(c.buyer, current_customer), overdue_limit: get_days_limit(c.buyer, current_customer), market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_customer), supplier_connected: supplier_connected(c.buyer,current_customer) }
+          end
+          render json: { credit_limit_list: @data, response_code: 200  }
+        else
+           render json: { errors: "You have to login first!!", response_code: 201 }
+        end
+      end
+
     end
   end
 end
