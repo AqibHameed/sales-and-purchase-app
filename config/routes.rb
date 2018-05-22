@@ -279,6 +279,7 @@ Rails.application.routes.draw do
           post :add_overdue_limit
           post :block
           post :unblock
+          get  :credit_limit_list
         end
       end
       get '/filter_data', to: 'api#filter_data'
