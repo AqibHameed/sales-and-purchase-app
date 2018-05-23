@@ -14,9 +14,9 @@
     </thead>
     <% @customers.each.with_index(1) do |customer, i|%>
       <tr>
-        <td>
+        <td class="customer_name">
           <span class="table-head-in-td">Customer Name</span>
-          <%=customer.name%>
+          <div class="c_n"><%=customer.name%></div>
         </td>
         <td><span class="table-head-in-td">Company</span>
         <%= link_to customer.company, profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
@@ -37,7 +37,8 @@
           </a>
           <span class="edit_field hide">
             <%=number_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %>
-            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2", data: { confirm: 'Are you sure?'}%> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false }%>
+            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2" %>
+            <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false }%>
           </span>
           </br>
           <span class="error-message" style="color: red;"></span>
@@ -53,7 +54,7 @@
             <span class="edit_days hide">
               <!-- <a href="javascript:void(0)" class="edit_days hide"> -->
                 <%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days' %>
-                <%=link_to 'Add', 'javascript:void(0)', class: "save_date_btn", data: { confirm: 'Are you sure?'} %> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
+                <%=link_to 'Add', 'javascript:void(0)', class: "save_date_btn" %> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
                 <!-- <i class="fa fa-check-square-o save_date_btn"></i> -->
               <!-- </a> -->
             </span>
