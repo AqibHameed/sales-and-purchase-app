@@ -1,9 +1,8 @@
-<div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter table-responsive">
-    <thead class="thead-desktop">
+<!-- <div class="table"> -->
+  <table id="creditList" class="table table-bordered table-striped table-responsive tablesorter">
+    <thead>
       <th>Customer Name </th>
       <th>Company </th>
-      <!-- <th>Addess</th> -->
       <th>Total Limit</th>
       <th>Used Limit</th>
       <th>Available Limit</th>
@@ -14,17 +13,12 @@
     </thead>
     <% @customers.each.with_index(1) do |customer, i|%>
       <tr>
-        <td class="customer_name">
+        <td>
           <span class="table-head-in-td">Customer Name</span>
-          <div class="c_n"><%=customer.name%></div>
+          <%=customer.name%>
         </td>
         <td><span class="table-head-in-td">Company</span>
         <%= link_to customer.company, profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
-       <!--  <td>
-          <span class="table-head-in-td">Addess</span>
-          <%#=customer.try(:company_address)%>
-        </td> -->
-
         <td class="credit_limit">
         <span class="table-head-in-td">Total Limit</span>
           <a href="javascript:void(0)" class="given_limit" id='credit_edit'>
@@ -37,8 +31,8 @@
           </a>
           <span class="edit_field hide">
             <%=number_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %>
-            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2" %>
-            <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false }%>
+            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%> 
+            <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
           </span>
           </br>
           <span class="error-message" style="color: red;"></span>
@@ -81,7 +75,7 @@
       </tr>
     <% end %>
   </table>
-</div>
+<!-- </div> -->
 
 <script type="text/javascript">
  $(document).on('click', '.company_profile', function(e) {

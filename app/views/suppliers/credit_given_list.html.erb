@@ -2,15 +2,15 @@
   <h2>Credit Details</h2>
   <div class="credit_given">
     <div class="table">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter credit-table">
-        <tr class="thead-desktop">
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter credit-table">
+        <thead class="thead-desktop">
           <th></th>
           <th>Company</th>
           <th>Given</th>
           <th>Used</th>
           <th>Available</th>
           <th></th>
-        </tr>
+        </thead>
         <% @credit_limits.each.with_index(1) do |cl, i|%>
           <% if cl.buyer.present? %>
             <tr>

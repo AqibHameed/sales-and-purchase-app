@@ -38,12 +38,12 @@
   <div class="col-sm-4">
     <h1>DTC</h1>
     <div class="table no-padding">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-        <tr>
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter">
+        <thead class="thead-desktop">
           <th>Description</th>
           <th>Supplier</th>
           <th></th>
-        </tr>
+        </thead>
         <% @dtc_demands.each do |demand| %>
           <tr>
             <td><%= demand.description %></td>
@@ -57,12 +57,12 @@
   <div class="col-sm-4">
     <h1>Russian</h1>
     <div class="table no-padding">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-        <tr>
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter">
+        <thead class="thead-desktop">
           <th>Description</th>
           <th>Supplier</th>
           <th></th>
-        </tr>
+        </thead>
         <% @russian_demands.each do |demand| %>
           <tr>
             <td><%= demand.description %></td>
@@ -76,12 +76,12 @@
   <div class="col-sm-4">
     <h1>Outside</h1>
     <div class="table no-padding">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
-        <tr>
-          <th>Description</th>
-          <th>Supplier</th>
-          <th></th>
-        </tr>
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter">
+        <thead class="thead-desktop">
+            <th>Description</th>
+            <th>Supplier</th>
+            <th></th>
+        </thead>
         <% @outside_demands.each do |demand| %>
           <tr>
             <td><%= demand.description %></td>

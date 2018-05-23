@@ -1,5 +1,5 @@
-<table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter table-responsive">
-  <tr class="thead-desktop">
+<table id="tenderList" class="table table-bordered tablesorter table-responsive">
+  <thead class="thead-desktop">
     <th></th>
     <th>Description</th>
     <th>No. of Stones</th>
@@ -15,7 +15,7 @@
     <th>Demand</th>
     <th>For Sale</th>
     <th></th>
-  </tr>
+  </thead>
   <% parcels.each.with_index(1) do |parcel, i|%>
     <% if check_parcel_visibility(parcel, current_customer) %>
       <% if parcel.sold %>

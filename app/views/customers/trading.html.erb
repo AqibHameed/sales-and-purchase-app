@@ -1,19 +1,9 @@
 <%#= render partial: 'customers/trading/search_trading' %>
 <%= link_to "Create Parcel", suppliers_path, class: 'btn btn-danger btn-sm side-btn', data: {turbolinks: false } %>
 <h3> My Parcels </h3>
-<div class="clear20"></div>
-<!-- <div class="dashboard">
-  <h2>Trading</h2>
-  <div class="clear10"></div>
-  <div class="table trading-parcel-table">
-    <%#= render partial: 'customers/trading/trading_parcels', locals: { parcels: @parcels } %>
-  </div>
-</div> -->
-
 <div class="dashboard">
-  <!-- <h2>My Parcels</h2> -->
-  <!-- <div class="clear10"></div> -->
   <div class="table trading-parcel-table">
+    <div class="clear10"></div>
     <%= render partial: 'customers/trading/supplier_parcels', locals: { parcels: @my_parcels } %>
   </div>
 </div>

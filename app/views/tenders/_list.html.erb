@@ -1,7 +1,7 @@
 <h4>Active</h4>
 <div class="table active_table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter table-responsive">
-    <tr class="thead-desktop">
+  <table id="tenderList" class="table table-bordered tablesorter table-responsive">
+    <thead class="thead-desktop">
       <th>Tender</th>
       <th>Tender Type</th>
       <th>Tender Goods</th>
@@ -13,25 +13,25 @@
       <% else %>
       <th>Results</th>
       <% end %>
-    </tr>
+    </thead>
     <% @tenders.each do |tender| %>
-    <tr id="<%= tender.id %>">
-      <td><span class="table-head-in-td">Tender</span><%= link_to tender.name, tender, data: {turbolinks: false} %></td>
-      <td><span class="table-head-in-td">Tender Type</span><%= tender.tender_type %></td>
-      <td><span class="table-head-in-td">Tender Goods</span><%= tender.diamond_type %></td>
-      <td><span class="table-head-in-td">Bids</span><%= tender.bid_count(current_customer) > 0 ? tender.bid_count(current_customer) : (tender.sight_bid_count(current_customer) > 0 ? tender.sight_bid_count(current_customer) : 0) %></td>
-      <td><span class="table-head-in-td">Total Bid Amount</span><%= tender.total_bid_amount(current_customer) > 0 ? tender.total_bid_amount(current_customer) : (tender.total_sight_bid_amount(current_customer)> 0 ? tender.total_sight_bid_amount(current_customer) : 0.0)%></td>
-      <td><span class="table-head-in-td">Time Remaining</span><%= distance_time_remaining(tender, tender.close_date) if !tender.close_date.nil?%></td>
-      <% if current_customer %>
-      <td><span class="table-head-in-td">Send Confirmation</span><%= bid_confirmation_link(tender, current_customer)  %></td>
-      <% else %>
-      <td><span class="table-head-in-td">Results</span>
-      	<%= link_to raw("<span class='xls'></span>"), "/winners/winner.xls?tender_id=" + tender.id.to_s   %>
-      	&nbsp;&nbsp;<%= link_to raw("<span class='print'></span>"), "/winners/print?tender_id=" + tender.id.to_s, :target => "_blank" %>
-      	
-      </td>
-      <% end %>
-    </tr>
+      <tr id="<%= tender.id %>">
+        <td><span class="table-head-in-td">Tender</span><%= link_to tender.name, tender, data: {turbolinks: false} %></td>
+        <td><span class="table-head-in-td">Tender Type</span><%= tender.tender_type %></td>
+        <td><span class="table-head-in-td">Tender Goods</span><%= tender.diamond_type %></td>
+        <td><span class="table-head-in-td">Bids</span><%= tender.bid_count(current_customer) > 0 ? tender.bid_count(current_customer) : (tender.sight_bid_count(current_customer) > 0 ? tender.sight_bid_count(current_customer) : 0) %></td>
+        <td><span class="table-head-in-td">Total Bid Amount</span><%= tender.total_bid_amount(current_customer) > 0 ? tender.total_bid_amount(current_customer) : (tender.total_sight_bid_amount(current_customer)> 0 ? tender.total_sight_bid_amount(current_customer) : 0.0)%></td>
+        <td><span class="table-head-in-td">Time Remaining</span><%= distance_time_remaining(tender, tender.close_date) if !tender.close_date.nil?%></td>
+        <% if current_customer %>
+        <td><span class="table-head-in-td">Send Confirmation</span><%= bid_confirmation_link(tender, current_customer)  %></td>
+        <% else %>
+        <td><span class="table-head-in-td">Results</span>
+        	<%= link_to raw("<span class='xls'></span>"), "/winners/winner.xls?tender_id=" + tender.id.to_s   %>
+        	&nbsp;&nbsp;<%= link_to raw("<span class='print'></span>"), "/winners/print?tender_id=" + tender.id.to_s, :target => "_blank" %>
+        	
+        </td>
+        <% end %>
+      </tr>
     <% end %>
 
   </table>
@@ -40,8 +40,8 @@
 
 <h4>Upcoming</h4>
 <div class="table upcoming_table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter table-responsive">
-      <tr class="thead-desktop">
+  <table id="tenderList" class="table table-bordered tablesorter table-responsive">
+      <thead class="thead-desktop">
         <th>Tender</th>
         <th>Tender Type</th>
         <th>Tender Goods</th>
@@ -49,7 +49,7 @@
         <th>Total Carats</th>
         <th>Start Date</th>
         <th>Days Untill Start</th>
-      </tr>
+      </thead>
       <% @upcoming_tenders.each do |tender| %>
         <tr id="<%= tender.id %>">
           <td><span class="table-head-in-td">Tender</span><%= link_to tender.name, tender, data: {turbolinks: false} %></td>

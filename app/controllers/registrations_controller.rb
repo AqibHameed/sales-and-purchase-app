@@ -16,6 +16,7 @@ class RegistrationsController < Devise::RegistrationsController
   protected
 
   def after_sign_up_path_for(resource)
-    '/customers/'+resource.id.to_s+'/add_company'
+    # '/customers/'+resource.id.to_s+'/add_company'
+    trading_customers_path
   end
 end

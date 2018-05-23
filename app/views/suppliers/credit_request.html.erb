@@ -21,31 +21,28 @@
  <% end %>
 </div>
 
+<table id="creditRequest" class="table table-bordered table-responsive">
+  <thead class="thead-desktop">
+     <th>SN.</th>
+    <th>Company </th>
+    <th>Buyer</th>
+    <th>Limit</th>
+  </thead>
+  <% @credit_requests.each.with_index(1) do |request, i|%>
+  <tbody>
+    <tr>
+      <% if request.id.nil? %>
+      <% else %>
+        <td><%= i%></td>
+        <td><%= request.buyer.company %></td>
+        <td><%= request.buyer.first_name %></td>
+        <td><%= request.limit %></td>
+      <% end %>
+    </tr>
+  </tbody>
+  <% end %>
+</table>
 
-
-<div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditRequest" class=" table-responsive">
-    <thead class="thead-desktop">
-       <th>SN.</th>
-      <th>Company </th>
-      <th>Buyer</th>
-      <th>Limit</th>
-    </thead>
-    <% @credit_requests.each.with_index(1) do |request, i|%>
-    <tbody>
-      <tr>
-        <% if request.id.nil? %>
-        <% else %>
-          <td><%= i%></td>
-          <td><%= request.buyer.company %></td>
-          <td><%= request.buyer.first_name %></td>
-          <td><%= request.limit %></td>
-        <% end %>
-      </tr>
-    </tbody>
-    <% end %>
-  </table>
-</div>
 
 <script type="text/javascript">
  $(document).on('click', '.company_profile', function(e) {
