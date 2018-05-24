@@ -1,3 +1,9 @@
+<div>
+  <%("a".."z").each do |letter|%>
+    <%=link_to letter.upcase, credit_suppliers_path(letter: letter.upcase), data: {turbolinks: false}%>
+  <%end%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <%=link_to "Reset", credit_suppliers_path, data: {turbolinks: false} %>
+</div>
 <%#= link_to "Search Companies and add Limit", 'javascript:void(0)', style:"float: right", class: 'search_link' %>
 <div class="bs-example">
   <ul class="nav nav-tabs">

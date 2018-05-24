@@ -181,15 +181,15 @@ class CustomersController < ApplicationController
       else
         # description = ''
         if params[:demand][:diamond_type] == "Outside Goods"
-          description = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ?", "Rough", "").pluck(:description)
+          description = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? AND (trading_parcels.source = ? OR trading_parcels.source = ?)",'Rough','',params[:demand][:demand_supplier_id]).pluck(:description)
         else
           description = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ?", params[:demand][:diamond_type], params[:demand][:demand_supplier_id]).pluck(:description)
         end
       end
       if params[:demand][:diamond_type] == "Outside Goods"
-        parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?)", "Rough", "", description)
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? AND (trading_parcels.source = ? OR trading_parcels.source = ?) AND (trading_parcels.description IN (?))",'Rough','',params[:demand][:demand_supplier_id],description)
       else
-        parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?) or trading_parcels.box IN (?)", params[:demand][:diamond_type], params[:demand][:demand_supplier_id], description, description) #.page(params[:page]).per(25)
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?) or trading_parcels.box IN (?)", params[:demand][:diamond_type], params[:demand][:demand_supplier_id], description, description)
       end
    else
     parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)

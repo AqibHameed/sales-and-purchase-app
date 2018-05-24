@@ -4,25 +4,37 @@
   <div class="clear10"></div>
   <div class="form-wrapper">
     <%= nested_form_for @parcel do |f| %>
-      <div class="form-row">
+
+     <div class="form-row">
+        <div class="field">
+          <%= f.hidden_field :diamond_type %>
+        </div>
+     </div>
+    <div class="form-row">
+        <div class="label">Source1: </div>
+        <div class="field">
+          <%= f.select :source, options_for_select([['Outside Goods', 'Outside Goods'],['DTC', 'DTC'],['RUSSIAN', 'RUSSIAN']], :selected => f.object.source), {include_blank: true}, class: 'input'%>
+        </div>
+    </div>
+     <!--  <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  {class: 'input', include_blank: true} %>
+          <%#= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  {class: 'input', include_blank: true} %>
         </div>
-      </div>
+      </div> -->
 
       <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
-        <div class="form-row">
+        <!-- <div class="form-row">
           <div class="label">Source</div>
           <div class='field'>
-            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
+            <%#= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
           </div>
-        </div>
-        
+        </div> -->
+
         <div class="form-row">
           <div class="label">Discount Per Month:</div>
           <div class="field">
-            <%= f.number_field :box_value, :value => 0, class: 'input' %>
+            <%= f.number_field :box_value, class: 'input' %>
           </div>
         </div>
 
@@ -30,13 +42,6 @@
           <div class="label">Month Sight</div>
           <div class='field'>
             <%=f.text_field :sight, class: 'input' %>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="label">No of stones</div>
-          <div class='field'>
-            <%=f.number_field :no_of_stones, class: 'input' %>
           </div>
         </div>
       </div>
@@ -56,12 +61,6 @@
             <%=f.number_field :lot_no, class: 'input' %>
           </div>
         </div>
-        <div class="form-row">
-          <div class="label">No of stones</div>
-          <div class='field'>
-            <%=f.number_field :no_of_stones, class: 'input' %>
-          </div>
-        </div>
       </div>
 
       <div class="common">
@@ -69,6 +68,12 @@
           <div class="label">Carats</div>
           <div class='field'>
             <%=f.text_field :weight, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">No of stones</div>
+          <div class='field'>
+            <%=f.number_field :no_of_stones, class: 'input' %>
           </div>
         </div>
         <div class="form-row">
@@ -136,14 +141,16 @@
 </div>
 <div class="clear"></div>
 <script type="text/javascript">
-  $(document).on('change', '#trading_document_diamond_type', function(){
+  $(document).on('change', '#trading_document_source', function(){
     val = $(this).val()
-    if(val == "Rough"){
+    if(val == "Outside Goods"){
+      $('#trading_parcel_diamond_type').val('Rough')
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
 
-    }else if(val == "Sight"){
+    }else if(val == "RUSSIAN" || val == "DTC"){
+      $('#trading_parcel_diamond_type').val('Sight')
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
@@ -167,10 +174,10 @@
   //   $('#amount').val(amount);
   // });
 
-  $(document).on('change', '#trading_document_diamond_type', function(){
-    val = $('#trading_document_diamond_type').val()
-    parcel_list(val)
-  })
+  // $(document).on('change', '#trading_document_source', function(){
+  //   val = $('#trading_document_diamond_type').val()
+  //   parcel_list(val)
+  // })
 
   $(document).on('change', '#trading_parcel_source', function(){
     id = $('#trading_parcel_source').val()
@@ -210,9 +217,9 @@
     // var price = $('#trading_parcel_price').val();
     // var amount = carat*price;
     // $('#amount').val(amount);
-
-    parcel_list($('#trading_document_diamond_type').val())
-    setTimeout(function(){ 
+    var diamond_type = $('#trading_parcel_diamond_type').val()
+    parcel_list($('#trading_parcel_diamond_type').val())
+    setTimeout(function(){
       $('#trading_parcel_description').val('<%=@parcel.description%>')
     }, 500);
     <%- if @parcel.diamond_type == 'Sight'%>
@@ -252,13 +259,13 @@
       $.ajax({
         url: '/supplier_demand_list',
         method: 'get',
-        data: {id: doc_type}
+        data: {id: doc_type, page: 'edit'}
       })
     } else if(doc_type == 'Sight'){
       $.ajax({
         url: '/supplier_list',
         method: 'get',
-        data: {diamond_type: doc_type}
+        data: {diamond_type: doc_type, page: 'edit'}
       })
     }
   }

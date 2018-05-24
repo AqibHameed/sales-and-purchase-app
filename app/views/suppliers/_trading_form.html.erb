@@ -142,22 +142,26 @@
       <%= render partial: 'tranding_parcel_errors' %>
     </div>
       <div class="form-row">
-        <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= f.select :diamond_type, options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']]), {include_blank: true}, class: 'input'%>
+          <%= f.hidden_field :diamond_type, :value => ' ' %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label">Source: </div>
+        <div class="field">
+          <%= f.select :source, options_for_select(supplier_list_for_demand, :selected => f.object.source), {include_blank: true}, class: 'input'%>
         </div>
       </div>
 
       <div class="sight_diamond hide">
-        <div class="form-row">
+       <!--  <div class="form-row">
           <div class="label"> Source: </div>
           <div class="field">
             <%#= f.text_field :source, class: 'input' %>
-            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
+            <%#= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
           </div>
         </div>
-
-        <!-- <div class="form-row">
+        <div class="form-row">
           <div class="label"> Box: </div>
           <div class="field">
             <%#= f.text_field :box, class: 'input' %>
@@ -178,22 +182,9 @@
             <%= f.text_field :sight, class: 'input' %>
           </div>
         </div>
-
-        <div class="form-row">
-          <div class="label">No of Stones: </div>
-          <div class="field">
-            <%= f.number_field :no_of_stones,  class: 'input' %>
-          </div>
-        </div>
       </div>
 
       <div class="rough_diamond hide">
-        <div class="form-row">
-          <div class="label">No of Stones: </div>
-          <div class="field">
-            <%= f.number_field :no_of_stones,  class: 'input' %>
-          </div>
-        </div>
         <div class="form-row">
           <div class="label">Lot No: </div>
           <div class="field">
@@ -216,6 +207,13 @@
             <%= f.number_field :credit_period, class: 'input' %>
             <%= f.hidden_field :customer_id, value: current_customer.id, class: 'input' %>
             <%= f.hidden_field :single_parcel, value: true, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">No of Stones: </div>
+          <div class="field">
+            <%= f.number_field :no_of_stones,  class: 'input' %>
           </div>
         </div>
 

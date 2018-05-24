@@ -13,9 +13,9 @@
     </thead>
     <% @customers.each.with_index(1) do |customer, i|%>
       <tr>
-        <td>
+        <td class="customer_name">
           <span class="table-head-in-td">Customer Name</span>
-          <%=customer.name%>
+          <div class="c_n"><%=customer.name%></div>
         </td>
         <td><span class="table-head-in-td">Company</span>
         <%= link_to customer.company, profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
@@ -102,11 +102,9 @@
   var oTable = $('#creditList').dataTable();
   oTable.fnSort( [ [3,'desc'] ] );
  });
-
 </script>
 <style>
   .current_bid {
     background-color: #E4E4E4 !important;
   }
-
 </style>

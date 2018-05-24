@@ -77,7 +77,11 @@ class SuppliersController < ApplicationController
     if params[:name].present?
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
-    @customers = Customer.unscoped.where.not(id: current_customer.id) #.page params[:page]
+    if params[:letter].present?
+      @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
+    else
+      @customers = Customer.unscoped.where.not(id: current_customer.id) #.page params[:page]
+    end
     @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
     # @companies_groups = CompaniesGroup.where(seller_id: current_customer.id)
     @companies_groups = CompaniesGroup.joins(:companies_customer).select("companies_groups.id, companies_groups.group_name, customers.id as customer_id, customers.company as company_name, customers.first_name as first_name, customers.last_name as last_name").where("companies_groups.seller_id = ?", current_customer.id)
@@ -231,10 +235,14 @@ class SuppliersController < ApplicationController
   end
 
   def supplier_list
-    if params[:diamond_type] == 'Outside Goods'
-      params[:diamond_type] = 'Rough'
+    if params[:page] && params[:page] == "edit"
+      @demand_suppliers = DemandSupplier.all
+    else
+      if params[:diamond_type] == 'Outside Goods'
+        params[:diamond_type] = 'Rough'
+      end
+      @demand_suppliers = DemandSupplier.where(diamond_type: params[:diamond_type])
     end
-    @demand_suppliers = DemandSupplier.where(diamond_type: params[:diamond_type])
     respond_to do |format|
       format.js
     end

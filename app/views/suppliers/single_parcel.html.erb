@@ -35,7 +35,7 @@
   </tr>
   <tr>
     <td> Sight</td>
-    <td><%= (@parcel.sight.nil? || @parcel.sight.blank?) ? 'N/A' : @parcel.sight.to_date.strftime("%m/%y") %></td>
+    <td><%= (@parcel.sight.nil? || @parcel.sight.blank?) ? 'N/A' : @parcel.sight.to_date.strftime("%m/%y") rescue @parcel.sight %></td>
   </tr>
   <tr class="parcel-details">
     <td> Price</td>
