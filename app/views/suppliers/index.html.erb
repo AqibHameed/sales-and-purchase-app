@@ -19,14 +19,14 @@
   $(document).on('change', '#trading_parcel_source', function(){
     val = $(this).val()
 
-    if(val == "Outside Goods"){
+    if(val == "Outside Goods" || val == "OUTSIDE GOODS"){
       $('#trading_parcel_diamond_type').val('Rough')
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
       $('#trading_document_credit_field').val('E')
       $('#trading_document_price_field').val('F')
-    }else if(val == "RUSSIAN"){
+    }else if(val == "RUSSIAN" || val == "Russian"){
       // alert($('#trading_parcel_source').val())
       $('#trading_parcel_diamond_type').val('Sight')
       $('.common').removeClass('hide')
@@ -34,7 +34,7 @@
       $('.sight_diamond').removeClass('hide')
       $('#trading_document_credit_field').val('I')
       $('#trading_document_price_field').val('H')
-    }else if(val == "DTC"){
+    }else if(val == "DTC") {
       $('#trading_parcel_diamond_type').val('Sight')
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
