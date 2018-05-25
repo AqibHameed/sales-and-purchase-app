@@ -14,13 +14,23 @@ class TradingParcel < ApplicationRecord
 
   accepts_nested_attributes_for :my_transaction
   accepts_nested_attributes_for :parcel_size_infos, :allow_destroy => true
-
+  validate :validate_carats
   attr_accessor :single_parcel
 
   enum for_sale: [ :to_all, :to_none, :broker, :credit_given, :demanded ]
 
   def diamond_type_is_sight?
      self.diamond_type == "Sight"
+  end
+
+  def validate_carats
+    sum = 0.0
+    parcel_size_infos.each do |p1|
+      sum = sum + p1["size"].to_f
+    end
+    if sum > self.weight
+     self.errors.add :base, "Sum of sizes should be less than carats!!!"
+    end
   end
 
   def self.search_by_filters(params, current_customer)
