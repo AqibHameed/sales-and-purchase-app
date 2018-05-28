@@ -143,13 +143,13 @@
 <script type="text/javascript">
   $(document).on('change', '#trading_document_source', function(){
     val = $(this).val()
-    if(val == "Outside Goods"){
+    if(val == "Outside Goods" || val == "OUTSIDE GOODS"){
       $('#trading_parcel_diamond_type').val('Rough')
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
 
-    }else if(val == "RUSSIAN" || val == "DTC"){
+    }else if(val == "RUSSIAN" || val == "DTC" || val == "Russian"){
       $('#trading_parcel_diamond_type').val('Sight')
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')

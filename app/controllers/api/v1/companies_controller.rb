@@ -22,7 +22,14 @@ class Api::V1::CompaniesController < ApplicationController
   def current_customer
     token = request.headers['Authorization'].presence
     if token
-      @current_customer ||= Customer.find_by_auth_token(token)
+      @current_customer ||= Customer.find_by_authentication_token(token)
+    end
+  end
+
+  def blocked_customers
+    if current_customer
+      blocked = BlockUser.where(customer_id: current_customer.id)
+      render json: { success: true, blocked_customers: blocked.map { |e| { company: e.customer.company, customer_name: e.customer.name, email: e.customer.email}  }, response_code: 200 }
     end
   end
 

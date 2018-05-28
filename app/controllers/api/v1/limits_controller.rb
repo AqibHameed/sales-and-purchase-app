@@ -110,18 +110,30 @@ module Api
       end
 
       def credit_limit_list
-        @data = []
         if current_customer
-          cl = CreditLimit.where(supplier_id: current_customer.id)
-          cl.each do |c|
-            @data << { company: c.buyer.company, total_limit: get_credit_limit(c.buyer, current_customer), used_limit: get_used_credit_limit(c.buyer, current_customer), available_limit: get_available_credit_limit(c.buyer, current_customer), overdue_limit: get_days_limit(c.buyer, current_customer), market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_customer), supplier_connected: supplier_connected(c.buyer,current_customer) }
+          if params[:customer_id].present?
+            customer = Customer.where(id: params[:customer_id]).first
+            if customer.nil?
+             render json: { success: false, errors: "Customer not found", response_code: 201 } 
+            else
+              @data = {
+                company: customer.company,
+                total_limit: get_credit_limit(customer, current_customer), 
+                used_limit: get_used_credit_limit(customer, current_customer), 
+                available_limit: get_available_credit_limit(customer, current_customer), 
+                overdue_limit: get_days_limit(customer, current_customer), 
+                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer), 
+                supplier_connected: supplier_connected(customer, current_customer) 
+              }
+              render json: { success: true, limits: @data, response_code: 200  }
+            end
+          else
+            render json: { success: false, errors: "Parameters missing", response_code: 201 }
           end
-          render json: { credit_limit_list: @data, response_code: 200  }
         else
-           render json: { errors: "You have to login first!!", response_code: 201 }
+          render json: { success: false, errors: "You have to login first!!", response_code: 201 }
         end
       end
-
     end
   end
 end
