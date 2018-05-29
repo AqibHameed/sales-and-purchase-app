@@ -1,4 +1,7 @@
 class TradingParcelsController < ApplicationController
+  include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TextHelper
+  include ApplicationHelper
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
@@ -35,6 +38,23 @@ class TradingParcelsController < ApplicationController
   def show
     @proposal = Proposal.new
     @info = []
+    credit_limit = CreditLimit.where("supplier_id = ?  AND credit_limit >= ?", current_customer.id, @parcel.price)
+    @available_customers = []
+    @not_enough_available_customers = []
+    @demanded_but_not_available = []
+    customers = Customer.unscoped.where.not(id: current_customer.id)
+    customers.each do |customer|
+      p = DemandList.where(demand_supplier_id: customer.id, description: @parcel.description)
+      if get_available_credit_limit(customer, current_customer).to_f >= @parcel.price.to_f
+        @available_customers << customer
+      elsif get_available_credit_limit(customer, current_customer).to_f < @parcel.price.to_f
+        @not_enough_available_customers << customer
+      elsif p.present?
+        unless customer.buyer_credit_limits.where(supplier_id: current_customer.id).present?
+         @demanded_but_not_available << customer
+        end
+      end
+    end
   end
 
   def edit
