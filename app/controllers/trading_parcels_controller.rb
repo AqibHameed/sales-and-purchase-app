@@ -38,13 +38,12 @@ class TradingParcelsController < ApplicationController
   def show
     @proposal = Proposal.new
     @info = []
-    credit_limit = CreditLimit.where("supplier_id = ?  AND credit_limit >= ?", current_customer.id, @parcel.price)
     @available_customers = []
     @not_enough_available_customers = []
     @demanded_but_not_available = []
     customers = Customer.unscoped.where.not(id: current_customer.id)
     customers.each do |customer|
-      p = DemandList.where(demand_supplier_id: customer.id, description: @parcel.description)
+      p = Demand.where(customer_id: customer.id, description: @parcel.description).first
       if get_available_credit_limit(customer, current_customer).to_f >= @parcel.price.to_f
         @available_customers << customer
       elsif get_available_credit_limit(customer, current_customer).to_f < @parcel.price.to_f
@@ -140,7 +139,7 @@ class TradingParcelsController < ApplicationController
   def trading_parcel_params
     params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
-   
+
   end
 
   def set_trading_parcel

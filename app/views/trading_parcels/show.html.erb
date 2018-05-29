@@ -1,10 +1,12 @@
+<% if current_customer.id == @parcel.customer_id %>
 <h3>Vital Sales Data:</h3>
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingOne">
       <h4 class="panel-title">
         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-         <p> Available And Enough Credit</p>
+         <!-- <p> Available And Enough Credit</p> -->
+         <p>Available Credit Buyers</p>
         </a>
       </h4>
     </div>
@@ -19,11 +21,12 @@
     <div class="panel-heading" role="tab" id="headingTwo">
       <h4 class="panel-title">
         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          <p>Available But Not Enough Credit</p>
+          <!-- <p>Available But Not Enough Credit</p> -->
+          <p>Unavailable Credit Buyers</p>
         </a>
       </h4>
     </div>
-    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
       <div class="panel-body">
         <% @customers = @not_enough_available_customers %>
         <%= render partial: 'suppliers/approve_customers_list' %>
@@ -34,11 +37,11 @@
     <div class="panel-heading" role="tab" id="headingThree">
       <h4 class="panel-title">
         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-         <p>Demanded But Not Given Credit</p>
+         <p>Demanded But Not Given Credit Buyers</p>
         </a>
       </h4>
     </div>
-    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
       <div class="panel-body">
          <% @customers = @demanded_but_not_available %>
          <%= render partial: 'suppliers/approve_customers_list' %>
@@ -46,6 +49,7 @@
     </div>
   </div>
 </div>
+<% end %>
 
 <hr>
 <h3>Parcel Details</h3>
@@ -61,7 +65,7 @@
     <p style="margin: 0px 0px 0px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p>
   <% elsif grey_buy_btn(current_customer.id, @parcel.customer_id) %>
     <%= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
-    <p style="margin: -14px 0px 0px 65px; color: red;">Credit limit is 0. Please contact supplier 
+    <p style="margin: -14px 0px 0px 65px; color: red;">Credit limit is 0. Please contact supplier
     <%= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
 
   <% else %>

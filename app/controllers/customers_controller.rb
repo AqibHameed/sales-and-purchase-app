@@ -206,13 +206,12 @@ class CustomersController < ApplicationController
     mm = aa.where(sale_credit: true)
     credit_limit = CreditLimit.where(supplier_id: aa.pluck(:customer_id),buyer_id: current_customer.id)
     if credit_limit.exists?
-      @parcels2 = mm.where("customer_id not in ?",credit_limit.pluck(:supplier_id))
+      @parcels2 = mm.where("customer_id != ?",credit_limit.pluck(:supplier_id))
     else
       @parcels2 = mm
     end
     @parcels = @parcels1+@parcels2
     @parcels = @parcels.uniq
-
   end
 
   def demanding_create

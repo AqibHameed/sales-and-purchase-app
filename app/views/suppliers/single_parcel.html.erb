@@ -1,6 +1,6 @@
 <h3>Parcel Details</h3>
 <div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+  <table class="table table-bordered table-responsive">
   <tr>
     <td> Supplier</td>
     <td><%= @parcel.try(:customer).try(:company) %></td>
@@ -70,9 +70,10 @@
     </td>
   </tr>
   <tr>
-    <td> Given No Credits</td>
+    <td> Demanded But No Credits</td>
     <td>
-	   	<%= get_count_no_credit(current_customer)%>
+	   	<%#= get_count_no_credit(current_customer)%>
+      <%= get_demanded_but_no_credit(current_customer, @parcel.id)%>
     </td>
   </tr>
   <tr>
@@ -81,6 +82,7 @@
   </tr>
 </table>
 <div class="clear10"></div>
+<%=link_to 'Edit', edit_trading_parcel_path(id: @parcel.id), class: 'login-btn btn-02', data: {turbolinks: false} %>
 <%=link_to 'Add Another', single_parcel_form_suppliers_path, class: 'login-btn btn-02', data: {turbolinks: false} %>
 <%=link_to 'Done', trading_customers_path, class: 'login-btn btn-02', data: {turbolinks: false} %>
 </div><br>
