@@ -27,6 +27,7 @@
     <th>Company </th>
     <th>Buyer</th>
     <th>Limit</th>
+    <th>Status</th>
   </thead>
   <% @credit_requests.each.with_index(1) do |request, i|%>
   <tbody>
@@ -37,6 +38,9 @@
         <td><%= request.buyer.company %></td>
         <td><%= request.buyer.first_name %></td>
         <td><%= request.limit %></td>
+        <td><% if request.approve == false%><%= 'Pending'%>
+        <% else %><%= 'Approved'%><% end %>
+        </td>
       <% end %>
     </tr>
   </tbody>
