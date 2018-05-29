@@ -49,7 +49,7 @@ class TradingParcelsController < ApplicationController
       elsif get_available_credit_limit(customer, current_customer).to_f < @parcel.price.to_f
         @not_enough_available_customers << customer
       elsif p.present?
-        unless customer.buyer_credit_limits.where(supplier_id: current_customer.id).present?
+        if !customer.buyer_credit_limits.where(supplier_id: current_customer.id).present?
          @demanded_but_not_available << customer
         end
       end

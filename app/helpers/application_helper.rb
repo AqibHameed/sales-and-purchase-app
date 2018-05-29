@@ -477,7 +477,7 @@ module ApplicationHelper
     customers.each do |customer|
       p = Demand.where(customer_id: customer.id, description: @parcel.description).first
       if p.present?
-        unless customer.buyer_credit_limits.where(supplier_id: current_customer.id).present?
+        if !customer.buyer_credit_limits.where(supplier_id: current_customer.id).present?
          count = count+1
         end
       end
