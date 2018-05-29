@@ -2,14 +2,17 @@
 <%= link_to 'Create Companies Group', new_companies_group_path, data: { turbolinks: false }, class: 'pull-right btn btn-xs btn-danger' %>
 <div class="clear10"></div>
 <div class="container">
-  <% @group_names.each do |name| %>
+  <% @companies_groups.each do |group| %>
     <div class="panel panel-default">
       <div class="panel-heading clickable">
-         <h5 style="color: #ED5A48;"><%= name %></h5>
+         <h5 style="color: #ED5A48;"><%= group.group_name %></h5>
         <div class="pull-right group-delete" style="margin-top: -28px;">
-          <%= link_to delete_group_companies_groups_path(name: name) do %>
-            <%= image_tag("/assets/wrong.png", width: "15", class: 'image_block') %>
-          <%end%>
+          <%= link_to edit_companies_group_path(id: group.id), data: {turbolinks: false} do %>
+            <span class="fa fa-edit"></span>
+          <% end %>
+          <%= link_to companies_group_path(id: group.try(:id)), method: :delete, data: {confirm: "Are you sure ?"} do %>
+            <span class="fa fa-trash"></span>
+          <% end %>
         </div>
       </div>
       <div class=" panel-collapse collapse">
@@ -30,23 +33,24 @@
                 </tr>
               </thead>
               <tbody>
-                <% @companies_groups.each_with_index do |companies_group,index| %>
-                  <% if companies_group.group_name == name %>
+                <% group.customer_id.each do |c| %>
+                  <%- customer = get_customer(c) %>
+                  <% unless customer.nil? %>
                     <tr>
-                      <td><%= companies_group.try(:first_name)%>&nbsp;<%= companies_group.try(:last_name)%></td>
-                      <td><%= companies_group.try(:company_name)%></td>
-                      <td><%= number_to_currency(get_credit_limit(companies_group.companies_customer, current_customer)) %></td>
-                      <td><%= get_days_limit(companies_group.companies_customer, current_customer) %></td>
-                      <td><%= get_market_limit(companies_group.companies_customer, current_customer)%></td>
-                      <td><%= number_to_currency(get_available_credit_limit(companies_group.companies_customer, current_customer)) %></td>
+                      <td><%= customer.name %></td>
+                      <td><%= customer.company %></td>
+                      <td><%= number_to_currency(get_credit_limit(customer, current_customer)) %></td>
+                      <td><%= get_days_limit(customer, current_customer) %></td>
+                      <td><%= get_market_limit(customer, current_customer) %></td>
+                      <td><%= number_to_currency(get_available_credit_limit(customer, current_customer)) %></td>
                       <td>
-                      <%= link_to companies_group_path(id: companies_group.try(:id)), method: :delete do %>
-                        <%= image_tag("/assets/wrong.png", width: "15", class: 'image_block') %>
-                      <%end%>
+                      <%= link_to delete_group_companies_groups_path(id: customer.id, group_id: group.id), data: {confirm: 'Are you sure ?'} do %>
+                        <%= image_tag("/assets/wrong.png", width: "15", class: 'image') %>
+                      <% end %>
                       </td>
                     </tr>
                   <% end %>
-                <% end %>
+                <% end %>  
               </tbody>
             </table>
           </div>
@@ -64,6 +68,20 @@
       object =  $(this).parents('.panel').find('.panel-collapse')
       object.collapse('toggle')
       object.height('');
+    }
+  })
+
+  $(document).on('ready', function(){
+    if ("<%= params[:group] %>" == "true"){
+      $('.sectionA').parent('li').removeClass('active')
+      $('#sectionA').removeClass('active')
+      $('.sectionB').parent('li').addClass('active')
+      $('#sectionB').addClass('active in')
+    }else{
+      $('.sectionA').parent('li').addClass('active')
+      $('#sectionB').removeClass('active')
+      $('.sectionB').parent('li').removeClass('active')
+      $('#sectionA').addClass('active in')
     }
   })
 </script>

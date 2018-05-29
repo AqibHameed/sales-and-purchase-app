@@ -446,8 +446,8 @@ module ApplicationHelper
     current_customer.my_brokers.map { |e| [e.broker.name, e.broker.id]  }
   end
 
-  def all_customers
-    Customer.all.map{|customer| [customer.company, customer.id]}
+  def all_customers(current_customer)
+    Customer.where.not(id: current_customer.id).map{|customer| [customer.company, customer.id]}
   end
 
   def list_of_customers(current_customer)
@@ -463,5 +463,9 @@ module ApplicationHelper
     array.push(current_customer.parent_id)
     customer = Customer.where(" id NOT IN (?) ",  array)
     customer.map{|customer| [customer.company, customer.id]}
+  end
+
+  def get_customer(c)
+    return Customer.where(id: c).first
   end
 end

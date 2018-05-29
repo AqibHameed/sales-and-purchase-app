@@ -1,5 +1,5 @@
 class CompaniesGroupsController < ApplicationController
-  before_action :check_compaines_group_customers, only: [:create]
+  # before_action :check_compaines_group_customers, only: [:create]
 
   def index
   end
@@ -9,38 +9,51 @@ class CompaniesGroupsController < ApplicationController
   end
 
   def create
-    if @result
-      @current_ids.each do |customer_id|
-        CompaniesGroup.create(group_name: params[:companies_group][:group_name], seller_id: current_customer.id, customer_id: customer_id)
-      end
+    companies_groups_params[:customer_id] = params[:companies_group][:customer_id].reject!{|a| a== "" }
+    @companies_group = CompaniesGroup.new(companies_groups_params)
+    if @companies_group.save!
       flash[:notice] = "Group created successfully."
-      redirect_to credit_suppliers_path
+      redirect_to credit_suppliers_path(group: true)
     else
-      flash[:alert] = "Customer already present in different group"
-      redirect_to new_companies_group_path
+      flash[:alert] = "Something went wrong. Please try again"
+      redirect_to new_companies_group_path(group: true)
+    end
+  end
+
+  def edit
+    @companies_group = CompaniesGroup.find(params[:id])
+  end
+
+  def update
+    companies_groups_params[:customer_id] = params[:companies_group][:customer_id].reject!{|a| a== "" }
+    @companies_group = CompaniesGroup.find(params[:id])
+    if @companies_group.update_attributes(companies_groups_params)
+      flash[:notice] = "Group created successfully."
+      redirect_to credit_suppliers_path(group: true)
+    else
+      flash[:alert] = "Something went wrong. Please try again"
+      redirect_to new_companies_group_path(group: true)
     end
   end
 
   def destroy
     companies_group = CompaniesGroup.find_by(id: params[:id])
     companies_group.destroy
-    flash[:notice] = 'Customer was successfully destroyed.'
+    flash[:notice] = 'Group successfully destroyed.'
+    redirect_to credit_suppliers_path(group: true)
   end
 
   def delete_group
-    companies_groups= CompaniesGroup.where(group_name: params[:name])
-    companies_groups.destroy_all
-    flash[:notice] = 'Group was successfully destroyed.'
-    redirect_to credit_suppliers_path
+    companies_groups = CompaniesGroup.where(id: params[:group_id]).first
+    companies_groups.customer_id = companies_groups.customer_id.reject!{|a| a == params[:id] } unless companies_groups.nil?
+    companies_groups.save!
+    flash[:notice] = 'Customer successfully destroyed.'
+    redirect_to credit_suppliers_path(group: true)
   end
 
   private
-    def check_compaines_group_customers
-      @result  = true
-      customer_ids = CompaniesGroup.all.map(&:customer_id)
-      @current_ids = params[:companies_group][:customer_id].delete_if(&:blank?)
-      @current_ids.each do |customer_id|
-        @result = false if customer_ids.include?(customer_id.to_i)
-      end
+
+    def companies_groups_params
+      params.require(:companies_group).permit(:group_name, :seller_id, :customer_id => [])
     end
 end
