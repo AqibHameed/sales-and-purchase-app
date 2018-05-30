@@ -21,7 +21,7 @@ class Customer < ApplicationRecord
   has_many :yes_no_buyer_interests
   has_many :devices
   has_many :companies
-  has_one :block_user
+  has_many :block_users, :class_name => 'BlockUser', :foreign_key => 'block_user_ids'
   has_many :shared_to_users, :class_name => 'Shared', :foreign_key => 'shared_to_id'
   has_many :shared_by_users, :class_name => 'Shared', :foreign_key => 'shared_by_id'
   has_many :email_attachments
