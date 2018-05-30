@@ -1,5 +1,5 @@
 <div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter table-responsive">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="table table-bordered table-responsive">
      <% if @request.id.nil? %>
       <% else %>
       <%= hidden_field_tag :id, @request.id %>

@@ -114,16 +114,26 @@ class SuppliersController < ApplicationController
   end
 
   def accept_request
-    @confirm_requests = CreditRequest.where(parent_id: current_customer.id)
     request = CreditRequest.find(params[:id])
-    credit_limit = CreditLimit.new(
-      supplier_id: request.parent_id,
+    credit_limit = CreditLimit.where(buyer_id: request.buyer_id, supplier_id: request.customer_id).first
+    if credit_limit.present?
+     credit_limit.credit_limit = request.limit + credit_limit.credit_limit
+    else
+     credit_limit = CreditLimit.new(
+      supplier_id: request.customer_id,
       buyer_id: request.buyer_id,
-      credit_limit: request.limit
-    )
+      credit_limit: request.limit)
+    end
     if credit_limit.save
       request.approve = true
       request.save
+      credit_limit_of_customer = SubCompanyCreditLimit.where(sub_company_id: request.customer_id).first
+      if credit_limit_of_customer.present?
+        credit_limit_of_customer.credit_limit = request.limit + credit_limit_of_customer.credit_limit
+      else
+        credit_limit_of_customer.credit_limit = request.limit
+      end
+      credit_limit_of_customer.save
       flash[:notice] = "Request Accepted"
       redirect_to confirm_request_suppliers_path
     else

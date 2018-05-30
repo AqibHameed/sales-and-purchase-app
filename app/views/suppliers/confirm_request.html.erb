@@ -13,9 +13,10 @@
     <% else %>
         <% @confirm_requests.each.with_index(1) do |request, i|%>
           <tr>
-            <td><%= i%></td>
-            <% if request.id.nil? %>
+            <% if request.id.nil?  %>
+
             <% else %>
+              <td><%= i%></td>
               <td><%= request.buyer.company %></td>
               <td><%= request.buyer.first_name %></td>
                 <td class="days_limit">

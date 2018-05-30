@@ -41,17 +41,18 @@ class TradingParcelsController < ApplicationController
     @available_customers = []
     @not_enough_available_customers = []
     @demanded_but_not_available = []
-    customers = Customer.unscoped.where.not(id: current_customer.id)
-    customers.each do |customer|
-      p = Demand.where(customer_id: customer.id, description: @parcel.description).first
-      if get_available_credit_limit(customer, current_customer).to_f >= @parcel.price.to_f
-        @available_customers << customer
-      elsif get_available_credit_limit(customer, current_customer).to_f < @parcel.price.to_f
-        @not_enough_available_customers << customer
-      elsif p.present?
-        if !customer.buyer_credit_limits.where(supplier_id: current_customer.id).present?
-         @demanded_but_not_available << customer
-        end
+    customers = CreditLimit.where(supplier_id: current_customer.id).map { |e|  e.buyer  }
+    customers.each do |c|
+      if get_available_credit_limit(c, current_customer).to_f >= @parcel.price.to_f
+          @available_customers << c
+      else get_available_credit_limit(c, current_customer).to_f < @parcel.price.to_f
+          @not_enough_available_customers << c
+      end
+    end
+    demands = Demand.where(description: @parcel.description).map { |e|  e.customer  }
+    demands.each do |customer|
+      if !customer.buyer_credit_limits.where(supplier_id: current_customer.id).present?
+       @demanded_but_not_available << customer
       end
     end
   end

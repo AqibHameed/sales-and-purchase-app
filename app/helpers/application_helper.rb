@@ -452,16 +452,17 @@ module ApplicationHelper
 
   def list_of_customers(current_customer)
     # customer = Customer.where("id != ? OR id != ? OR parent_id != ? ", current_customer.parent_id , current_customer.id, current_customer.id)
-    array = []
-    requests = current_customer.credit_requests
-    requests.each do |req|
-      unless req.buyer.nil?
-       array.push(req.buyer.id)
-      end
-    end
-    array.push(current_customer.id)
-    array.push(current_customer.parent_id)
-    customer = Customer.where(" id NOT IN (?) ",  array)
+    # array = []
+    # requests = current_customer.credit_requests
+    # requests.each do |req|
+    #   unless req.buyer.nil?
+    #    array.push(req.buyer.id)
+    #   end
+    # end
+    # array.push(current_customer.id)
+    # array.push(current_customer.parent_id)
+    # customer = Customer.where(" id NOT IN (?) ",  array)
+    customer = Customer.where(" id != ? ",  current_customer.id)
     customer.map{|customer| [customer.company, customer.id]}
   end
 
