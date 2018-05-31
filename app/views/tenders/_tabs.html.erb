@@ -1,9 +1,9 @@
 <ul id="tabnav">
-	<li class="tab1">
-		<%= link_to "View List", tender_path(@tender), :class => ((controller.action_name == 'show' or  controller.action_name == 'temp_filter')  ? 'active' : '') %>
-		
-	</li>
-	<li class="tab2">
-		<%= link_to "Bid List",bid_tender_path(@tender), :class => ((controller.action_name == 'bid' or controller.action_name == 'filter') ? 'active' : '') %>
-	</li>
+  <li class="tab1">
+    <%= link_to "View List", tender_path(@tender), :class => ((controller.action_name == 'show' or  controller.action_name == 'temp_filter')  ? 'active' : '') %>
+    
+  </li>
+  <li class="tab2">
+    <%= link_to "Bid List",bid_tender_path(@tender), :class => ((controller.action_name == 'bid' or controller.action_name == 'filter') ? 'active' : '') %>
+  </li>
 </ul>

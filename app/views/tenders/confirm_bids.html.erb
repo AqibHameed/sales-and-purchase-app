@@ -1,119 +1,119 @@
 <h3><%= @tender.name %> Confirmation Send </h3>
   <div class="clear10"></div>
   <div class="message_div"><%= @message ? @message : "" %></div>
-	<div class="table" id="client_bids">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" >
-			<thead>
-			  	<tr>
-				  <th>Deec No</th>
-					<th>Description</th>				
-					<th>Carats</th>	
-					<th>Average</th>		
-					<th>Total</th>
-					<th>Last</th>		
-				</tr>
-			</thead>
-			<%= hidden_field_tag 'tender_id', @tender.id %>
-			<tbody>			
-			<% if @bids %>
-			  <% @bids.each_with_index do |bid, i| %>
-					<tr id="<%= bid ? bid.id : 0 %>" class="bid_details">
-						<td class="bid_deec_no_<%= bid.id%>"><%= link_to bid.stone.deec_no, "javascript:void(0)", :class => "edit_bid" %></td>
-						<td class="bid_desc_<%= bid.id%>"><%= bid.stone.description %></td>				
-						<td class="bid_carat_<%= bid.id%>"><%= bid.stone.weight %></td>					
-						<td class="bid_avg_<%= bid.id%>"><%= bid.price_per_carat %></td>
-						<td class= "bid_amount_<%= bid.id %> total_amount"><%= bid.total %></td>
-						<td class="<%= @last_avg[bid.stone.id] ? last_bkground(@last_avg[bid.stone.id]) : '' %>"><%=  @last_avg[bid.stone.id] ?  @last_avg[bid.stone.id] : "-" %></td>					
-					</tr>		
-				<% end %>
-				<tr>
-					<td class="right_text bold_text" colspan="2">Total:</td>
-					<% bid_weight = @bids.map(&:stone).map(&:weight).inject{|sum,x| sum.to_f + x.to_f} %>
-					<td><%= bid_weight ? bid_weight.round(2) : "" %></td>	
-					<% bid_price = @bids.map(&:price_per_carat).inject{|sum,x| sum.to_f + x.to_f }%>			
-					<td><%= bid_price ? bid_price.round(2) : "" %></td>
-					<% bid_total = @bids.map(&:total).inject{|sum,x| sum.to_f + x.to_f }%>
-					<td id="total_bids"><%= bid_total ? bid_total.round(2) : "" %></td>			
-					<td></td>				
-				</tr>	
-			<% else %>
-			<tr>
-				<td colspan='6' style="text-align:center">No Bid details found. </td>
-			</tr>		
-			<% end %>
-			</tbody>
-		</table>
+  <div class="table" id="client_bids">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table table-bordered table-responsive">
+      <thead>
+          <tr>
+          <th>Deec No</th>
+          <th>Description</th>        
+          <th>Carats</th> 
+          <th>Average</th>    
+          <th>Total</th>
+          <th>Last</th>   
+        </tr>
+      </thead>
+      <%= hidden_field_tag 'tender_id', @tender.id %>
+      <tbody>     
+      <% if @bids %>
+        <% @bids.each_with_index do |bid, i| %>
+          <tr id="<%= bid ? bid.id : 0 %>" class="bid_details">
+            <td class="bid_deec_no_<%= bid.id%>"><%= link_to bid.stone.deec_no, "javascript:void(0)", :class => "edit_bid" %></td>
+            <td class="bid_desc_<%= bid.id%>"><%= bid.stone.description %></td>       
+            <td class="bid_carat_<%= bid.id%>"><%= bid.stone.weight %></td>         
+            <td class="bid_avg_<%= bid.id%>"><%= bid.price_per_carat %></td>
+            <td class= "bid_amount_<%= bid.id %> total_amount"><%= bid.total %></td>
+            <td class="<%= @last_avg[bid.stone.id] ? last_bkground(@last_avg[bid.stone.id]) : '' %>"><%=  @last_avg[bid.stone.id] ?  @last_avg[bid.stone.id] : "-" %></td>          
+          </tr>   
+        <% end %>
+        <tr>
+          <td class="right_text bold_text" colspan="2">Total:</td>
+          <% bid_weight = @bids.map(&:stone).map(&:weight).inject{|sum,x| sum.to_f + x.to_f} %>
+          <td><%= bid_weight ? bid_weight.round(2) : "" %></td> 
+          <% bid_price = @bids.map(&:price_per_carat).inject{|sum,x| sum.to_f + x.to_f }%>      
+          <td><%= bid_price ? bid_price.round(2) : "" %></td>
+          <% bid_total = @bids.map(&:total).inject{|sum,x| sum.to_f + x.to_f }%>
+          <td id="total_bids"><%= bid_total ? bid_total.round(2) : "" %></td>     
+          <td></td>       
+        </tr> 
+      <% else %>
+      <tr>
+        <td colspan='6' style="text-align:center">No Bid details found. </td>
+      </tr>   
+      <% end %>
+      </tbody>
+    </table>
   </div>
     <div class="clear20"></div>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class= "bids_color">		 
-			<thead>
-			  	<tr>
-				  <th class="green_bkground">0 and Higher</th>
-					<th class="blue_bkground">Up Until-5</th>				
-					<th class="dblue_bkground">Up Until-10</th>	
-					<th class="violet_bkground">Up Until-15</th>		
-					<th class="pink_bkground">Up Until-20</th>
-					<th class="red_bkground">Up Until-25</th>
-					<th class="yellow_bkground">Everithing-25</th>		
-				</tr>
-			</thead>
-			 <tbody>			
-				<tr>
-					<td class="green_total"></td>
-					<td class="blue_total"></td>				
-					<td class="dblue_total"></td>					
-					<td class="violet_total"></td>
-					<td class="pink_total"></td>
-					<td class="red_total"></td>
-					<td class="yellow_total"></td>					
-				</tr>
-				<tr>
-					<td class="avg_green_total"></td>
-					<td class="avg_blue_total"></td>				
-					<td class="avg_dblue_total"></td>					
-					<td class="avg_violet_total"></td>
-					<td class="avg_pink_total"></td>
-					<td class="avg_red_total"></td>
-					<td class="avg_yellow_total"></td>					
-				</tr>			
-			</tbody>		
-		</table>
-		<div class="clear20"></div>
-	<div id="edit_bid" style="display:none;">
-	 <h4 > Edit Bid </h4>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" >
-			<tbody>			
-	      <tr>
-					<td class="edit_bid_deec_no"><%=  %></td>
-					<td class="edit_bid_desc"><%=  %></td>				
-					<td class="edit_bid_carat"><%=  %></td>					
-					<td><%= text_field_tag "bid_avg", "", :class => "edit_bid_avg" %></td>
-					<td class= "edit_bid_total"><%=  %></td>
-				</tr>		
-			</tbody>
-		</table>	
-	</div>
-	<div class="clear20"></div>
-	<div class="confirm_button"><%= button_tag "send confimation", :id => "send_confirmation" if @bids.any? %></div>
-	<script>
-	$(document).ready(function() {
-		//  Green Color Calculations
-		var total_bids_amount = $("#total_bids").text();
-		var green_arr = []
-		$("td.green_bkground").each(function() {
-			green_arr.push($(this).closest("tr").find("td.total_amount").text());
-		});
-		var green_sum = 0;
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class= "bids_color">    
+      <thead>
+          <tr>
+          <th class="green_bkground">0 and Higher</th>
+          <th class="blue_bkground">Up Until-5</th>       
+          <th class="dblue_bkground">Up Until-10</th> 
+          <th class="violet_bkground">Up Until-15</th>    
+          <th class="pink_bkground">Up Until-20</th>
+          <th class="red_bkground">Up Until-25</th>
+          <th class="yellow_bkground">Everithing-25</th>    
+        </tr>
+      </thead>
+       <tbody>      
+        <tr>
+          <td class="green_total"></td>
+          <td class="blue_total"></td>        
+          <td class="dblue_total"></td>         
+          <td class="violet_total"></td>
+          <td class="pink_total"></td>
+          <td class="red_total"></td>
+          <td class="yellow_total"></td>          
+        </tr>
+        <tr>
+          <td class="avg_green_total"></td>
+          <td class="avg_blue_total"></td>        
+          <td class="avg_dblue_total"></td>         
+          <td class="avg_violet_total"></td>
+          <td class="avg_pink_total"></td>
+          <td class="avg_red_total"></td>
+          <td class="avg_yellow_total"></td>          
+        </tr>     
+      </tbody>    
+    </table>
+    <div class="clear20"></div>
+  <div id="edit_bid" style="display:none;">
+   <h4 > Edit Bid </h4>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" >
+      <tbody>     
+        <tr>
+          <td class="edit_bid_deec_no"><%=  %></td>
+          <td class="edit_bid_desc"><%=  %></td>        
+          <td class="edit_bid_carat"><%=  %></td>         
+          <td><%= text_field_tag "bid_avg", "", :class => "edit_bid_avg" %></td>
+          <td class= "edit_bid_total"><%=  %></td>
+        </tr>   
+      </tbody>
+    </table>  
+  </div>
+  <div class="clear20"></div>
+  <div class="confirm_button"><%= button_tag "send confimation", :id => "send_confirmation" if @bids.any? %></div>
+  <script>
+  $(document).ready(function() {
+    //  Green Color Calculations
+    var total_bids_amount = $("#total_bids").text();
+    var green_arr = []
+    $("td.green_bkground").each(function() {
+      green_arr.push($(this).closest("tr").find("td.total_amount").text());
+    });
+    var green_sum = 0;
     $.each(green_arr,function(){green_sum+=parseFloat(this) || 0;});
     $(".green_total").text(green_sum);
     $(".avg_green_total").text((green_sum/total_bids_amount).toFixed(3));
-   		
-		//  Blue Color Calculations
-		var blue_arr = []
-		$("td.blue_bkground").each(function() {
-			blue_arr.push($(this).closest("tr").find("td.total_amount").text());
-		});
-		var blue_sum = 0;
+      
+    //  Blue Color Calculations
+    var blue_arr = []
+    $("td.blue_bkground").each(function() {
+      blue_arr.push($(this).closest("tr").find("td.total_amount").text());
+    });
+    var blue_sum = 0;
 
     $.each(blue_arr,function(){blue_sum+=parseFloat(this) || 0;});
     $(".blue_total").text(blue_sum);
@@ -121,61 +121,61 @@
 
 
     //  dBlue Color Calculations
-		var dblue_arr = []
-		$("td.dblue_bkground").each(function() {
-			dblue_arr.push($(this).closest("tr").find("td.total_amount").text());
-		});
-		var dblue_sum = 0;
+    var dblue_arr = []
+    $("td.dblue_bkground").each(function() {
+      dblue_arr.push($(this).closest("tr").find("td.total_amount").text());
+    });
+    var dblue_sum = 0;
     $.each(dblue_arr,function(){dblue_sum+=parseFloat(this) || 0;});
     $(".dblue_total").text(dblue_sum);
     $(".avg_dblue_total").text((blue_sum/total_bids_amount).toFixed(3));
 
     //  violet Color Calculations
-		var violet_arr = []
-		$("td.violet_bkground").each(function() {
-			violet_arr.push($(this).closest("tr").find("td.total_amount").text());
-		});
-		var violet_sum = 0;
+    var violet_arr = []
+    $("td.violet_bkground").each(function() {
+      violet_arr.push($(this).closest("tr").find("td.total_amount").text());
+    });
+    var violet_sum = 0;
     $.each(violet_arr,function(){violet_sum+=parseFloat(this) || 0;});
     $(".violet_total").text(violet_sum);
     $(".avg_violet_total").text((violet_sum/total_bids_amount).toFixed(3));
 
     //  Pink Color Calculations
-		var pink_arr = []
-		$("td.pink_bkground").each(function() {
-			pink_arr.push($(this).closest("tr").find("td.total_amount").text());
-		});
-		var pink_sum = 0;
+    var pink_arr = []
+    $("td.pink_bkground").each(function() {
+      pink_arr.push($(this).closest("tr").find("td.total_amount").text());
+    });
+    var pink_sum = 0;
     $.each(pink_arr,function(){pink_sum+=parseFloat(this) || 0;});
     $(".pink_total").text(pink_sum);
     $(".avg_pink_total").text((pink_sum/total_bids_amount).toFixed(3));
 
 
     //  Red Color Calculations
-		var red_arr = []
-		$("td.red_bkground").each(function() {
-			red_arr.push($(this).closest("tr").find("td.total_amount").text());
-		});
-		var red_sum = 0;
+    var red_arr = []
+    $("td.red_bkground").each(function() {
+      red_arr.push($(this).closest("tr").find("td.total_amount").text());
+    });
+    var red_sum = 0;
     $.each(red_arr,function(){red_sum+=parseFloat(this) || 0;});
     $(".red_total").text(red_sum);
     $(".avg_red_total").text((red_sum/total_bids_amount).toFixed(3));
 
 
     //  Yellow Color Calculations
-		var yellow_arr = []
-		$("td.yellow_bkground").each(function() {
-			yellow_arr.push($(this).closest("tr").find("td.total_amount").text());
-		});
-		var yellow_sum = 0;
+    var yellow_arr = []
+    $("td.yellow_bkground").each(function() {
+      yellow_arr.push($(this).closest("tr").find("td.total_amount").text());
+    });
+    var yellow_sum = 0;
     $.each(yellow_arr,function(){yellow_sum+=parseFloat(this) || 0;});
     $(".yellow_total").text(yellow_sum);
     $(".avg_yellow_total").text((yellow_sum/total_bids_amount).toFixed(3));
 
- 	});
+  });
 
   $(".edit_bid").click(function(){
-  	$("#edit_bid").show();
+    $("#edit_bid").show();
     var bid_id = $(this).closest('tr').attr('id');
     $("#edit_bid").find("tr").attr('id', bid_id);
     $(".edit_bid_deec_no").text($(".bid_deec_no_"+bid_id).text());
@@ -183,40 +183,40 @@
     $(".edit_bid_carat").text($(".bid_carat_"+bid_id).text());
     $(".edit_bid_avg").val($(".bid_avg_"+bid_id).text());
     $(".edit_bid_total").text($(".bid_amount_"+bid_id).text());
- 	});
- 	$('input[name=bid_avg]').change(function() {
- 		$(".edit_bid_total").text((parseFloat($(".edit_bid_carat").text()) * parseFloat($(".edit_bid_avg").val())).toFixed(2));
- 		var bid_id = $(this).closest('tr').attr('id');
- 		var total = $(".edit_bid_total").text();
- 		var carat = $(".edit_bid_avg").val();
+  });
+  $('input[name=bid_avg]').change(function() {
+    $(".edit_bid_total").text((parseFloat($(".edit_bid_carat").text()) * parseFloat($(".edit_bid_avg").val())).toFixed(2));
+    var bid_id = $(this).closest('tr').attr('id');
+    var total = $(".edit_bid_total").text();
+    var carat = $(".edit_bid_avg").val();
      $.ajax({
         type: "Get",
         dataType: "json",
         url: "<%= send_confirmation_tender_path %>",
         data: {bid_id: bid_id, bid_total: total, bid_carat: carat},
         success: function(data) {
-        	if (data){
-        	  window.location = "<%= confirm_bids_tender_path %>"+ "?bid_msg="+ data.message;        	   	  
-        	}
+          if (data){
+            window.location = "<%= confirm_bids_tender_path %>"+ "?bid_msg="+ data.message;               
+          }
         }
       });   
- 	});
- 	setTimeout(fade_out, 3000);
+  });
+  setTimeout(fade_out, 3000);
 
 function fade_out() {
   $(".message_div").fadeOut().empty();
 }
 $("#send_confirmation").click(function(){
-	var tender_id = $("#tender_id").val();
-	$.ajax({
+  var tender_id = $("#tender_id").val();
+  $.ajax({
         type: "Get",
         dataType: "json",
         url: "<%= send_confirmation_tender_path %>",
         data: {tender_id: tender_id},
         success: function(data) {
-        	if (data){
-        	  window.location = "<%= confirm_bids_tender_path %>"+ "?message="+ data.message;        	  
-        	}
+          if (data){
+            window.location = "<%= confirm_bids_tender_path %>"+ "?message="+ data.message;           
+          }
         }
       });   
 });
