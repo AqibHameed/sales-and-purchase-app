@@ -5,15 +5,13 @@
     <div class="panel-heading" role="tab" id="headingOne">
       <h4 class="panel-title">
         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-         <!-- <p> Available And Enough Credit</p> -->
-         <p>Available Credit Buyers</p>
+         <p class="mb0">Available Credit Buyers</p>
         </a>
       </h4>
     </div>
     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
-        <% @customers = @available_customers %>
-        <%= render partial: 'suppliers/approve_customers_list' %>
+        <%= render partial: 'suppliers/approve_customers_list', locals: { customers: @available_customers }  %>
       </div>
     </div>
   </div>
@@ -21,15 +19,13 @@
     <div class="panel-heading" role="tab" id="headingTwo">
       <h4 class="panel-title">
         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          <!-- <p>Available But Not Enough Credit</p> -->
-          <p>Unavailable Credit Buyers</p>
+          <p class="mb0">Unavailable Credit Buyers</p>
         </a>
       </h4>
     </div>
     <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
       <div class="panel-body">
-        <% @customers = @not_enough_available_customers %>
-        <%= render partial: 'suppliers/approve_customers_list' %>
+        <%= render partial: 'suppliers/approve_customers_list', locals: { customers: @not_enough_available_customers }  %>
       </div>
     </div>
   </div>
@@ -37,14 +33,13 @@
     <div class="panel-heading" role="tab" id="headingThree">
       <h4 class="panel-title">
         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-         <p>Demanded But Not Given Credit Buyers</p>
+         <p class="mb0">Demanded But Not Given Credit Buyers</p>
         </a>
       </h4>
     </div>
     <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
       <div class="panel-body">
-         <% @customers = @demanded_but_not_available %>
-         <%= render partial: 'suppliers/approve_customers_list' %>
+         <%= render partial: 'suppliers/approve_customers_list', locals: { customers: @demanded_but_not_available } %>
       </div>
     </div>
   </div>
@@ -96,14 +91,17 @@
   })
 
   $(document).on('click', '.available', function(){
-      $(".credit_available").toggle();
+    $(".credit_available").toggle();
   });
-    $(document).on('click', '.not_available', function(){
-      $(".credit_not_available").toggle();
+
+  $(document).on('click', '.not_available', function(){
+    $(".credit_not_available").toggle();
   });
-      $(document).on('click', '.demanded', function(){
-      $(".credit_demanded").toggle();
+
+  $(document).on('click', '.demanded', function(){
+    $(".credit_demanded").toggle();
   });
+
   $(document).ready(function(){
     $(".credit_available").hide();
     $(".credit_not_available").hide();

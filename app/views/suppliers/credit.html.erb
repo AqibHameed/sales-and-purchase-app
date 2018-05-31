@@ -28,7 +28,7 @@
           Credit remaining: <%= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
         <% end %>
         <div class="approve_list">
-          <%= render partial: 'approve_customers_list' %>
+          <%= render 'approve_customers_list', customers: @customers %>
         </div>
         <%#= paginate @customers %>
       </div>

@@ -89,8 +89,12 @@ module Api
 
       def block
         if current_customer
-          BlockUser.where(block_user_ids: params[:customer_id], customer_id: current_customer.id).first_or_create
-          render json: { success: true }
+          unless params[:customer_id].nil? || params[:customer_id].blank?
+            BlockUser.where(block_user_ids: params[:customer_id], customer_id: current_customer.id).first_or_create
+            render json: { success: true }
+          else
+            render json: { errors: "Parameters missing", response_code: 201 }
+          end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end

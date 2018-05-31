@@ -304,3 +304,6 @@ span.score {
 .clickable{
   cursor: pointer;
 }
+.mb0{
+  margin-bottom: 0px !important;
+}
