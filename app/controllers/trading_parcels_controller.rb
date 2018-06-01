@@ -15,6 +15,9 @@ class TradingParcelsController < ApplicationController
 
   def create
     @parcel = TradingParcel.new(trading_parcel_params)
+    if params[:trading_parcel][:no_of_stones] == ''
+      @parcel.no_of_stones = 0
+    end
     if @parcel.save
       # @parcel.update_column(:diamond_type, params[:trading_document_diamond_type])
       flash[:notice] = "Parcel created successfully"
