@@ -73,8 +73,8 @@ module Api
                 used_limit: get_used_credit_limit(customer, current_customer), 
                 available_limit: get_available_credit_limit(customer, current_customer), 
                 overdue_limit: get_days_limit(customer, current_customer), 
-                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer), 
-                supplier_connected: supplier_connected(customer, current_customer)
+                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer).to_s, 
+                supplier_connected: supplier_connected(customer, current_customer).to_s
               }
             end
             @data << { id: group.id, group_name: group.group_name, customers: list }
@@ -90,8 +90,8 @@ module Api
                 used_limit: get_used_credit_limit(customer, current_customer), 
                 available_limit: get_available_credit_limit(customer, current_customer), 
                 overdue_limit: get_days_limit(customer, current_customer), 
-                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer), 
-                supplier_connected: supplier_connected(customer, current_customer)
+                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer).to_s, 
+                supplier_connected: supplier_connected(customer, current_customer).to_s
               }
             end
           end
