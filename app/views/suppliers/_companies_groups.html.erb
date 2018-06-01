@@ -44,7 +44,7 @@
                       <td><%= get_market_limit(customer, current_customer) %></td>
                       <td><%= number_to_currency(get_available_credit_limit(customer, current_customer)) %></td>
                       <td>
-                      <%= link_to delete_group_companies_groups_path(id: customer.id, group_id: group.id), data: {confirm: 'Are you sure ?'} do %>
+                      <%= link_to delete_group_companies_groups_path(id: customer.id, group_id: group.id), data: {confirm: 'Are you sure ?', turbolinks: false} do %>
                         <%= image_tag("/assets/wrong.png", width: "15", class: 'image') %>
                       <% end %>
                       </td>

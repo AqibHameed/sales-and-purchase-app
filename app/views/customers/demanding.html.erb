@@ -3,12 +3,12 @@
     <p>YOU ARE NOT ALLOW TO DEMAND, PLEASE CLEAR YOUR OVERDUE PAYMENT</p>
   <% else %>
     <%= form_for @demanding_parcel, :url =>  demanding_create_customers_path , method: :post  do |f| %>
-      <div class="form-row">
+     <!--  <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
+          <%#= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
         </div>
-      </div>
+      </div> -->
       <div class="form-row">
         <div class="label">Supplier: </div>
         <div class="field">
@@ -35,7 +35,7 @@
 
 <h3>Demand List</h3>
 <div class="row">
-  <div class="col-sm-4">
+  <div class="col-sm-3">
     <h1>DTC</h1>
     <div class="table no-padding">
       <table id="tenderList" class="table table-bordered table-responsive tablesorter">
@@ -54,7 +54,7 @@
       </table>
     </div>
   </div>
-  <div class="col-sm-4">
+  <div class="col-sm-3">
     <h1>Russian</h1>
     <div class="table no-padding">
       <table id="tenderList" class="table table-bordered table-responsive tablesorter">
@@ -73,7 +73,7 @@
       </table>
     </div>
   </div>
-  <div class="col-sm-4">
+  <div class="col-sm-3">
     <h1>Outside</h1>
     <div class="table no-padding">
       <table id="tenderList" class="table table-bordered table-responsive tablesorter">
@@ -92,17 +92,36 @@
       </table>
     </div>
   </div>
+  <div class="col-sm-3">
+    <h1>Something Special</h1>
+    <div class="table no-padding">
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter">
+        <thead class="thead-desktop">
+            <th>Description</th>
+            <th>Supplier</th>
+            <th></th>
+        </thead>
+        <% @something_special_demands.each do |demand| %>
+          <tr>
+            <td><%= demand.description %></td>
+            <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+            <td><%= link_to(image_tag("/assets/wrong.png", width: "15"), remove_demand_customer_path(id: demand.id), method: :delete)%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">
-  $(document).on('change', '#demand_diamond_type', function(){
-    type = $('#demand_diamond_type').val()
-    $.ajax({
-      url: '/supplier_list',
-      method: 'get',
-      data: {diamond_type: type}
-    })
-  })
+  // $(document).on('change', '#demand_diamond_type', function(){
+  //   type = $('#demand_diamond_type').val()
+  //   $.ajax({
+  //     url: '/supplier_list',
+  //     method: 'get',
+  //     data: {diamond_type: type}
+  //   })
+  // })
 
   $(document).on('change', '#demand_demand_supplier_id', function(){
     id = $('#demand_demand_supplier_id').val()

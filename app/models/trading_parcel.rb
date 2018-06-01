@@ -10,7 +10,7 @@ class TradingParcel < ApplicationRecord
   validates :credit_period, :total_value, :description, presence: true
   validates :price, :credit_period, :weight, :total_value, numericality: true
   after_create :generate_and_add_uid, :send_mail_to_demanded
-  after_initialize :set_defaults
+  before_create :set_defaults
 
   accepts_nested_attributes_for :my_transaction
   accepts_nested_attributes_for :parcel_size_infos, :allow_destroy => true

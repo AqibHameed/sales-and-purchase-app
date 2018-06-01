@@ -1,8 +1,7 @@
 class Demand < ApplicationRecord
   belongs_to :customer
   belongs_to :demand_supplier
-
-
+  default_scope { where(deleted: false) }
   def self.update_demands_block_unblock
     Demand.all.each do |d|
       customer = d.customer
