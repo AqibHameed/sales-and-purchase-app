@@ -127,8 +127,8 @@ module Api
                 used_limit: get_used_credit_limit(customer, current_customer), 
                 available_limit: get_available_credit_limit(customer, current_customer), 
                 overdue_limit: get_days_limit(customer, current_customer), 
-                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer), 
-                supplier_connected: supplier_connected(customer, current_customer) 
+                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer).to_s, 
+                supplier_connected: supplier_connected(customer, current_customer).to_s
               }
               render json: { success: true, limits: @data, response_code: 200  }
             end
@@ -142,8 +142,8 @@ module Api
                 used_limit: get_used_credit_limit(c.buyer, current_customer), 
                 available_limit: get_available_credit_limit(c.buyer, current_customer), 
                 overdue_limit: get_days_limit(c.buyer, current_customer), 
-                market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_customer), 
-                supplier_connected: supplier_connected(c.buyer,current_customer) }
+                market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_customer).to_s, 
+                supplier_connected: supplier_connected(c.buyer,current_customer).to_s }
             end
             render json: { success: true, limits: @data, response_code: 200  }
           end
