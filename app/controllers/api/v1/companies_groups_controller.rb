@@ -2,7 +2,7 @@ module Api
   module V1
     class CompaniesGroupsController < ApiController
       before_action :current_customer
-      skip_before_action :verify_authenticity_token, only: [:create, :update]
+      skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy]
 
       include ActionView::Helpers::NumberHelper
       include ActionView::Helpers::TextHelper
@@ -48,6 +48,16 @@ module Api
         end
       end
 
+      def destroy
+        companies_group = CompaniesGroup.find(params[:id])
+        if current_customer && current_customer.id == companies_group.seller_id
+          companies_group.destroy if companies_group
+          render json: { success: true, response_code: 200 }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
       def group_data(companies_group)
         @data = []
         list = []
@@ -70,18 +80,20 @@ module Api
             @data << { id: group.id, group_name: group.group_name, customers: list }
           end
         else
-          companies_group.customer_id.each do |c|
-            customer = get_customer(c)
-            @data << {
-              customer_name: customer.name,
-              company: customer.company,
-              total_limit: get_credit_limit(customer, current_customer), 
-              used_limit: get_used_credit_limit(customer, current_customer), 
-              available_limit: get_available_credit_limit(customer, current_customer), 
-              overdue_limit: get_days_limit(customer, current_customer), 
-              market_limit: get_market_limit_from_credit_limit_table(customer, current_customer), 
-              supplier_connected: supplier_connected(customer, current_customer)
-            }
+          unless companies_group.blank?
+            companies_group.customer_id.each do |c|
+              customer = get_customer(c)
+              @data << {
+                customer_name: customer.name,
+                company: customer.company,
+                total_limit: get_credit_limit(customer, current_customer), 
+                used_limit: get_used_credit_limit(customer, current_customer), 
+                available_limit: get_available_credit_limit(customer, current_customer), 
+                overdue_limit: get_days_limit(customer, current_customer), 
+                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer), 
+                supplier_connected: supplier_connected(customer, current_customer)
+              }
+            end
           end
         end
         @data
