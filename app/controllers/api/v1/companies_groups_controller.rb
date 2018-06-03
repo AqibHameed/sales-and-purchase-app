@@ -60,13 +60,14 @@ module Api
 
       def group_data(companies_group)
         @data = []
-        list = []
         count = companies_group.count rescue 0
         unless count == 0
           companies_group.each do |group|
+            list = []
             group.customer_id.each do |c|
               customer = get_customer(c)
               list << {
+                id: customer.id.to_s,
                 customer_name: customer.name,
                 company: customer.company,
                 total_limit: get_credit_limit(customer, current_customer), 
@@ -84,6 +85,7 @@ module Api
             companies_group.customer_id.each do |c|
               customer = get_customer(c)
               @data << {
+                id: customer.id.to_s,
                 customer_name: customer.name,
                 company: customer.company,
                 total_limit: get_credit_limit(customer, current_customer), 

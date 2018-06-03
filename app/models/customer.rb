@@ -85,7 +85,7 @@ class Customer < ApplicationRecord
   after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
   after_invitation_accepted :set_roles_to_customer
 
-  default_scope { order("first_name asc, last_name asc") }
+  default_scope { where(invitation_token: nil).order("first_name asc, last_name asc") }
 
   validates :first_name, :company, :mobile_no, :presence => true
 

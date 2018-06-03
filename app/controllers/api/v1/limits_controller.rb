@@ -122,6 +122,7 @@ module Api
              render json: { success: false, errors: "Customer not found", response_code: 201 } 
             else
               @data = {
+                id: customer.id.to_s,
                 company: customer.company,
                 total_limit: get_credit_limit(customer, current_customer), 
                 used_limit: get_used_credit_limit(customer, current_customer), 
@@ -136,7 +137,8 @@ module Api
             @data = []
             credit_limit = CreditLimit.where(supplier_id: current_customer.id)
             credit_limit.each do |c|
-              @data << { 
+              @data << {
+                id: customer.id.to_s,
                 company: c.buyer.try(:company), 
                 total_limit: get_credit_limit(c.buyer, current_customer), 
                 used_limit: get_used_credit_limit(c.buyer, current_customer), 

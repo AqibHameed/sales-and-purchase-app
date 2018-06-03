@@ -73,7 +73,7 @@ module ApplicationHelper
       if parcel.description.nil? || parcel.description.blank?
         return "#{parcel.source} #{parcel.box}"
       else
-        return parcel.description
+        return "#{parcel.source} #{parcel.description}"
       end
     end
   end
@@ -200,7 +200,7 @@ module ApplicationHelper
       cl = credit_limit(buyer.id, supplier.id)
     end
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
-      0.00
+      number_with_precision(0, precision: 2)
     else
       number_with_precision((cl.credit_limit), precision: 2)
     end

@@ -26,7 +26,7 @@ class SuppliersController < ApplicationController
   def demand
     @parcel = TradingParcel.find(params[:id])
     @demand = Demand.where(description: @parcel.description, block: false, deleted: false).where.not(customer_id: current_customer.id)
-    @customers = Customer.unscoped.where(id: @demand.map(&:customer_id)).page params[:page]
+    @customers = Customer.where(id: @demand.map(&:customer_id)).page params[:page]
   end
 
   def add_demand_list
@@ -80,12 +80,11 @@ class SuppliersController < ApplicationController
     if params[:letter].present?
       @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
     else
-      @customers = Customer.unscoped.where.not(id: current_customer.id) #.page params[:page]
+      @customers = Customer.where.not(id: current_customer.id) #.page params[:page]
     end
     @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
     @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_customer.id)
   end
-
 
   def credit_request
     @customer = Customer.new

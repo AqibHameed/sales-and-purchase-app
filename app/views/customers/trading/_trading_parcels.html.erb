@@ -35,7 +35,6 @@
               </div>
               <div class="righter">
                 <div class="top">
-                  <%= parcel.source+' '%>
                   <%= get_description(parcel) if parcel %>
                 </div>
                 <div class="bottom">
@@ -44,7 +43,7 @@
                 </div>
               </div>
             </td>
-            <td><span class="table-head-in-td">Description</span><%= parcel.source+' '%><%= get_description(parcel) if parcel %></td>
+            <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
             <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
             <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
             <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
@@ -93,7 +92,7 @@
                 </div>
               </div>
             </td>
-            <td><span class="table-head-in-td">Description</span> <%= parcel.source+' '%><%= get_description(parcel) if parcel %></td>
+            <td><span class="table-head-in-td">Description</span><%= get_description(parcel) if parcel %></td>
             <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
             <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
             <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
