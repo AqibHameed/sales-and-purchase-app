@@ -172,6 +172,7 @@ Rails.application.routes.draw do
       get :single_parcel_form
       get :add_demand_list
       post :upload_demand_list
+      get :important
     end
   end
   resources :messages

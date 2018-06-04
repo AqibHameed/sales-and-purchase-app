@@ -485,4 +485,11 @@ module ApplicationHelper
     end
     count
   end
+
+  def check_for_star(id)
+  credit_limit = CreditLimit.where(buyer_id: id, supplier_id: current_customer.id).first
+   if credit_limit.present?
+     credit_limit.star
+   end
+  end
 end

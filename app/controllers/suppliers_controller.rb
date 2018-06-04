@@ -15,6 +15,20 @@ class SuppliersController < ApplicationController
   def trading
   end
 
+  def important
+  credit_limit = CreditLimit.where(buyer_id: params[:id], supplier_id: current_customer.id).first
+  if credit_limit.present?
+    if credit_limit.star == true
+      credit_limit.star = false
+    else
+      credit_limit.star = true
+    end
+  else
+    credit_limit = CreditLimit.new(buyer_id: params[:id], supplier_id: current_customer.id, credit_limit: 0, star: true)
+  end
+  credit_limit.save!
+  end
+
   def profile
     @customer = Customer.find(params[:id])
     render :partial => 'profile'
@@ -80,7 +94,11 @@ class SuppliersController < ApplicationController
     if params[:letter].present?
       @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
     else
-      @customers = Customer.where.not(id: current_customer.id) #.page params[:page]
+      # @customers = Customer.where.not(id: current_customer.id)
+      @star_customers = CreditLimit.where(supplier_id: current_customer.id, star: true).map{|c| c.buyer}
+      @custs = Customer.where.not(id: current_customer.id) #.page
+      @customers = @star_customers + @custs
+      @customers = @customers.uniq
     end
     @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
     @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_customer.id)
