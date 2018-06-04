@@ -137,7 +137,8 @@ module Api
             @data = []
             credit_limit = CreditLimit.where(supplier_id: current_customer.id)
             credit_limit.each do |c|
-              @data << {
+              if c.buyer.present?
+                @data << {
                 id: c.buyer.id.to_s,
                 company: c.buyer.try(:company),
                 total_limit: get_credit_limit(c.buyer, current_customer),
@@ -146,6 +147,7 @@ module Api
                 overdue_limit: get_days_limit(c.buyer, current_customer), 
                 market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_customer).to_s, 
                 supplier_connected: supplier_connected(c.buyer,current_customer).to_s }
+              end
             end
             render json: { success: true, limits: @data, response_code: 200  }
           end
