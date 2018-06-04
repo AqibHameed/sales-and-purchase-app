@@ -8,7 +8,7 @@
       <th>Sub Company</th>
       <th>Name</th>
       <th>Limit Type</th>
-      <th>Limit</th>
+      <!-- <th>Limit</th> -->
       <th></th>
     </thead>
     <tbody>
@@ -18,7 +18,7 @@
           <td><%= c.company%></td>
           <td><%= c.name %></td>
           <td><%= c.try(:sub_company_credit_limit).try(:credit_type)%></td>
-          <td><%= link_to 'Set Limit', 'javascript:void(0)', class: 'set-limit', "data-id" => c.id %></td>
+          <!-- <td><%#= link_to 'Set Limit', 'javascript:void(0)', class: 'set-limit', "data-id" => c.id %></td> -->
           <%if c.try(:sub_company_credit_limit).try(:credit_type) == 'Specific'%>
             <td><%= link_to 'Click', show_all_customers_sub_company_path(c)%></td>
           <%else%>
