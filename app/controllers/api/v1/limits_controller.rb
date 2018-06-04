@@ -138,7 +138,7 @@ module Api
             credit_limit = CreditLimit.where(supplier_id: current_customer.id)
             credit_limit.each do |c|
               @data << {
-                id: c.id.to_s,
+                id: c.buyer.id.to_s,
                 company: c.buyer.try(:company),
                 total_limit: get_credit_limit(c.buyer, current_customer),
                 used_limit: get_used_credit_limit(c.buyer, current_customer), 
