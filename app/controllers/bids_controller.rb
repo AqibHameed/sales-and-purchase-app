@@ -170,7 +170,7 @@ class BidsController < ApplicationController
     if params[:stone_id]
       @stone = Stone.find(params[:stone_id])
       tender = @stone.tender
-      past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+      past_tenders = Tender.where("id != ? and supplier_id = ? and date(close_date) < ?", tender.id, tender.supplier_id, tender.open_date.to_date).order("open_date DESC").limit(5)
       past_tender = past_tenders.first
       history_array = TenderWinner.includes(:tender).where(description: @stone.description, tender_id: past_tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
       @history = []
@@ -195,7 +195,7 @@ class BidsController < ApplicationController
     else
       @sight = Sight.find(params[:sight_id])
       tender = @sight.tender
-      past_tenders = Tender.where("id != ? and company_id = ? and date(close_date) < ?", tender.id, tender.company_id, tender.open_date.to_date).order("open_date DESC").limit(5)
+      past_tenders = Tender.where("id != ? and supplier_id = ? and date(close_date) < ?", tender.id, tender.supplier_id, tender.open_date.to_date).order("open_date DESC").limit(5)
       past_tender = past_tenders.first
       history_array = TenderWinner.includes(:tender).where(description: @sight.source, tender_id: past_tenders.collect(&:id)).order("avg_selling_price desc").group_by { |t| t.tender.close_date.beginning_of_month }
       @history = []

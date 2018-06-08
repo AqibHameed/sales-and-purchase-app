@@ -12,7 +12,7 @@
       </tr>
       <tr>
         <td> Company</td>
-        <td><%= @customer.company %></td>
+        <td><%= @customer.company.try(:name) %></td>
       </tr>
       <tr>
         <td> Address</td>

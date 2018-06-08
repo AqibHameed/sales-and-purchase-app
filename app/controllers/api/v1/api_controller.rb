@@ -24,7 +24,7 @@ class Api::V1::ApiController < ApplicationController
   # end
 
   def filter_data
-    suppliers = Company.all.map { |e| { id: e.id, name: e.name}  }
+    suppliers = Supplier.all.map { |e| { id: e.id, name: e.name}  }
     months = Tender.group("month(open_date)").count
     countries = Tender.group("country").count
     data = []
@@ -74,7 +74,7 @@ class Api::V1::ApiController < ApplicationController
 
   def get_suppliers
     if current_customer
-      companies = Company.all
+      companies = Supplier.all
       render json: { success: true, supplier_notifications: suppliers_data(companies, current_customer), response_code: 200 }
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized

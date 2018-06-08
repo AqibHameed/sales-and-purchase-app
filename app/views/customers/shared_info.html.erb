@@ -3,7 +3,7 @@
   <div class="company">
     <h3>Transaction</h3>
     <div class="clear10"></div>
-    <h1><%=@customer.company %> have <%=@total_transaction%> transactions registered</h1>
+    <h1><%=@customer.company.try(:name) %> have <%=@total_transaction%> transactions registered</h1>
     <ul>
       <li>
         <h1><%=@pending_transactions%> pending transaction<%=link_to 'view',transaction_list_customers_path(type: "pending", id: @customer.id),data: {turbolinks: false}%></h1>

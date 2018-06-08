@@ -1,0 +1,18 @@
+<table id="tenderList" class="table tablesorter table-responsive table-bordered">
+    <thead class="th">
+      <th></th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th></th>
+    </thead>
+    <% @customers.each do |customer| %>
+      <tr>
+      	<th></th>
+        <td><%= customer.first_name %></td>
+        <td><%= customer.last_name %></td>
+        <td><%= customer.email %></td>
+        <td><%= link_to "Approve", approve_customers_path(cu: customer.id), class: 'btn btn-success btn-xs', method: :post %></td>
+      </tr>
+    <% end %>
+  </table>

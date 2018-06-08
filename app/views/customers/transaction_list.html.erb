@@ -31,10 +31,10 @@
           <td><span class="table-head-in-td">Credit</span><%= transaction.credit rescue 'N/A' %></td>
           <% if @customer.id == transaction.buyer_id %>
             <td><span class="table-head-in-td">Activity</span>Bought</td>
-            <td><span class="table-head-in-td">Counterparty</span><%= transaction.supplier.company rescue 'N/A' %></td>
-          <% elsif @customer.id == transaction.supplier_id  %>
+            <td><span class="table-head-in-td">Counterparty</span><%= transaction.supplier.company.try(:name) rescue 'N/A' %></td>
+          <% elsif @customer.id == transaction.seller_id  %>
             <td><span class="table-head-in-td">Activity</span>Sold</td>
-            <td><span class="table-head-in-td">Counterparty</span><%= transaction.buyer.company rescue 'N/A' %></td>
+            <td><span class="table-head-in-td">Counterparty</span><%= transaction.buyer.company.try(:name) rescue 'N/A' %></td>
           <%else%>
             <td></td>
             <td></td>

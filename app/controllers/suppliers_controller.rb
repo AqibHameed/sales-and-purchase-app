@@ -16,17 +16,17 @@ class SuppliersController < ApplicationController
   end
 
   def important
-  credit_limit = CreditLimit.where(buyer_id: params[:id], supplier_id: current_customer.id).first
-  if credit_limit.present?
-    if credit_limit.star == true
-      credit_limit.star = false
+    credit_limit = CreditLimit.where(buyer_id: params[:id], seller_id: current_customer.id).first
+    if credit_limit.present?
+      if credit_limit.star == true
+        credit_limit.star = false
+      else
+        credit_limit.star = true
+      end
     else
-      credit_limit.star = true
+      credit_limit = CreditLimit.new(buyer_id: params[:id], seller_id: current_customer.id, credit_limit: 0, star: true)
     end
-  else
-    credit_limit = CreditLimit.new(buyer_id: params[:id], supplier_id: current_customer.id, credit_limit: 0, star: true)
-  end
-  credit_limit.save!
+    credit_limit.save!
   end
 
   def profile
@@ -80,23 +80,25 @@ class SuppliersController < ApplicationController
   end
 
   def transactions
-    @pending_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
-    @overdue_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
-    @complete_transactions = Transaction.includes(:trading_parcel).where("supplier_id = ? AND paid = ?", current_customer.id, true).page params[:page]
-    @rejected_transactions = Proposal.includes(:trading_parcel).where("status = ? AND supplier_id = ?", 2, current_customer.id).page params[:page]
+    @pending_transactions = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
+    @complete_transactions = Transaction.includes(:trading_parcel).where("seller_id = ? AND paid = ?", current_customer.id, true).page params[:page]
+    @rejected_transactions = Proposal.includes(:trading_parcel).where("status = ? AND seller_id = ?", 2, current_customer.id).page params[:page]
   end
 
   def credit
     @group_names = []
     if params[:name].present?
-      @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
+      @companies = Customer.eager_load(:company).where('companies.name LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
+      # @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
     end
     if params[:letter].present?
-      @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
+      # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
+      @customers = Customer.eager_load(:company).where('companies.name LIKE ?', "%#{params[:letter].downcase}%").where.not(id: current_customer.id)
     else
       # @customers = Customer.where.not(id: current_customer.id)
-      @star_customers = CreditLimit.where(supplier_id: current_customer.id, star: true).map{|c| c.buyer}
-      @custs = Customer.where.not(id: current_customer.id) #.page
+      @star_customers = CreditLimit.where(seller_id: current_customer.id, star: true).map{|c| c.buyer}
+      @custs = Customer.where.not(id: current_customer.id).limit(10) #.page
       @customers = @star_customers + @custs
       @customers = @customers.uniq
     end
@@ -132,12 +134,12 @@ class SuppliersController < ApplicationController
 
   def accept_request
     request = CreditRequest.find(params[:id])
-    credit_limit = CreditLimit.where(buyer_id: request.buyer_id, supplier_id: request.customer_id).first
+    credit_limit = CreditLimit.where(buyer_id: request.buyer_id, seller_id: request.customer_id).first
     if credit_limit.present?
      credit_limit.credit_limit = request.limit + credit_limit.credit_limit
     else
      credit_limit = CreditLimit.new(
-      supplier_id: request.customer_id,
+      seller_id: request.customer_id,
       buyer_id: request.buyer_id,
       credit_limit: request.limit)
     end
@@ -185,8 +187,8 @@ class SuppliersController < ApplicationController
 
 
   def change_limits
-    cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
-    total_clms = CreditLimit.where(supplier_id: current_customer.id).sum(:credit_limit)
+    cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_customer.id).first_or_initialize
+    total_clms = CreditLimit.where(seller_id: current_customer.id).sum(:credit_limit)
     total_limit = params[:limit].to_f
     cl.errors.add(:credit_limit, "should not be negative ") if total_limit < 0
 
@@ -223,7 +225,7 @@ class SuppliersController < ApplicationController
 
   def change_days_limits
     buyer = Customer.find(params[:buyer_id])
-    dl = DaysLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
+    dl = DaysLimit.where(buyer_id: params[:buyer_id], seller_id: current_customer.id).first_or_initialize
     if dl.days_limit.nil?
       dl.days_limit = params[:limit]
     else
@@ -238,7 +240,7 @@ class SuppliersController < ApplicationController
 
   def change_market_limit
     buyer = Customer.find(params[:buyer_id])
-    cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_create
+    cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_customer.id).first_or_create
     cl.credit_limit = 0 unless cl.credit_limit.present?
     cl.market_limit = params[:market_limit]
     if cl.save!
@@ -274,7 +276,7 @@ class SuppliersController < ApplicationController
   end
 
   def credit_given_list
-    @credit_limits = CreditLimit.where(supplier_id: current_customer.id)
+    @credit_limits = CreditLimit.where(seller_id: current_customer.id)
   end
 
   private

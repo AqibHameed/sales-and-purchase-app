@@ -3,7 +3,7 @@
     <div id="counter">1:00</div>
     <tr>
       <td><label>Buyer Name  : </label></td>
-      <td><%= @stone.tender.company.customer.try(:name) %></td>
+      <td><%= @stone.tender.supplier.customer.try(:name) %></td>
     </tr>
     <tr>
       <td><label>Tender : </label></td>

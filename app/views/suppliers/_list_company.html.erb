@@ -8,7 +8,7 @@
             <td width='40%'>
             </td>
             <td>
-              <h4><%= buyer.company %></h4>
+              <h4><%= buyer.company.try(:name) %></h4>
               <p>Credit Limit: <%= number_to_currency(get_credit_limit(buyer, current_customer)) %></p>
               <p>Used Credit: <%= number_to_currency(get_used_credit_limit(buyer, current_customer)) %></p>
               <p>Available Credit: <%= number_to_currency(get_available_credit_limit(buyer, current_customer)) %></p>

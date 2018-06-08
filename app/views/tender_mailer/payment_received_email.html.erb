@@ -2,5 +2,5 @@
 <p>Thank you, we have received your payment of <%=@payment.amount %> amount</p>
 
 Thanks & Regards,<br>
-<%= @transaction.supplier.company %>
+<%= @transaction.supplier.company.try(:name) %>
 

@@ -1,8 +1,10 @@
 class ApplicationController < ActionController::Base
   helper :all
   protect_from_forgery with: :exception
+  helper_method :current_company
   
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :check_request_access
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
@@ -23,7 +25,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company, :company_address, :phone_2, :mobile_no, :role])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company_id, :company_address, :phone_2, :mobile_no, :role, :is_requested, :company_name])
     devise_parameter_sanitizer.permit(:account_update, keys: [:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company, :company_address, :phone_2, :mobile_no])
     devise_parameter_sanitizer.permit(:accept_invitation, keys: [:first_name, :company, :mobile_no, :password, :password_confirmation])
   end
@@ -54,6 +56,20 @@ class ApplicationController < ActionController::Base
 
   def authenticate_inviter!
     authenticate_admin!(:force => true)
+  end
+
+  def current_company
+    @comapny ||= current_customer.company
+  end
+
+  def check_request_access
+    if customer_signed_in?
+      if current_customer.is_requested
+        redirect_to access_denied_path, notice: 'You are not allowed to access. Please contact your company admin.'
+      else
+        # Do Nothing
+      end
+    end
   end
 
   private

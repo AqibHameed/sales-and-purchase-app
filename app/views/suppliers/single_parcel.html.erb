@@ -3,7 +3,7 @@
   <table class="table table-bordered table-responsive">
   <tr>
     <td> Supplier</td>
-    <td><%= @parcel.try(:customer).try(:company) %></td>
+    <td><%= @parcel.try(:customer).try(:company).try(:name) %></td>
   </tr>
   <tr>
     <td> Source </td>

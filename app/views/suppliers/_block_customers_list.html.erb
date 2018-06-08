@@ -11,7 +11,7 @@
         <% customer = Customer.where(:id => u_id.to_i).first %>
         <tr>
           <td></td>
-          <td><%= customer.company %></td>
+          <td><%= customer.company.try(:name) %></td>
           <td><%= number_to_currency(get_credit_limit(customer, current_customer)) %></td>
           <td><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
         </tr>

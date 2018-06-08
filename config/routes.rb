@@ -110,6 +110,8 @@ Rails.application.routes.draw do
       get :demanding_search, path: 'search'
       get :search_demand_list
       get :demand_from_search
+      get :approve_access
+      post :approve
     end
     member do
       get :add_company
@@ -124,6 +126,7 @@ Rails.application.routes.draw do
     collection do
       get :list_company
       post :company_limits
+      get :check_company
     end
   end
 
@@ -309,4 +312,5 @@ Rails.application.routes.draw do
   get '/update_chat_id',to: 'tenders#update_chat_id'
   get '/share_with_brokers', to: 'trading_parcels#share_broker'
   get '/parcel_detail', to: 'trading_parcels#parcel_detail'
+  get '/access_denied', to: 'customers#access_denied'
 end

@@ -49,11 +49,11 @@ class ProposalsController < ApplicationController
       # Email sent to action for column user
       Message.create_new_negotiate(@proposal, current_customer)
       flash[:notice] = "Proposal sent successfully."
-      redirect_to proposals_path
+      redirect_to trading_customers_path
     else
       error = @proposal.errors.full_messages.first
       flash[:notice] = error
-      redirect_to proposal_path(@proposal)
+      redirect_to trading_customers_path
     end
   end
 
@@ -117,6 +117,6 @@ class ProposalsController < ApplicationController
   end
 
   def proposal_params
-    params.require(:proposal).permit(:buyer_id, :supplier_id, :credit, :price, :action_for, :trading_parcel_id, :notes)
+    params.require(:proposal).permit(:buyer_id, :seller_id, :credit, :price, :action_for, :trading_parcel_id, :notes)
   end
 end

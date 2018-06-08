@@ -2,7 +2,7 @@ class Transaction < ApplicationRecord
   belongs_to :trading_parcel
 
   belongs_to :buyer, class_name: 'Customer', foreign_key: 'buyer_id'
-  belongs_to :supplier, class_name: 'Customer', foreign_key: 'supplier_id'
+  belongs_to :seller, class_name: 'Customer', foreign_key: 'seller_id'
 
   validate :credit_validation, :validate_invoice_date
   after_create :update_credit_limit, :generate_and_add_uid, :generate_and_add_amount
@@ -11,12 +11,12 @@ class Transaction < ApplicationRecord
   attr_accessor :weight
 
   def credit_validation
-    limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
+    limit = CreditLimit.where(buyer_id: buyer_id, seller_id: seller_id).first
     if limit.nil?
       errors[:base] << "Please increase credit limit. Available credit is less than the invoice amount. Please <a href = '/suppliers/credit'>click here</a> to assign.".html_safe
     else
       credit_limit = limit.credit_limit
-      transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false, buyer_confirmed: true)
+      transactions = Transaction.where(buyer_id: buyer_id, seller_id: seller_id, paid: false, buyer_confirmed: true)
       @amount = []
       transactions.each do |t|
         @amount << t.remaining_amount
@@ -41,16 +41,16 @@ class Transaction < ApplicationRecord
 
   def self.create_new(proposal)
     trading_parcel = proposal.trading_parcel
-    Transaction.create(buyer_id: proposal.buyer_id, supplier_id: proposal.supplier_id,
+    Transaction.create(buyer_id: proposal.buyer_id, seller_id: proposal.seller_id,
                       trading_parcel_id: proposal.trading_parcel_id, price: proposal.price,
                       credit: proposal.credit, due_date: Date.today + (trading_parcel.credit_period).days,
                       paid: false, buyer_confirmed: true, created_at: Time.now, diamond_type: trading_parcel.diamond_type)
   end
 
   def update_credit_limit
-    cl = CreditLimit.where(buyer_id: self.buyer_id, supplier_id: self.supplier_id).first
+    cl = CreditLimit.where(buyer_id: self.buyer_id, seller_id: self.seller_id).first
     if cl.nil?
-      cl = CreditLimit.create(buyer_id: self.buyer_id, supplier_id: self.supplier_id, credit_limit: 0.0)
+      cl = CreditLimit.create(buyer_id: self.buyer_id, seller_id: self.seller_id, credit_limit: 0.0)
     end
   end
 
@@ -81,11 +81,11 @@ class Transaction < ApplicationRecord
   end
 
   def self.total_transaction(customer_id)
-    total_transaction = Transaction.where('(buyer_id = ? or supplier_id = ?) and buyer_confirmed = ?',customer_id, customer_id, true)
+    total_transaction = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?',customer_id, customer_id, true)
   end
 
   def self.pending_sent_transaction(customer_id)
-    total_pending_sent = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", customer_id, Date.today, false, true)
+    total_pending_sent = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", customer_id, Date.today, false, true)
   end
 
   def self.pending_received_transaction(customer_id)
@@ -97,7 +97,7 @@ class Transaction < ApplicationRecord
   end
 
   def self.overdue_sent_transaction(customer_id)
-    total_overdue_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?", customer_id, Date.today, false, true)
+    total_overdue_sent = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?", customer_id, Date.today, false, true)
   end
 
   def self.complete_received_transaction(customer_id)
@@ -105,7 +105,7 @@ class Transaction < ApplicationRecord
   end
 
   def self.complete_sent_transaction(customer_id)
-    total_complete_sent = Transaction.includes(:trading_parcel).where("supplier_id = ? AND paid = ? AND buyer_confirmed = ?", customer_id, true, true)
+    total_complete_sent = Transaction.includes(:trading_parcel).where("seller_id = ? AND paid = ? AND buyer_confirmed = ?", customer_id, true, true)
   end
 
   def self.send_overdue_email

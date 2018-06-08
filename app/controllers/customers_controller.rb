@@ -4,6 +4,8 @@ class CustomersController < ApplicationController
   # before_action :authenticate_admin!
   before_action :check_info_shared, only: [:shared_info]
   before_action :check_role_authorization, only: [:trading, :demanding]
+  before_action :can_approve_access, only: [:approve, :approve_access]
+  skip_before_action :check_request_access, only: [:access_denied]
 
   def profile
     @customer = current_customer
@@ -21,11 +23,11 @@ class CustomersController < ApplicationController
     @total_complete_received = Transaction.complete_received_transaction(current_customer.id).sum(:total_amount)
     @total_complete_sent = Transaction.complete_sent_transaction(current_customer.id).sum(:total_amount)
     @credit_recieved = CreditLimit.where('buyer_id =?',current_customer.id)
-    @credit_given = CreditLimit.where('supplier_id =?',current_customer.id)
+    @credit_given = CreditLimit.where('seller_id =?',current_customer.id)
     @shared = Shared.new
     @shared_table = Shared.where(shared_by_id: current_customer.id)
     @credit_recieved_transaction = Transaction.where('buyer_id =?',current_customer.id)
-    @credit_given_transaction = Transaction.where('supplier_id =?',current_customer.id)
+    @credit_given_transaction = Transaction.where('seller_id =?',current_customer.id)
   end
 
   def shared
@@ -58,10 +60,10 @@ class CustomersController < ApplicationController
     @total_complete_received = Transaction.complete_received_transaction(params[:id]).sum(:total_amount)
     @total_complete_sent = Transaction.complete_sent_transaction(params[:id]).sum(:total_amount)
     @credit_recieved = CreditLimit.where('buyer_id =?',params[:id])
-    @credit_given = CreditLimit.where('supplier_id =?',params[:id])
+    @credit_given = CreditLimit.where('seller_id =?',params[:id])
     @customer = Customer.find(params[:id])
     @credit_recieved_transaction = Transaction.where('buyer_id =?',params[:id])
-    @credit_given_transaction = Transaction.where('supplier_id =?',params[:id])
+    @credit_given_transaction = Transaction.where('seller_id =?',params[:id])
   end
 
   def transaction_list
@@ -192,9 +194,9 @@ class CustomersController < ApplicationController
       else
         parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?) or trading_parcels.box IN (?)", params[:demand][:diamond_type], params[:demand][:demand_supplier_id], description, description)
       end
-   else
-    parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
-   end
+    else
+      parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
+    end
 
     aa = parcels.where("(customer_id = #{current_customer.id}) OR (sale_all = true) OR (sale_none = false) OR (sale_broker = true and broker_ids IN (#{current_customer.id.to_s}) ) OR (sale_credit = true) OR (sale_demanded = true)")
     ss = aa.where(sale_demanded: true)
@@ -205,9 +207,9 @@ class CustomersController < ApplicationController
       @parcels1 = aa
     end
     mm = aa.where(sale_credit: true)
-    credit_limit = CreditLimit.where(supplier_id: aa.pluck(:customer_id),buyer_id: current_customer.id)
+    credit_limit = CreditLimit.where(seller_id: aa.pluck(:customer_id),buyer_id: current_customer.id)
     if credit_limit.exists?
-      @parcels2 = mm.where("customer_id != ?",credit_limit.pluck(:supplier_id))
+      @parcels2 = mm.where("customer_id != ?", credit_limit.pluck(:seller_id))
     else
       @parcels2 = mm
     end
@@ -307,6 +309,23 @@ class CustomersController < ApplicationController
     end
   end
 
+  def approve_access
+    @customers = current_company.customers.where(is_requested: true)
+  end
+
+  def approve
+    customer = Customer.find(params[:cu])
+    if customer.update_attributes(is_requested: false)
+      redirect_to approve_access_customers_path, notice: 'Access granted'
+    else
+      redirect_to approve_access_customers_path, alert: customer.errors.full_messages.first
+    end
+  end
+
+  def access_denied
+  end
+
+
   private
   def customer_params
     params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate)
@@ -336,5 +355,13 @@ class CustomersController < ApplicationController
     end
   end
 
+  def can_approve_access
+    first_customer = current_company.get_owner
+    if first_customer == current_customer
+      # Do Nothing
+    else
+      redirect_to root_path, alert: "You are not authorized"
+    end
+  end
 end
 

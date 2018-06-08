@@ -69,7 +69,7 @@ module Api
               list << {
                 id: customer.id.to_s,
                 customer_name: customer.name,
-                company: customer.company,
+                company: customer.company.try(:name),
                 total_limit: get_credit_limit(customer, current_customer), 
                 used_limit: get_used_credit_limit(customer, current_customer), 
                 available_limit: get_available_credit_limit(customer, current_customer), 
@@ -87,7 +87,7 @@ module Api
               @data << {
                 id: customer.id.to_s,
                 customer_name: customer.name,
-                company: customer.company,
+                company: customer.company.try(:name),
                 total_limit: get_credit_limit(customer, current_customer), 
                 used_limit: get_used_credit_limit(customer, current_customer), 
                 available_limit: get_available_credit_limit(customer, current_customer), 

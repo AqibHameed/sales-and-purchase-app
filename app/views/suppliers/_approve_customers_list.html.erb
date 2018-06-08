@@ -14,22 +14,29 @@
     </thead>
     <% customers.each.with_index(1) do |customer, i|%>
       <tr>
-        <td><span class="table-head-in-td">Imp</span>
-          <%= link_to important_suppliers_path(id: customer.id), remote: true do %>
-            <% if check_for_star(customer.id) == true %>
-            <%= image_tag "/assets/star-on.png", alt: "1", title: "Important", id: "star" %>
-            <% else %>
-            <%= image_tag "/assets/star-off.png", alt: "2", title: "Important", id: "star" %>
-            <% end %>
+
+
+
+      <td><span class="table-head-in-td">Imp</span>
+        <%= link_to important_suppliers_path(id: customer.id), remote: true do %>
+          <% if check_for_star(customer.id) == true %>
+          <%= image_tag "/assets/star-on.png", alt: "1", title: "Important", id: "star" %>
+          <% else %>
+          <%= image_tag "/assets/star-off.png", alt: "2", title: "Important", id: "star" %>
           <% end %>
-        </td>
+        <% end %>
+      </td>
+
+
+
+
 
         <td class="customer_name">
           <span class="table-head-in-td">Customer Name</span>
           <div class="c_n"><%=customer.name%></div>
         </td>
         <td><span class="table-head-in-td">Company</span>
-        <%= link_to customer.company, profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
+        <%= link_to customer.company.try(:name), profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
         <td class="credit_limit">
         <span class="table-head-in-td">Total Limit</span>
           <a href="javascript:void(0)" class="given_limit" id='credit_edit'>
@@ -42,7 +49,7 @@
           </a>
           <span class="edit_field hide">
             <%=number_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %>
-            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%>
+            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%> 
             <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
           </span>
           </br>
@@ -79,9 +86,9 @@
         </td>
         <td><span class="table-head-in-td">Suppliers Connected</span><%= supplier_connected(customer,current_customer)%></td>
         <% if customer.is_blocked_by_supplier(current_customer.id) %>
-          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %><span class="hide" ><%=  1 %></span></td>
+          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
         <% else %>
-          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> customer.id) %><span class="hide" ><%= 2 %></span></td>
+          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> customer.id) %></td>
         <% end %>
       </tr>
     <% end %>

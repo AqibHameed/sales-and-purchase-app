@@ -35,7 +35,7 @@
       <% if request.id.nil? %>
       <% else %>
         <td><%= i%></td>
-        <td><%= request.buyer.company %></td>
+        <td><%= request.buyer.company.try(:name) %></td>
         <td><%= request.buyer.first_name %></td>
         <td><%= request.limit %></td>
         <td><% if request.approve == false%><%= 'Pending'%>

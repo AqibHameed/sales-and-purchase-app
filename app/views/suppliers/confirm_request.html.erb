@@ -17,7 +17,7 @@
 
             <% else %>
               <td><%= i%></td>
-              <td><%= request.buyer.company %></td>
+              <td><%= request.buyer.company.try(:name) %></td>
               <td><%= request.buyer.first_name %></td>
                 <td class="days_limit">
                 <!-- <span class="table-head-in-td">Overdue Limit</span> -->

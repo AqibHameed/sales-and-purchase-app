@@ -50,14 +50,14 @@ class SubCompaniesController < ApplicationController
   end
 
   def set_limit_customers(object, type)
-    @creditlimits = CreditLimit.where(supplier_id: object.try(:sub_company_id))
+    @creditlimits = CreditLimit.where(seller_id: object.try(:sub_company_id))
     unless type == 'Specific' && params[:sub_company_credit_limit][:credit_type] == 'Specific'
       @creditlimits.destroy_all
     end
     if params[:sub_company_credit_limit][:credit_type] == 'Specific'
       cust_ids = params[:sub_company_credit_limit][:customer_id].split(',')
       cust_ids.each do |cust_id|
-        credit_limit = CreditLimit.where(buyer_id: cust_id, supplier_id: params[:sub_company_credit_limit][:sub_company_id]).first_or_initialize
+        credit_limit = CreditLimit.where(buyer_id: cust_id, seller_id: params[:sub_company_credit_limit][:sub_company_id]).first_or_initialize
         credit_limit.credit_limit = params[:sub_company_credit_limit][:credit_limit].to_f
         credit_limit.save!
       end
@@ -77,7 +77,7 @@ class SubCompaniesController < ApplicationController
 
   def show_all_customers
     scc_limits = SubCompanyCreditLimit.find_by(id: params[:id])
-    sccs = CreditLimit.where(supplier_id: scc_limits.try(:sub_company_id))
+    sccs = CreditLimit.where(seller_id: scc_limits.try(:sub_company_id))
     @customers = []
     sccs.each do |scc|
       object = OpenStruct.new

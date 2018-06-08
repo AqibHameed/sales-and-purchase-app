@@ -22,4 +22,12 @@ class CompaniesController < ApplicationController
   def index
     @company = Company.all
   end
+
+  def check_company
+    if Company.where(name: params[:name]).exists?
+      render json: { success: true }
+    else
+      render json: { success: false }
+    end
+  end
 end

@@ -15,7 +15,7 @@
           <% if cl.buyer.present? %>
             <tr>
               <td><span class="table-head-in-td"></span><%= %></td>
-              <td><span class="table-head-in-td">Buyer</span><%= link_to cl.buyer.try(:company), customer_transactions_path(buyer_id: cl.buyer.id, supplier_id: current_customer.id) rescue 'N/A' %></td>
+              <td><span class="table-head-in-td">Buyer</span><%= link_to cl.buyer.try(:company).try(:name), customer_transactions_path(buyer_id: cl.buyer.id, supplier_id: current_customer.id) rescue 'N/A' %></td>
               <td class="given_limit">
               <span class="table-head-in-td">Given</span>
               <%= number_to_currency(get_credit_limit(cl.buyer, current_customer)) rescue 'N/A' %>

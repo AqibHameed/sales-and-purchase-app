@@ -14,7 +14,7 @@
     <% transactions.each.with_index(1) do |transaction, i|%>
       <tr>
         <td><span class="table-head-in-td">Count</span><%= index_count(params[:page].to_i) + i %></td>
-        <td><span class="table-head-in-td">Buyer</span><%= transaction.try(:buyer).try(:company) rescue 'N/A' %></td>
+        <td><span class="table-head-in-td">Buyer</span><%= transaction.try(:buyer).try(:company).try(:name) rescue 'N/A' %></td>
         <td><span class="table-head-in-td">Description</span><%= get_description(transaction.trading_parcel) if transaction %></td>
         <td><span class="table-head-in-td">Carats</span><%= transaction.trading_parcel.weight rescue 'N/A' %></td>
         <td><span class="table-head-in-td">Price</span><%= transaction.price.nil? ? 'N/A' : number_with_precision(transaction.price, precision: 2) %></td>

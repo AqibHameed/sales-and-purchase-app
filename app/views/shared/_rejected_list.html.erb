@@ -17,9 +17,9 @@
       <tr>
         <td><%= index_count(params[:page].to_i) + i %></td>
         <% if current_customer.id == proposal.buyer_id %>
-          <td><%= proposal.supplier.company %></td>
+          <td><%= proposal.supplier.company.try(:name) %></td>
         <% else %>
-          <td><%= proposal.buyer.company %></td>
+          <td><%= proposal.buyer.company.try(:name) %></td>
         <% end %>
         <td><%= get_description(proposal.trading_parcel) %></td>
         <td><%= proposal.trading_parcel.price.nil? ? 'N/A' : proposal.trading_parcel.price %></td>

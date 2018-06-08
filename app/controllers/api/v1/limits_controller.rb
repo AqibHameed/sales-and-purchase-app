@@ -10,8 +10,8 @@ module Api
 
       def add_credit_limit
         if current_customer
-          cl = CreditLimit.where(supplier_id: current_customer.id, buyer_id: params[:buyer_id]).first_or_initialize
-          total_clms = CreditLimit.where(supplier_id: current_customer.id).sum(:credit_limit)
+          cl = CreditLimit.where(seller_id: current_customer.id, buyer_id: params[:buyer_id]).first_or_initialize
+          total_clms = CreditLimit.where(seller_id: current_customer.id).sum(:credit_limit)
           total_limit = params[:limit].to_f
           cl.errors.add(:credit_limit, "should not be negative ") if total_limit < 0
 
@@ -55,7 +55,7 @@ module Api
           if buyer.nil?
             render json: { success: false, message: "Buyer doesn't exist" }
           else
-            cl = CreditLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
+            cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_customer.id).first_or_initialize
             cl.market_limit = params[:limit]
             if cl.save
               render json: { success: true, message: 'Market Limit updated.', value: cl.market_limit }
@@ -74,7 +74,7 @@ module Api
           if buyer.nil?
             render json: { success: false, message: "Buyer doesn't exist" }
           else
-            dl = DaysLimit.where(buyer_id: params[:buyer_id], supplier_id: current_customer.id).first_or_initialize
+            dl = DaysLimit.where(buyer_id: params[:buyer_id], seller_id: current_customer.id).first_or_initialize
             dl.days_limit = params[:limit]
             if dl.save
               render json: { success: true, message: 'Days Limit updated.', value: view_context.get_days_limit(buyer, current_customer) }
@@ -123,7 +123,7 @@ module Api
             else
               @data = {
                 id: customer.id.to_s,
-                company: customer.company,
+                company: customer.company.try(:name),
                 total_limit: get_credit_limit(customer, current_customer), 
                 used_limit: get_used_credit_limit(customer, current_customer), 
                 available_limit: get_available_credit_limit(customer, current_customer), 
@@ -135,12 +135,12 @@ module Api
             end
           else
             @data = []
-            credit_limit = CreditLimit.where(supplier_id: current_customer.id)
+            credit_limit = CreditLimit.where(seller_id: current_customer.id)
             credit_limit.each do |c|
               if c.buyer.present?
                 @data << {
                 id: c.buyer.id.to_s,
-                company: c.buyer.try(:company),
+                company: c.buyer.try(:company).try(:name),
                 total_limit: get_credit_limit(c.buyer, current_customer),
                 used_limit: get_used_credit_limit(c.buyer, current_customer), 
                 available_limit: get_available_credit_limit(c.buyer, current_customer), 

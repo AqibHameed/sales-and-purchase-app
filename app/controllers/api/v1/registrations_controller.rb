@@ -26,7 +26,7 @@ class Api::V1::RegistrationsController < ActionController::Base
       postal_code: customer.postal_code,
       phone: customer.phone,
       status: customer.status,
-      company: customer.company,
+      company: customer.company.try(:name),
       company_address: customer.company_address,
       phone_2: customer.phone_2,
       mobile_no: customer.mobile_no,

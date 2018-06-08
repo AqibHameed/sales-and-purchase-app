@@ -36,7 +36,7 @@
                 <%= bid.customer.name %>
             </td>
             <td>
-                <%= bid.customer.company %>
+                <%= bid.customer.company.try(:name) %>
             </td>
 			<td>
 				<%= bid.stone.description %>

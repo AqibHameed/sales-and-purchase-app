@@ -35,7 +35,7 @@
                 <%= link_to bid.customer.name, customer_bid_detail_tender_path(@tender, :customer_id => bid.customer.id ) %>
             </td>
             <td>
-                <%= bid.customer.company %>
+                <%= bid.customer.company.try(:name) %>
             </td>
 			<td>
 				<%= bid.stone.description %>

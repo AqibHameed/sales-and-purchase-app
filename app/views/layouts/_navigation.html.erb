@@ -86,6 +86,9 @@
         <div id="myDropdown" class="dropdown-content">
           <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
           <%= link_to 'Info', info_customers_path, data: { turbolinks: false } unless current_admin %>
+          <% unless current_admin %>
+            <%= link_to 'Approve access', approve_access_customers_path, data: { turbolinks: false } if current_customer == current_company.get_owner  %>
+          <% end %>
           <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
           <%= link_to 'Manage Brokers', requests_brokers_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
           <%= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } %>

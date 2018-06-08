@@ -319,7 +319,7 @@ $(document).ready(function() {
       $('#sale_demanded').attr('disabled', false)
     }
   })
-
+    
   $(document).on('change', '.for_sale', function() {
     var column = $(this).val()
     var parcel_id = $(this).data('id');
@@ -333,7 +333,7 @@ $(document).ready(function() {
       data: { val: val, col: column },
       type: "GET"
     })
-
+    
     // if(val == "2"){
     //   $(this).parent('td').find('.broker-list').removeClass('hide')
     // }else{

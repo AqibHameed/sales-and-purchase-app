@@ -9,7 +9,7 @@
     <div class="form-group">
        <label class="col-md-4 control-label">Company</label> 
        <div class="col-md-4">
-        <%= select_tag "search_company",  options_from_collection_for_select(Company.all, "id", "name"), :selected => params[:search_company], :prompt => 'Select Company' ,:class => 'input'%>
+        <%= select_tag "search_company",  options_from_collection_for_select(Supplier.all, "id", "name"), :selected => params[:search_company], :prompt => 'Select Company' ,:class => 'input'%>
        </div>
     </div> 
     

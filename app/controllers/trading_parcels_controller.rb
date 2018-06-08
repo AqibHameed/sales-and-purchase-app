@@ -44,7 +44,7 @@ class TradingParcelsController < ApplicationController
     @available_customers = []
     @not_enough_available_customers = []
     @demanded_but_not_available = []
-    customers = CreditLimit.where(supplier_id: current_customer.id).map { |e|  e.buyer  }
+    customers = CreditLimit.where(seller_id: current_customer.id).map { |e|  e.buyer  }
     customers.each do |c|
       if get_available_credit_limit(c, current_customer).to_f >= @parcel.price.to_f
           @available_customers << c
@@ -54,7 +54,7 @@ class TradingParcelsController < ApplicationController
     end
     demands = Demand.where(description: @parcel.description).map { |e|  e.customer  }
     demands.each do |customer|
-      if !customer.buyer_credit_limits.where(supplier_id: current_customer.id).present?
+      if !customer.buyer_credit_limits.where(seller_id: current_customer.id).present?
        @demanded_but_not_available << customer
       end
     end
@@ -120,7 +120,7 @@ class TradingParcelsController < ApplicationController
   end
 
   def save_direct_sell
-    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], supplier_id: @parcel.customer_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
+    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.customer_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
                                   price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
                                   created_at: params[:transaction][:created_at])
     if @transaction.save

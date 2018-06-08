@@ -76,7 +76,7 @@
   <%= form_for @proposal do |f| %>
     <%= render partial: 'proposals/form', locals: { f: f } %>
     <%=f.hidden_field :buyer_id, value: current_customer.id %>
-    <%=f.hidden_field :supplier_id, value: @parcel.customer_id %>
+    <%=f.hidden_field :seller_id, value: @parcel.customer_id %>
     <%=f.hidden_field :action_for, value: @parcel.customer_id %>
     <%=f.hidden_field :trading_parcel_id, value: @parcel.id %>
   <% end %>

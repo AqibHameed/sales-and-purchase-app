@@ -2,7 +2,7 @@ class Proposal < ApplicationRecord
   paginates_per 25
   belongs_to :trading_parcel
   belongs_to :buyer, class_name: 'Customer', foreign_key: 'buyer_id'
-  belongs_to :supplier, class_name: 'Customer', foreign_key: 'supplier_id'
+  belongs_to :seller, class_name: 'Customer', foreign_key: 'seller_id'
 
   enum status: [ :negotiated, :accepted, :rejected ]
 
@@ -51,9 +51,9 @@ class Proposal < ApplicationRecord
   # end
 
   def check_sub_company_limit(current_customer)
-    scc = SubCompanyCreditLimit.where(sub_company_id: self.supplier_id).first
+    scc = SubCompanyCreditLimit.where(sub_company_id: self.seller_id).first
     if scc.try(:credit_type) == 'Yours'
-      cl = CreditLimit.where(supplier_id: scc.try(:parent_id), buyer_id: current_customer.id).first
+      cl = CreditLimit.where(seller_id: scc.try(:parent_id), buyer_id: current_customer.id).first
       if cl.present?
         credit_limit = cl.credit_limit
         check_transaction(credit_limit, 'sub_company', scc.try(:parent_id))
@@ -61,18 +61,18 @@ class Proposal < ApplicationRecord
         self.errors.add(:credit_limit, "not available for this customer")
       end
     else
-      limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
+      limit = CreditLimit.where(buyer_id: buyer_id, seller_id: seller_id).first
       if limit.nil?
         self.errors.add(:credit_limit, "haven't given by Supplier to you. Request credits from below")
       else
         credit_limit = limit.credit_limit
-        check_transaction(credit_limit, 'supplier', supplier_id)
+        check_transaction(credit_limit, 'supplier', seller_id)
       end
     end
   end
 
   def check_transaction(credit_limit, type, supplier)
-    transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier, paid: false, buyer_confirmed: true)
+    transactions = Transaction.where(buyer_id: buyer_id, seller_id: supplier, paid: false, buyer_confirmed: true)
     @amount = []
     transactions.each do |t|
       @amount << t.remaining_amount

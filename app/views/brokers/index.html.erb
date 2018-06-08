@@ -11,7 +11,7 @@
       <% @sellers.each do |seller| %>
         <tr>
           <td><%= seller.name %></td>
-          <td><%= seller.company %></td>
+          <td><%= seller.company.try(:name) %></td>
           <td><%= link_to_request(current_customer, seller) %></td>
         </tr>
       <% end %>

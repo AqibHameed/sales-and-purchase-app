@@ -33,7 +33,7 @@ module Api
           if stone.nil?
             render json: { errors: "Parcel not found", response_code: 201 }
           else
-            bid_history = Bid.last_3_bids(current_customer.id, stone.description, stone.tender.try(:company_id))
+            bid_history = Bid.last_3_bids(current_customer.id, stone.description, stone.tender.try(:supplier_id))
             render json: { bids: bid_history, response_code: 200 }
           end
         else

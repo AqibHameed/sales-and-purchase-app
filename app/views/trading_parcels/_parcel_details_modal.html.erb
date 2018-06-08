@@ -13,7 +13,7 @@
             </div>
             <div class="col-lg-4">
               <% total = @parcel.try(:price)*@parcel.try(:weight) rescue 0 %>
-              <p><b>Supplier:</b> <%= @parcel.try(:customer).try(:company) %></p>
+              <p><b>Supplier:</b> <%= @parcel.try(:customer).try(:company).try(:name) %></p>
               <p><b>Lot No.:</b> <%= @parcel.try(:lot_no) %></p>
               <p><b>Description:</b> <%= @parcel.try(:description) %></p>
               <p><b>Carats:</b> <%= @parcel.try(:weight) %></p>
@@ -64,7 +64,7 @@
                   <p>% diff from last sold price: <span class="difference"></span></p>
                 </div>
                 <%=f.hidden_field :buyer_id, value: current_customer.id %>
-                <%=f.hidden_field :supplier_id, value: @parcel.try(:customer_id) %>
+                <%=f.hidden_field :seller_id, value: @parcel.try(:customer_id) %>
                 <%=f.hidden_field :action_for, value: @parcel.try(:customer_id) %>
                 <%=f.hidden_field :trading_parcel_id, value: @parcel.try(:id) %>
                 <%=hidden_field_tag :carats,  @parcel.try(:weight) %>
@@ -73,7 +73,7 @@
                 <div class="clear10"></div>
                   <div class="parcel-details">
                     <span class="error-message" style="margin: 0px 0px 6px 5px; color: red;"></span></br>
-                    <%if @parcel.present?%>
+                    <% if @parcel.present? %>
                       <% if (current_customer.id == @parcel.try(:customer_id))  %>
                       <% elsif current_customer.is_blocked_by_supplier(@parcel.try(:customer_id)) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
@@ -91,11 +91,12 @@
                       <% elsif current_customer.check_market_limit_overdue(get_market_limit(current_customer, @parcel.try(:customer_id)), @parcel.try(:customer_id)) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything, due to your Market limit overdue.</p>
                       <% else %>
-                        <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit'%>
+                        <%= current_customer.has_limit(@parcel.try(:customer_id)) %>
+                        <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit' %>
                       <% end %>
                     <% else %>
-                        <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit'%>
-                      <% end %>
+                      
+                    <% end %>
                   </div>
                 </div>
                   <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm submit-form hide'%>

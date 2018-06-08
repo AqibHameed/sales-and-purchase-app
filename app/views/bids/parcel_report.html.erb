@@ -18,7 +18,7 @@
 		<tbody>
 		<% if @bid %>
 			<tr>
-			  <td><%= @bid.tender.company.name%></td>				
+			  <td><%= @bid.tender.supplier.name%></td>				
 				<td><%= @bid.stone.description if @bid.stone %></td>				
 				<td><%= @bid.stone.weight if @bid.stone %></td>
 				<td><%= @bid.price_per_carat %></td>
