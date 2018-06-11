@@ -99,7 +99,7 @@ class Api::V1::ApiController < ApplicationController
 
   def customer_list
     customers = Customer.all
-    render json: { customers: customers.as_json(only: [:id, :first_name, :last_name, :email, :company, :chat_id]), response_code: 200}
+    render json: { customers: customers_data(customers), response_code: 200 }
   end
 
   def update_chat_id
@@ -125,6 +125,21 @@ class Api::V1::ApiController < ApplicationController
         supplier_id: supplier.id,
         supplier_name: supplier.name,
         is_notified: customer.notify_by_supplier(supplier)
+      }
+    end
+    @data
+  end
+
+  def customers_data(customers)
+    @data = []
+    customers.each do |c|
+      @data << {
+        id: c.id,
+        first_name: c.first_name,
+        last_name: c.last_name,
+        email: c.email,
+        company: c.company.try(:name),
+        chat_id: c.chat_id
       }
     end
     @data
