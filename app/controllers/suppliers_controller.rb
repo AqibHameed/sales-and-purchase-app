@@ -98,7 +98,7 @@ class SuppliersController < ApplicationController
     else
       # @customers = Customer.where.not(id: current_customer.id)
       @star_customers = CreditLimit.where(seller_id: current_customer.id, star: true).map{|c| c.buyer}
-      @custs = Customer.where.not(id: current_customer.id).limit(10) #.page
+      @custs = Customer.where.not(id: current_customer.id) #.page
       @customers = @star_customers + @custs
       @customers = @customers.uniq
     end
