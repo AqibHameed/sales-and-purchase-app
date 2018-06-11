@@ -347,10 +347,10 @@ class CustomersController < ApplicationController
     if current_admin.present?
       # do nothing
     else
-      if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker')
+      if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker') || current_customer.has_role?('Seller')
         # do nothing
       else
-        redirect_to trading_customers_path, notice: 'You are not authorized.'
+        redirect_to root_path, notice: 'You are not authorized.'
       end
     end
   end
@@ -364,4 +364,3 @@ class CustomersController < ApplicationController
     end
   end
 end
-
