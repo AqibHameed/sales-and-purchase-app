@@ -45,7 +45,7 @@ class Customer < ApplicationRecord
   has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "CompaniesGroup"
   # has_many :companies_customers, :foreign_key => "customer_id", :class_name => "CompaniesGroup"
-  # belongs_to :company, optional: true
+  belongs_to :company, optional: true
   
   
   validates :mobile_no, uniqueness: true
