@@ -41,6 +41,13 @@
       $('.sight_diamond').removeClass('hide')
       $('#trading_document_credit_field').val('I')
       $('#trading_document_price_field').val('H')
+    }else if(val == "SOMETHING SPECIAL") {
+      $('#trading_parcel_diamond_type').val('Rough')
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('#trading_document_credit_field').val('E')
+      $('#trading_document_price_field').val('F')
     }else{
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')

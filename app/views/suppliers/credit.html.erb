@@ -20,13 +20,15 @@
       <div class="">
         <h2>Approve Customers</h2>
         <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path, data: {turbolinks: false}  %>: <%= number_to_currency(overall_credit_given(current_customer)) %></p>
-        <% if @type.try(:credit_type) == 'Specific' %>
-          <%= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
-        <% elsif @type.try(:credit_type) == 'General' %>
+
+        <!-- <%# if @type.try(:credit_type) == 'Specific' %>
+          <%#= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
+        <%# elsif @type.try(:credit_type) == 'General' %>
           <p><h2>General limit:</h2>
-          Total Credit: <%= number_to_currency(@type.try(:credit_limit))%><br>
-          Credit remaining: <%= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
-        <% end %>
+          Total Credit: <%#= number_to_currency(@type.try(:credit_limit))%><br>
+          Credit remaining: <%#= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
+        <%# end %> -->
+
         <div class="approve_list">
           <%= render 'approve_customers_list', customers: @customers %>
         </div>
@@ -163,8 +165,20 @@
       })
     }
   })
-  // $(document).on('click', '.search_link', function(){
-  //   $('.search-form').slideToggle();
-  // })
+  $('#creditList').DataTable({
+    // "paging": false,
+    "pageLength": 20,
+    // "bLengthChange": false,
+    "bInfo" : false
+    // "columnDefs": [
+    //   { "orderable": false, "targets": 0 },
+    //   { "orderable": false, "targets": 1 },
+    //   { "orderable": false, "targets": 2 },
+    //   { "orderable": false, "targets": 3 },
+    //   { "orderable": false, "targets": 4 },
+    //   { "orderable": false, "targets": 5 },
+    //   { "orderable": false, "targets": 6 }
+    // ]
+  });
 
 </script>

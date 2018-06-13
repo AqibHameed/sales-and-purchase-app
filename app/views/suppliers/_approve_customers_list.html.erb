@@ -86,9 +86,9 @@
         </td>
         <td><span class="table-head-in-td">Suppliers Connected</span><%= supplier_connected(customer,current_customer)%></td>
         <% if customer.is_blocked_by_supplier(current_customer.id) %>
-          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %></td>
+          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %><span class="hide" ><%=  1 %></span></td>
         <% else %>
-          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> customer.id) %></td>
+          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> customer.id) %><span class="hide" ><%= 2 %></span></td>
         <% end %>
       </tr>
     <% end %>
@@ -115,11 +115,11 @@
       })
     });
 
- $(document).ready(function()
- {
-  var oTable = $('#creditList').dataTable();
-  oTable.fnSort( [ [3,'desc'] ] );
- });
+ // $(document).ready(function()
+ // {
+ //  var oTable = $('#creditList').dataTable();
+ //  oTable.fnSort( [ [3,'desc'] ] );
+ // });
 
  $(document).on('click', '#star', function(e) {
   var url = $(this).attr('src');

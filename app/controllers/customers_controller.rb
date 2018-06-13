@@ -181,22 +181,13 @@ class CustomersController < ApplicationController
       full_description = params[:demand][:description].reject { |c| c.empty? }
       if full_description.present?
         description = full_description
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.source = ? AND (trading_parcels.description IN (?))",params[:demand][:demand_supplier_id],description)
       else
-        # description = ''
-        if params[:demand][:diamond_type] == "Outside Goods"
-          description = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? AND (trading_parcels.source = ? OR trading_parcels.source = ?)",'Rough','',params[:demand][:demand_supplier_id]).pluck(:description)
-        else
-          description = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ?", params[:demand][:diamond_type], params[:demand][:demand_supplier_id]).pluck(:description)
-        end
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.source = ?", params[:demand][:demand_supplier_id])
       end
-      if params[:demand][:diamond_type] == "Outside Goods"
-        parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? AND (trading_parcels.source = ? OR trading_parcels.source = ?) AND (trading_parcels.description IN (?))",'Rough','',params[:demand][:demand_supplier_id],description)
-      else
-        parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?) or trading_parcels.box IN (?)", params[:demand][:diamond_type], params[:demand][:demand_supplier_id], description, description)
-      end
-    else
-      parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
-    end
+   else
+    parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
+   end
 
     aa = parcels.where("(customer_id = #{current_customer.id}) OR (sale_all = true) OR (sale_none = false) OR (sale_broker = true and broker_ids IN (#{current_customer.id.to_s}) ) OR (sale_credit = true) OR (sale_demanded = true)")
     ss = aa.where(sale_demanded: true)
@@ -209,7 +200,7 @@ class CustomersController < ApplicationController
     mm = aa.where(sale_credit: true)
     credit_limit = CreditLimit.where(seller_id: aa.pluck(:customer_id),buyer_id: current_customer.id)
     if credit_limit.exists?
-      @parcels2 = mm.where("customer_id != ?", credit_limit.pluck(:seller_id))
+      @parcels2 = mm.where("customer_id != ?",credit_limit.pluck(:seller_id))
     else
       @parcels2 = mm
     end

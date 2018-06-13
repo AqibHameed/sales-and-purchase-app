@@ -50,7 +50,7 @@
         <div class="label">Description</div>
         <div class='field'>
           <%#=f.text_field :description, class: 'input' %>
-          <%= f.select :description, options_for_select(parcel_list_for_demand(nil), @parcel.description), {include_blank: true}, class: 'input' %>
+          <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
         </div>
       </div>
 
@@ -154,6 +154,11 @@
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
+    }else if(val == "SOMETHING SPECIAL"){
+      $('#trading_parcel_diamond_type').val('Rough')
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
     }else{
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
@@ -218,7 +223,8 @@
     // var amount = carat*price;
     // $('#amount').val(amount);
     var diamond_type = $('#trading_parcel_diamond_type').val()
-    parcel_list($('#trading_parcel_diamond_type').val())
+    // parcel_list($('#trading_parcel_diamond_type').val())
+    parcel_list($('#trading_parcel_source').val())
     setTimeout(function(){
       $('#trading_parcel_description').val('<%=@parcel.description%>')
     }, 500);
@@ -255,19 +261,24 @@
   }
 
   function parcel_list(doc_type) {
-    if (doc_type == 'Rough'){
-      $.ajax({
-        url: '/supplier_demand_list',
-        method: 'get',
-        data: {id: doc_type, page: 'edit'}
-      })
-    } else if(doc_type == 'Sight'){
-      $.ajax({
-        url: '/supplier_list',
-        method: 'get',
-        data: {diamond_type: doc_type, page: 'edit'}
-      })
-    }
+    // if (doc_type == 'Rough'){
+    //   $.ajax({
+    //     url: '/supplier_demand_list',
+    //     method: 'get',
+    //     data: {id: doc_type, page: 'edit'}
+    //   })
+    // } else if(doc_type == 'Sight'){
+    //   $.ajax({
+    //     url: '/supplier_list',
+    //     method: 'get',
+    //     data: {diamond_type: doc_type, page: 'edit'}
+    //   })
+    // }
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: doc_type, page: 'edit'}
+    })
   }
 
   function source_list(id){

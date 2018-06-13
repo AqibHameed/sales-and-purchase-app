@@ -119,16 +119,16 @@ module Api
           if params[:customer_id].present?
             customer = Customer.where(id: params[:customer_id]).first
             if customer.nil?
-             render json: { success: false, errors: "Customer not found", response_code: 201 } 
+             render json: { success: false, errors: "Customer not found", response_code: 201 }
             else
               @data = {
                 id: customer.id.to_s,
                 company: customer.company.try(:name),
-                total_limit: get_credit_limit(customer, current_customer), 
-                used_limit: get_used_credit_limit(customer, current_customer), 
-                available_limit: get_available_credit_limit(customer, current_customer), 
-                overdue_limit: get_days_limit(customer, current_customer), 
-                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer).to_s, 
+                total_limit: get_credit_limit(customer, current_customer),
+                used_limit: get_used_credit_limit(customer, current_customer),
+                available_limit: get_available_credit_limit(customer, current_customer),
+                overdue_limit: get_days_limit(customer, current_customer),
+                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer).to_s,
                 supplier_connected: supplier_connected(customer, current_customer).to_s
               }
               render json: { success: true, limits: @data, response_code: 200  }
@@ -138,15 +138,18 @@ module Api
             credit_limit = CreditLimit.where(seller_id: current_customer.id)
             credit_limit.each do |c|
               if c.buyer.present?
-                @data << {
-                id: c.buyer.id.to_s,
-                company: c.buyer.try(:company).try(:name),
-                total_limit: get_credit_limit(c.buyer, current_customer),
-                used_limit: get_used_credit_limit(c.buyer, current_customer), 
-                available_limit: get_available_credit_limit(c.buyer, current_customer), 
-                overdue_limit: get_days_limit(c.buyer, current_customer), 
-                market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_customer).to_s, 
-                supplier_connected: supplier_connected(c.buyer,current_customer).to_s }
+                group = CompaniesGroup.where('customer_id LIKE ?', "%#{c.buyer.id}%").first
+                unless group.present?
+                  @data << {
+                  id: c.buyer.id.to_s,
+                  company: c.buyer.try(:company),
+                  total_limit: get_credit_limit(c.buyer, current_customer),
+                  used_limit: get_used_credit_limit(c.buyer, current_customer),
+                  available_limit: get_available_credit_limit(c.buyer, current_customer),
+                  overdue_limit: get_days_limit(c.buyer, current_customer),
+                  market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_customer).to_s,
+                  supplier_connected: supplier_connected(c.buyer,current_customer).to_s }
+                end
               end
             end
             render json: { success: true, limits: @data, response_code: 200  }
@@ -154,6 +157,17 @@ module Api
         else
           render json: { success: false, errors: "You have to login first!!", response_code: 201 }
         end
+      end
+
+      def add_star
+       stone = Stone.find_by(id: params[:stone_id])
+       rating = Rating.new()
+       rating.key = stone.description+'#'+(stone.weight.to_f).to_s
+       rating.flag_type = 'Imp'
+       rating.tender_id = params[:tender_id]
+       rating.customer_id = current_customer.id
+       rating.save!
+       render json: { success: true, response_code: 200  }
       end
     end
   end

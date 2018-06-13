@@ -37,7 +37,7 @@ class Tender < ApplicationRecord
   accepts_nested_attributes_for :sights
 
   validates_presence_of :name, :open_date, :close_date, :supplier_id, :round_duration, :rounds_between_duration, :bid_open, :tender_type, :diamond_type
-
+  validate :open_and_closing_date
   has_attached_file :temp_document
   do_not_validate_attachment_file_type :temp_document
   has_attached_file :document
@@ -81,6 +81,11 @@ class Tender < ApplicationRecord
     where(:id => Bid.all.map(&:tender_id).uniq)
   end
 
+  def open_and_closing_date
+    if self.open_date > self.close_date
+     self.errors.add :base, "Open date should be less than closing date!!!!!"
+    end
+  end
 
   def past_details
     tenders = Tender.includes(:stones).where("id != ? and supplier_id = ? and created_at < ?", self.id, self.supplier_id, self.created_at).order("close_date DESC").limit(5)

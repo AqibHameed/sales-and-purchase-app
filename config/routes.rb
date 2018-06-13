@@ -285,6 +285,7 @@ Rails.application.routes.draw do
           post :block
           post :unblock
           get  :credit_limit_list
+          post :add_star
         end
       end
       resources :companies_groups

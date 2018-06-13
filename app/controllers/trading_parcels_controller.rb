@@ -42,22 +42,47 @@ class TradingParcelsController < ApplicationController
     @proposal = Proposal.new
     @info = []
     @available_customers = []
+    available_customers = []
     @not_enough_available_customers = []
+    not_enough_available_customers = []
     @demanded_but_not_available = []
+    demanded_but_not_available = []
+    flag1 = []
+    flag2 = []
+    flag3 = []
     customers = CreditLimit.where(seller_id: current_customer.id).map { |e|  e.buyer  }
     customers.each do |c|
       if get_available_credit_limit(c, current_customer).to_f >= @parcel.price.to_f
-          @available_customers << c
-      else get_available_credit_limit(c, current_customer).to_f < @parcel.price.to_f
-          @not_enough_available_customers << c
+        if CreditLimit.where(buyer_id: c.id, seller_id: current_customer.id, star: true).first.present?
+          available_customers << c
+        else
+          flag1 << c
+        end
+      elsif get_available_credit_limit(c, current_customer).to_f < @parcel.price.to_f
+        if CreditLimit.where(buyer_id: c.id, seller_id: current_customer.id, star: true).first.present?
+          not_enough_available_customers << c
+        else
+          flag2 << c
+        end
       end
     end
+    @available_customers = available_customers + flag1
+    @available_customers = @available_customers.uniq
+    @not_enough_available_customers = not_enough_available_customers + flag2
+    @not_enough_available_customers = @not_enough_available_customers.uniq
+
     demands = Demand.where(description: @parcel.description).map { |e|  e.customer  }
     demands.each do |customer|
       if !customer.buyer_credit_limits.where(seller_id: current_customer.id).present?
-       @demanded_but_not_available << customer
+        if CreditLimit.where(buyer_id: customer.id, seller_id: current_customer.id, star: true).first.present?
+          demanded_but_not_available << customer
+        else
+          flag3 << customer
+        end
       end
     end
+    @demanded_but_not_available = demanded_but_not_available + flag3
+    @demanded_but_not_available = @demanded_but_not_available.uniq
   end
 
   def edit
