@@ -19,7 +19,6 @@ class TradingParcelsController < ApplicationController
       @parcel.no_of_stones = 0
     end
     if @parcel.save
-      # @parcel.update_column(:diamond_type, params[:trading_document_diamond_type])
       flash[:notice] = "Parcel created successfully"
       if params[:trading_parcel][:single_parcel].present?
         respond_to do |format|
@@ -141,7 +140,7 @@ class TradingParcelsController < ApplicationController
 
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
+    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
 
   end
@@ -151,10 +150,10 @@ class TradingParcelsController < ApplicationController
   end
 
   def check_authenticate_supplier
-    if current_customer.id == @parcel.customer_id
+    if current_customer.company.id == @parcel.company_id
     else
       flash[:notice] = 'You are not authorized for this action'
-      redirect_to suppliers_path
+      redirect_to trading_customers_path
     end
   end
 end

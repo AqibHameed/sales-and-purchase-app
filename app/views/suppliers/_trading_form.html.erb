@@ -207,6 +207,7 @@
             <%= f.number_field :credit_period, class: 'input' %>
             <%= f.hidden_field :customer_id, value: current_customer.id, class: 'input' %>
             <%= f.hidden_field :single_parcel, value: true, class: 'input' %>
+            <%= f.hidden_field :company_id, value: current_company.id, class: 'input' %>
           </div>
         </div>
 

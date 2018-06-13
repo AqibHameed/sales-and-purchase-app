@@ -153,8 +153,8 @@ class CustomersController < ApplicationController
     @info = []
     @proposal = Proposal.new
     customer_id = BlockUser.where(block_user_ids: current_customer.id).map { |e| e.customer_id }
-    @parcels = TradingParcel.where(sold: false).where.not(customer_id: customer_id).order(created_at: :desc) #.page params[:page]
-    @my_parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc)
+    @parcels = TradingParcel.where(sold: false).where.not(company_id: current_company.id).order(created_at: :desc) #.page params[:page]
+    @my_parcels = TradingParcel.where(company_id: current_company.id, sold: false).order(created_at: :desc)
   end
 
   def demanding

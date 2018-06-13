@@ -1,5 +1,6 @@
 class Company < ApplicationRecord
   has_many :customers
+  has_many :trading_parcels
 
   validates :name, presence: true
 
