@@ -37,11 +37,13 @@
   <% if @parcels.present? %>
     <%= render partial: 'customers/demanding_search_table_data', locals: { parcels: @parcels} %>
   <% else %>
-    <p>No result found!</p>
-    <% demand_supplier = params[:demand][:demand_supplier_id] %>
-    <% diamond_type = params[:demand][:diamond_type] %>
-    <% description = params[:demand][:description] %>
-    <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false } %>
+    <% if params[:demand] %>
+      <p>No result found!</p>
+      <% demand_supplier = params[:demand][:demand_supplier_id] %>
+      <% diamond_type = params[:demand][:diamond_type] %>
+      <% description = params[:demand][:description] %>
+      <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false } %>
+    <% end %>
   <% end %>
 </div>
 

@@ -1,15 +1,18 @@
 class TradingParcel < ApplicationRecord
   serialize :broker_ids
   paginates_per 25
+
   belongs_to :customer
   belongs_to :company
   has_many :proposals
   has_many :parcel_size_infos
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
+  
   validates :source, presence: true, if: :diamond_type_is_sight?
   validates :credit_period, :total_value, :description, presence: true
   validates :price, :credit_period, :weight, :total_value, numericality: true
+  
   after_create :generate_and_add_uid, :send_mail_to_demanded
   before_create :set_defaults
 

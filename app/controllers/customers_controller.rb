@@ -200,7 +200,7 @@ class CustomersController < ApplicationController
     mm = aa.where(sale_credit: true)
     credit_limit = CreditLimit.where(seller_id: aa.pluck(:customer_id),buyer_id: current_customer.id)
     if credit_limit.exists?
-      @parcels2 = mm.where("customer_id != ?",credit_limit.pluck(:seller_id))
+      @parcels2 = mm.where("customer_id NOT IN (?)", credit_limit.pluck(:seller_id))
     else
       @parcels2 = mm
     end
@@ -309,8 +309,7 @@ class CustomersController < ApplicationController
     customer = Customer.find(params[:cu])
     if customer.update_attributes(is_requested: false)
       CustomerMailer.approve_access(customer).deliver
-      format.html { redirect_to(approve_access_customers_path, notice: 'Access granted') }
-      # redirect_to approve_access_customers_path, notice: 'Access granted'
+      redirect_to approve_access_customers_path, notice: 'Access granted'
     else
       redirect_to approve_access_customers_path, alert: customer.errors.full_messages.first
     end

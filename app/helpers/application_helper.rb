@@ -496,7 +496,5 @@ module ApplicationHelper
   def get_amount_for_graph(id)
    parcel =  TradingParcel.find(id)
    amount = parcel.cost*(100 + parcel.percent)/100
-   puts "amount="
-   puts amount
   end
 end

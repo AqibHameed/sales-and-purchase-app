@@ -18,7 +18,7 @@
             </div>
             <div class="col-lg-4">
               <% total = @parcel.try(:price)*@parcel.try(:weight) rescue 0 %>
-              <p><b>Supplier:</b> <%= @parcel.try(:customer).try(:company) %></p>
+              <p><b>Supplier:</b> <%= @parcel.try(:customer).try(:company).try(:name) %></p>
               <p><b>Lot No.:</b> <%= @parcel.try(:lot_no) %></p>
               <p><b>Description:</b> <%= @parcel.try(:description) %></p>
               <p><b>Carats:</b> <%= @parcel.try(:weight) %></p>
@@ -78,7 +78,7 @@
                 <div class="clear10"></div>
                   <div class="parcel-details">
                     <span class="error-message" style="margin: 0px 0px 6px 5px; color: red;"></span></br>
-                    <%if @parcel.present?%>
+                    <% if @parcel.present? %>
                       <% if (current_customer.id == @parcel.try(:customer_id))  %>
                       <% elsif current_customer.is_blocked_by_supplier(@parcel.try(:customer_id)) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
@@ -100,8 +100,8 @@
                         <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit' %>
                       <% end %>
                     <% else %>
-                        <%=link_to "Send Proposal", 'javascript:void(0)', class: 'btn btn-danger btn-sm', id: 'form-submit'%>
-                      <% end %>
+                      
+                    <% end %>
                   </div>
                 </div>
                   <%= f.submit "Send Proposal", class: 'btn btn-danger btn-sm submit-form hide'%>

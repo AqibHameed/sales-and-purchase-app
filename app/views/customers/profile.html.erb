@@ -104,7 +104,7 @@
         Company:
       </div>
       <div class="field">
-        <%= f.text_field :company, :class => 'input' %>
+        <%= f.text_field :company_id, :class => 'input', value: current_customer.company.name, disabled: true %>
       </div>
       <div class="clear"></div>
     </div>
