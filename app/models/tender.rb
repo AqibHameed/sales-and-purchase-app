@@ -105,7 +105,6 @@ class Tender < ApplicationRecord
 
   def past_winners
     tenders = Tender.includes(:tender_winners).where("id != ? and supplier_id = ? and created_at < ?", self.id, self.supplier_id, self.created_at).order("close_date DESC").limit(5)
-
     past_count = {}
 
     tenders.each do |t|
