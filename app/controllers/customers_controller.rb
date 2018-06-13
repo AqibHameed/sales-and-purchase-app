@@ -189,20 +189,21 @@ class CustomersController < ApplicationController
     parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
    end
 
-    aa = parcels.where("(customer_id = #{current_customer.id}) OR (sale_all = true) OR (sale_none = false) OR (sale_broker = true and broker_ids IN (#{current_customer.id.to_s}) ) OR (sale_credit = true) OR (sale_demanded = true)")
-    ss = aa.where(sale_demanded: true)
-    if ss.exists?
-      demand = Demand.where(description: aa.pluck(:description), customer_id: current_customer.id)
-      @parcels1 = aa.where(description: demand.pluck(:description))
+    allowed = parcels.where("(customer_id = #{current_customer.id}) OR (sale_all = true) OR (sale_none = false) OR (sale_broker = true and broker_ids IN (#{current_customer.id.to_s}) ) OR (sale_credit = true) OR (sale_demanded = true)")
+    demanded = allowed.where(sale_demanded: true)
+    if demanded.exists?
+      demand = Demand.where(description: allowed.pluck(:description), customer_id: current_customer.id)
+      @parcels1 = allowed.where.not(description: demand.pluck(:description))
     else
-      @parcels1 = aa
+      @parcels1 = allowed
     end
-    mm = aa.where(sale_credit: true)
-    credit_limit = CreditLimit.where(seller_id: aa.pluck(:customer_id),buyer_id: current_customer.id)
+
+    credited = allowed.where(sale_credit: true)
+    credit_limit = CreditLimit.where(seller_id: allowed.pluck(:customer_id),buyer_id: current_customer.id)
     if credit_limit.exists?
-      @parcels2 = mm.where("customer_id NOT IN (?)", credit_limit.pluck(:seller_id))
+      @parcels2 = credited.where("customer_id != ?",credit_limit.pluck(:seller_id))
     else
-      @parcels2 = mm
+      @parcels2 = credited
     end
     @parcels = @parcels1+@parcels2
     @parcels = @parcels.uniq
@@ -309,7 +310,8 @@ class CustomersController < ApplicationController
     customer = Customer.find(params[:cu])
     if customer.update_attributes(is_requested: false)
       CustomerMailer.approve_access(customer).deliver
-      redirect_to approve_access_customers_path, notice: 'Access granted'
+      format.html { redirect_to(approve_access_customers_path, notice: 'Access granted') }
+      # redirect_to approve_access_customers_path, notice: 'Access granted'
     else
       redirect_to approve_access_customers_path, alert: customer.errors.full_messages.first
     end

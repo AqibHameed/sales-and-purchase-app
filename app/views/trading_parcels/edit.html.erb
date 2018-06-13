@@ -50,7 +50,7 @@
         <div class="label">Description</div>
         <div class='field'>
           <%#=f.text_field :description, class: 'input' %>
-          <%= f.select :description, options_for_select(parcel_list_for_demand(nil), @parcel.description), {include_blank: true}, class: 'input' %>
+          <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, class: 'input' %>
         </div>
       </div>
 
