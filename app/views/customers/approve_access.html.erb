@@ -12,7 +12,12 @@
         <td><%= customer.first_name %></td>
         <td><%= customer.last_name %></td>
         <td><%= customer.email %></td>
-        <td><%= link_to "Approve", approve_customers_path(cu: customer.id), class: 'btn btn-success btn-xs', method: :post %></td>
+        <td>
+        <% if customer.is_requested == true %>
+          <%= link_to "Approve", approve_customers_path(cu: customer.id), class: 'btn btn-success btn-xs', method: :post %>&nbsp;&nbsp;&nbsp;&nbsp;
+        <% else %>
+          <%= link_to "Remove", denial_customers_path(cu: customer.id), class: 'btn btn-danger btn-xs', method: :post %></td>
+        <% end %>
       </tr>
     <% end %>
   </table>

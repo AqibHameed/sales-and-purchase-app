@@ -11,4 +11,12 @@ class CustomerMailer < ApplicationMailer
   	@details = broker_invite
   	mail(:to => @details.email, :subject => '[Dialuck] Invitation to join Dialuck' )
   end
+
+  def approve_access(customer)
+    @customer = customer
+    mail(:to => @customer.email, :subject => '[Dialuck] Your access request is approved  ')
+  end
 end
+
+
+

@@ -112,6 +112,7 @@ Rails.application.routes.draw do
       get :demand_from_search
       get :approve_access
       post :approve
+      post :denial
     end
     member do
       get :add_company

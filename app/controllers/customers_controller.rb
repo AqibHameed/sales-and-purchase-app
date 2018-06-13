@@ -301,13 +301,25 @@ class CustomersController < ApplicationController
   end
 
   def approve_access
-    @customers = current_company.customers.where(is_requested: true)
+    # @customers = current_company.customers.where(is_requested: true)
+    @customers = current_company.customers.where.not(id: current_customer.id)
   end
 
   def approve
     customer = Customer.find(params[:cu])
     if customer.update_attributes(is_requested: false)
-      redirect_to approve_access_customers_path, notice: 'Access granted'
+      CustomerMailer.approve_access(customer).deliver
+      format.html { redirect_to(approve_access_customers_path, notice: 'Access granted') }
+      # redirect_to approve_access_customers_path, notice: 'Access granted'
+    else
+      redirect_to approve_access_customers_path, alert: customer.errors.full_messages.first
+    end
+  end
+
+  def denial
+    customer = Customer.find(params[:cu])
+    if customer.update_attributes(is_requested: true)
+      redirect_to approve_access_customers_path, notice: 'Access Denied successfully!!'
     else
       redirect_to approve_access_customers_path, alert: customer.errors.full_messages.first
     end
