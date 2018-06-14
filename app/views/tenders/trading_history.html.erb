@@ -1,7 +1,34 @@
 <div class="dashboard trading_history">
   <h3>Trading History</h3>
   <div class="clear10"></div>
-  <div class='tenders_list'>
-    <%= render 'trading_history_list' %>
+  <div class="bs-example">
+    <ul class="nav nav-tabs">
+      <li class="active"><a class="sectionA" data-toggle="tab" href="#sectionA">Pending</a></li>
+      <li><a class="sectionB" data-toggle="tab" href="#sectionB">Overdue</a></li>
+      <li><a class="sectionc" data-toggle="tab" href="#sectionC">Completed</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="sectionA" class="tab-pane fade in active">
+        <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
+        <div class='tenders_list'>
+          <% @transactions = @pending_transaction %>
+          <%= render 'trading_history_list' %>
+        </div>
+      </div>
+      <div id="sectionB" class="tab-pane fade">
+        <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
+        <div class='tenders_list'>
+          <% @transactions = @overdue_transaction %>
+          <%= render 'trading_history_list' %>
+        </div>
+      </div>
+      <div id="sectionC" class="tab-pane fade">
+        <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
+        <div class='tenders_list'>
+          <% @transactions = @completed_transaction %>
+          <%= render 'trading_history_list' %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
