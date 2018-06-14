@@ -8,7 +8,6 @@
     <th>No. of Stones</th>
     <th>Carats</th>
     <th>Cost</th>
-    <th>Box Value</th>
     <th>%</th>
     <th>Avg Price</th>
     <th>Sight</th>
@@ -47,7 +46,6 @@
             <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
             <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
             <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
-            <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
             <td><span class="table-head-in-td">Percent</span><%= (parcel.percent.nil? || parcel.percent.blank?) ? 'N/A' : parcel.percent %></td>
             <td class="td-mobile-open"><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
             <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
@@ -96,7 +94,6 @@
             <td><span class="table-head-in-td">No. of Stones</span><%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %></td>
             <td><span class="table-head-in-td">Carats</span><%= number_with_precision(parcel.weight, precision: 2) %></td>
             <td><span class="table-head-in-td">Cost</span><%= parcel.cost.nil? ? 'N/A' : parcel.cost %></td>
-            <td><span class="table-head-in-td">Box Value</span><%= (parcel.box_value.nil? || parcel.box_value.blank?) ? 'N/A' : parcel.box_value %></td>
             <td><span class="table-head-in-td">Percent</span><%= (parcel.percent.nil? || parcel.percent.blank?) ? 'N/A' : parcel.percent %></td>
             <td><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
             <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
@@ -111,7 +108,7 @@
                 <%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id) %>
               </td>
             <% end %>
-            <% if parcel.customer_id == current_customer.id %>
+            <% if parcel.company_id == current_company.id %>
               <% if params[:controller] == 'customers' %>
                 <td><%#= link_to "Let's buy", trading_parcel_path(parcel),data: {turbolinks: false} %></td>
               <% else %>

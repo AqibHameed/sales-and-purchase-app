@@ -17,6 +17,3 @@ class CustomerMailer < ApplicationMailer
     mail(:to => @customer.email, :subject => '[Dialuck] Your access request is approved  ')
   end
 end
-
-
-
