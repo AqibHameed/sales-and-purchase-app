@@ -142,7 +142,7 @@ module Api
                 unless group.present?
                   @data << {
                   id: c.buyer.id.to_s,
-                  company: c.buyer.try(:company),
+                  company: c.buyer.try(:company).try(:name),
                   total_limit: get_credit_limit(c.buyer, current_customer),
                   used_limit: get_used_credit_limit(c.buyer, current_customer),
                   available_limit: get_available_credit_limit(c.buyer, current_customer),
