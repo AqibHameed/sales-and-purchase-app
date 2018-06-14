@@ -3,13 +3,13 @@
    <h5>Group Name:</h5>
     <div class='field'>
       <%=f.text_field :group_name, class: 'form-control', placeholder: "Enter Group Name", required: true, style: 'width: 500px;' %>
-      <%=f.hidden_field :seller_id, value: current_customer.id %>
+      <%=f.hidden_field :seller_id, value: current_company.id %>
     </div>
   </div>
   <div class="form-row">
     <h5>Select Customers:</h5>
     <div class='field'>
-      <%= f.select :customer_id, options_for_select(all_customers(current_customer), f.object.customer_id), { }, { class: 'selected-customer form-control select2', multiple: true, style: 'width: 500px;' }%>
+      <%= f.select :company_id, options_for_select(all_companies(current_company), f.object.company_id), { }, { class: 'selected-customer form-control select2', multiple: true, style: 'width: 500px;' }%>
     </div>
   </div>
   <div class="form-row">

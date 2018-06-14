@@ -189,16 +189,16 @@ module ApplicationHelper
   end
 
   def get_credit_limit(buyer, supplier)
-    if current_customer.parent_id?
-      sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: supplier.id)
-      if sub_company_limit.try(:credit_type) == "Yours"
-        cl = credit_limit(buyer.id, current_customer.parent_id)
-      else
-        cl = credit_limit(buyer.id, supplier.id)
-      end
-    else
+    # if current_customer.parent_id?
+    #   sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: supplier.id)
+    #   # if sub_company_limit.try(:credit_type) == "Yours"
+    #     # cl = credit_limit(buyer.id, current_customer.parent_id)
+    #   else
+    #     cl = credit_limit(buyer.id, supplier.id)
+    #   end
+    # else
       cl = credit_limit(buyer.id, supplier.id)
-    end
+    # end
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
       number_with_precision(0, precision: 2)
     else
@@ -252,8 +252,8 @@ module ApplicationHelper
     buyers.count-1
   end
 
-  def supplier_connected(buyer,customer)
-    count = CreditLimit.where("buyer_id =? and seller_id !=?", buyer, customer.id).count
+  def supplier_connected(buyer,company)
+    count = CreditLimit.where("buyer_id =? and seller_id !=?", buyer, company.id).count
   end
 
   def get_used_credit_limit(buyer, supplier)
@@ -446,8 +446,8 @@ module ApplicationHelper
     current_customer.my_brokers.map { |e| [e.broker.name, e.broker.id]  }
   end
 
-  def all_customers(current_customer)
-    Customer.where.not(id: current_customer.id).map{|customer| [customer.company, customer.id]}
+  def all_companies(current_company)
+    Company.where.not(id: current_company.id).map{|comapny| [comapny.name, comapny.id]}
   end
 
   def list_of_customers(current_customer)
@@ -466,8 +466,8 @@ module ApplicationHelper
     customer.map{|customer| [customer.company, customer.id]}
   end
 
-  def get_customer(c)
-    return Customer.where(id: c).first
+  def get_company(c)
+    return Company.where(id: c).first
   end
 
   def get_demanded_but_no_credit(current_customer , id)
@@ -487,7 +487,7 @@ module ApplicationHelper
   end
 
   def check_for_star(id)
-  credit_limit = CreditLimit.where(buyer_id: id, seller_id: current_customer.id).first
+  credit_limit = CreditLimit.where(buyer_id: id, seller_id: current_company.id).first
    if credit_limit.present?
      credit_limit.star
    end

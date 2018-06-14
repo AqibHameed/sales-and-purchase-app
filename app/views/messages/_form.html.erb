@@ -6,8 +6,8 @@
     <div class="form-row">
         <div class="label">To</div>
         <div class='field'>
-          <% if @customer.present?%>
-            <%=f.text_field :sender_id, value: @customer.first_name, class: 'input',disabled: true %>
+          <% if @company.present?%>
+            <%=f.text_field :sender_id, value: @company.name, class: 'input',disabled: true %>
           <%else%>
             <%=f.text_field :sender_id,  class: 'input' %>
           <%end%>
@@ -25,7 +25,7 @@
         <div class='field'>
           <%=f.text_area :message, class: 'input' %>
           <%=f.hidden_field :message_type, value: 'Request' %>
-          <%=f.hidden_field :receiver_id, value: @customer.id%>
+          <%=f.hidden_field :receiver_id, value: @company.id%>
         </div>
       </div>
        <div class="form-row">

@@ -9,7 +9,7 @@ class CompaniesGroupsController < ApplicationController
   end
 
   def create
-    companies_groups_params[:customer_id] = params[:companies_group][:customer_id].reject!{|a| a== "" }
+    companies_groups_params[:company_id] = params[:companies_group][:company_id].reject!{|a| a== "" }
     @companies_group = CompaniesGroup.new(companies_groups_params)
     if @companies_group.save!
       flash[:notice] = "Group created successfully."
@@ -25,7 +25,7 @@ class CompaniesGroupsController < ApplicationController
   end
 
   def update
-    companies_groups_params[:customer_id] = params[:companies_group][:customer_id].reject!{|a| a== "" }
+    companies_groups_params[:company_id] = params[:companies_group][:company_id].reject!{|a| a== "" }
     @companies_group = CompaniesGroup.find(params[:id])
     if @companies_group.update_attributes(companies_groups_params)
       flash[:notice] = "Group created successfully."
@@ -45,7 +45,7 @@ class CompaniesGroupsController < ApplicationController
 
   def delete_group
     companies_groups = CompaniesGroup.where(id: params[:group_id]).first
-    companies_groups.customer_id = companies_groups.customer_id.reject!{|a| a == params[:id] } unless companies_groups.nil?
+    companies_groups.company_id = companies_groups.company_id.reject!{|a| a == params[:id] } unless companies_groups.nil?
     companies_groups.save!
     flash[:notice] = 'Customer successfully destroyed.'
     redirect_to credit_suppliers_path(group: true)
@@ -54,6 +54,6 @@ class CompaniesGroupsController < ApplicationController
   private
 
     def companies_groups_params
-      params.require(:companies_group).permit(:group_name, :seller_id, :customer_id => [])
+      params.require(:companies_group).permit(:group_name, :seller_id, :company_id => [])
     end
 end

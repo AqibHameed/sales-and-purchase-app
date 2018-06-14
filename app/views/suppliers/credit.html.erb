@@ -20,17 +20,15 @@
       <div class="">
         <h2>Approve Customers</h2>
         <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path, data: {turbolinks: false}  %>: <%= number_to_currency(overall_credit_given(current_customer)) %></p>
-
-        <!-- <%# if @type.try(:credit_type) == 'Specific' %>
-          <%#= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
-        <%# elsif @type.try(:credit_type) == 'General' %>
+        <% if @type.try(:credit_type) == 'Specific' %>
+          <%= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
+        <% elsif @type.try(:credit_type) == 'General' %>
           <p><h2>General limit:</h2>
-          Total Credit: <%#= number_to_currency(@type.try(:credit_limit))%><br>
-          Credit remaining: <%#= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
-        <%# end %> -->
-
+          Total Credit: <%= number_to_currency(@type.try(:credit_limit))%><br>
+          Credit remaining: <%= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
+        <% end %>
         <div class="approve_list">
-          <%= render 'approve_customers_list', customers: @customers %>
+          <%= render 'approve_customers_list', companies: @companies %>
         </div>
         <%#= paginate @customers %>
       </div>
@@ -51,7 +49,7 @@
       $.ajax({
         url: '<%= block_unblock_user_customer_path(current_user)%>',
         method: 'get',
-        data: {status: 'block', block_user_id: id},
+        data: {status: 'block', block_company_id: id},
         success:function(){
           // $(self).parents('tr').fadeOut( "slow" );
         }
@@ -65,7 +63,7 @@
     $.ajax({
       url: '<%= block_unblock_user_customer_path(current_user)%>',
       method: 'get',
-      data: {status: 'unblock', block_user_id: id},
+      data: {status: 'unblock', block_company_id: id},
       success:function(){
         // $(self).parents('tr').fadeOut( "slow" );
       }
@@ -124,7 +122,7 @@
     user_id = $(this).parent('.edit_days').find('#days_limit').data('id')
     user_name = $(this).parents('tr').find('td.customer_name').find('div.c_n').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
     old_limit = $(this).parents('td').find('#days_edit').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
-    var r = confirm("You have added "+ user_name +" Overdue Limit "+old_limit+" by " + value + 'day');
+    var r = confirm("You have added "+ user_name +" Overdue Limit "+old_limit+" by " + value + ' days');
     if (r == true) {
      $.ajax({
         url: '<%=change_days_limit_path %>',
@@ -180,5 +178,10 @@
     //   { "orderable": false, "targets": 6 }
     // ]
   });
+
+  $(document).on('click', '.close-modal', function(){
+    $('.company-details-modal').hide()
+    removeMask();
+  })
 
 </script>

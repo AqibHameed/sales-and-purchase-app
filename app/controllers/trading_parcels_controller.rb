@@ -89,7 +89,7 @@ class TradingParcelsController < ApplicationController
 
   def message
     @message = Message.new
-    @customer = Customer.find(params[:id])
+    @company = Company.find(params[:id])
   end
 
   def update

@@ -50,18 +50,18 @@
 <h3>Parcel Details</h3>
   <%= render partial: 'parcel_details' %>
 <div class="parcel-details">
-  <% if (current_customer.id == @parcel.customer_id)  %>
-  <% elsif current_customer.is_blocked_by_supplier(@parcel.customer_id) %>
-    <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
-  <% elsif !current_customer.has_limit(@parcel.customer_id) %>
-    <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has not given credit limit to you.
-    <%= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
-  <% elsif current_customer.has_overdue_transaction_of_30_days(@parcel.customer_id) %>
-    <p style="margin: 0px 0px 0px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p>
-  <% elsif grey_buy_btn(current_customer.id, @parcel.customer_id) %>
-    <%= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
-    <p style="margin: -14px 0px 0px 65px; color: red;">Credit limit is 0. Please contact supplier
-    <%= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
+  <% if (current_company.id == @parcel.company_id)  %>
+  <%# elsif current_customer.is_blocked_by_supplier(@parcel.customer_id) %>
+    <!-- <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p> -->
+  <%# elsif !current_customer.has_limit(@parcel.customer_id) %>
+    <!-- <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has not given credit limit to you. -->
+    <!-- <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p> -->
+  <%# elsif current_customer.has_overdue_transaction_of_30_days(@parcel.customer_id) %>
+    <!-- <p style="margin: 0px 0px 0px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p> -->
+  <%# elsif grey_buy_btn(current_customer.id, @parcel.customer_id) %>
+    <%#= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
+    <!-- <p style="margin: -14px 0px 0px 65px; color: red;">Credit limit is 0. Please contact supplier -->
+    <!-- <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p> -->
 
   <% else %>
     <%= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn buy_btn'  %>
@@ -75,9 +75,9 @@
   <div class="form-wrapper send-proposal--form-wrapper">
   <%= form_for @proposal do |f| %>
     <%= render partial: 'proposals/form', locals: { f: f } %>
-    <%=f.hidden_field :buyer_id, value: current_customer.id %>
-    <%=f.hidden_field :seller_id, value: @parcel.customer_id %>
-    <%=f.hidden_field :action_for, value: @parcel.customer_id %>
+    <%=f.hidden_field :buyer_id, value: current_company.id %>
+    <%=f.hidden_field :seller_id, value: @parcel.company_id %>
+    <%=f.hidden_field :action_for, value: @parcel.company_id %>
     <%=f.hidden_field :trading_parcel_id, value: @parcel.id %>
   <% end %>
   </div>
@@ -91,9 +91,9 @@
     var r = confirm("Are you sure?");
     if (r == true) {
       $.ajax({
-        url: '<%= block_unblock_user_customer_path(current_user)%>',
+        url: '<%= block_unblock_user_customer_path(current_company)%>',
         method: 'get',
-        data: {status: 'block', block_user_id: id},
+        data: {status: 'block', block_company_id: id},
         success:function(){
           // $(self).parents('tr').fadeOut( "slow" );
         }
@@ -105,9 +105,9 @@
     self = $(this)
     id = $(this).data('id')
     $.ajax({
-      url: '<%= block_unblock_user_customer_path(current_user)%>',
+      url: '<%= block_unblock_user_customer_path(current_company)%>',
       method: 'get',
-      data: {status: 'unblock', block_user_id: id},
+      data: {status: 'unblock', block_company_id: id},
       success:function(){
         // $(self).parents('tr').fadeOut( "slow" );
       }

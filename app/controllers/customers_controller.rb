@@ -125,11 +125,11 @@ class CustomersController < ApplicationController
 
   def block_unblock_user
     if params[:status] == 'block'
-      BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first_or_create
+      BlockUser.where(block_company_ids: params[:block_company_id], company_id: current_company.id).first_or_create
     else
-      BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first.destroy
+      BlockUser.where(block_company_ids: params[:block_company_id], company_id: current_company.id).first.destroy
     end
-    @customers = Customer.where.not(id: current_customer.id).order(company: :asc).page params[:page]
+    # @companies = Company.where.not(id: current_company.id).order(company: :asc).page params[:page]
     respond_to do |format|
       format.js { render 'block_unblock' }
       format.html { redirect_to credit_suppliers_path }
@@ -152,8 +152,8 @@ class CustomersController < ApplicationController
     @history = []
     @info = []
     @proposal = Proposal.new
-    customer_id = BlockUser.where(block_user_ids: current_customer.id).map { |e| e.customer_id }
-    @parcels = TradingParcel.where(sold: false).where.not(company_id: current_company.id).order(created_at: :desc) #.page params[:page]
+    # customer_id = BlockUser.where(block_company_ids: current_company.id).map { |e| e.company_id }
+    # @parcels = TradingParcel.where(sold: false).where.not(company_id: current_company.id).order(created_at: :desc) #.page params[:page]
     @my_parcels = TradingParcel.where(company_id: current_company.id, sold: false).order(created_at: :desc)
   end
 

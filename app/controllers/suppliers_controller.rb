@@ -16,7 +16,7 @@ class SuppliersController < ApplicationController
   end
 
   def important
-    credit_limit = CreditLimit.where(buyer_id: params[:id], seller_id: current_customer.id).first
+    credit_limit = CreditLimit.where(buyer_id: params[:id], seller_id: current_company.id).first
     if credit_limit.present?
       if credit_limit.star == true
         credit_limit.star = false
@@ -24,13 +24,14 @@ class SuppliersController < ApplicationController
         credit_limit.star = true
       end
     else
-      credit_limit = CreditLimit.new(buyer_id: params[:id], seller_id: current_customer.id, credit_limit: 0, star: true)
+      credit_limit = CreditLimit.new(buyer_id: params[:id], seller_id: current_company.id, credit_limit: 0, star: true)
     end
     credit_limit.save!
   end
 
   def profile
-    @customer = Customer.find(params[:id])
+    @company = Company.find(params[:id])
+    # @customer = current_customer
     render :partial => 'profile'
     # respond_to do |format|
     #   format.html { render :layout => false}
@@ -88,22 +89,23 @@ class SuppliersController < ApplicationController
 
   def credit
     @group_names = []
-    if params[:name].present?
-      @companies = Customer.eager_load(:company).where('companies.name LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
+    # if params[:name].present?
+    #   @companies = Customer.eager_load(:company).where('companies.name LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
       # @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
-    end
+    # end
     if params[:letter].present?
       # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
-      @customers = Customer.eager_load(:company).where('companies.name LIKE ?', "%#{params[:letter].downcase}%").where.not(id: current_customer.id)
+      @companies = Company.where('companies.name LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
     else
       # @customers = Customer.where.not(id: current_customer.id)
-      @star_customers = CreditLimit.where(seller_id: current_customer.id, star: true).map{|c| c.buyer}
-      @custs = Customer.where.not(id: current_customer.id) #.page
-      @customers = @star_customers + @custs
-      @customers = @customers.uniq
+      # @star_customers = CreditLimit.where(seller_id: current_customer.id, star: true).map{|c| c.buyer}
+      # @custs = Customer.where.not(id: current_customer.id) #.page
+      # @customers = @star_customers + @custs
+      # @customers = @customers.uniq
+      @companies = Company.all
     end
     @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
-    @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_customer.id)
+    @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_company.id)
   end
 
   def credit_request
@@ -114,7 +116,7 @@ class SuppliersController < ApplicationController
 
   def save_credit_request
     if current_customer.update_attributes(credit_request_params)
-      Message.create_new_credit_request(current_customer)
+      Message.create_new_credit_request(current_company)
       flash[:notice] = "successfully send"
       redirect_to credit_request_suppliers_path
     else
@@ -187,31 +189,31 @@ class SuppliersController < ApplicationController
 
 
   def change_limits
-    cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_customer.id).first_or_initialize
-    total_clms = CreditLimit.where(seller_id: current_customer.id).sum(:credit_limit)
-    total_limit = params[:limit].to_f
-    cl.errors.add(:credit_limit, "should not be negative ") if total_limit < 0
+    cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_initialize
+    # total_clms = CreditLimit.where(seller_id: current_customer.id).sum(:credit_limit)
+    cl.credit_limit = params[:limit].to_f
+    cl.errors.add(:credit_limit, "should not be negative ") if params[:limit].to_f < 0
 
-    if current_customer.parent_id.present?
-      sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
-      if sub_company_limit.try(:credit_type) == "General"
-        limit = sub_company_limit.credit_limit
-      elsif sub_company_limit.try(:credit_type) == "Specific"
-        limit = cl.credit_limit
-        unless limit.present?
-          cl.errors.add(:credit_limit, "not set by parent company")
-        end
-      else
-        cl.errors.add(:credit_limit, "not set by parent company")
-      end
-      if limit.to_f < (total_limit.to_f + total_clms.to_f)
-        cl.errors.add(:credit_limit, "can't be greater than assigned limit")
-      else
-        cl.credit_limit  = total_limit.to_f
-      end
-    else
-      cl.credit_limit  = total_limit.to_f
-    end
+    # if current_customer.parent_id.present?
+    #   sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
+    #   if sub_company_limit.try(:credit_type) == "General"
+    #     limit = sub_company_limit.credit_limit
+    #   elsif sub_company_limit.try(:credit_type) == "Specific"
+    #     limit = cl.credit_limit
+    #     unless limit.present?
+    #       cl.errors.add(:credit_limit, "not set by parent company")
+    #     end
+    #   else
+    #     cl.errors.add(:credit_limit, "not set by parent company")
+    #   end
+    #   if limit.to_f < (total_limit.to_f + total_clms.to_f)
+    #     cl.errors.add(:credit_limit, "can't be greater than assigned limit")
+    #   else
+    #     cl.credit_limit  = total_limit.to_f
+    #   end
+    # else
+    #   cl.credit_limit  = total_limit.to_f
+    # end
     if cl.errors.any?
       render json: { message: cl.errors.full_messages.first, value: nil, errors: true }
     else
@@ -224,27 +226,27 @@ class SuppliersController < ApplicationController
   end
 
   def change_days_limits
-    buyer = Customer.find(params[:buyer_id])
-    dl = DaysLimit.where(buyer_id: params[:buyer_id], seller_id: current_customer.id).first_or_initialize
+    buyer = Company.find(params[:buyer_id])
+    dl = DaysLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_initialize
     if dl.days_limit.nil?
       dl.days_limit = params[:limit]
     else
       dl.days_limit = dl.days_limit + params[:limit].to_i
     end
-    if dl.save
-      render json: { message: 'Days Limit updated.', value: view_context.get_days_limit(buyer, current_customer) }
+    if dl.save!
+      render json: { message: 'Days Limit updated.', value: view_context.get_days_limit(buyer, current_company) }
     else
       render json: { message: dl.errors.full_messages.first, value: '' }
     end
   end
 
   def change_market_limit
-    buyer = Customer.find(params[:buyer_id])
-    cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_customer.id).first_or_create
+    buyer = Company.find(params[:buyer_id])
+    cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_create
     cl.credit_limit = 0 unless cl.credit_limit.present?
     cl.market_limit = params[:market_limit]
     if cl.save!
-      render json: { message: 'Market Limit updated.', value: view_context.get_market_limit(buyer, current_customer) }
+      render json: { message: 'Market Limit updated.', value: view_context.get_market_limit(buyer, current_company) }
     else
       render json: { message: cl.errors.full_messages.first, value: '' }
     end
