@@ -201,7 +201,7 @@ class CustomersController < ApplicationController
     credited = allowed.where(sale_credit: true)
     credit_limit = CreditLimit.where(seller_id: allowed.pluck(:customer_id),buyer_id: current_customer.id)
     if credit_limit.exists?
-      @parcels2 = mm.where("customer_id NOT IN (?)", credit_limit.pluck(:seller_id))
+      @parcels2 = credited.where("customer_id NOT IN (?)", credit_limit.pluck(:seller_id))
     else
       @parcels2 = credited
     end
