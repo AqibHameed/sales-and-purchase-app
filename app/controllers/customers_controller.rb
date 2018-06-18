@@ -12,22 +12,22 @@ class CustomersController < ApplicationController
   end
 
   def info
-    @total_transaction = Transaction.total_transaction(current_customer.id).count
-    @pending_transactions = Transaction.pending_received_transaction(current_customer.id).count + Transaction.pending_sent_transaction(current_customer.id).count
-    @overdue_transactions = Transaction.overdue_received_transaction(current_customer.id).count + Transaction.overdue_sent_transaction(current_customer.id).count
-    @complete_transactions = Transaction.complete_received_transaction(current_customer.id).count + Transaction.complete_sent_transaction(current_customer.id).count
-    @total_pending_received = Transaction.pending_received_transaction(current_customer.id).sum(:total_amount)
-    @total_pending_sent = Transaction.pending_sent_transaction(current_customer.id).sum(:total_amount)
-    @total_overdue_received = Transaction.overdue_received_transaction(current_customer.id).sum(:total_amount)
-    @total_overdue_sent = Transaction.overdue_sent_transaction(current_customer.id).sum(:total_amount)
-    @total_complete_received = Transaction.complete_received_transaction(current_customer.id).sum(:total_amount)
-    @total_complete_sent = Transaction.complete_sent_transaction(current_customer.id).sum(:total_amount)
-    @credit_recieved = CreditLimit.where('buyer_id =?',current_customer.id)
-    @credit_given = CreditLimit.where('seller_id =?',current_customer.id)
+    @total_transaction = Transaction.total_transaction(current_company.id).count
+    @pending_transactions = Transaction.pending_received_transaction(current_company.id).count + Transaction.pending_sent_transaction(current_company.id).count
+    @overdue_transactions = Transaction.overdue_received_transaction(current_company.id).count + Transaction.overdue_sent_transaction(current_company.id).count
+    @complete_transactions = Transaction.complete_received_transaction(current_company.id).count + Transaction.complete_sent_transaction(current_company.id).count
+    @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
+    @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
+    @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
+    @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
+    @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
+    @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
+    @credit_recieved = CreditLimit.where('buyer_id =?',current_company.id)
+    @credit_given = CreditLimit.where('seller_id =?',current_company.id)
     @shared = Shared.new
-    @shared_table = Shared.where(shared_by_id: current_customer.id)
-    @credit_recieved_transaction = Transaction.where('buyer_id =?',current_customer.id)
-    @credit_given_transaction = Transaction.where('seller_id =?',current_customer.id)
+    @shared_table = Shared.where(shared_by_id: current_company.id)
+    @credit_recieved_transaction = Transaction.where('buyer_id =?',current_company.id)
+    @credit_given_transaction = Transaction.where('seller_id =?',current_company.id)
   end
 
   def shared
@@ -39,9 +39,9 @@ class CustomersController < ApplicationController
       if @shared.shared_to_id.nil?
         redirect_to info_customers_path, notice: "Select company first."
       else
-        @shared.shared_by_id = current_customer.id
+        @shared.shared_by_id = current_company.id
         if @shared.save
-          TenderMailer.shared_info_email(current_customer, @shared.shared_to_id).deliver_now
+          TenderMailer.shared_info_email(current_company, @shared.shared_to_id).deliver_now
           redirect_to info_customers_path, notice: "shared successfully"
         end
       end
@@ -269,7 +269,7 @@ class CustomersController < ApplicationController
   end
 
   def check_info_shared
-    check = Shared.where('shared_by_id = ? and shared_to_id = ?', params[:id], current_customer)
+    check = Shared.where('shared_by_id = ? and shared_to_id = ?', params[:id], current_company)
     if check.present?
       # do nothing
     else
