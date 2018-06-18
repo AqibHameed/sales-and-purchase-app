@@ -1,6 +1,7 @@
 class Api::V1::ApiController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:device_token, :supplier_notification, :email_attachment, :update_chat_id]
   before_action :current_customer, only: [:device_token, :supplier_notification, :update_chat_id]
+  helper_method :current_company
 
   def current_customer
     token = request.headers['Authorization'].presence
@@ -110,6 +111,12 @@ class Api::V1::ApiController < ApplicationController
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
+  end
+
+  protected
+
+  def current_company
+    @company ||= current_customer.company
   end
 
   private

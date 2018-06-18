@@ -18,7 +18,7 @@ module CustomersHelper
           false
         end
       elsif parcel.sale_credit == true
-        customer.has_limit(parcel.customer)
+        customer.company.has_limit(parcel.customer.company)
       else
         false
       end
