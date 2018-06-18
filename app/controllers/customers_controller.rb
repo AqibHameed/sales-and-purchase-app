@@ -1,5 +1,5 @@
 class CustomersController < ApplicationController
-
+  include CustomersHelper
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_info_shared, only: [:shared_info]
@@ -188,25 +188,13 @@ class CustomersController < ApplicationController
    else
     parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
    end
-
-    allowed = parcels.where("(customer_id = #{current_customer.id}) OR (sale_all = true) OR (sale_none = false) OR (sale_broker = true and broker_ids IN (#{current_customer.id.to_s}) ) OR (sale_credit = true) OR (sale_demanded = true)")
-    demanded = allowed.where(sale_demanded: true)
-    if demanded.exists?
-      demand = Demand.where(description: allowed.pluck(:description), customer_id: current_customer.id)
-      @parcels1 = allowed.where.not(description: demand.pluck(:description))
-    else
-      @parcels1 = allowed
+    required_parcels = []
+    parcels.each do |parcel|
+      if check_parcel_visibility(parcel, current_customer)
+        required_parcels << parcel
+      end
     end
-
-    credited = allowed.where(sale_credit: true)
-    credit_limit = CreditLimit.where(seller_id: allowed.pluck(:customer_id),buyer_id: current_customer.id)
-    if credit_limit.exists?
-      @parcels2 = credited.where("customer_id NOT IN (?)", credit_limit.pluck(:seller_id))
-    else
-      @parcels2 = credited
-    end
-    @parcels = @parcels1+@parcels2
-    @parcels = @parcels.uniq
+    @parcels = required_parcels
   end
 
   def demanding_create
