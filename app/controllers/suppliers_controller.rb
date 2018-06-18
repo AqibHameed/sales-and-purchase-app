@@ -97,12 +97,12 @@ class SuppliersController < ApplicationController
       # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
       @companies = Company.where('companies.name LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
     else
-      # @customers = Customer.where.not(id: current_customer.id)
-      # @star_customers = CreditLimit.where(seller_id: current_customer.id, star: true).map{|c| c.buyer}
-      # @custs = Customer.where.not(id: current_customer.id) #.page
-      # @customers = @star_customers + @custs
-      # @customers = @customers.uniq
-      @companies = Company.all
+      @companies = Company.where.not(id: current_company.id)
+      @star_companies = CreditLimit.where(seller_id: current_company.id, star: true).map{|c| c.buyer}
+      @custs = Company.where.not(id: current_company.id) #.page
+      @companies = @star_companies + @custs
+      @companies = @companies.uniq
+      # @companies = Company.all
     end
     # @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
     @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_company.id)
