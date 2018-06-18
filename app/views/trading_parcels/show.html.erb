@@ -11,7 +11,7 @@
     </div>
     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
-        <%= render partial: 'suppliers/approve_customers_list', locals: { customers: @available_customers }  %>
+        <%= render partial: 'suppliers/approve_customers_list', locals: { companies: @available_customers }  %>
       </div>
     </div>
   </div>
@@ -25,7 +25,7 @@
     </div>
     <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
       <div class="panel-body">
-        <%= render partial: 'suppliers/approve_customers_list', locals: { customers: @not_enough_available_customers }  %>
+        <%= render partial: 'suppliers/approve_customers_list', locals: { companies: @not_enough_available_customers }  %>
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@
     </div>
     <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
       <div class="panel-body">
-         <%= render partial: 'suppliers/approve_customers_list', locals: { customers: @demanded_but_not_available } %>
+         <%= render partial: 'suppliers/approve_customers_list', locals: { companies: @demanded_but_not_available } %>
       </div>
     </div>
   </div>
