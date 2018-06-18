@@ -31,7 +31,7 @@ class CustomersController < ApplicationController
   end
 
   def shared
-    @check_duplicate = Shared.where(shared_to_id: params[:shared][:shared_to_id], shared_by_id: current_customer.id)
+    @check_duplicate = Shared.where(shared_to_id: params[:shared][:shared_to_id], shared_by_id: current_company.id)
     if @check_duplicate.present?
       redirect_to info_customers_path, notice: "Already shared."
     else
@@ -67,14 +67,14 @@ class CustomersController < ApplicationController
   end
 
   def transaction_list
-    @customer = Customer.where(id: params[:id]).first
-    unless @customer.nil?
+    @company = Company.where(id: params[:id]).first
+    unless @company.nil?
       if params[:type] == 'pending'
-       @transactions = Transaction.pending_received_transaction(@customer.id) + Transaction.pending_sent_transaction(@customer.id)
+       @transactions = Transaction.pending_received_transaction(@company.id) + Transaction.pending_sent_transaction(@company.id)
       elsif params[:type] == "complete"
-        @transactions = Transaction.complete_received_transaction(@customer.id) + Transaction.complete_sent_transaction(@customer_id)
+        @transactions = Transaction.complete_received_transaction(@company.id) + Transaction.complete_sent_transaction(@company_id)
       elsif params[:type] == "overdue"
-        @transactions = Transaction.overdue_received_transaction(@customer.id) + Transaction.overdue_sent_transaction(@customer.id)
+        @transactions = Transaction.overdue_received_transaction(@company.id) + Transaction.overdue_sent_transaction(@company.id)
       end
     else
       redirect_to trading_customers_path

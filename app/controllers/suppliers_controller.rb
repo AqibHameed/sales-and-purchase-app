@@ -104,7 +104,7 @@ class SuppliersController < ApplicationController
       # @customers = @customers.uniq
       @companies = Company.all
     end
-    @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
+    # @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
     @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_company.id)
   end
 
