@@ -276,7 +276,7 @@ class SuppliersController < ApplicationController
   end
 
   def credit_given_list
-    @credit_limits = CreditLimit.where(seller_id: current_customer.id)
+    @credit_limits = CreditLimit.where(seller_id: current_company.id)
   end
 
   private
