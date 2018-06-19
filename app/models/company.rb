@@ -2,6 +2,7 @@ class Company < ApplicationRecord
   has_many :customers
   has_many :trading_parcels
   has_many :proposals
+  has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
 
   validates :name, presence: true
 
@@ -62,6 +63,15 @@ class Company < ApplicationRecord
     elsif company_market_limit.to_i == 0
     else
       return true
+    end
+  end
+
+  def is_overdue
+    date = Date.today
+    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+      true
+    else
+      false
     end
   end
 

@@ -19,14 +19,14 @@
       <div class="clear10"></div>
       <div class="">
         <h2>Approve Customers</h2>
-        <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path, data: {turbolinks: false}  %>: <%= number_to_currency(overall_credit_given(current_customer)) %></p>
-        <% if @type.try(:credit_type) == 'Specific' %>
-          <%= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
-        <% elsif @type.try(:credit_type) == 'General' %>
-          <p><h2>General limit:</h2>
-          Total Credit: <%= number_to_currency(@type.try(:credit_limit))%><br>
-          Credit remaining: <%= number_to_currency(get_remaining_limit(@type.try(:credit_limit) ,overall_credit_given(current_customer))) %></p>
-        <% end %>
+        <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path, data: {turbolinks: false}  %>: <%= number_to_currency(overall_credit_given(current_company)) %></p>
+        <%# if @type.try(:credit_type) == 'Specific' %>
+          <%#= link_to 'Assigned Customers', show_all_customers_sub_company_path(@type.id)%>
+        <%# elsif @type.try(:credit_type) == 'General' %>
+          <!-- <p><h2>General limit:</h2> -->
+          <!-- Total Credit: <%#= number_to_currency(get_sub_company_credit_limit(current_company))%><br>
+          Credit remaining: <%#= number_to_currency(get_sub_company_credit_limit(current_company) ,overall_credit_given(current_company)) %></p> -->
+        <%# end %>
         <div class="approve_list">
           <%= render 'approve_customers_list', companies: @companies %>
         </div>

@@ -49,16 +49,16 @@ class TradingParcelsController < ApplicationController
     flag1 = []
     flag2 = []
     flag3 = []
-    customers = CreditLimit.where(seller_id: current_customer.id).map { |e|  e.buyer  }
+    customers = CreditLimit.where(seller_id: current_company.id).map { |e|  e.buyer  }
     customers.each do |c|
-      if get_available_credit_limit(c, current_customer).to_f >= @parcel.price.to_f
-        if CreditLimit.where(buyer_id: c.id, seller_id: current_customer.id, star: true).first.present?
+      if get_available_credit_limit(c, current_company).to_f >= @parcel.price.to_f
+        if CreditLimit.where(buyer_id: c.id, seller_id: current_company.id, star: true).first.present?
           available_customers << c
         else
           flag1 << c
         end
-      elsif get_available_credit_limit(c, current_customer).to_f < @parcel.price.to_f
-        if CreditLimit.where(buyer_id: c.id, seller_id: current_customer.id, star: true).first.present?
+      elsif get_available_credit_limit(c, current_company).to_f < @parcel.price.to_f
+        if CreditLimit.where(buyer_id: c.id, seller_id: current_company.id, star: true).first.present?
           not_enough_available_customers << c
         else
           flag2 << c
@@ -70,13 +70,13 @@ class TradingParcelsController < ApplicationController
     @not_enough_available_customers = not_enough_available_customers + flag2
     @not_enough_available_customers = @not_enough_available_customers.uniq
 
-    demands = Demand.where(description: @parcel.description).map { |e|  e.customer  }
-    demands.each do |customer|
-      if !customer.buyer_credit_limits.where(seller_id: current_customer.id).present?
-        if CreditLimit.where(buyer_id: customer.id, seller_id: current_customer.id, star: true).first.present?
-          demanded_but_not_available << customer
+    demands = Demand.where(description: @parcel.description).map { |e|  e.company  }
+    demands.each do |company|
+      if !company.buyer_credit_limits.where(seller_id: current_company.id).present?
+        if CreditLimit.where(buyer_id: company.id, seller_id: current_company.id, star: true).first.present?
+          demanded_but_not_available << company
         else
-          flag3 << customer
+          flag3 << company
         end
       end
     end

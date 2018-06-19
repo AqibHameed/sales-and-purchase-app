@@ -2,7 +2,7 @@ class TransactionsController < ApplicationController
   # layout 'supplier'
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
-  
+
   def new
     @parcel = TradingParcel.new
     @parcel.build_my_transaction
@@ -38,7 +38,7 @@ class TransactionsController < ApplicationController
       if @transaction.remaining_amount == 0
         @transaction.update_column(:paid, true)
       end
-      TenderMailer.payment_received_email(@transaction, @payment).deliver rescue logger.info "Error sending email" 
+      TenderMailer.payment_received_email(@transaction, @payment).deliver rescue logger.info "Error sending email"
       redirect_to trading_history_path
     else
       error = @payment.errors.full_messages.first
@@ -48,7 +48,7 @@ class TransactionsController < ApplicationController
 
   def customer
     # @transactions = Transaction.where(buyer_id: params[:buyer_id], seller_id: params[:supplier_id])
-    @transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? ", params[:buyer_id], current_customer.id).page params[:page]
+    @transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? ", params[:buyer_id], current_company.id).page params[:page]
     # @overdue_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date < ? AND paid = ?", params[:buyer_id], current_customer.id, Date.today, false).page params[:page]
     # @complete_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND paid = ?", params[:buyer_id], current_customer.id, true).page params[:page]
   end

@@ -1,6 +1,7 @@
 class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer
+  helper_method :current_company
 
   def list_company
     @array =[]
@@ -27,9 +28,9 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def blocked_customers
-    if current_customer
-      blocked = BlockUser.where(customer_id: current_customer.id)
-      render json: { success: true, blocked_customers: blocked.map { |e| { id: e.try(:block_user).try(:id).to_s, company: e.block_user.try(:company), first_name: e.block_user.try(:first_name), last_name: e.block_user.try(:last_name), email: e.block_user.try(:email)}}, response_code: 200 }
+    if current_company
+      blocked = BlockUser.where(company_id: current_company.id)
+      render json: { success: true, blocked_customers: blocked.map { |e| { id: e.try(:block_user).try(:id).to_s, company: e.block_user.try(:name), first_name: e.block_user.try(:first_name), last_name: e.block_user.try(:last_name), email: e.block_user.try(:email)}}, response_code: 200 }
     end
   end
 
@@ -39,6 +40,12 @@ class Api::V1::CompaniesController < ApplicationController
 
   def not_found
     render json: {errors: 'Not found', response_code: 201 }, status: 404
+  end
+
+  protected
+
+  def current_company
+    @company ||= current_customer.company
   end
 
   private

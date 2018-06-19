@@ -1,7 +1,7 @@
 module CustomersHelper
 
-  def check_parcel_visibility(parcel, customer)
-    if parcel.customer_id == customer.id
+  def check_parcel_visibility(parcel, company)
+    if parcel.company_id == company.id
       true
     else
       if parcel.sale_none == true
@@ -9,16 +9,16 @@ module CustomersHelper
       elsif parcel.sale_all == true
         true
       elsif parcel.sale_broker == true
-        parcel.broker_ids.include?(customer.id.to_s) rescue false
+        parcel.broker_ids.include?(company.id.to_s) rescue false
       elsif parcel.sale_demanded == true
-        demands = Demand.where(description: parcel.description, customer_id: customer.id)
+        demands = Demand.where(description: parcel.description, company_id: company.id)
         if demands.exists?
           true
         else
           false
         end
       elsif parcel.sale_credit == true
-        customer.has_limit(parcel.customer)
+        company.has_limit(parcel.try(:company).try(:id))
       else
         false
       end

@@ -40,8 +40,8 @@ class SuppliersController < ApplicationController
 
   def demand
     @parcel = TradingParcel.find(params[:id])
-    @demand = Demand.where(description: @parcel.description, block: false, deleted: false).where.not(customer_id: current_customer.id)
-    @customers = Customer.where(id: @demand.map(&:customer_id)).page params[:page]
+    @demand = Demand.where(description: @parcel.description, block: false, deleted: false).where.not(company_id: current_company.id)
+    @companies = Company.where(id: @demand.map(&:company_id)).page params[:page]
   end
 
   def add_demand_list
@@ -88,24 +88,22 @@ class SuppliersController < ApplicationController
   end
 
   def credit
+    @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_company.id)
+    excepted_companies_id = @companies_groups.map(&:company_id).flatten.uniq
     @group_names = []
-    # if params[:name].present?
-    #   @companies = Customer.eager_load(:company).where('companies.name LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
-      # @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
-    # end
     if params[:letter].present?
       # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
       @companies = Company.where('companies.name LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
     else
-      # @customers = Customer.where.not(id: current_customer.id)
-      # @star_customers = CreditLimit.where(seller_id: current_customer.id, star: true).map{|c| c.buyer}
-      # @custs = Customer.where.not(id: current_customer.id) #.page
-      # @customers = @star_customers + @custs
-      # @customers = @customers.uniq
-      @companies = Company.all
+      # @companies = Company.where.not(id: current_company.id)
+      @star_companies = CreditLimit.where(seller_id: current_company.id, star: true).map{|c| c.buyer}
+      @custs = Company.where.not(id: current_company.id) #.page
+      @companies = @star_companies + @custs
+      @companies = @companies.uniq
+      @companies = @companies.delete_if {|company| excepted_companies_id.include?(company.id.to_s) }
+      # @companies = Company.all
     end
-    @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
-    @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_company.id)
+    # @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
   end
 
   def credit_request
@@ -278,7 +276,7 @@ class SuppliersController < ApplicationController
   end
 
   def credit_given_list
-    @credit_limits = CreditLimit.where(seller_id: current_customer.id)
+    @credit_limits = CreditLimit.where(seller_id: current_company.id)
   end
 
   private

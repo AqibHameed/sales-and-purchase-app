@@ -32,10 +32,6 @@
     <td><%= @parcel.cost.nil? ? 'N/A' : @parcel.cost %></td>
   </tr>
   <tr>
-    <td> Box Value</td>
-    <td><%= (@parcel.box_value.nil? || @parcel.box_value.blank?) ? 'N/A' : @parcel.box_value %></td>
-  </tr>
-  <tr>
     <td> Sight</td>
     <td><%= (@parcel.try(:sight).nil? || @parcel.try(:sight).blank?) ? 'N/A' : @parcel.try(:sight).try(:to_date).strftime("%m/%y") rescue 'N/A' %></td>
   </tr>
