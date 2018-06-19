@@ -4,12 +4,12 @@
     <% if current_customer.id == proposal.try(:buyer_id) %>
       <tr>
         <td> Supplier </td>
-        <td><%= proposal.try(:supplier).try(:company).try(:name) %></td>
+        <td><%= proposal.try(:supplier).try(:name) %></td>
       </tr>
     <% else %>
       <tr>
         <td> Buyer</td>
-        <td><%= proposal.try(:buyer).try(:company).try(:name) %></td>
+        <td><%= proposal.try(:buyer).try(:name) %></td>
       </tr>
     <% end %>
       <tr>

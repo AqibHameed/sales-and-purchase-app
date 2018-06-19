@@ -89,15 +89,11 @@ class SuppliersController < ApplicationController
 
   def credit
     @group_names = []
-    # if params[:name].present?
-    #   @companies = Customer.eager_load(:company).where('companies.name LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
-      # @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
-    # end
     if params[:letter].present?
       # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
       @companies = Company.where('companies.name LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
     else
-      @companies = Company.where.not(id: current_company.id)
+      # @companies = Company.where.not(id: current_company.id)
       @star_companies = CreditLimit.where(seller_id: current_company.id, star: true).map{|c| c.buyer}
       @custs = Company.where.not(id: current_company.id) #.page
       @companies = @star_companies + @custs

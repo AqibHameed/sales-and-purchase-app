@@ -9,7 +9,6 @@ module Api
       include ApplicationHelper
 
       def add_credit_limit
-
         if current_company
           cl = CreditLimit.where(seller_id: current_company.id, buyer_id: params[:buyer_id]).first_or_initialize
           # total_clms = CreditLimit.where(seller_id: current_company.id).sum(:credit_limit)
@@ -91,8 +90,12 @@ module Api
       def block
         if current_company
           unless params[:company_id].nil? || params[:company_id].blank?
-            BlockUser.where(block_company_ids: params[:company_id], company_id: current_company.id).first_or_create
-            render json: { success: true }
+            bu = BlockUser.where(block_company_ids: params[:company_id], company_id: current_company.id).first_or_initialize
+            if bu.save
+              render json: { success: true }
+            else
+              render json: { errors: bu.errors.full_messages, response_code: 201 }
+            end
           else
             render json: { errors: "Parameters missing", response_code: 201 }
           end
@@ -139,11 +142,11 @@ module Api
             credit_limit = CreditLimit.where(seller_id: current_company.id)
             credit_limit.each do |c|
               if c.buyer.present?
-                group = CompaniesGroup.where('customer_id LIKE ?', "%#{c.buyer.id}%").first
+                group = CompaniesGroup.where('company_id LIKE ?', "%#{c.buyer.id}%").first
                 unless group.present?
                   @data << {
                   id: c.buyer.id.to_s,
-                  company: c.buyer.try(:company).try(:name),
+                  company: c.buyer.try(:name),
                   total_limit: get_credit_limit(c.buyer, current_company),
                   used_limit: get_used_credit_limit(c.buyer, current_company),
                   available_limit: get_available_credit_limit(c.buyer, current_company),

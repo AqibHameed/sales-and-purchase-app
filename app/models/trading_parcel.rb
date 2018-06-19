@@ -2,7 +2,7 @@ class TradingParcel < ApplicationRecord
   serialize :broker_ids
   paginates_per 25
 
-  belongs_to :customer
+  belongs_to :customer, optional: true
   belongs_to :company
   has_many :proposals
   has_many :parcel_size_infos

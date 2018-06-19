@@ -58,6 +58,9 @@ $(document).ready(function() {
     window.location.reload()
   });
 
+  $('.select2').select2({
+  });
+
   //$("#myTable").tablesorter();
   $(document).on('change', '#transaction', function(){
     val = $(this).val()

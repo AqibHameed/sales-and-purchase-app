@@ -53,7 +53,7 @@
 
             <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
             <% if params[:controller] == 'customers' %>
-              <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company).try(:name) %></td>
+              <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:company).try(:name) %></td>
             <% end %>
             <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
             <!-- <td><%=parcel.demand_count(parcel)%></td> -->
@@ -100,7 +100,7 @@
             <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
             <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
             <% if params[:controller] == 'customers' %>
-              <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company).try(:name) %></td>
+              <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:company).try(:name) %></td>
             <% end %>
             <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
             <% unless params[:controller] == 'customers' %>

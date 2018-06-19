@@ -71,12 +71,12 @@
     </tr>
   </table>
   <div class="clear20"></div>
-  <% if current_customer.id == @transaction.buyer_id %>
+  <% if current_company.id == @transaction.buyer_id %>
     <%= link_to 'Message', new_message_path(id: @transaction.seller_id), class: 'login-btn btn-02', data: {turbolinks: false}%>
   <% else %>
     <%= link_to 'Message', new_message_path(id: @transaction.buyer_id), class: 'login-btn btn-02', data: {turbolinks: false}%>
   <% end %>
-  <%if (!@transaction.paid? && @transaction.seller_id == current_customer.id && @transaction.buyer_confirmed) %>
+  <%if (!@transaction.paid? && @transaction.seller_id == current_company.id && @transaction.buyer_confirmed) %>
     <%=link_to 'Enter Payment','javascript:void(0)', id: 'place_amount', class: 'login-btn btn-02',data: {turbolinks: false} %>
   <%end%>
 </div>

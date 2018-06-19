@@ -11,7 +11,7 @@ class ProposalsController < ApplicationController
 
   def create
     @proposal = Proposal.new(proposal_params)
-    @proposal.check_sub_company_limit(current_customer)
+    # @proposal.check_sub_company_limit(current_customer)
 
     if @proposal.errors.any?
         flash[:notice] = @proposal.errors.full_messages.first
@@ -58,23 +58,27 @@ class ProposalsController < ApplicationController
   end
 
   def accept
-    ActiveRecord::Base.transaction do
-      @proposal.status = 1
-      if @proposal.save(validate: false)
-        @proposal.trading_parcel.update_column(:sold, true)
-        Transaction.create_new(@proposal)
-        TradingParcel.send_won_parcel_email(@proposal)
-        flash[:notice] = "Proposal accepted."
-        respond_to do |format|
-          format.js { render js: "window.location = '/proposals'"}
-          format.html { redirect_to trading_customers_path }
+    unless @proposal.status == 1
+      ActiveRecord::Base.transaction do
+        @proposal.status = 1
+        if @proposal.save(validate: false)
+          @proposal.trading_parcel.update_column(:sold, true)
+          Transaction.create_new(@proposal)
+          # TradingParcel.send_won_parcel_email(@proposal)
+          flash[:notice] = "Proposal accepted."
+          respond_to do |format|
+            format.js { render js: "window.location = '/customers/trading'"}
+            format.html { redirect_to trading_customers_path }
+          end
         end
+        # customer_id = @proposal.trading_parcel.customer_id
+        @trading_parcel = @proposal.trading_parcel.dup
+        @trading_parcel.company_id = @proposal.buyer_id
+        # @trading_parcel.customer_id = customer_id
+        @trading_parcel.sold = false
+        @trading_parcel.sale_all = false
+        @trading_parcel.save
       end
-      @trading_parcel = @proposal.trading_parcel.dup
-      @trading_parcel.customer_id = @proposal.buyer_id
-      @trading_parcel.sold = false
-      @trading_parcel.sale_all = false
-      @trading_parcel.save
     end
   end
 
