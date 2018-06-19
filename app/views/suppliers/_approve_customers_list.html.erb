@@ -2,7 +2,7 @@
   <table id="creditList" class="table table-bordered table-striped table-responsive tablesorter">
     <thead>
       <th></th>
-      <th>Customer Name </th>
+      <!-- <th>Customer Name </th> -->
       <th>Company </th>
       <th>Total Limit</th>
       <th>Used Limit</th>
@@ -12,14 +12,14 @@
       <th>Suppliers Connected</th>
       <th>Block</th>
     </thead>
-    <% customers.each.with_index(1) do |customer, i|%>
+    <% companies.each.with_index(1) do |company, i|%>
       <tr>
 
 
 
       <td><span class="table-head-in-td">Imp</span>
-        <%= link_to important_suppliers_path(id: customer.id), remote: true do %>
-          <% if check_for_star(customer.id) == true %>
+        <%= link_to important_suppliers_path(id: company.id), remote: true do %>
+          <% if check_for_star(company.id) == true %>
           <%= image_tag "/assets/star-on.png", alt: "1", title: "Important", id: "star" %>
           <% else %>
           <%= image_tag "/assets/star-off.png", alt: "2", title: "Important", id: "star" %>
@@ -31,41 +31,41 @@
 
 
 
-        <td class="customer_name">
+        <!-- <td class="customer_name">
           <span class="table-head-in-td">Customer Name</span>
-          <div class="c_n"><%=customer.name%></div>
-        </td>
+          <div class="c_n"><%#=customer.name%></div>
+        </td> -->
         <td><span class="table-head-in-td">Company</span>
-        <%= link_to customer.company.try(:name), profile_suppliers_path, :class => 'company_profile', "data-id"=> customer.id %></td>
+        <%= link_to company.try(:name), profile_suppliers_path, :class => 'company_profile', "data-id"=> company.id %></td>
         <td class="credit_limit">
         <span class="table-head-in-td">Total Limit</span>
           <a href="javascript:void(0)" class="given_limit" id='credit_edit'>
-            <%= number_to_currency(get_credit_limit(customer, current_customer)) %>
-          <%if @type.try(:credit_type) == 'Specific' || @type.try(:credit_type) == 'Yours'%>
-            <i class="fa fa-edit pull-right" id='credit_edit' style="display: none"></i>
-          <% else %>
+            <%= number_to_currency(get_credit_limit(company, current_company)) %>
+          <%#if @type.try(:credit_type) == 'Specific' || @type.try(:credit_type) == 'Yours'%>
+            <!-- <i class="fa fa-edit pull-right" id='credit_edit' style="display: none"></i> -->
+          <%# else %>
             <i class="fa fa-edit pull-right" id='credit_edit'></i>
-          <%end%>
+          <%#end%>
           </a>
           <span class="edit_field hide">
-            <%=number_field_tag "limit", '', 'data-id'=> customer.id, placeholder: 'Enter credit limit' %>
-            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%> 
+            <%=number_field_tag "limit", '', 'data-id'=> company.id, placeholder: 'Enter credit limit' %>
+            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%>
             <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
           </span>
           </br>
           <span class="error-message" style="color: red;"></span>
         </td>
-        <td><span class="table-head-in-td">Used Limit</span><%= number_to_currency(get_used_credit_limit(customer, current_customer)) rescue 'N/A' %></td>
-        <td><span class="table-head-in-td">Available Limit</span><%= number_to_currency(get_available_credit_limit(customer, current_customer)) rescue 'N/A' %></td>
+        <td><span class="table-head-in-td">Used Limit</span><%= number_to_currency(get_used_credit_limit(company, current_company)) rescue 'N/A' %></td>
+        <td><span class="table-head-in-td">Available Limit</span><%= number_to_currency(get_available_credit_limit(company, current_company)) rescue 'N/A' %></td>
         <td class="days_limit">
           <span class="table-head-in-td">Overdue Limit</span>
             <a href="javascript:void(0)" class="given_days" id='days_edit'>
-              <%= get_days_limit(customer, current_customer) %>
+              <%= get_days_limit(company, current_company) %>
               <i class="fa fa-edit pull-right" id='days_edit'></i>
             </a>
             <span class="edit_days hide">
               <!-- <a href="javascript:void(0)" class="edit_days hide"> -->
-                <%=text_field_tag "days_limit", '', 'data-id'=> customer.id, placeholder: 'Enter days' %>
+                <%=text_field_tag "days_limit", '', 'data-id'=> company.id, placeholder: 'Enter days' %>
                 <%=link_to 'Add', 'javascript:void(0)', class: "save_date_btn" %> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
                 <!-- <i class="fa fa-check-square-o save_date_btn"></i> -->
               <!-- </a> -->
@@ -74,21 +74,21 @@
         <td class="market_limit">
           <span class="table-head-in-td">Market Limit</span>
           <a href="javascript:void(0)" class="given_market_limit" id='market_limit_edit'>
-            <%= get_market_limit_from_credit_limit_table(customer,current_customer)%>
+            <%= get_market_limit_from_credit_limit_table(company, current_company)%>
             <i class="fa fa-edit pull-right" id='market_limit_edit'></i>
           </a>
           <a href="javascript:void(0)" class="edit_market_limit hide">
-            <%=text_field_tag "market_limit", '', 'data-id'=> customer.id, placeholder: 'Enter Market limit' %>
+            <%=text_field_tag "market_limit", '', 'data-id'=> company.id, placeholder: 'Enter Market limit' %>
             <i class="fa fa-check-square-o save_market_limit_btn"></i>
             </br>
             <span class="market-limit-error-message" style="color: red;"></span>
           </a>
         </td>
-        <td><span class="table-head-in-td">Suppliers Connected</span><%= supplier_connected(customer,current_customer)%></td>
-        <% if customer.is_blocked_by_supplier(current_customer.id) %>
-          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> customer.id) %><span class="hide" ><%=  1 %></span></td>
+        <td><span class="table-head-in-td">Suppliers Connected</span><%= supplier_connected(company, current_company)%></td>
+        <% if company.is_blocked_by_supplier(current_company.id) %>
+          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> company.id) %></td>
         <% else %>
-          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> customer.id) %><span class="hide" ><%= 2 %></span></td>
+          <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/wrong.png", width: "15", class: 'image_block', 'data-id'=> company.id) %></td>
         <% end %>
       </tr>
     <% end %>
@@ -115,11 +115,11 @@
       })
     });
 
- // $(document).ready(function()
- // {
- //  var oTable = $('#creditList').dataTable();
- //  oTable.fnSort( [ [3,'desc'] ] );
- // });
+ $(document).ready(function()
+ {
+  var oTable = $('#creditList').dataTable();
+  oTable.fnSort( [ [3,'desc'] ] );
+ });
 
  $(document).on('click', '#star', function(e) {
   var url = $(this).attr('src');

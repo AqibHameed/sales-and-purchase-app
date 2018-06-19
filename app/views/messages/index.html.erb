@@ -12,7 +12,7 @@
     <% @messages.each.with_index(1) do |message, i|%>
       <tr>
         <td><%= index_count(params[:page].to_i) + i %></td>
-        <td><%= message.sender.first_name %></td>
+        <td><%= message.sender.name %></td>
         <td><%= message.subject %></td>
         <td><%= link_to 'view', message_path(message), data: {turbolinks: false}%></td>
 

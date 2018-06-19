@@ -18,12 +18,11 @@
       <div class=" panel-collapse collapse">
         <div class="panel-body">
           <div class="col-md-12">
-            <h4>Customers</h4>
+            <h4>Companies</h4>
             <div class="clear10"></div>
             <table class="table table-bordered table-responsive">
               <thead>
                 <tr>
-                  <th>Customer Name</th>
                   <th>Company Name</th>
                   <th>Credit Limit</th>
                   <th>Overdue Limit</th>
@@ -33,24 +32,23 @@
                 </tr>
               </thead>
               <tbody>
-                <% group.customer_id.each do |c| %>
-                  <%- customer = get_customer(c) %>
-                  <% unless customer.nil? %>
+                <% group.company_id.each do |c| %>
+                  <%- company = get_company(c) %>
+                  <% unless company.nil? %>
                     <tr>
-                      <td><%= customer.name %></td>
-                      <td><%= customer.company.try(:name) %></td>
-                      <td><%= number_to_currency(get_credit_limit(customer, current_customer)) %></td>
-                      <td><%= get_days_limit(customer, current_customer) %></td>
-                      <td><%= get_market_limit(customer, current_customer) %></td>
-                      <td><%= number_to_currency(get_available_credit_limit(customer, current_customer)) %></td>
+                      <td><%= company.name %></td>
+                      <td><%= number_to_currency(get_credit_limit(company, current_company)) %></td>
+                      <td><%= get_days_limit(company, current_company) %></td>
+                      <td><%= get_market_limit(company, current_company) %></td>
+                      <td><%= number_to_currency(get_available_credit_limit(company, current_company)) %></td>
                       <td>
-                      <%= link_to delete_group_companies_groups_path(id: customer.id, group_id: group.id), data: {confirm: 'Are you sure ?', turbolinks: false} do %>
+                      <%= link_to delete_group_companies_groups_path(id: company.id, group_id: group.id), data: {confirm: 'Are you sure ?', turbolinks: false} do %>
                         <%= image_tag("/assets/wrong.png", width: "15", class: 'image') %>
                       <% end %>
                       </td>
                     </tr>
                   <% end %>
-                <% end %>  
+                <% end %>
               </tbody>
             </table>
           </div>

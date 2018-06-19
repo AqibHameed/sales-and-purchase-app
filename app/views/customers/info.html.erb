@@ -6,18 +6,18 @@
     <h1>You have <%=@total_transaction%> transactions registered</h1>
     <ul>
       <li>
-        <h1><%=@pending_transactions%> pending transaction<%=link_to 'view',transaction_list_customers_path(type: "pending", id: current_customer.id), data: {turbolinks: false} %></h1>
+        <h1><%=@pending_transactions%> pending transaction<%=link_to 'view',transaction_list_customers_path(type: "pending", id: current_company.id), data: {turbolinks: false} %></h1>
       <li>
-        <h1><%=@complete_transactions%> complete transaction<%=link_to 'view',transaction_list_customers_path(type: "complete", id: current_customer.id), data: {turbolinks: false} %></h1>
+        <h1><%=@complete_transactions%> complete transaction<%=link_to 'view',transaction_list_customers_path(type: "complete", id: current_company.id), data: {turbolinks: false} %></h1>
       </li>
       <li>
-        <h1><%=@overdue_transactions%> overdue transaction<%=link_to 'view',transaction_list_customers_path(type: 'overdue', id: current_customer.id), data: {turbolinks: false} %></h1>
+        <h1><%=@overdue_transactions%> overdue transaction<%=link_to 'view',transaction_list_customers_path(type: 'overdue', id: current_company.id), data: {turbolinks: false} %></h1>
       </li>
     </ul>
     <div class="clear20"></div>
     <h3>Purchase</h3>
     <div class="clear10"></div>
-    <h1>Total Credit Received = <%= number_to_currency(overall_credit_received(current_customer)) %></h1>
+    <h1>Total Credit Received = <%= number_to_currency(overall_credit_received(current_company)) %></h1>
     <h1>Credit Providers = <%= @credit_recieved.count %></h1>
     <div class="table">
       <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter table-purchase" >
@@ -31,38 +31,38 @@
         <tbody>
           <tr>
             <td><span class="table-head-in-td">Terms</span>Cash</td>
-            <td><span class="table-head-in-td">#</span><%=count_value('0', @credit_recieved_transaction.count, 'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('0', @total_pending_received, 'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('0', @total_overdue_received, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('0', @total_complete_received, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=count_value('0', @credit_recieved_transaction.count, 'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('0', @total_pending_received, 'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('0', @total_overdue_received, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('0', @total_complete_received, 'complete', current_company)%></td>
           </tr>
           <tr>
             <td><span class="table-head-in-td">Terms</span>1<=30</td>
-            <td><span class="table-head-in-td">#</span><%=count_value('less_30', @credit_recieved_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('less_30',@total_pending_received,'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('less_30', @total_overdue_received, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('less_30', @total_complete_received, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=count_value('less_30', @credit_recieved_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('less_30',@total_pending_received,'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('less_30', @total_overdue_received, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('less_30', @total_complete_received, 'complete', current_company)%></td>
           </tr>
           <tr>
             <td><span class="table-head-in-td">Terms</span>31<=60</th>
-            <td><span class="table-head-in-td">#</span><%=count_value('60', @credit_recieved_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('60', @total_pending_received,'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('60', @total_overdue_received, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('60', @total_complete_received, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=count_value('60', @credit_recieved_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('60', @total_pending_received,'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('60', @total_overdue_received, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('60', @total_complete_received, 'complete', current_company)%></td>
           </tr>
           <tr>
             <td><span class="table-head-in-td">Terms</span>61<=90</td>
-            <td><span class="table-head-in-td">#</span><%=count_value('90', @credit_recieved_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('90',@total_pending_received,'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('90', @total_overdue_received, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('90', @total_complete_received, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=count_value('90', @credit_recieved_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('90',@total_pending_received,'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('90', @total_overdue_received, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('90', @total_complete_received, 'complete', current_company)%></td>
           </tr>
           <tr>
             <td><span class="table-head-in-td">Terms</span>91<</td>
-            <td><span class="table-head-in-td">#</span><%=count_value('more_90', @credit_recieved_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('more_90',@total_pending_received,'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('more_90', @total_overdue_received, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('more_90', @total_complete_received, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=count_value('more_90', @credit_recieved_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=count_value('more_90',@total_pending_received,'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=count_value('more_90', @total_overdue_received, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=count_value('more_90', @total_complete_received, 'complete', current_company)%></td>
           </tr>
           <tr>
             <th><span class="table-head-in-td">Terms</span>Total</th>
@@ -78,9 +78,9 @@
     <h3>Sales</h3>
     <div class="clear10"></div>
     <h1>Credit given to = <%=@credit_given.count%> </h1>
-    <h1>Total Credit Given = <%=number_to_currency(overall_credit_given(current_customer))%></h1>
-    <h1>Total Credit Used = <%=number_to_currency(overall_credit_spent_by_customer(current_customer))%></h1>
-    <h1>Total Credit Available = <%=credit_available(current_customer)%></h1>
+    <h1>Total Credit Given = <%=number_to_currency(overall_credit_given(current_company))%></h1>
+    <h1>Total Credit Used = <%=number_to_currency(overall_credit_spent_by_customer(current_company))%></h1>
+    <h1>Total Credit Available = <%=credit_available(current_company)%></h1>
     <div class="table">
       <table width="75%" border="0" cellspacing="0" cellpadding="0" id="myTable"  class="tablesorter table-sales" >
         <thead>
@@ -93,38 +93,38 @@
         <tbody>
           <tr>
             <td><span class="table-head-in-td">Terms</span>Cash</td>
-            <td><span class="table-head-in-td">#</span><%=sale_count_value('0', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('0', @total_pending_sent, 'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('0', @total_overdue_sent, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('0', @total_complete_sent, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=sale_count_value('0', @credit_given_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('0', @total_pending_sent, 'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('0', @total_overdue_sent, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('0', @total_complete_sent, 'complete', current_company)%></td>
           </tr>
           <tr>
             <td><span class="table-head-in-td">Terms</span>1<=30</td>
-            <td><span class="table-head-in-td">#</span><%=sale_count_value('less_30', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('less_30', @total_pending_sent, 'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('less_30', @total_overdue_sent, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('less_30', @total_complete_sent, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=sale_count_value('less_30', @credit_given_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('less_30', @total_pending_sent, 'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('less_30', @total_overdue_sent, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('less_30', @total_complete_sent, 'complete', current_company)%></td>
           </tr>
           <tr>
             <td><span class="table-head-in-td">Terms</span>31<=60</td>
-            <td><span class="table-head-in-td">#</span><%=sale_count_value('60', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('60', @total_pending_sent, 'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('60', @total_overdue_sent, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('60', @total_complete_sent, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=sale_count_value('60', @credit_given_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('60', @total_pending_sent, 'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('60', @total_overdue_sent, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('60', @total_complete_sent, 'complete', current_company)%></td>
           </tr>
           <tr>
             <td><span class="table-head-in-td">Terms</span>61<=90</td>
-            <td><span class="table-head-in-td">#</span><%=sale_count_value('90', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('90', @total_pending_sent, 'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('90', @total_overdue_sent, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('90', @total_complete_sent, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=sale_count_value('90', @credit_given_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('90', @total_pending_sent, 'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('90', @total_overdue_sent, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('90', @total_complete_sent, 'complete', current_company)%></td>
           </tr>
           <tr>
             <td><span class="table-head-in-td">Terms</span>91<</td>
-            <td><span class="table-head-in-td">#</span><%=sale_count_value('more_90', @credit_given_transaction.count,'count', current_customer)%></td>
-            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('more_90', @total_pending_sent, 'pending', current_customer)%></td>
-            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('more_90', @total_overdue_sent, 'overdue', current_customer)%></td>
-            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('more_90', @total_complete_sent, 'complete', current_customer)%></td>
+            <td><span class="table-head-in-td">#</span><%=sale_count_value('more_90', @credit_given_transaction.count,'count', current_company)%></td>
+            <td><span class="table-head-in-td">Pending Transaction</span><%=sale_count_value('more_90', @total_pending_sent, 'pending', current_company)%></td>
+            <td><span class="table-head-in-td">Overdue Transaction</span><%=sale_count_value('more_90', @total_overdue_sent, 'overdue', current_company)%></td>
+            <td><span class="table-head-in-td">Complete Transaction</span><%=sale_count_value('more_90', @total_complete_sent, 'complete', current_company)%></td>
           </tr>
           <tr>
             <th><span class="table-head-in-td">Terms</span>Total</th>

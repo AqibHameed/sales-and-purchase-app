@@ -27,8 +27,8 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def blocked_customers
-    if current_customer
-      blocked = BlockUser.where(customer_id: current_customer.id)
+    if current_company
+      blocked = BlockUser.where(customer_id: current_company.id)
       render json: { success: true, blocked_customers: blocked.map { |e| { id: e.try(:block_user).try(:id).to_s, company: e.block_user.try(:company), first_name: e.block_user.try(:first_name), last_name: e.block_user.try(:last_name), email: e.block_user.try(:email)}}, response_code: 200 }
     end
   end

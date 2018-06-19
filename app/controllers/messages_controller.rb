@@ -1,7 +1,7 @@
 class MessagesController < ApplicationController
 
  def index
-  @messages = Message.where(receiver_id: current_customer.id)
+  @messages = Message.where(receiver_id: current_company.id)
  end
 
  def show
@@ -11,12 +11,12 @@ class MessagesController < ApplicationController
 
  def new
  	@message = Message.new
-    @customer = Customer.find(params[:id])
+    @company = Company.find(params[:id])
  end
 
  def create
     @message = Message.new(message_params)
-    @message.sender_id = current_customer.id
+    @message.sender_id = current_company.id
 
     if @message.save
       redirect_to trading_customers_path, notice: "Message is successfully send"

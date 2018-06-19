@@ -46,8 +46,8 @@ class Customer < ApplicationRecord
   has_many :sellers, :foreign_key => "seller_id", :class_name => "CompaniesGroup"
   # has_many :companies_customers, :foreign_key => "customer_id", :class_name => "CompaniesGroup"
   belongs_to :company, optional: true
-  
-  
+
+
   validates :mobile_no, uniqueness: true
   validates :first_name, :mobile_no, :presence => true
   validates :company_name, :presence => true, on: :create
@@ -60,7 +60,7 @@ class Customer < ApplicationRecord
   do_not_validate_attachment_file_type :certificate
 
   accepts_nested_attributes_for :credit_requests, :allow_destroy => true
-  
+
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
@@ -96,33 +96,33 @@ class Customer < ApplicationRecord
     end
   end
 
-  def has_overdue_transaction_of_30_days(supplier_id)
-    dl = DaysLimit.where(buyer_id: self.id, seller_id: supplier_id).first
-    if dl.nil?
-      number_of_days = 30
-    else
-      number_of_days = dl.days_limit.to_i
-    end
-    date = Date.today - number_of_days.days
-    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
-      true
-    else
-      false
-    end
-  end
+  # def has_overdue_transaction_of_30_days(supplier_id)
+  #   dl = DaysLimit.where(buyer_id: self.id, seller_id: supplier_id).first
+  #   if dl.nil?
+  #     number_of_days = 30
+  #   else
+  #     number_of_days = dl.days_limit.to_i
+  #   end
+  #   date = Date.today - number_of_days.days
+  #   if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+  #     true
+  #   else
+  #     false
+  #   end
+  # end
 
-  def is_blocked_by_supplier(supplier)
-    bu = BlockUser.where(customer_id: supplier, block_user_ids: self.id).first
-    if bu.nil?
-      false
-    else
-      true
-    end
-  end
+  # def is_blocked_by_supplier(supplier)
+  #   bu = BlockUser.where(customer_id: supplier, block_user_ids: self.id).first
+  #   if bu.nil?
+  #     false
+  #   else
+  #     true
+  #   end
+  # end
 
-  def has_limit(supplier)
-    CreditLimit.where(seller_id: supplier, buyer_id: self.id).first.present?
-  end
+  # def has_limit(supplier)
+  #   CreditLimit.where(seller_id: supplier, buyer_id: self.id).first.present?
+  # end
 
   ### callbacks ###
   def add_user_to_tenders
@@ -278,31 +278,31 @@ class Customer < ApplicationRecord
     CustomerRole.create(role_id: 2, customer_id: self.id)
   end
 
-  def check_group_overdue(supplier_id)
-    is_overdue = false
-    groups = CompaniesGroup.where("customer_id like '%#{id}%'")
-    groups.each do |group|
-      group.customer_id.each do |c|
-        customer = Customer.find(c)
-        if customer.has_overdue_transaction_of_30_days(supplier_id)
-          is_overdue = true
-          return 
-        end
-      end
-    end
-    return is_overdue
-  end
+  # def check_group_overdue(supplier_id)
+  #   is_overdue = false
+  #   groups = CompaniesGroup.where("customer_id like '%#{id}%'")
+  #   groups.each do |group|
+  #     group.customer_id.each do |c|
+  #       customer = Customer.find(c)
+  #       if customer.has_overdue_transaction_of_30_days(supplier_id)
+  #         is_overdue = true
+  #         return
+  #       end
+  #     end
+  #   end
+  #   return is_overdue
+  # end
 
-  def check_market_limit_overdue(market_limit_overdue, supplier_id)
-    cl = CreditLimit.where(seller_id: supplier_id, buyer_id: self.id).first
-    customer_market_limit = cl.market_limit
-    if market_limit_overdue.to_i < customer_market_limit.to_i
-      return false
-    elsif customer_market_limit.to_i == 0
-    else
-      return true
-    end
-  end
+  # def check_market_limit_overdue(market_limit_overdue, supplier_id)
+  #   cl = CreditLimit.where(seller_id: supplier_id, buyer_id: self.id).first
+  #   customer_market_limit = cl.market_limit
+  #   if market_limit_overdue.to_i < customer_market_limit.to_i
+  #     return false
+  #   elsif customer_market_limit.to_i == 0
+  #   else
+  #     return true
+  #   end
+  # end
 
   rails_admin do
     list do
