@@ -105,7 +105,7 @@
             <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
             <% unless params[:controller] == 'customers' %>
               <td>
-                <%= link_to parcel.demand_count(parcel,current_customer), demand_supplier_path(id: parcel.id) %>
+                <%= link_to parcel.demand_count(parcel,current_company), demand_supplier_path(id: parcel.id) %>
               </td>
             <% end %>
             <% if parcel.company_id == current_company.id %>

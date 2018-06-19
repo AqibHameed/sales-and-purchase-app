@@ -35,7 +35,7 @@ class Customer < ApplicationRecord
   has_many :trading_parcels
   has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction"
   has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction"
-  has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
+  # has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
   has_many :seller_credit_limits, :foreign_key => "seller_id", :class_name => "CreditLimit"
   has_many :supplier_notifications, :foreign_key => "supplier_id", :class_name => "SupplierNotification"
   has_many :buyer_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit"
@@ -209,14 +209,14 @@ class Customer < ApplicationRecord
     Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 1)
   end
 
-  def is_overdue
-    date = Date.today
-    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
-      true
-    else
-      false
-    end
-  end
+  # def is_overdue
+  #   date = Date.today
+  #   if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+  #     true
+  #   else
+  #     false
+  #   end
+  # end
 
   def block_demands
     Demand.where(customer_id: self.id).update_all(block: true)

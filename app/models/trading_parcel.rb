@@ -8,11 +8,11 @@ class TradingParcel < ApplicationRecord
   has_many :parcel_size_infos
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
-  
+
   validates :source, presence: true, if: :diamond_type_is_sight?
   validates :credit_period, :total_value, :description, presence: true
   validates :price, :credit_period, :weight, :total_value, numericality: true
-  
+
   after_create :generate_and_add_uid, :send_mail_to_demanded
   before_create :set_defaults
 
@@ -53,7 +53,7 @@ class TradingParcel < ApplicationRecord
   end
 
   def demand_count(parcel, customer)
-    count = Demand.where(description: parcel.description, block: false, deleted: false).where.not(customer_id: customer.id).count
+    count = Demand.where(description: parcel.description, block: false, deleted: false).where.not(company_id: customer.id).count
     # customer_ids = demands.customer_ids
     # customer_ids.each do |id|
     #   Customer.check_overdue(id)

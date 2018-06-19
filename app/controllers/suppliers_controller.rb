@@ -40,8 +40,8 @@ class SuppliersController < ApplicationController
 
   def demand
     @parcel = TradingParcel.find(params[:id])
-    @demand = Demand.where(description: @parcel.description, block: false, deleted: false).where.not(customer_id: current_customer.id)
-    @customers = Customer.where(id: @demand.map(&:customer_id)).page params[:page]
+    @demand = Demand.where(description: @parcel.description, block: false, deleted: false).where.not(company_id: current_company.id)
+    @companies = Company.where(id: @demand.map(&:company_id)).page params[:page]
   end
 
   def add_demand_list
