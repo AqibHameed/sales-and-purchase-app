@@ -103,6 +103,11 @@ class Api::V1::ApiController < ApplicationController
     render json: { customers: customers_data(customers), response_code: 200 }
   end
 
+  def company_list
+    companies = Company.all
+    render json: { companies: companies, response_code: 200 }
+  end
+
   def update_chat_id
     if current_customer
       current_customer.chat_id = params[:chat_id]
