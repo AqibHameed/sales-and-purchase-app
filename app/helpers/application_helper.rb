@@ -474,15 +474,15 @@ module ApplicationHelper
     return Company.where(id: c).first
   end
 
-  def get_demanded_but_no_credit(current_customer , id)
+  def get_demanded_but_no_credit(current_company , id)
     count = 0
     @parcel = TradingParcel.where(id: id).first
     @demanded_but_not_available = []
-    customers = Customer.unscoped.where.not(id: current_customer.id)
-    customers.each do |customer|
-      p = Demand.where(customer_id: customer.id, description: @parcel.description).first
+    companies = Company.where.not(id: current_company.id)
+    companies.each do |company|
+      p = Demand.where(company_id: company.id, description: @parcel.description).first
       if p.present?
-        if !customer.buyer_credit_limits.where(seller_id: current_customer.id).present?
+        if !company.buyer_credit_limits.where(seller_id: current_company.id).present?
          count = count+1
         end
       end
