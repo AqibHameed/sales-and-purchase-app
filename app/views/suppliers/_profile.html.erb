@@ -1,6 +1,6 @@
 <div class="table company-details-modal">
   <div class = "container">
-  <h3 >Profile</h3>
+    <h3 >Profile</h3>
     <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="table table-bordered table-responsive tablesorter">
       <tr>
         <td> Company</td>
@@ -69,6 +69,28 @@
         </td>
       </tr>
     </table>
+    <br/>
+    <h3 >Customers</h3>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="table table-bordered table-responsive tablesorter">
+        <thead>
+          <tr>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Email</td>
+          </tr>
+        </thead>
+        <tbody>
+          <%if @company.try(:customers).present?%>
+            <% @company.try(:customers).each do |customer|%>
+              <tr>
+                <td><%= customer.try(:first_name)%></td>
+                <td><%= customer.try(:last_name)%></td>
+                <td><%= customer.try(:email)%></td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
     <div class="clear20"></div>
     <%=link_to 'Close', 'javascript:void(0)', class: "btn-02 login-btn close-modal"%>
   </div>
