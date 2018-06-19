@@ -190,7 +190,7 @@ class CustomersController < ApplicationController
    end
     required_parcels = []
     parcels.each do |parcel|
-      if check_parcel_visibility(parcel, current_customer)
+      if check_parcel_visibility(parcel, current_company)
         required_parcels << parcel
       end
     end

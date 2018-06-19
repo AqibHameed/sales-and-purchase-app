@@ -88,6 +88,8 @@ class SuppliersController < ApplicationController
   end
 
   def credit
+    @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_company.id)
+    excepted_companies_id = @companies_groups.map(&:company_id).flatten.uniq
     @group_names = []
     if params[:letter].present?
       # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
@@ -98,10 +100,10 @@ class SuppliersController < ApplicationController
       @custs = Company.where.not(id: current_company.id) #.page
       @companies = @star_companies + @custs
       @companies = @companies.uniq
+      @companies = @companies.delete_if {|company| excepted_companies_id.include?(company.id.to_s) }
       # @companies = Company.all
     end
     # @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
-    @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_company.id)
   end
 
   def credit_request
