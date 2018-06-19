@@ -159,11 +159,11 @@ class CustomersController < ApplicationController
 
   def demanding
     @demanding_parcel = Demand.new
-    @dtc_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 1, deleted: false)
-    @russian_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 2, deleted: false)
-    @outside_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 3, deleted: false)
-    @something_special_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 4, deleted: false)
-    if current_customer.is_overdue
+    @dtc_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 1, deleted: false)
+    @russian_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 2, deleted: false)
+    @outside_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 3, deleted: false)
+    @something_special_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 4, deleted: false)
+    if current_company.is_overdue
       # current_customer.block_demands
       @disable = true
     else
@@ -201,7 +201,7 @@ class CustomersController < ApplicationController
     demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
     description = params[:demand][:description].reject { |c| c.empty? }
     description.each do |d|
-      @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+      @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
         demand.weight = params[:demand][:weight]
         demand.price = params[:demand][:price]
         demand.diamond_type = params[:demand][:diamond_type]
@@ -209,7 +209,7 @@ class CustomersController < ApplicationController
         demand.deleted = false
       end
     end
-    if @demanding_parcel.save
+    if @demanding_parcel.save!
       flash[:notice] = "Demand created successfully."
       redirect_to demanding_customers_path
     else
