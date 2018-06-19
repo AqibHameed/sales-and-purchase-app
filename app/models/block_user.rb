@@ -1,7 +1,7 @@
 class BlockUser < ApplicationRecord
   # serialize :block_user_ids, Array
-  belongs_to :customer
-  belongs_to :block_user, class_name: 'Customer', foreign_key: 'block_user_ids'
+  belongs_to :company
+  belongs_to :block_user, class_name: 'Company', foreign_key: 'block_company_ids'
 
 
   def self.block_user user,id
@@ -15,6 +15,6 @@ class BlockUser < ApplicationRecord
   def self.update_entry_block user,id
     ids = user.block_user.block_user_ids
     user = user.block_user.update_attributes(block_user_ids: ids.push(id))
-    return user.present? 
+    return user.present?
   end
 end
