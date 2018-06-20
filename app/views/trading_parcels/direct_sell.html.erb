@@ -92,7 +92,7 @@
   <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">Buyer:</label>
     <div class="col-sm-8">
-      <%= f.select :buyer_id, customer_list_options, { include_blank: true }, class: 'form-control no-border' %>
+      <%= f.select :buyer_id, all_companies(current_company), { include_blank: true }, class: 'form-control no-border' %>
     </div>
     <div class="col-sm-2">
       <%= link_to 'Invite', invite_transactions_path, :class => 'invite' %>
@@ -140,7 +140,7 @@
       "dateFormat" : 'dd/mm/yy'
     });
     parcel_list($('#trading_document_diamond_type').val())
-    setTimeout(function(){ 
+    setTimeout(function(){
       $('#trading_parcel_description').val('<%=@parcel.description%>')
     }, 500);
   })
@@ -235,7 +235,7 @@
 
   $(document.body).on("change", "#transaction_buyer_id", function(){
     text = "Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection."
-    
+
     $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
     toggle_checkbox()
     // id = $(this).val()

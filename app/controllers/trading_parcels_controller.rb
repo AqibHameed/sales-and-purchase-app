@@ -144,7 +144,7 @@ class TradingParcelsController < ApplicationController
   end
 
   def save_direct_sell
-    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.customer_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
+    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
                                   price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
                                   created_at: params[:transaction][:created_at])
     if @transaction.save

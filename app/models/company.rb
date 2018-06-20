@@ -3,6 +3,8 @@ class Company < ApplicationRecord
   has_many :trading_parcels
   has_many :proposals
   has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
+  has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction"
+  has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction"
 
   validates :name, presence: true
 

@@ -33,8 +33,8 @@ class Customer < ApplicationRecord
   has_many :customer_comments
   has_many :customer_pictures
   has_many :trading_parcels
-  has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction"
-  has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction"
+  # has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction"
+  # has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction"
   # has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
   has_many :seller_credit_limits, :foreign_key => "seller_id", :class_name => "CreditLimit"
   has_many :supplier_notifications, :foreign_key => "supplier_id", :class_name => "SupplierNotification"
