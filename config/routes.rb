@@ -259,6 +259,7 @@ Rails.application.routes.draw do
       get '/old_upcoming', to: 'tenders#old_upcoming'
       get '/old_tender_parcel', to: 'tenders#old_tender_parcel'
       get '/customer_list', to: 'api#customer_list'
+      get '/company_list', to: 'api#company_list'
       put '/update_chat_id', to: 'api#update_chat_id'
       get '/blocked_customers', to: 'companies#blocked_customers'
       resources :tenders do
