@@ -50,7 +50,7 @@ module Api
 
       def parcels_list
         list = DemandList.where(demand_supplier_id: params[:demand_supplier_id])
-        render json: { parcels_list: list.as_json(only: [:id, :name]) }
+        render json: { parcels_list: list.as_json(only: [:id, :description]) }
       end
     end
   end
