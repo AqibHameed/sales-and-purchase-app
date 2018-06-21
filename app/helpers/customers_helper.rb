@@ -4,7 +4,9 @@ module CustomersHelper
     if parcel.company_id == company.id
       true
     else
-      if parcel.sale_none == true
+      if current_company.is_blocked_by_supplier(parcel.try(:company_id))
+        false
+      elsif parcel.sale_none == true
         false
       elsif parcel.sale_all == true
         true

@@ -31,6 +31,15 @@ module Api
         end
       end
 
+      def demand_suppliers
+        demand_supplier = DemandSupplier.all
+        render json: { demand_suppliers: demand_supplier.as_json(only: [:id, :name]) }
+      end
+
+      def parcels_list
+        list = DemandList.where(demand_supplier_id: params[:demand_supplier_id])
+        render json: { parcels_list: list.as_json(only: [:id, :name]) }
+      end
     end
   end
 end
