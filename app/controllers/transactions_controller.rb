@@ -30,7 +30,7 @@ class TransactionsController < ApplicationController
 
   def payment
     @payment = PartialPayment.new(partial_payment_params)
-    @payment.customer_id = current_customer.id
+    @payment.company_id = current_company.id
     if @payment.save
       @transaction = Transaction.find(@payment.transaction_id)
       amount = @transaction.remaining_amount
