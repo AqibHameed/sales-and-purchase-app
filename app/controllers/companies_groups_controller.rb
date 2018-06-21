@@ -46,8 +46,13 @@ class CompaniesGroupsController < ApplicationController
   def delete_group
     companies_groups = CompaniesGroup.where(id: params[:group_id]).first
     companies_groups.company_id = companies_groups.company_id.reject!{|a| a == params[:id] } unless companies_groups.nil?
-    companies_groups.save!
-    flash[:notice] = 'Customer successfully destroyed.'
+    if companies_groups.company_id.count == 0
+     companies_groups.destroy
+     flash[:notice] = 'Group successfully destroyed.'
+    else
+     companies_groups.save!
+     flash[:notice] = 'Customer successfully destroyed.'
+    end
     redirect_to credit_suppliers_path(group: true)
   end
 
