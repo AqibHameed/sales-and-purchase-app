@@ -57,7 +57,8 @@ module Api
           else
             cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_initialize
             cl.market_limit = params[:limit]
-            if cl.save
+            cl.credit_limit = 0 if cl.credit_limit.nil?
+            if cl.save!
               render json: { success: true, message: 'Market Limit updated.', value: cl.market_limit }
             else
               render json: { success: false, message: cl.errors.full_messages }
@@ -108,7 +109,7 @@ module Api
         if current_company
           b = BlockUser.where(block_company_ids: params[:company_id], company_id: current_company.id).first
           if b.nil?
-            render json: { success: false, message: 'Customer already unblocked or not found' }
+            render json: { success: false, message: 'Company already unblocked or not found' }
           else
             b.destroy
             render json: { success: true }
@@ -123,7 +124,7 @@ module Api
           if params[:company_id].present?
             company = Company.where(id: params[:company_id]).first
             if company.nil?
-             render json: { success: false, errors: "Customer not found", response_code: 201 }
+             render json: { success: false, errors: "Company not found", response_code: 201 }
             else
               @data = {
                 id: company.id.to_s,
