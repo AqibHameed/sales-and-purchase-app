@@ -46,11 +46,11 @@ class Company < ApplicationRecord
     is_overdue = false
     groups = CompaniesGroup.where("company_id like '%#{id}%'")
     groups.each do |group|
-      group.customer_id.each do |c|
+      group.company_id_id.each do |c|
         company = Company.find(c)
         if company.has_overdue_transaction_of_30_days(supplier_id)
           is_overdue = true
-          return
+          return is_overdue
         end
       end
     end
@@ -59,12 +59,16 @@ class Company < ApplicationRecord
 
   def check_market_limit_overdue(market_limit_overdue, supplier_id)
     cl = CreditLimit.where(seller_id: supplier_id, buyer_id: self.id).first
-    company_market_limit = cl.market_limit
-    if market_limit_overdue.to_i < company_market_limit.to_i
+    if cl.nil? || cl.market_limit.nil?
       return false
-    elsif company_market_limit.to_i == 0
     else
-      return true
+      company_market_limit = cl.market_limit
+      if market_limit_overdue.to_i < company_market_limit.to_i
+        return false
+      elsif company_market_limit.to_i == 0
+      else
+        return true
+      end
     end
   end
 

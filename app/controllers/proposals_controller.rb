@@ -1,8 +1,11 @@
 class ProposalsController < ApplicationController
-  # layout 'supplier'
   before_action :authenticate_customer!
-  before_action :set_proposal, only: [ :show, :edit, :delete, :update, :accept, :reject, :check_authenticate_person ]
+  before_action :set_proposal, only: [ :show, :edit, :delete, :update, :accept, :reject, :check_authenticate_person]
   before_action :check_authenticate_person, only: [:edit]
+
+  include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TextHelper
+  include ApplicationHelper
 
   rescue_from ActiveRecord::RecordNotFound do
     flash[:notice] = 'Proposal not found'
@@ -59,25 +62,10 @@ class ProposalsController < ApplicationController
 
   def accept
     unless @proposal.status == 1
-      ActiveRecord::Base.transaction do
-        @proposal.status = 1
-        if @proposal.save(validate: false)
-          @proposal.trading_parcel.update_column(:sold, true)
-          Transaction.create_new(@proposal)
-          # TradingParcel.send_won_parcel_email(@proposal)
-          flash[:notice] = "Proposal accepted."
-          respond_to do |format|
-            format.js { render js: "window.location = '/customers/trading'"}
-            format.html { redirect_to trading_customers_path }
-          end
-        end
-        # customer_id = @proposal.trading_parcel.customer_id
-        @trading_parcel = @proposal.trading_parcel.dup
-        @trading_parcel.company_id = @proposal.buyer_id
-        # @trading_parcel.customer_id = customer_id
-        @trading_parcel.sold = false
-        @trading_parcel.sale_all = false
-        @trading_parcel.save
+      if params[:check] == "true"
+        check_credit_accept(@proposal)
+      else
+        accpet_proposal(@proposal)
       end
     end
   end
@@ -106,6 +94,39 @@ class ProposalsController < ApplicationController
     end
   end
 
+  def accpet_proposal(proposal)
+    @proposal = proposal
+    ActiveRecord::Base.transaction do
+      @proposal.status = 1
+      if @proposal.save(validate: false)
+        available_credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
+        total_price = @proposal.price*@proposal.trading_parcel.weight
+        if available_credit_limit < total_price
+          credit_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
+          if credit_limit.nil?
+            CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, credit_limit: total_price)
+          else
+            new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
+            credit_limit.update_attributes(credit_limit: new_limit)
+          end
+        end
+        @proposal.trading_parcel.update_column(:sold, true)
+        Transaction.create_new(@proposal)
+        # TradingParcel.send_won_parcel_email(@proposal)
+        flash[:notice] = "Proposal accepted."
+        respond_to do |format|
+          format.js { render js: "window.location = '/customers/trading'"}
+          format.html { redirect_to trading_customers_path }
+        end
+      end
+      @trading_parcel = @proposal.trading_parcel.dup
+      @trading_parcel.company_id = @proposal.buyer_id
+      @trading_parcel.sold = false
+      @trading_parcel.sale_all = false
+      @trading_parcel.save
+    end
+  end
+
   private
   def set_proposal
     @proposal = Proposal.find(params[:id])
@@ -117,6 +138,17 @@ class ProposalsController < ApplicationController
     else
       flash[:notice] = "You have already sent proposal to other party."
       redirect_back fallback_location: trading_customers_path
+    end
+  end
+
+  def check_credit_accept(proposal)
+    credit_limit = get_available_credit_limit(proposal.buyer, current_company).to_f
+    if credit_limit < (proposal.price*proposal.trading_parcel.weight)
+      respond_to do |format|
+        format.js { render 'proposals/credit_warning', locals: { proposal: proposal, available_credit_limit: credit_limit }}
+      end
+    else
+      accpet_proposal(proposal)
     end
   end
 

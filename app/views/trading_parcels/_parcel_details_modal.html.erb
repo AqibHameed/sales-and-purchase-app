@@ -1,6 +1,6 @@
 <% if @history.present? %>
-<% @amount = get_amount_for_graph(@history.first.trading_parcel_id) %>
-<%= @history%>
+<% amount = get_amount_for_graph(@history.first.trading_parcel_id) %>
+<%#= @history%>
 <%end %>
 
 <div class="modal fade bs-example-modal-lg" id="parcel_details_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -18,7 +18,7 @@
             </div>
             <div class="col-lg-4">
               <% total = @parcel.try(:price)*@parcel.try(:weight) rescue 0 %>
-              <p><b>Supplier:</b> <%= @parcel.try(:customer).try(:company).try(:name) %></p>
+              <p><b>Supplier:</b> <%= @parcel.try(:company).try(:name) %></p>
               <p><b>Lot No.:</b> <%= @parcel.try(:lot_no) %></p>
               <p><b>Description:</b> <%= @parcel.try(:description) %></p>
               <p><b>Carats:</b> <%= @parcel.try(:weight) %></p>
@@ -82,15 +82,15 @@
                       <% if (current_company.id == @parcel.try(:company_id))  %>
                       <% elsif current_company.is_blocked_by_supplier(@parcel.try(:company_id)) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
-                      <% elsif !current_company.has_limit(@parcel.try(:company_id)) %>
-                        <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has not given credit limit to you.
-                        <%= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:company_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
+                      <%# elsif !current_company.has_limit(@parcel.try(:company_id)) %>
+                        <!-- <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has not given credit limit to you. -->
+                        <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:company_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
                       <% elsif current_company.has_overdue_transaction_of_30_days(@parcel.try(:company_id)) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p>
-                      <% elsif grey_buy_btn(current_company.id, @parcel.try(:company_id)) %>
-                        <%= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
-                        <p style="margin: -14px 0px 6px 65px; color: red;">Credit limit is 0. Please contact supplier
-                        <%= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:company_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
+                      <%# elsif grey_buy_btn(current_company.id, @parcel.try(:company_id)) %>
+                        <%#= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
+                        <!-- <p style="margin: -14px 0px 6px 65px; color: red;">Credit limit is 0. Please contact supplier -->
+                        <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:company_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
                       <% elsif current_company.check_group_overdue(@parcel.try(:company_id)) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything. Your group customer have overdue.</p>
                       <% elsif current_company.check_market_limit_overdue(get_market_limit(current_company, @parcel.try(:company_id)), @parcel.try(:company_id)) %>
@@ -158,7 +158,7 @@
     },
     series : [{
       name : 'Sold Price',
-      data : <%= @history.present? ? (@history.first.price.present? ? [@history.first.price.to_f] : [@amount.to_f]) : [0.0]  %>
+      data : <%= @history.present? ? (@history.first.price.present? ? [@history.first.price.to_f] : [amount.to_f]) : [0.0]  %>
     }]
   });
 
