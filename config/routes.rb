@@ -295,7 +295,7 @@ Rails.application.routes.draw do
       post '/device_token', to: 'api#device_token'
       post '/supplier_notification', to: 'api#supplier_notification'
       get '/suppliers', to: 'api#get_suppliers'
-      resources :demands, only: [:create]
+      resources :demands, only: [:create, :index]
     end
   end
 
