@@ -5,10 +5,17 @@ module Api
 
       def index
         if current_company
-          @dtc_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 1, deleted: false)
-          @russian_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 2, deleted: false)
-          @outside_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 3, deleted: false)
-          @something_special_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 4, deleted: false)
+          @all_demands = []
+          @demand_suppliers = DemandSupplier.all
+          DemandSupplier.all.each do |supplier|
+            demands = Demand.where(company_id: current_company.id, demand_supplier_id: supplier.id, deleted: false)
+            demand_supplier = {
+              id: supplier.id,
+              name: supplier.name,
+              demands: demands
+            }
+            @all_demands << demand_supplier
+          end
           respond_to do |format|
             format.json { render :index, success: true}
           end
@@ -49,8 +56,17 @@ module Api
       end
 
       def parcels_list
-        list = DemandList.where(demand_supplier_id: params[:demand_supplier_id])
-        render json: { parcels_list: list.as_json(only: [:id, :description]) }
+       demand = Demand.where(id: params[:demand_id]).first
+       if demand.present?
+         parcels = TradingParcel.where(description: demand.description)
+         detail = {
+             description: demand.description,
+             parcels: parcels
+         }
+         render json: { Demand_detail: detail }
+       else
+         render json: { success:false, message: 'This demand does not exists' }
+       end
       end
     end
   end
