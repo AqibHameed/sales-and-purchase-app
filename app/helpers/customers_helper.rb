@@ -27,6 +27,14 @@ module CustomersHelper
     end
   end
 
+  def parcel_demanded(parcel, company)
+    if Demand.where(description: parcel.description, company_id: company.id).exists?
+      true
+    else
+      false
+    end
+  end
+
   def last_3_trading_avg(histories)
     count = histories.count
     total = histories.map { |e| e.total_amount  }.sum

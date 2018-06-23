@@ -2,6 +2,7 @@ module Api
   module V1
     class DemandsController < ApiController
       skip_before_action :verify_authenticity_token, only: [:create, :destroy]
+      include CustomersHelper
 
       def index
         if current_company
@@ -55,18 +56,57 @@ module Api
         render json: { demand_suppliers: demand_supplier.as_json(only: [:id, :name]) }
       end
 
+      def demand_description
+        list = DemandList.where(demand_supplier_id: params[:demand_supplier_id])
+        render json: { descriptions: list.map { |e| e.description } }
+      end
+
       def parcels_list
-       demand = Demand.where(id: params[:demand_id]).first
-       if demand.present?
-         parcels = TradingParcel.where(description: demand.description)
-         detail = {
-             description: demand.description,
-             parcels: parcels
-         }
-         render json: { Demand_detail: detail }
-       else
-         render json: { success:false, message: 'This demand does not exists' }
-       end
+        if current_company
+          @demanded = []
+          @others = []
+          parcels = TradingParcel.where(sold: false)
+          required_parcels = []
+          parcels.each do |parcel|
+            if check_parcel_visibility(parcel, current_company)
+              if parcel_demanded(parcel, current_company)
+                @demanded << parcel_data(parcel, 'demanded')
+              else
+                @others << parcel_data(parcel, 'other')
+              end
+            end
+          end
+          render json: { parcels: { demanded: @demanded, others: @others }}
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+      def parcel_data(parcel, category)
+        respose_hash =  {
+          id: parcel.id.to_s,
+          description: parcel.description,
+          lot_no: parcel.lot_no.to_s,
+          no_of_stones: parcel.no_of_stones.to_s,
+          carats: parcel.weight.to_s,
+          credit_period: parcel.credit_period.to_s,
+          avg_price: parcel.price.to_s,
+          company: parcel.try(:company).try(:name),
+          cost: parcel.cost.to_s,
+          discount_per_month: parcel.box_value.to_s,
+          sight: parcel.sight,
+          source: parcel.source,
+          uid: parcel.uid,
+          percent: parcel.percent.to_s,
+          comment: parcel.comment.to_s,
+          total_value: parcel.total_value.to_s
+        }
+        if category == "demanded"
+          demand = Demand.where(description: parcel.description, company_id: current_company.id).first
+          respose_hash.merge(demand_id: demand.id)
+        else
+          respose_hash
+        end
       end
     end
   end

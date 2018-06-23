@@ -300,6 +300,7 @@ Rails.application.routes.draw do
         collection do
           get :demand_suppliers
           get :parcels_list
+          get :demand_description
         end
       end
     end
