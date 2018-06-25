@@ -105,7 +105,7 @@ class Api::V1::ApiController < ApplicationController
 
   def company_list
     companies = Company.all
-    render json: { companies: companies, response_code: 200 }
+    render json: { companies: companies_data(companies), response_code: 200 }
   end
 
   def update_chat_id
@@ -152,6 +152,21 @@ class Api::V1::ApiController < ApplicationController
         email: c.email,
         company: c.company.try(:name),
         chat_id: c.chat_id
+      }
+    end
+    @data
+  end
+
+  def companies_data(companies)
+    @data = []
+    companies.each do |c|
+      @data << {
+        id: c.id.to_s,
+        name: c.name,
+        city: c.city,
+        country: c.county,
+        created_at: c.created_at,
+        updated_at: c.updated_at
       }
     end
     @data

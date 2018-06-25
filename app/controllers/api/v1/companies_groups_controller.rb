@@ -9,8 +9,8 @@ module Api
       include ApplicationHelper
 
       def index
-        if current_customer
-          @companies_group = CompaniesGroup.where(seller_id: current_customer.id)
+        if current_company
+          @companies_group = CompaniesGroup.where(seller_id: current_company.id)
           render json: { success: true, groups: group_data(@companies_group)}
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -18,13 +18,13 @@ module Api
       end
       
       def create
-        if current_customer
+        if current_company
           companies_group = CompaniesGroup.new
           companies_group.group_name = params[:group_name]
-          companies_group.customer_id = params[:customer_id]
-          companies_group.seller_id = current_customer.id
+          companies_group.company_id = params[:company_id]
+          companies_group.seller_id = current_company.id
           if companies_group.save
-            render json: { success: true, message: 'Group created successfully', data: { id: companies_group.id, group_name: companies_group.group_name, customers: group_data(companies_group)}, response_code: 200 }
+            render json: { success: true, message: 'Group created successfully', data: { id: companies_group.id.to_s, group_name: companies_group.group_name, companies: group_data(companies_group)}, response_code: 200 }
           else
             render json: { success: false, errors: companies_group.errors.full_messages, response_code: 201 }
           end
@@ -35,11 +35,11 @@ module Api
 
       def update
         companies_group = CompaniesGroup.find(params[:id])
-        if current_customer && current_customer.id == companies_group.seller_id
+        if current_company && current_company.id == companies_group.seller_id
           companies_group.group_name = params[:group_name]
-          companies_group.customer_id = params[:customer_id]
+          companies_group.company_id = params[:company_id]
           if companies_group.save
-            render json: { success: true, message: 'Group updated successfully', data: { id: companies_group.id, group_name: companies_group.group_name, customers: group_data(companies_group)}, response_code: 200 }
+            render json: { success: true, message: 'Group updated successfully', data: { id: companies_group.id.to_s, group_name: companies_group.group_name, companies: group_data(companies_group)}, response_code: 200 }
           else
             render json: { success: false, errors: companies_group.errors.full_messages, response_code: 201 }
           end
@@ -50,7 +50,7 @@ module Api
 
       def destroy
         companies_group = CompaniesGroup.find(params[:id])
-        if current_customer && current_customer.id == companies_group.seller_id
+        if current_company && current_company.id == companies_group.seller_id
           companies_group.destroy if companies_group
           render json: { success: true, response_code: 200 }
         else
@@ -64,36 +64,34 @@ module Api
         unless count == 0
           companies_group.each do |group|
             list = []
-            group.customer_id.each do |c|
-              customer = get_customer(c)
+            group.company_id.each do |c|
+              company = get_company(c)
               list << {
-                id: customer.id.to_s,
-                customer_name: customer.name,
-                company: customer.company.try(:name),
-                total_limit: get_credit_limit(customer, current_customer), 
-                used_limit: get_used_credit_limit(customer, current_customer), 
-                available_limit: get_available_credit_limit(customer, current_customer), 
-                overdue_limit: get_days_limit(customer, current_customer), 
-                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer).to_s, 
-                supplier_connected: supplier_connected(customer, current_customer).to_s
+                id: company.id.to_s,
+                name: company.name,
+                total_limit: get_credit_limit(company, current_company), 
+                used_limit: get_used_credit_limit(company, current_company), 
+                available_limit: get_available_credit_limit(company, current_company), 
+                overdue_limit: get_days_limit(company, current_company), 
+                market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s, 
+                supplier_connected: supplier_connected(company, current_company).to_s
               }
             end
-            @data << { id: group.id, group_name: group.group_name, customers: list }
+            @data << { id: group.id.to_s, group_name: group.group_name, companies: list }
           end
         else
           unless companies_group.blank?
-            companies_group.customer_id.each do |c|
-              customer = get_customer(c)
+            companies_group.company_id.each do |c|
+              company = get_company(c)
               @data << {
-                id: customer.id.to_s,
-                customer_name: customer.name,
-                company: customer.company.try(:name),
-                total_limit: get_credit_limit(customer, current_customer), 
-                used_limit: get_used_credit_limit(customer, current_customer), 
-                available_limit: get_available_credit_limit(customer, current_customer), 
-                overdue_limit: get_days_limit(customer, current_customer), 
-                market_limit: get_market_limit_from_credit_limit_table(customer, current_customer).to_s, 
-                supplier_connected: supplier_connected(customer, current_customer).to_s
+                id: company.id.to_s,
+                name: company.name,
+                total_limit: get_credit_limit(company, current_company), 
+                used_limit: get_used_credit_limit(company, current_company), 
+                available_limit: get_available_credit_limit(company, current_company), 
+                overdue_limit: get_days_limit(company, current_company), 
+                market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s, 
+                supplier_connected: supplier_connected(company, current_company).to_s
               }
             end
           end
