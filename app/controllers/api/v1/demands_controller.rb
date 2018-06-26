@@ -94,8 +94,9 @@ module Api
         end
         @info = []
         parcel.parcel_size_infos.each do |i|
-          @info << { size: '%.2f' %i.size,
-                     percent: '%.2f' %i.percent }
+          size = (i.size.nil? || i.size.blank?) ? nil : '%.2f' %i.size
+          per = (i.percent.nil? || i.percent.blank?) ? nil : '%.2f' %i.percent
+          @info << { size: size, percent: per }
         end
         carats = parcel.weight.nil? ? nil : '%.2f' % parcel.weight
         avg_price = parcel.price.nil? ? nil : '%.2f' % parcel.price
