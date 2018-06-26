@@ -3,6 +3,11 @@ class Api::V1::ApiController < ApplicationController
   before_action :current_customer, only: [:device_token, :supplier_notification, :update_chat_id]
   helper_method :current_company
 
+  include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TextHelper
+  include ApplicationHelper
+  include CustomersHelper
+
   def current_customer
     token = request.headers['Authorization'].presence
     if token

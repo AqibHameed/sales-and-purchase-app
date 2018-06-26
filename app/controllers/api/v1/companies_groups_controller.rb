@@ -4,10 +4,6 @@ module Api
       before_action :current_customer
       skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy]
 
-      include ActionView::Helpers::NumberHelper
-      include ActionView::Helpers::TextHelper
-      include ApplicationHelper
-
       def index
         if current_company
           @companies_group = CompaniesGroup.where(seller_id: current_company.id)

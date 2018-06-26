@@ -290,6 +290,7 @@ Rails.application.routes.draw do
           post :add_star
         end
       end
+      resources :proposals
       resources :companies_groups
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'

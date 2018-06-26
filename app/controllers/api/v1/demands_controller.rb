@@ -2,7 +2,6 @@ module Api
   module V1
     class DemandsController < ApiController
       skip_before_action :verify_authenticity_token, only: [:create, :destroy]
-      include CustomersHelper
 
       def index
         if current_company
@@ -83,7 +82,24 @@ module Api
       end
 
       def parcel_data(parcel, category)
+        if parcel.company_id == current_company.id
+          is_mine = true
+        else
+          is_mine = false
+        end
+        if current_company.has_overdue_transaction_of_30_days(parcel.try(:company_id)) || current_company.check_market_limit_overdue(get_market_limit(current_company, parcel.try(:company_id)), parcel.try(:company_id))
+          is_overdue = true
+        else
+          is_overdue = false
+        end
+        @info = []
+        parcel.parcel_size_infos.each do |i|
+          @info << { size: i.size.to_s,
+          percent: i.percent.to_s }
+        end
         respose_hash =  {
+          is_mine: is_mine.to_s,
+          is_overdue: is_overdue.to_s,
           id: parcel.id.to_s,
           description: parcel.description,
           lot_no: parcel.lot_no.to_s,
@@ -99,7 +115,8 @@ module Api
           uid: parcel.uid,
           percent: parcel.percent.to_s,
           comment: parcel.comment.to_s,
-          total_value: parcel.total_value.to_s
+          total_value: parcel.total_value.to_s,
+          size_info: @info
         }
         if category == "demanded"
           demand = Demand.where(description: parcel.description, company_id: current_company.id).first
