@@ -94,28 +94,32 @@ module Api
         end
         @info = []
         parcel.parcel_size_infos.each do |i|
-          @info << { size: i.size.to_s,
-          percent: i.percent.to_s }
+          @info << { size: '%.2f' %i.size,
+                     percent: '%.2f' %i.percent }
         end
+        carats = parcel.weight.nil? ? nil : '%.2f' % parcel.weight
+        avg_price = parcel.price.nil? ? nil : '%.2f' % parcel.price
+        total_value = parcel.total_value.nil? ? nil : '%.2f' % parcel.total_value
+        percent = parcel.percent.nil? ? nil : '%.2f' % parcel.percent
         respose_hash =  {
-          is_mine: is_mine.to_s,
-          is_overdue: is_overdue.to_s,
+          is_mine: is_mine,
+          is_overdue: is_overdue,
           id: parcel.id.to_s,
           description: parcel.description,
-          lot_no: parcel.lot_no.to_s,
-          no_of_stones: parcel.no_of_stones.to_s,
-          carats: parcel.weight.to_s,
-          credit_period: parcel.credit_period.to_s,
-          avg_price: parcel.price.to_s,
+          lot_no: parcel.lot_no,
+          no_of_stones: parcel.no_of_stones,
+          carats: carats,
+          credit_period: parcel.credit_period,
+          avg_price: avg_price,
           company: parcel.try(:company).try(:name),
-          cost: parcel.cost.to_s,
-          discount_per_month: parcel.box_value.to_s,
+          cost: parcel.cost,
+          discount_per_month: parcel.box_value,
           sight: parcel.sight,
           source: parcel.source,
           uid: parcel.uid,
-          percent: parcel.percent.to_s,
+          percent: percent,
           comment: parcel.comment.to_s,
-          total_value: parcel.total_value.to_s,
+          total_value: total_value,
           size_info: @info
         }
         if category == "demanded"
