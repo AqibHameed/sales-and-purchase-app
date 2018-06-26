@@ -11,7 +11,7 @@ class TradingParcel < ApplicationRecord
 
   validates :source, presence: true, if: :diamond_type_is_sight?
   validates :credit_period, :total_value, :description, presence: true
-  validates :price, :credit_period, :weight, :total_value, numericality: true
+  validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true
 
   after_create :generate_and_add_uid, :send_mail_to_demanded
   before_create :set_defaults
@@ -32,8 +32,10 @@ class TradingParcel < ApplicationRecord
     parcel_size_infos.each do |p1|
       sum = sum + p1["size"].to_f
     end
-    if sum > self.weight
-     self.errors.add :base, "Sum of sizes should be less than carats!!!"
+    if self.weight.present?
+      if sum > self.weight
+       self.errors.add :base, "Sum of sizes should be less than carats!!!"
+      end
     end
   end
 
