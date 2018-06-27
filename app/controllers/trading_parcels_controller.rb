@@ -40,48 +40,9 @@ class TradingParcelsController < ApplicationController
   def show
     @proposal = Proposal.new
     @info = []
-    @available_customers = []
-    available_customers = []
-    @not_enough_available_customers = []
-    not_enough_available_customers = []
-    @demanded_but_not_available = []
-    demanded_but_not_available = []
-    flag1 = []
-    flag2 = []
-    flag3 = []
-    customers = CreditLimit.where(seller_id: current_company.id).map { |e|  e.buyer  }
-    customers.each do |c|
-      if get_available_credit_limit(c, current_company).to_f >= @parcel.price.to_f
-        if CreditLimit.where(buyer_id: c.id, seller_id: current_company.id, star: true).first.present?
-          available_customers << c
-        else
-          flag1 << c
-        end
-      elsif get_available_credit_limit(c, current_company).to_f < @parcel.price.to_f
-        if CreditLimit.where(buyer_id: c.id, seller_id: current_company.id, star: true).first.present?
-          not_enough_available_customers << c
-        else
-          flag2 << c
-        end
-      end
-    end
-    @available_customers = available_customers + flag1
-    @available_customers = @available_customers.uniq
-    @not_enough_available_customers = not_enough_available_customers + flag2
-    @not_enough_available_customers = @not_enough_available_customers.uniq
-
-    demands = Demand.where(description: @parcel.description).map { |e|  e.company  }
-    demands.each do |company|
-      if !company.buyer_credit_limits.where(seller_id: current_company.id).present?
-        if CreditLimit.where(buyer_id: company.id, seller_id: current_company.id, star: true).first.present?
-          demanded_but_not_available << company
-        else
-          flag3 << company
-        end
-      end
-    end
-    @demanded_but_not_available = demanded_but_not_available + flag3
-    @demanded_but_not_available = @demanded_but_not_available.uniq
+    @available_customers = get_available_buyers(@parcel, current_customer)
+    @not_enough_available_customers = get_unavailable_buyers(@parcel, current_customer)
+    @demanded_but_not_available = get_demanded_but_not_available_buyers(@parcel, current_customer)
   end
 
   def edit

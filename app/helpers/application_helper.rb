@@ -501,4 +501,53 @@ module ApplicationHelper
    parcel =  TradingParcel.find(id)
    amount = parcel.cost*(100 + parcel.percent)/100
   end
+
+  # Vital sales data - parcel show
+  def get_available_buyers(parcel, current_customer)
+    available_customers = []
+    not_starred = []
+    customers = CreditLimit.where(seller_id: current_company.id).map { |e| e.buyer }
+    customers.each do |c|
+      if get_available_credit_limit(c, current_company).to_f >= parcel.price.to_f
+        if CreditLimit.where(buyer_id: c.id, seller_id: current_company.id, star: true).first.present?
+          available_customers << c
+        else
+          not_starred << c
+        end
+      end
+    end
+    return (available_customers + not_starred).uniq
+  end
+
+  def get_unavailable_buyers(parcel, current_customer)
+    unavailable_customers = []
+    not_starred = []
+    customers = CreditLimit.where(seller_id: current_company.id).map { |e| e.buyer }
+    customers.each do |c|
+      if get_available_credit_limit(c, current_company).to_f < parcel.price.to_f
+        if CreditLimit.where(buyer_id: c.id, seller_id: current_company.id, star: true).first.present?
+          unavailable_customers << c
+        else
+          not_starred << c
+        end
+      end
+    end
+    return (unavailable_customers + not_starred).uniq
+  end
+
+  def get_demanded_but_not_available_buyers(parcel, current_customer)
+    demanded = []
+    not_starred = []
+    demands = Demand.where(description: parcel.description).map { |e| e.company }
+    demands.each do |company|
+      if !company.buyer_credit_limits.where(seller_id: current_company.id).present?
+        if CreditLimit.where(buyer_id: company.id, seller_id: current_company.id, star: true).first.present?
+          demanded << company
+        else
+          not_starred << company
+        end
+      end
+    end
+    return (demanded + not_starred).uniq
+  end
 end

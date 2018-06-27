@@ -9,7 +9,7 @@ class TradingParcel < ApplicationRecord
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
 
-  validates :source, presence: true, if: :diamond_type_is_sight?
+  validates :source, presence: true #, if: :diamond_type_is_sight?
   validates :credit_period, :total_value, :description, presence: true
   validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true
 
@@ -23,9 +23,9 @@ class TradingParcel < ApplicationRecord
 
   enum for_sale: [ :to_all, :to_none, :broker, :credit_given, :demanded ]
 
-  def diamond_type_is_sight?
-     self.diamond_type == "Sight"
-  end
+  # def diamond_type_is_sight?
+  #   self.diamond_type == "Sight"
+  # end
 
   def validate_carats
     sum = 0.0

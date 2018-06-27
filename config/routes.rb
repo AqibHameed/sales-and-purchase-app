@@ -291,6 +291,7 @@ Rails.application.routes.draw do
         end
       end
       resources :proposals
+      resources :trading_parcels
       resources :companies_groups
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
