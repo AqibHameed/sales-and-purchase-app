@@ -16,9 +16,10 @@ module Api
             }
             @all_demands << demand_supplier
           end
-          respond_to do |format|
-            format.json { render :index }
-          end
+          render :index
+          # respond_to do |format|
+          #   format.json { render :index }
+          # end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
