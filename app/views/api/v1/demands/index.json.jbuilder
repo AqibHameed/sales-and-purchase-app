@@ -1,4 +1,6 @@
-json.array!(@all_demands) do |supplier|
+json.success true
+json.response_code 200
+json.demands(@all_demands) do |supplier|
   json.id supplier[:id]
   json.name supplier[:name]
   json.demands supplier[:demands].each do |demand|

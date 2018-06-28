@@ -17,7 +17,7 @@ module Api
             @all_demands << demand_supplier
           end
           respond_to do |format|
-            format.json { render :index, success: true }
+            format.json { render :index }
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -28,7 +28,7 @@ module Api
         if current_company
           demand = Demand.new(company_id: current_company.id, demand_supplier_id: params[:demand_supplier_id], description: params[:description], block: false)
           if demand.save
-            render json: { success: true, message: 'Demand created successfully...', demand: demand }
+            render json: { success: true, message: 'Demand created successfully.', demand: demand }
           else
             render json: { success: false, message: demand.errors.full_messages.first }
           end
@@ -39,11 +39,15 @@ module Api
 
       def destroy
         if current_company
-          demand = Demand.find_by(id: params[:id])
-          if demand.update(deleted: true)
-            render json: { success: true, message: 'Demand destroy successfully...'}
+          demand = Demand.where(id: params[:id]).first
+          if demand.nil?
+            render json: { success: false, message: 'Demand does not exist' }
           else
-            render json: { success: false, message: demand.errors.full_messages.first }
+            if demand.update_attributes(deleted: true)
+              render json: { success: true, message: 'Demand destroy successfully'}
+            else
+              render json: { success: false, message: demand.errors.full_messages }
+            end
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
