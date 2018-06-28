@@ -3,7 +3,7 @@ class CustomersController < ApplicationController
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_info_shared, only: [:shared_info]
-  before_action :check_role_authorization, only: [:trading, :demanding]
+  before_action :check_role_authorization
   before_action :can_approve_access, only: [:approve, :approve_access]
   skip_before_action :check_request_access, only: [:access_denied]
 
@@ -180,14 +180,13 @@ class CustomersController < ApplicationController
     if params[:demand].present?
       full_description = params[:demand][:description].reject { |c| c.empty? }
       if full_description.present?
-        description = full_description
-        parcels = TradingParcel.where(sold: false).where("trading_parcels.source = ? AND (trading_parcels.description IN (?))",params[:demand][:demand_supplier_id],description)
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.source = ? AND (trading_parcels.description IN (?))", params[:demand][:demand_supplier_id], full_description)
       else
         parcels = TradingParcel.where(sold: false).where("trading_parcels.source = ?", params[:demand][:demand_supplier_id])
       end
-   else
-    parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
-   end
+    else
+      parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
+    end
     required_parcels = []
     parcels.each do |parcel|
       if check_parcel_visibility(parcel, current_company)
@@ -197,26 +196,26 @@ class CustomersController < ApplicationController
     @parcels = required_parcels
   end
 
-  def demanding_create
-    demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
-    description = params[:demand][:description].reject { |c| c.empty? }
-    description.each do |d|
-      @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
-        demand.weight = params[:demand][:weight]
-        demand.price = params[:demand][:price]
-        demand.diamond_type = params[:demand][:diamond_type]
-        demand.block = false
-        demand.deleted = false
-      end
-    end
-    if @demanding_parcel.save!
-      flash[:notice] = "Demand created successfully."
-      redirect_to demanding_customers_path
-    else
-      flash[:notice] = "Something went wrong. Please try again."
-      redirect_to demanding_customers_path
-    end
-  end
+  # def demanding_create
+  #   demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
+  #   description = params[:demand][:description].reject { |c| c.empty? }
+  #   description.each do |d|
+  #     @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+  #       demand.weight = params[:demand][:weight]
+  #       demand.price = params[:demand][:price]
+  #       demand.diamond_type = params[:demand][:diamond_type]
+  #       demand.block = false
+  #       demand.deleted = false
+  #     end
+  #   end
+  #   if @demanding_parcel.save
+  #     flash[:notice] = "Demand created successfully."
+  #     redirect_to demanding_customers_path
+  #   else
+  #     flash[:notice] = "Something went wrong. Please try again."
+  #     redirect_to demanding_customers_path
+  #   end
+  # end
 
   def demand_from_search
     demand_supplier = DemandSupplier.where(name: params[:demand_supplier]).first
@@ -226,7 +225,7 @@ class CustomersController < ApplicationController
       redirect_to demanding_search_customers_path
     else
       description.each do |d|
-        @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+        @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
           demand.weight = params[:weight]
           demand.price = params[:price]
           demand.diamond_type = params[:diamond_type]
@@ -332,18 +331,6 @@ class CustomersController < ApplicationController
 
   def demanding_params
     params.require(:demand).permit(:description, :weight, :price, :diamond_type)
-  end
-
-  def check_role_authorization
-    if current_admin.present?
-      # do nothing
-    else
-      if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker') || current_customer.has_role?('Seller')
-        # do nothing
-      else
-        redirect_to root_path, notice: 'You are not authorized.'
-      end
-    end
   end
 
   def can_approve_access

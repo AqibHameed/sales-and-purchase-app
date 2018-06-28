@@ -41,7 +41,6 @@ class BrokersController < ApplicationController
   end
 
   def remove
-    puts @broker_request.inspect
     @broker_request.destroy
     CustomerMailer.remove_broker_mail(@broker_request).deliver
     flash[:notice] = 'Broker removed successfully.'

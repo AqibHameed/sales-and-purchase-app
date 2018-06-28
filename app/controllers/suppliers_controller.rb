@@ -3,7 +3,7 @@ class SuppliersController < ApplicationController
   # layout 'application', :except => [:profile]
   before_action :authenticate_customer!, except: [:add_demand_list, :upload_demand_list, :check_role_authorization]
   before_action :authenticate_admin!, only: [:add_demand_list, :upload_demand_list]
-  before_action :check_role_authorization, only: [:index, :trading, :credit ]
+  before_action :check_role_authorization
 
   def index
     @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc) #.page params[:page]
@@ -286,14 +286,6 @@ class SuppliersController < ApplicationController
 
   def rough_diamond_params
     params.require(:trading_document).permit(:diamond_type, :customer_id, :document, :credit_field, :price_field, :lot_no_field, :desc_field, :no_of_stones_field, :sheet_no, :weight_field)
-  end
-
-  def check_role_authorization
-    if current_customer.has_role?('Seller') || current_customer.has_role?('Broker')
-      # do nothing
-    else
-      redirect_to trading_customers_path, notice: 'You are not authorized.'
-    end
   end
 
   def credit_request_params

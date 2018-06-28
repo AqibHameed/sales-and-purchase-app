@@ -1,6 +1,7 @@
 class TransactionsController < ApplicationController
   # layout 'supplier'
   before_action :authenticate_customer!
+  before_action :check_role_authorization
   # before_action :authenticate_admin!
 
   def new
@@ -105,7 +106,7 @@ class TransactionsController < ApplicationController
                                         my_transaction_attributes: [:buyer_id, :seller_id, :trading_parcel_id, :price, :credit, :paid, :created_at, :transaction_type, :weight, :diamond_type, :buyer_confirmed ])
   end
 
-   def partial_payment_params
+  def partial_payment_params
     params.require(:partial_payment).permit(:amount,:transaction_id)
   end
 

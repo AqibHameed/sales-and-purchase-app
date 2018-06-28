@@ -5,6 +5,7 @@ class TradingParcelsController < ApplicationController
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
+  before_action :check_role_authorization
   before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history, :size_info]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
 

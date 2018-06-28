@@ -15,10 +15,19 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
-  # def supplier_list
-  #   suppliers = Company.all
-  #   render json: {success: true, suppliers: suppliers.as_json(only: [:id, :name])}
-  # end
+  def app_versions
+    if params[:version].present?
+      version = AppVersion.where(version: params[:version]).first
+      if version.present?
+        render json: { success: true, version: version.as_json(except: [:id, :created_at, :updated_at])}
+      else
+        render json: { success: false, message: "This version does not exist" }
+      end
+    else
+      versions = AppVersion.all
+      render json: { success: true, versions: versions.as_json(except: [:id, :created_at, :updated_at])}
+    end
+  end
 
   # def tender_by_months
   #   months = Tender.group("month(open_date)").count

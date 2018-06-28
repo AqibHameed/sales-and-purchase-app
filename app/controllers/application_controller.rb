@@ -22,6 +22,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def check_role_authorization
+    if current_admin.present?
+      # do nothing
+    else
+      if current_customer.has_role?('Buyer') ||  current_customer.has_role?('Seller')
+        # do nothing
+      else
+        if current_customer.has_role?('Broker')
+          redirect_to '/brokers', notice: 'You are not authorized.'
+        else
+          redirect_to root_path, notice: 'You are not authorized.'
+        end
+      end
+    end
+  end
+
   protected
 
   def configure_permitted_parameters
