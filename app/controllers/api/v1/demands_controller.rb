@@ -17,7 +17,7 @@ module Api
             @all_demands << demand_supplier
           end
           respond_to do |format|
-            format.json { render :index, success: true}
+            format.json { render :index, success: true }
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -52,12 +52,12 @@ module Api
 
       def demand_suppliers
         demand_supplier = DemandSupplier.all
-        render json: { demand_suppliers: demand_supplier.as_json(only: [:id, :name]) }
+        render json: { success: true, demand_suppliers: demand_supplier.as_json(only: [:id, :name]), response_code: 200 }
       end
 
       def demand_description
         list = DemandList.where(demand_supplier_id: params[:demand_supplier_id])
-        render json: { descriptions: list.map { |e| e.description } }
+        render json: { success: true, descriptions: list.map { |e| e.description }, response_code: 200 }
       end
 
       def parcels_list
@@ -75,9 +75,9 @@ module Api
               end
             end
           end
-          render json: { parcels: { demanded: @demanded, others: @others }}
+          render json: { success: true, parcels: { demanded: @demanded, others: @others }, response_code: 200 }
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
+          render json: { success: false, errors: "Not authenticated", response_code: 201 }
         end
       end
 

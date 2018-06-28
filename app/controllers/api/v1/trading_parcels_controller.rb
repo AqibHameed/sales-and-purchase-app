@@ -14,7 +14,7 @@ module Api
           if parcel.save
             render json: { success: true, message: 'Parcel created successfully' }
           else
-            render json: { success: false, errors: parcel.errors.full_messages }
+            render json: { success: false, errors: parcel.errors.full_messages, response_code: 200 }
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -28,7 +28,7 @@ module Api
           parcel.box_value = params[:trading_parcel][:discount]
           parcel.no_of_stones = 0 if params[:trading_parcel][:no_of_stones].blank? || params[:trading_parcel][:no_of_stones].nil?
           if parcel.update_attributes(parcel_params)
-            render json: { success: true, message: 'Parcel updated successfully' }
+            render json: { success: true, message: 'Parcel updated successfully', response_code: 200 }
           else
             render json: { success: false, errors: parcel.errors.full_messages }
           end
@@ -43,7 +43,7 @@ module Api
           if parcel.nil?
             render json: { sucess: false, message: 'Parcel not found' }
           else
-            render json: { success: true, parcel: parcel_data(parcel) }
+            render json: { success: true, parcel: parcel_data(parcel), response_code: 200 }
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -53,7 +53,7 @@ module Api
       def index
         if current_customer
           parcels = current_company.trading_parcels.where(sold: false)
-          render json: { success: true, parcels: list_parcel_data(parcels) }
+          render json: { success: true, parcels: list_parcel_data(parcels), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
