@@ -10,7 +10,7 @@
     </div> -->
 
     <div class="form-row">
-      <div class="label">Supplier: </div>
+      <div class="label">Source: </div>
       <div class="field">
         <%#= select_tag "demand_demand_supplier_id", options_for_select(supplier_list_for_demand),  { class: 'input', include_blank: true } %>
         <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand), { include_blank: true }, { class: 'input' } %>

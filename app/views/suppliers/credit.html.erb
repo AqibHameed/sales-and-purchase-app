@@ -28,7 +28,9 @@
           Credit remaining: <%#= number_to_currency(get_sub_company_credit_limit(current_company) ,overall_credit_given(current_company)) %></p> -->
         <%# end %>
         <div class="approve_list">
-          <%= render 'approve_customers_list', companies: @companies %>
+        <% cache @companies do %>
+          <%= render 'approve_customers_list', companies: @companies, cache: true%>
+        <% end %>
         </div>
         <%#= paginate @customers %>
       </div>
