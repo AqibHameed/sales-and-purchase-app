@@ -280,7 +280,7 @@ class CustomersController < ApplicationController
     demand = Demand.where(id: params[:id]).first
     if demand.present?
       demand.update_attributes(deleted: true)
-      flash[:notice] = "Dmeand deleted successfully."
+      flash[:notice] = "Demand deleted successfully."
       redirect_to demanding_customers_path
     else
       flash[:error] = "No Record Found!"

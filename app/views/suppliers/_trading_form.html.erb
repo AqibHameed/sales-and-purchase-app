@@ -296,20 +296,20 @@
   //   })
   // })
 
-  // $(document).on('keyup focusout','#trading_parcel_percent', function(){
-  //   var carat = parseFloat($('#carat').val());
-  //   var cost = parseFloat($('#trading_parcel_cost').val());
-  //   var percent = parseFloat($('#trading_parcel_percent').val());
-  //   var price = parseFloat($('#price').val());
-  //   calculate_price(carat, cost, percent, price)
-  // });
+  $(document).on('keyup focusout','#trading_parcel_percent', function(){
+    var carat = parseFloat($('#carat').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var percent = parseFloat($('#trading_parcel_percent').val());
+    var price = parseFloat($('#price').val());
+    calculate_price(carat, cost, percent, price)
+  });
 
-  // $(document).on('keyup focusout','#price', function(){
-  //   var carat = parseFloat($('#carat').val());
-  //   var cost = parseFloat($('#trading_parcel_cost').val());
-  //   var price = parseFloat($('#price').val());
-  //   calculate_percent(carat, cost, price)
-  // });
+  $(document).on('keyup focusout','#price', function(){
+    var carat = parseFloat($('#carat').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var price = parseFloat($('#price').val());
+    calculate_percent(carat, cost, price)
+  });
 
   // $(document).on('keyup focusout','.sub_carats', function(){
   //   var self = $(this)
@@ -350,9 +350,11 @@
     if (isNaN(avg_price)){
       $('#price').val('')
       $('#amount').val('');
+      $('#trading_parcel_total_value').val('')
     }else{
       $('#price').val(avg_price)
       $('#amount').val(amount);
+      $('#trading_parcel_total_value').val(amount)
     }
   }
 
@@ -362,9 +364,11 @@
     if (isNaN(percent)){
       $('#trading_parcel_percent').val('')
       $('#amount').val(amount);
+      $('#trading_parcel_total_value').val('')
     }else{
       $('#trading_parcel_percent').val(percent)
       $('#amount').val(amount);
+      $('#trading_parcel_total_value').val(amount)
     }
   }
 
