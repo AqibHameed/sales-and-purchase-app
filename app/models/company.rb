@@ -46,7 +46,7 @@ class Company < ApplicationRecord
     is_overdue = false
     groups = CompaniesGroup.where("company_id like '%#{id}%'")
     groups.each do |group|
-      group.company_id_id.each do |c|
+      group.company_id.each do |c|
         company = Company.find(c)
         if company.has_overdue_transaction_of_30_days(supplier_id)
           is_overdue = true

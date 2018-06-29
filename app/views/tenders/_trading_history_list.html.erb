@@ -54,7 +54,7 @@
       <td><span class="table-head-in-td">Credit</span><%= transaction.credit rescue 'N/A' %></td>
       <% if current_company.id == transaction.buyer_id %>
         <td>Bought</td>
-        <td><span class="table-head-in-td">Activity</span><%= transaction.supplier.try(:name) rescue 'N/A' %></td>
+        <td><span class="table-head-in-td">Activity</span><%= transaction.seller.try(:name) rescue 'N/A' %></td>
       <% elsif current_company.id == transaction.seller_id  %>
         <td>Sold</td>
         <td><span class="table-head-in-td">Counterparty</span><%= transaction.buyer.try(:name) rescue 'N/A' %></td>
