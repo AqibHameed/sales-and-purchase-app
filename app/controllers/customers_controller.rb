@@ -196,26 +196,26 @@ class CustomersController < ApplicationController
     @parcels = required_parcels
   end
 
-  # def demanding_create
-  #   demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
-  #   description = params[:demand][:description].reject { |c| c.empty? }
-  #   description.each do |d|
-  #     @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
-  #       demand.weight = params[:demand][:weight]
-  #       demand.price = params[:demand][:price]
-  #       demand.diamond_type = params[:demand][:diamond_type]
-  #       demand.block = false
-  #       demand.deleted = false
-  #     end
-  #   end
-  #   if @demanding_parcel.save
-  #     flash[:notice] = "Demand created successfully."
-  #     redirect_to demanding_customers_path
-  #   else
-  #     flash[:notice] = "Something went wrong. Please try again."
-  #     redirect_to demanding_customers_path
-  #   end
-  # end
+  def demanding_create
+    demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
+    description = params[:demand][:description].reject { |c| c.empty? }
+    description.each do |d|
+      @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+        demand.weight = params[:demand][:weight]
+        demand.price = params[:demand][:price]
+        demand.diamond_type = params[:demand][:diamond_type]
+        demand.block = false
+        demand.deleted = false
+      end
+    end
+    if @demanding_parcel.save
+      flash[:notice] = "Demand created successfully."
+      redirect_to demanding_customers_path
+    else
+      flash[:notice] = "Something went wrong. Please try again."
+      redirect_to demanding_customers_path
+    end
+  end
 
   def demand_from_search
     demand_supplier = DemandSupplier.where(name: params[:demand_supplier]).first
