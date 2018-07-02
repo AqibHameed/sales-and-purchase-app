@@ -499,7 +499,7 @@ module ApplicationHelper
 
   def get_amount_for_graph(id)
    parcel =  TradingParcel.find(id)
-   amount = parcel.cost*(100 + parcel.percent)/100
+   amount = parcel.cost*(100 + parcel.percent)/100 rescue 0
   end
 
   # Vital sales data - parcel show
