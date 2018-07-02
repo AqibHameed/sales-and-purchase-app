@@ -49,7 +49,7 @@ class Customer < ApplicationRecord
 
 
   validates :mobile_no, uniqueness: true
-  validates :first_name, :mobile_no, :presence => true
+  validates :first_name, :mobile_no, :role, :presence => true
   validates :company_name, :presence => true, on: :create
 
   # send_account_creation_mail
