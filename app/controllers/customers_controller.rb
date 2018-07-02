@@ -303,9 +303,10 @@ class CustomersController < ApplicationController
     end
   end
 
-  def denial
+  def remove
     customer = Customer.find(params[:cu])
     if customer.update_attributes(is_requested: true)
+      CustomerMailer.remove_access(customer).deliver
       redirect_to approve_access_customers_path, notice: 'Access Denied successfully!!'
     else
       redirect_to approve_access_customers_path, alert: customer.errors.full_messages.first

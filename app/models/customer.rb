@@ -55,12 +55,18 @@ class Customer < ApplicationRecord
   # send_account_creation_mail
   after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
   after_invitation_accepted :set_roles_to_customer
+  after_create :check_for_confirmation
 
   has_attached_file :certificate
   do_not_validate_attachment_file_type :certificate
 
   accepts_nested_attributes_for :credit_requests, :allow_destroy => true
 
+  def check_for_confirmation
+    if company.customers.count > 1
+      self.skip_confirmation!
+    end
+  end
 
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
