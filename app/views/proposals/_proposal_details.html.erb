@@ -41,6 +41,15 @@
       <td><%= proposal.credit.nil? ? 'N/A' : proposal.credit %></td>
     </tr>
     <tr>
+      <td> Percent </td>
+      <td><%= proposal.trading_parcel.percent.nil? ? 'N/A' : proposal.trading_parcel.percent %>%</td>
+    </tr>
+    <tr>
+      <td> Total Price </td>
+      <td><%= proposal.trading_parcel.total_value.nil? ? 'N/A' : proposal.trading_parcel.total_value %></td>
+    </tr>
+
+    <tr>
       <td> Notes </td>
       <td><%= proposal.notes.nil? ? 'N/A' : proposal.notes %></td>
     </tr>

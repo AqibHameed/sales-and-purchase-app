@@ -1131,4 +1131,6 @@ a.given_days {
     font-weight: normal;
     padding-left: 0; }
 
+
+.modal { overflow: auto !important; }
 /*# sourceMappingURL=application.css.map */

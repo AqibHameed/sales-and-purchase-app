@@ -9,7 +9,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Parcel Details</h4>
-        <%=link_to "Size info", 'javascript:void(0)', class: 'btn btn-success btn-xs size_info pull-right', "data-id" => @parcel.try(:id) %>
+        <%=link_to " Size info ", 'javascript:void(0)', class: 'btn btn-success size_info pull-right', "data-id" => @parcel.try(:id) %>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -22,8 +22,10 @@
               <p><b>Lot No.:</b> <%= @parcel.try(:lot_no) %></p>
               <p><b>Description:</b> <%= @parcel.try(:description) %></p>
               <p><b>Carats:</b> <%= @parcel.try(:weight) %></p>
+              <p><b>No of stones:</b> <%= @parcel.try(:no_of_stones) %></p>
               <p><b>Cost:</b> <%= @parcel.try(:cost) %></p>
               <p><b>Avg Price:</b> <%= @parcel.try(:price) %></p>
+              <p><b>Total Price:</b> <%= @parcel.try(:total_value) %></p>
               <p><b>Credit:</b> <%= @parcel.try(:credit_period) %></p>
               <p><b>Percent:</b> <%= @parcel.try(:percent)  %>%</p>
               <p><b>Last Avg. selling Price:</b> <%=   %></p>
@@ -175,5 +177,4 @@
       }
     })
   });
-
 </script>
