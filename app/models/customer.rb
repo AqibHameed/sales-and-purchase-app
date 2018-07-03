@@ -49,8 +49,8 @@ class Customer < ApplicationRecord
 
 
   validates :mobile_no, uniqueness: true
-  validates :first_name, :mobile_no, :role, :presence => true
-  validates :company_name, :presence => true, on: :create
+  validates :first_name, :mobile_no, :presence => true
+  validates :company_name, :role, :presence => true, on: :create
 
   # send_account_creation_mail
   after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
