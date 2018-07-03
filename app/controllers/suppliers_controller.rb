@@ -93,7 +93,7 @@ class SuppliersController < ApplicationController
     @group_names = []
     if params[:letter].present?
       # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
-      @companies = Company.where('companies.name LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
+      @companies = Company.where('companies.name LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_company.id)
     else
       # @companies = Company.where.not(id: current_company.id)
       @star_companies = CreditLimit.where(seller_id: current_company.id, star: true).map{|c| c.buyer}
