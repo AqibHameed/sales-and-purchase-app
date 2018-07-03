@@ -69,46 +69,29 @@ module Api
         available_customers = get_available_buyers(parcel, current_customer)
         not_enough_available_customers = get_unavailable_buyers(parcel, current_customer)
         demanded_but_not_available = get_demanded_but_not_available_buyers(parcel, current_customer)
-        # if parcel.company_id == current_company.id
-        #   is_mine = true
-        # else
-        #   is_mine = false
-        # end
-        # if current_company.has_overdue_transaction_of_30_days(parcel.try(:company_id)) || current_company.check_market_limit_overdue(get_market_limit(current_company, parcel.try(:company_id)), parcel.try(:company_id))
-        #   is_overdue = true
-        # else
-        #   is_overdue = false
-        # end
         @info = []
         parcel.parcel_size_infos.each do |i|
-          size = i.size
-          per = i.percent
+          size = i.size.to_f
+          per = i.percent.to_f
           @info << { size: size, percent: per }
         end
-        carats = parcel.weight.nil? ? nil : '%.2f' % parcel.weight
-        avg_price = parcel.price.nil? ? nil : '%.2f' % parcel.price
-        total_value = parcel.total_value.nil? ? nil : '%.2f' % parcel.total_value
-        percent = parcel.percent.nil? ? nil : '%.2f' % parcel.percent
-        
         respose_hash =  {
-          # is_mine: is_mine,
-          # is_overdue: is_overdue,
           id: parcel.id.to_s,
           description: parcel.description,
           lot_no: parcel.lot_no,
           no_of_stones: parcel.no_of_stones,
-          carats: carats,
+          carats: parcel.try(:weight).to_f,
           credit_period: parcel.credit_period,
-          avg_price: avg_price,
+          avg_price: parcel.try(:price).to_f,
           company: parcel.try(:company).try(:name),
           cost: parcel.cost,
           discount_per_month: parcel.box_value,
           sight: parcel.sight,
           source: parcel.source,
           uid: parcel.uid,
-          percent: percent,
+          percent:  parcel.try(:percent).to_f,
           comment: parcel.comment.to_s,
-          total_value: total_value,
+          total_value: parcel.try(:total_value).to_f,
           size_info: @info,
           vital_sales_data: {
             available_credit_buyers: customers_data(available_customers),
