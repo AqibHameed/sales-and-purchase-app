@@ -112,6 +112,11 @@ class TradingParcelsController < ApplicationController
     if @transaction.save
       @transaction.set_due_date
       @parcel.update_attributes(sold: true)
+      @trading_parcel = @parcel.dup
+      @trading_parcel.company_id = @transaction.buyer_id
+      @trading_parcel.sold = false
+      @trading_parcel.sale_all = false
+      @trading_parcel.save
       redirect_to trading_customers_path, notice: 'Transaction added successfully'
     else
       render :direct_sell
