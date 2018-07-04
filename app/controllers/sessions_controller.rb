@@ -1,4 +1,5 @@
 class SessionsController <  Devise::SessionsController
+  skip_before_action :check_request_access, only: [:destroy]
 
   def get_resource
     if customer = Customer.where("(email = ? OR mobile_no = ?) AND verified = ?", params[:customer][:login], params[:customer][:login], true).present?

@@ -1,6 +1,6 @@
 Hello <%= @request.broker.name %>,
 <br><br>
-You are no more broker for seller <%= @request.seller.company %>(<%= @request.seller.name %>)
+You are no more broker for seller <%= @request.seller.company.try(:name) %>(<%= @request.seller.name %>)
 <br>
 Thanks & Regards,<br>
 Dialuck Team.

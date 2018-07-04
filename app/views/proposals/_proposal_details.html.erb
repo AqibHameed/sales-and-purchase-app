@@ -1,15 +1,15 @@
 <h3>Proposal Details</h3>
 <div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+  <table class="table table-bordered table-striped table-responsive tablesorter">
     <% if current_customer.id == proposal.try(:buyer_id) %>
       <tr>
         <td> Supplier </td>
-        <td><%= proposal.try(:supplier).try(:company) %></td>
+        <td><%= proposal.try(:supplier).try(:name) %></td>
       </tr>
     <% else %>
       <tr>
         <td> Buyer</td>
-        <td><%= proposal.try(:buyer).try(:company) %></td>
+        <td><%= proposal.try(:buyer).try(:name) %></td>
       </tr>
     <% end %>
       <tr>
@@ -41,6 +41,15 @@
       <td><%= proposal.credit.nil? ? 'N/A' : proposal.credit %></td>
     </tr>
     <tr>
+      <td> Percent </td>
+      <td><%= proposal.trading_parcel.percent.nil? ? 'N/A' : proposal.trading_parcel.percent %>%</td>
+    </tr>
+    <tr>
+      <td> Total Price </td>
+      <td><%= proposal.trading_parcel.total_value.nil? ? 'N/A' : proposal.trading_parcel.total_value %></td>
+    </tr>
+
+    <tr>
       <td> Notes </td>
       <td><%= proposal.notes.nil? ? 'N/A' : proposal.notes %></td>
     </tr>
@@ -48,7 +57,7 @@
 </div>
 <div class="clear10"></div>
 <% unless proposal.accepted? || proposal.rejected? %>
-  <%= link_to 'Accept', "/proposals/#{proposal.id}/accept", class: 'btn-01 login_btn green accept-btn', method: :put, data: {turbolinks: false} %>
+  <%= link_to 'Accept', "/proposals/#{proposal.id}/accept?check=true", class: 'btn-01 login_btn green accept-btn', method: :put, data: {turbolinks: false}, remote: true %>
   <%= link_to 'Reject', "/proposals/#{proposal.id}/reject", class: 'btn-01 login_btn red', method: :put, data: {turbolinks: false}  %>
   <%= link_to 'Negotiate', "/proposals/#{proposal.id}/edit", class: 'btn-01 login_btn', data: {turbolinks: false} %>
 <%end%>

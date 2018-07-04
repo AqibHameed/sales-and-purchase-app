@@ -123,7 +123,7 @@
 
             <%= link_to 'invite', invite_transactions_path, :class => 'invite', :style=> "margin-right: 12px !important;" %>
           </div>
-          <%= f.hidden_field :supplier_id, value: current_customer.id %>
+          <%= f.hidden_field :seller_id, value: current_customer.id %>
           <%= f.hidden_field :price, class: 'transactions-price' %>
           <%= f.hidden_field :credit, class: 'transactions-credit' %>
           <%= f.hidden_field :transaction_type, value: 'manual' %>

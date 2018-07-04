@@ -1,6 +1,6 @@
 <div class="bulk hide">
   <div class="clear10"></div>
-  <div class="form-wrapper">
+  <div class="form-wrapper hide">
     <%= form_for @trading_document, url: parcels_suppliers_path do |f| %>
       <% if @trading_document.errors.any? %>
         <div id="error_explanation">
@@ -134,7 +134,7 @@
   </div>
 </div>
 
-<div class="single hide">
+<div class="single">
   <div class="clear10"></div>
   <div class="form-wrapper">
     <%= nested_form_for @trading_parcel, remote: true do |f| %>
@@ -142,23 +142,26 @@
       <%= render partial: 'tranding_parcel_errors' %>
     </div>
       <div class="form-row">
-        <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']]),  {class: 'input', include_blank: true} %>
-
+          <%= f.hidden_field :diamond_type, :value => ' ' %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="label">Source: </div>
+        <div class="field">
+          <%= f.select :source, options_for_select(supplier_list_for_demand, :selected => f.object.source), {include_blank: true}, class: 'input'%>
         </div>
       </div>
 
       <div class="sight_diamond hide">
-        <div class="form-row">
+       <!--  <div class="form-row">
           <div class="label"> Source: </div>
           <div class="field">
             <%#= f.text_field :source, class: 'input' %>
-            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
+            <%#= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
           </div>
         </div>
-
-        <!-- <div class="form-row">
+        <div class="form-row">
           <div class="label"> Box: </div>
           <div class="field">
             <%#= f.text_field :box, class: 'input' %>
@@ -167,9 +170,9 @@
         </div> -->
 
         <div class="form-row">
-          <div class="label"> Box Value:</div>
+          <div class="label">Discount Per Month:</div>
           <div class="field">
-            <%= f.text_field :box_value, class: 'input' %>
+            <%= f.number_field :box_value, :value => 0, class: 'input' %>
           </div>
         </div>
 
@@ -182,12 +185,6 @@
       </div>
 
       <div class="rough_diamond hide">
-        <div class="form-row">
-          <div class="label">No of Stones: </div>
-          <div class="field">
-            <%= f.number_field :no_of_stones,  class: 'input' %>
-          </div>
-        </div>
         <div class="form-row">
           <div class="label">Lot No: </div>
           <div class="field">
@@ -210,6 +207,14 @@
             <%= f.number_field :credit_period, class: 'input' %>
             <%= f.hidden_field :customer_id, value: current_customer.id, class: 'input' %>
             <%= f.hidden_field :single_parcel, value: true, class: 'input' %>
+            <%= f.hidden_field :company_id, value: current_company.id, class: 'input' %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="label">No of Stones: </div>
+          <div class="field">
+            <%= f.number_field :no_of_stones,  class: 'input' %>
           </div>
         </div>
 
@@ -242,9 +247,9 @@
         </div>
 
         <div class="form-row">
-          <div class="label">Amount:</div>
+          <div class="label"> Total/Box Value:</div>
           <div class="field">
-            <%= text_field_tag "amount", '', class: 'input' %>
+            <%= f.number_field :total_value, class: 'input' %>
           </div>
         </div>
 
@@ -259,13 +264,13 @@
           <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
             <table class="table table-hover">
               <thead>
-                <th>Carats</th>
+                <!-- <th>Carats</th> -->
                 <th>Size</th>
                 <th>Percent</th>
               </thead>
               <tbody>
                 <tr>
-                  <td class="sub_c"><%=s.text_field :carats, class: 'form-control col-sm-3 sub_carats' %></td>
+                  <!-- <td class="sub_c"><%#=s.text_field :carats, class: 'form-control col-sm-3 sub_carats' %></td> -->
                   <td class="sub_s"><%=s.text_field :size, class: 'form-control col-sm-3 sub_size' %></td>
                   <td class="sub_per"><%=s.text_field :percent, class: 'form-control col-sm-3 sub_percent' %></td>
                   <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
@@ -306,38 +311,38 @@
     calculate_percent(carat, cost, price)
   });
 
-  $(document).on('keyup focusout','.sub_carats', function(){
-    var self = $(this)
-    var total_carat = parseFloat($('#carat').val());
-    var carat = parseFloat(self.val());
-    console.log(total_carat)
-    if(isNaN(total_carat)){
-      $('.sub_carats').val('')
-      $('.sub_percent').val('')
-      if($(this).next('.error-msg').length == 0){
-        $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
-      }
-    }else{
-      calculate_sub_size_percent(total_carat, carat, self)
-      $('.error-msg').remove()
-    }
-  });
+  // $(document).on('keyup focusout','.sub_carats', function(){
+  //   var self = $(this)
+  //   var total_carat = parseFloat($('#carat').val());
+  //   var carat = parseFloat(self.val());
+  //   console.log(total_carat)
+  //   if(isNaN(total_carat)){
+  //     $('.sub_carats').val('')
+  //     $('.sub_percent').val('')
+  //     if($(this).next('.error-msg').length == 0){
+  //       $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
+  //     }
+  //   }else{
+  //     calculate_sub_size_percent(total_carat, carat, self)
+  //     $('.error-msg').remove()
+  //   }
+  // });
 
-  $(document).on('keyup focusout','.sub_percent', function(){
-    var self = $(this)
-    var total_carat = parseFloat($('#carat').val());
-    var per = parseFloat(self.val());
-    if(isNaN(total_carat)){
-      $('.sub_carats').val('')
-      $('.sub_percent').val('')
-      if($(this).next('.error-msg').length == 0){
-        $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
-      }
-    }else{
-      calculate_sub_size_carats(total_carat, per, self)
-      $('.error-msg').remove()
-    }
-  });
+  // $(document).on('keyup focusout','.sub_percent', function(){
+  //   var self = $(this)
+  //   var total_carat = parseFloat($('#carat').val());
+  //   var per = parseFloat(self.val());
+  //   if(isNaN(total_carat)){
+  //     $('.sub_carats').val('')
+  //     $('.sub_percent').val('')
+  //     if($(this).next('.error-msg').length == 0){
+  //       $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
+  //     }
+  //   }else{
+  //     calculate_sub_size_carats(total_carat, per, self)
+  //     $('.error-msg').remove()
+  //   }
+  // });
 
   function calculate_price(carat, cost, percent, price){
     var avg_price = (percent/100)*cost + cost;
@@ -345,9 +350,11 @@
     if (isNaN(avg_price)){
       $('#price').val('')
       $('#amount').val('');
+      $('#trading_parcel_total_value').val('')
     }else{
       $('#price').val(avg_price)
       $('#amount').val(amount);
+      $('#trading_parcel_total_value').val(amount)
     }
   }
 
@@ -357,25 +364,27 @@
     if (isNaN(percent)){
       $('#trading_parcel_percent').val('')
       $('#amount').val(amount);
+      $('#trading_parcel_total_value').val('')
     }else{
       $('#trading_parcel_percent').val(percent)
       $('#amount').val(amount);
+      $('#trading_parcel_total_value').val(amount)
     }
   }
 
-  $(document).on('focusout','#price', function(){
-    var carat = $('#carat').val();
-    var price = $('#price').val();
-    var amount = carat*price;
-    $('#amount').val(amount);
-  });
+  // $(document).on('focusout','#price', function(){
+  //   var carat = $('#carat').val();
+  //   var price = $('#price').val();
+  //   var amount = carat*price;
+  //   $('#amount').val(amount);
+  // });
 
-  $(document).on('focusout','#carat', function(){
-    var carat = $('#carat').val();
-    var price = $('#price').val();
-    var amount = carat*price;
-    $('#amount').val(amount);
-  });
+  // $(document).on('focusout','#carat', function(){
+  //   var carat = $('#carat').val();
+  //   var price = $('#price').val();
+  //   var amount = carat*price;
+  //   $('#amount').val(amount);
+  // });
 
   function calculate_sub_size_percent(total_carat, carat, self){
     percent = (carat*100)/total_carat

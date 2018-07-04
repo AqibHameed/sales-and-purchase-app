@@ -10,7 +10,7 @@
     <% @parcels.each do |parcel| %>
       <tr>
         <td><%= parcel.customer.name %></td>
-        <td><%= parcel.customer.company %></td>
+        <td><%= parcel.customer.company.try(:name) %></td>
         <td><%= parcel.customer.mobile_no %></td>
       </tr>
     <% end %>

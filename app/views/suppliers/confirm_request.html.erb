@@ -1,6 +1,6 @@
 <h1>Confirm Requests</h1>
 <div class="table">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="creditList" class="tablesorter table-responsive">
+  <table id="tenderList creditList" class="table table-bordered tablesorter table-responsive">
     <thead class="thead-desktop">
        <th>SN.</th>
       <th>Company </th>
@@ -13,10 +13,11 @@
     <% else %>
         <% @confirm_requests.each.with_index(1) do |request, i|%>
           <tr>
-            <td><%= i%></td>
-            <% if request.id.nil? %>
+            <% if request.id.nil?  %>
+
             <% else %>
-              <td><%= request.buyer.company %></td>
+              <td><%= i%></td>
+              <td><%= request.buyer.company.try(:name) %></td>
               <td><%= request.buyer.first_name %></td>
                 <td class="days_limit">
                 <!-- <span class="table-head-in-td">Overdue Limit</span> -->

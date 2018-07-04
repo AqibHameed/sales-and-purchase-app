@@ -1,30 +1,20 @@
 class Proposal < ApplicationRecord
   paginates_per 25
   belongs_to :trading_parcel
-  belongs_to :buyer, class_name: 'Customer', foreign_key: 'buyer_id'
-  belongs_to :supplier, class_name: 'Customer', foreign_key: 'supplier_id'
+  belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
+  belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
 
   enum status: [ :negotiated, :accepted, :rejected ]
 
   # validate  :credit_validation
 
-  def price_validation
-    supplier_price = trading_parcel.price
-    unless supplier_price.nil?
-      buyer_price = supplier_price*(0.85)
-      if price.to_f < buyer_price
-        errors[:base] << "Price should not be less than 15% of supplier price. Please try again"
-      end
-    end
-  end
-
   # def credit_validation
-    # limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
+  #   limit = CreditLimit.where(buyer_id: buyer_id, seller_id: seller_id).first
   #   if limit.nil?
-  #     errors[:base] << "Supplier haven't given any limit to you. Request credits from below".html_safe
+  #     # do nothing
   #   else
   #     credit_limit = limit.credit_limit
-  #     transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier_id, paid: false, buyer_confirmed: true)
+  #     transactions = Transaction.where(buyer_id: buyer_id, seller_id: seller_id, paid: false, buyer_confirmed: true)
   #     @amount = []
   #     transactions.each do |t|
   #       @amount << t.remaining_amount
@@ -41,7 +31,7 @@ class Proposal < ApplicationRecord
   #       errors[:base] << "You have available credit limit of #{available_limit}. So you can't buy more than this limit"
   #     end
   #   end
-  #   # limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
+  #   # limit = CreditLimit.where(buyer_id: buyer_id, seller_id: seller_id).first
   #   # if limit.present?
   #   #   credit_limit = limit.credit_limit
   #   #   if price.to_f > credit_limit
@@ -50,49 +40,61 @@ class Proposal < ApplicationRecord
   #   # end
   # end
 
-  def check_sub_company_limit(current_customer)
-    scc = SubCompanyCreditLimit.where(sub_company_id: self.supplier_id).first
-    if scc.try(:credit_type) == 'Yours'
-      cl = CreditLimit.where(supplier_id: scc.try(:parent_id), buyer_id: current_customer.id).first
-      if cl.present?
-        credit_limit = cl.credit_limit
-        check_transaction(credit_limit, 'sub_company', scc.try(:parent_id))
-      else
-        self.errors.add(:credit_limit, "not available for this customer")
-      end
-    else
-      limit = CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
-      if limit.nil?
-        self.errors.add(:credit_limit, "haven't given by Supplier to you. Request credits from below")
-      else
-        credit_limit = limit.credit_limit
-        check_transaction(credit_limit, 'supplier', supplier_id)
-      end
-    end
-  end
+  ####### Not in use #######
+  
+  # def price_validation
+  #   supplier_price = trading_parcel.price
+  #   unless supplier_price.nil?
+  #     buyer_price = supplier_price*(0.85)
+  #     if price.to_f < buyer_price
+  #       errors[:base] << "Price should not be less than 15% of supplier price. Please try again"
+  #     end
+  #   end
+  # end
 
-  def check_transaction(credit_limit, type, supplier)
-    transactions = Transaction.where(buyer_id: buyer_id, supplier_id: supplier, paid: false, buyer_confirmed: true)
-    @amount = []
-    transactions.each do |t|
-      @amount << t.remaining_amount
-    end
-    used_amt = @amount.sum
-    get_weight = self.trading_parcel.weight.blank? ? 1 : self.trading_parcel.weight
-    if self.trading_parcel.diamond_type == 'Rough'
-      total_price = self.trading_parcel.price.to_f * get_weight.to_f
-    else
-      total_price = self.trading_parcel.price.to_f * get_weight.to_f
-    end
-    available_limit = credit_limit.to_f - used_amt.to_f
-    if total_price.to_f > available_limit
-      if type =='sub_company'
-        self.errors.add(:credit_limit, "is not enough to buy this")
-      else
-        self.errors.add(:credit_limit, "of #{available_limit} limit is available to you. So you can't buy more than this limit")
-      end
-    end
-  end
+  # def check_sub_company_limit(current_customer)
+  #   scc = SubCompanyCreditLimit.where(sub_company_id: self.seller_id).first
+  #   if scc.try(:credit_type) == 'Yours'
+  #     cl = CreditLimit.where(seller_id: scc.try(:parent_id), buyer_id: current_customer.id).first
+  #     if cl.present?
+  #       credit_limit = cl.credit_limit
+  #       check_transaction(credit_limit, 'sub_company', scc.try(:parent_id))
+  #     else
+  #       self.errors.add(:credit_limit, "not available for this customer")
+  #     end
+  #   else
+  #     limit = CreditLimit.where(buyer_id: buyer_id, seller_id: seller_id).first
+  #     if limit.nil?
+  #       self.errors.add(:credit_limit, "haven't given by Supplier to you. Request credits from below")
+  #     else
+  #       credit_limit = limit.credit_limit
+  #       check_transaction(credit_limit, 'supplier', seller_id)
+  #     end
+  #   end
+  # end
+
+  # def check_transaction(credit_limit, type, supplier)
+  #   transactions = Transaction.where(buyer_id: buyer_id, seller_id: supplier, paid: false, buyer_confirmed: true)
+  #   @amount = []
+  #   transactions.each do |t|
+  #     @amount << t.remaining_amount
+  #   end
+  #   used_amt = @amount.sum
+  #   get_weight = self.trading_parcel.weight.blank? ? 1 : self.trading_parcel.weight
+  #   if self.trading_parcel.diamond_type == 'Rough'
+  #     total_price = self.trading_parcel.price.to_f * get_weight.to_f
+  #   else
+  #     total_price = self.trading_parcel.price.to_f * get_weight.to_f
+  #   end
+  #   available_limit = credit_limit.to_f - used_amt.to_f
+  #   if total_price.to_f > available_limit
+  #     if type =='sub_company'
+  #       self.errors.add(:credit_limit, "is not enough to buy this")
+  #     else
+  #       self.errors.add(:credit_limit, "of #{available_limit} limit is available to you. So you can't buy more than this limit")
+  #     end
+  #   end
+  # end
 end
 
 

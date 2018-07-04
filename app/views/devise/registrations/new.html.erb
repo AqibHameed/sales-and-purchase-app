@@ -1,67 +1,70 @@
 <title>Dialuck</title>
 <div class="wrapper page-registration">
   <h6>Welcome to Tender Program</h6>
-    <div class="sub-heading">
-      <p>By</p>
-      <p>Dialuck Trading Pvt. Ltd.</p>
-    </div>
-    <div class="clear20"></div>
-    <div class="clear20"></div>
-    <div class="heading">Sign up</div>
-    <div class="clear20"></div>
-    <div class="login-box">
-      <p style="color:red; font-size:13px;" class='error_msg'></p>
-      <p class="clear10"></p>
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-        <%= devise_error_messages! %>
-        <div class="field">
-          <%= f.label :first_name %><br />
-          <%= f.text_field :first_name, autofocus: true  %>
-        </div>
+  <div class="sub-heading">
+    <p>By</p>
+    <p>Dialuck Trading Pvt. Ltd.</p>
+  </div>
+  <div class="clear20"></div>
+  <div class="clear20"></div>
+  <div class="heading">Sign up</div>
+  <div class="clear20"></div>
+  <div class="login-box">
+    <p style="color:red; font-size:13px;" class='error_msg'></p>
+    <p class="clear10"></p>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= devise_error_messages! %>
+      <div class="field">
+        <%= f.label :first_name %><br />
+        <%= f.text_field :first_name, autofocus: true  %>
+      </div>
 
-        <div class="field">
-          <%= f.label :last_name %><br />
-          <%= f.text_field :last_name, autocomplete: "off" %>
-        </div>
+      <div class="field">
+        <%= f.label :last_name %><br />
+        <%= f.text_field :last_name, autocomplete: "off" %>
+      </div>
 
-        <div class="field">
-          <%= f.label :company %><br />
-          <%= f.text_field :company %>
-          <%#= f.select :company, options_for_select(PreRegistration.all.map { |e| e.company_name }), {},  prompt: 'Please select', class: 'input' %>
-        </div>
-        <div class="field">
-          <%= f.label :email %><br />
-          <%= f.email_field :email %>
-        </div>
-        <div class="field">
-          <%= f.label :mobile_no %><br />
-          <%= f.hidden_field :mobile_no %>
-          <input type="tel" id="mobile_no">
-        </div>
-        <div class="field">
-          <%= f.label :password %>
-          <% if @minimum_password_length %>
-          <em>(<%= @minimum_password_length %> characters minimum)</em>
-          <% end %><br />
-          <%= f.password_field :password, autocomplete: "off" %>
-        </div>
-        <div class="field">
-          <%= f.label :password_confirmation %><br />
-          <%= f.password_field :password_confirmation, autocomplete: "off" %>
-        </div>
+      <div class="field">
+        <%= f.label :company_id %><br />
+        <%= f.text_field :company_name %>
+        <%= f.hidden_field :is_requested, value: false %>
+        <%= f.hidden_field :company_id %>
+        <%#= f.select :company, options_for_select(PreRegistration.all.map { |e| e.company_name }), {},  prompt: 'Please select', class: 'input' %>
+      </div>
+      <div class="field">
+        <%= f.label :email %><br />
+        <%= f.email_field :email %>
+      </div>
+      <div class="field">
+        <%= f.label :mobile_no %><br />
+        <%= f.hidden_field :mobile_no %>
+        <input type="tel" id="mobile_no">
+      </div>
+      <div class="field">
+        <%= f.label :password %>
+        <% if @minimum_password_length %>
+        <em>(<%= @minimum_password_length %> characters minimum)</em>
+        <% end %><br />
+        <%= f.password_field :password, autocomplete: "off" %>
+      </div>
+      <div class="field">
+        <%= f.label :password_confirmation %><br />
+        <%= f.password_field :password_confirmation, autocomplete: "off" %>
+      </div>
 
-        <div class="field">
-          <%= f.label :role %><br />
-          <%= f.select :role, options_for_select(['Buyer/Seller', "Broker"]), {include_blank: true},  class: 'input', autocomplete: "off" %>
-        </div>
-  
-        <div class="btns-groups">
-          <%= f.submit "Sign up", class: "btn-02 login-btn signup-btn" %>
-        </div>
-      <% end %>
-    </div>
+      <div class="field">
+        <%= f.label :role %><br />
+        <%= f.select :role, options_for_select(['Buyer/Seller', "Broker"]), {include_blank: true},  class: 'input', autocomplete: "off" %>
+      </div>
 
-<%= render "devise/shared/links" %>
+      <div class="btns-groups">
+        <%= f.submit "Sign up", class: "btn-02 login-btn signup-btn" %>
+        <%= f.submit "Request Access", class: "btn-02 login-btn request-btn hide" %>
+      </div>
+    <% end %>
+  </div>
+  <%= render "devise/shared/links" %>
+</div>
 
 <style type="text/css">
   .btns-groups {
@@ -78,8 +81,33 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $(".tender-house7, .tender-house0").prop("checked", false);
+    check_company()
+    $(document).on('keyup', '#customer_company_name', function(){
+      check_company()
+    })
   })
+
   $('.tender-house0').on('click',function () {
     $(".tender-house0").is(':checked') ? $('.tender-house7').attr('disabled', true).prop('checked', false) : $('.tender-house7').prop('checked', false).attr('disabled', false)   
   })
+
+  function check_company(){
+    val = $('#customer_company_name').val()
+    $.ajax({
+      url: '/companies/check_company',
+      data: { name: val },
+      type: "GET",
+      success: function(data) {
+        $('#customer_is_requested').val(data['success'])
+        if (data['success'] == true){
+          $('.signup-btn').addClass('hide')
+          $('.request-btn').removeClass('hide')
+        }else{
+          $('.signup-btn').removeClass('hide')
+          $('.request-btn').addClass('hide')
+        }
+      }
+    })
+  }
+
 </script>

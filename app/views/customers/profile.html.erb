@@ -1,14 +1,12 @@
 <div class="edit-profile-page">
-    <div class="edit-profile-page--menu">
-      <span style="font-size:14px;" class="fright">
-      <%= link_to 'Add More Companies', add_company_customer_path(@customer),:class => 'btn-01',data: {turbolinks: false} %>
+    <!-- <div class="edit-profile-page--menu">
+      <%#= link_to 'Add More Companies', add_company_customer_path(@customer),:class => 'btn-01',data: {turbolinks: false} %>
       <%#= link_to 'Company list', list_company_companies_path ,:class => 'btn-01' %>
       <%#= link_to 'Customer list', customers_path,:class => 'btn-01' %>
-      <%= link_to 'Change Password', change_password_customers_path ,:class => 'btn-01' ,data: {turbolinks: false} %> </span>
-    </div>
+    </div> -->
 
   <h3>Profile </h3>
-
+  <%= link_to 'Change Password', change_password_customers_path ,:class => 'btn-01 pull-right' ,data: {turbolinks: false} %> </span>
   <div class="clear10"></div>
   <%= form_for(@customer, url: update_profile_customers_path) do |f| %>
   <div class="form-wrapper">
@@ -106,7 +104,7 @@
         Company:
       </div>
       <div class="field">
-        <%= f.text_field :company, :class => 'input' %>
+        <%= f.text_field :company_id, :class => 'input', value: current_customer.company.name, disabled: true %>
       </div>
       <div class="clear"></div>
     </div>

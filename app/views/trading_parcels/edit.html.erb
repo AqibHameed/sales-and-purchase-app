@@ -4,25 +4,37 @@
   <div class="clear10"></div>
   <div class="form-wrapper">
     <%= nested_form_for @parcel do |f| %>
-      <div class="form-row">
+
+     <div class="form-row">
+        <div class="field">
+          <%= f.hidden_field :diamond_type %>
+        </div>
+     </div>
+    <div class="form-row">
+        <div class="label">Source: </div>
+        <div class="field">
+          <%= f.select :source, options_for_select(supplier_list_for_demand, :selected => f.object.source), {include_blank: true}, class: 'input'%>
+        </div>
+    </div>
+     <!--  <div class="form-row">
         <div class="label">Diamond Type: </div>
         <div class="field">
-          <%= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  {class: 'input', include_blank: true} %>
+          <%#= select_tag "trading_document_diamond_type", options_for_select([['Outside Goods', 'Rough'], ['Sight', 'Sight']], dt),  {class: 'input', include_blank: true} %>
         </div>
-      </div>
+      </div> -->
 
       <div class="sight_diamond <%=(dt == 'Sight') ? '' : 'hide'%>">
-        <div class="form-row">
+        <!-- <div class="form-row">
           <div class="label">Source</div>
           <div class='field'>
-            <%= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
+            <%#= f.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
           </div>
-        </div>
-        
+        </div> -->
+
         <div class="form-row">
-          <div class="label">Box value</div>
-          <div class='field'>
-            <%=f.text_field :box_value, class: 'input' %>
+          <div class="label">Discount Per Month:</div>
+          <div class="field">
+            <%= f.number_field :box_value, class: 'input' %>
           </div>
         </div>
 
@@ -49,12 +61,6 @@
             <%=f.number_field :lot_no, class: 'input' %>
           </div>
         </div>
-        <div class="form-row">
-          <div class="label">No of stones</div>
-          <div class='field'>
-            <%=f.number_field :no_of_stones, class: 'input' %>
-          </div>
-        </div>
       </div>
 
       <div class="common">
@@ -62,6 +68,12 @@
           <div class="label">Carats</div>
           <div class='field'>
             <%=f.text_field :weight, class: 'input' %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="label">No of stones</div>
+          <div class='field'>
+            <%=f.number_field :no_of_stones, class: 'input' %>
           </div>
         </div>
         <div class="form-row">
@@ -89,9 +101,9 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="label">Amount:</div>
+          <div class="label">Total Value:</div>
           <div class="field">
-            <%= text_field_tag "amount", '', class: 'input' %>
+            <%= f.number_field :total_value, class: 'input' %>
           </div>
         </div>
         <div class="form-row">
@@ -104,13 +116,13 @@
           <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
             <table class="table table-hover">
               <thead>
-                <th>Carats</th>
+                <!-- <th>Carats</th> -->
                 <th>Size</th>
                 <th>Percent</th>
               </thead>
               <tbody>
                 <tr>
-                  <td class="sub_c"><%=s.text_field :carats, class: 'form-control col-sm-3 sub_carats' %></td>
+                  <!-- <td class="sub_c"><%#=s.text_field :carats, class: 'form-control col-sm-3 sub_carats' %></td> -->
                   <td class="sub_s"><%=s.text_field :size, class: 'form-control col-sm-3 sub_size' %></td>
                   <td class="sub_per"><%=s.text_field :percent, class: 'form-control col-sm-3 sub_percent' %></td>
                   <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
@@ -129,17 +141,24 @@
 </div>
 <div class="clear"></div>
 <script type="text/javascript">
-  $(document).on('change', '#trading_document_diamond_type', function(){
+  $(document).on('change', '#trading_document_source', function(){
     val = $(this).val()
-    if(val == "Rough"){
+    if(val == "Outside Goods" || val == "OUTSIDE GOODS"){
+      $('#trading_parcel_diamond_type').val('Rough')
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
 
-    }else if(val == "Sight"){
+    }else if(val == "RUSSIAN" || val == "DTC" || val == "Russian"){
+      $('#trading_parcel_diamond_type').val('Sight')
       $('.common').removeClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
+    }else if(val == "SOMETHING SPECIAL"){
+      $('#trading_parcel_diamond_type').val('Rough')
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
     }else{
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
@@ -147,65 +166,66 @@
     }
   })
 
-  $(document).on('focusout','#price', function(){
-    var carat = $('#trading_parcel_weight').val();
-    var price = $('#price').val();
-    var amount = carat*price;
-    $('#amount').val(amount);
-  });
-  $(document).on('focusout','#trading_parcel_weight', function(){
-    var carat = $('#trading_parcel_weight').val();
-    var price = $('#price').val();
-    var amount = carat*price;
-    $('#amount').val(amount);
-  });
+  // $(document).on('focusout','#price', function(){
+  //   var carat = $('#trading_parcel_weight').val();
+  //   var price = $('#price').val();
+  //   var amount = carat*price;
+  //   $('#amount').val(amount);
+  // });
+  // $(document).on('focusout','#trading_parcel_weight', function(){
+  //   var carat = $('#trading_parcel_weight').val();
+  //   var price = $('#price').val();
+  //   var amount = carat*price;
+  //   $('#amount').val(amount);
+  // });
 
-  $(document).on('change', '#trading_document_diamond_type', function(){
-    val = $('#trading_document_diamond_type').val()
-    parcel_list(val)
-  })
+  // $(document).on('change', '#trading_document_source', function(){
+  //   val = $('#trading_document_diamond_type').val()
+  //   parcel_list(val)
+  // })
 
   $(document).on('change', '#trading_parcel_source', function(){
     id = $('#trading_parcel_source').val()
     source_list(id)
   })
 
-  $(document).on('focusout','#trading_parcel_price', function(){
-    var carat = $('#trading_parcel_weight').val();
-    var price = $('#trading_parcel_price').val();
-    var amount = carat*price;
-    $('#amount').val(amount);
-  });
-  $(document).on('focusout','#trading_parcel_weight', function(){
-    var carat = $('#trading_parcel_weight').val();
-    var price = $('#trading_parcel_price').val();
-    var amount = carat*price;
-    $('#amount').val(amount);
-  });
+  // $(document).on('focusout','#trading_parcel_price', function(){
+  //   var carat = $('#trading_parcel_weight').val();
+  //   var price = $('#trading_parcel_price').val();
+  //   var amount = carat*price;
+  //   $('#amount').val(amount);
+  // });
+  // $(document).on('focusout','#trading_parcel_weight', function(){
+  //   var carat = $('#trading_parcel_weight').val();
+  //   var price = $('#trading_parcel_price').val();
+  //   var amount = carat*price;
+  //   $('#amount').val(amount);
+  // });
 
-  $(document).on('keyup focusout','#trading_parcel_percent', function(){
-    var carat = parseFloat($('#trading_parcel_weight').val());
-    var cost = parseFloat($('#trading_parcel_cost').val());
-    var percent = parseFloat($('#trading_parcel_percent').val());
-    var price = parseFloat($('#trading_parcel_price').val());
-    calculate_price(carat, cost, percent, price)
-  });
+  // $(document).on('keyup focusout','#trading_parcel_percent', function(){
+  //   var carat = parseFloat($('#trading_parcel_weight').val());
+  //   var cost = parseFloat($('#trading_parcel_cost').val());
+  //   var percent = parseFloat($('#trading_parcel_percent').val());
+  //   var price = parseFloat($('#trading_parcel_price').val());
+  //   calculate_price(carat, cost, percent, price)
+  // });
 
-  $(document).on('keyup focusout','#trading_parcel_price', function(){
-    var carat = parseFloat($('#trading_parcel_weight').val());
-    var cost = parseFloat($('#trading_parcel_cost').val());
-    var price = parseFloat($('#trading_parcel_price').val());
-    calculate_percent(carat, cost, price)
-  });
+  // $(document).on('keyup focusout','#trading_parcel_price', function(){
+  //   var carat = parseFloat($('#trading_parcel_weight').val());
+  //   var cost = parseFloat($('#trading_parcel_cost').val());
+  //   var price = parseFloat($('#trading_parcel_price').val());
+  //   calculate_percent(carat, cost, price)
+  // });
 
   $(document).ready(function(){
-    var carat = $('#trading_parcel_weight').val();
-    var price = $('#trading_parcel_price').val();
-    var amount = carat*price;
-    $('#amount').val(amount);
-    
-    parcel_list($('#trading_document_diamond_type').val())
-    setTimeout(function(){ 
+    // var carat = $('#trading_parcel_weight').val();
+    // var price = $('#trading_parcel_price').val();
+    // var amount = carat*price;
+    // $('#amount').val(amount);
+    var diamond_type = $('#trading_parcel_diamond_type').val()
+    // parcel_list($('#trading_parcel_diamond_type').val())
+    parcel_list($('#trading_parcel_source').val())
+    setTimeout(function(){
       $('#trading_parcel_description').val('<%=@parcel.description%>')
     }, 500);
     <%- if @parcel.diamond_type == 'Sight'%>
@@ -241,19 +261,24 @@
   }
 
   function parcel_list(doc_type) {
-    if (doc_type == 'Rough'){
-      $.ajax({
-        url: '/supplier_demand_list',
-        method: 'get',
-        data: {id: doc_type}
-      })
-    } else if(doc_type == 'Sight'){
-      $.ajax({
-        url: '/supplier_list',
-        method: 'get',
-        data: {diamond_type: doc_type}
-      })
-    }
+    // if (doc_type == 'Rough'){
+    //   $.ajax({
+    //     url: '/supplier_demand_list',
+    //     method: 'get',
+    //     data: {id: doc_type, page: 'edit'}
+    //   })
+    // } else if(doc_type == 'Sight'){
+    //   $.ajax({
+    //     url: '/supplier_list',
+    //     method: 'get',
+    //     data: {diamond_type: doc_type, page: 'edit'}
+    //   })
+    // }
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: doc_type, page: 'edit'}
+    })
   }
 
   function source_list(id){
@@ -264,38 +289,38 @@
     })
   }
 
-  $(document).on('keyup focusout','.sub_carats', function(){
-    var self = $(this)
-    var total_carat = parseFloat($('#trading_parcel_weight').val());
-    var carat = parseFloat(self.val());
-    console.log(total_carat)
-    if(isNaN(total_carat)){
-      $('.sub_carats').val('')
-      $('.sub_percent').val('')
-      if($(this).next('.error-msg').length == 0){
-        $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
-      }
-    }else{
-      calculate_sub_size_percent(total_carat, carat, self)
-      $('.error-msg').remove()
-    }
-  });
+  // $(document).on('keyup focusout','.sub_carats', function(){
+  //   var self = $(this)
+  //   var total_carat = parseFloat($('#trading_parcel_weight').val());
+  //   var carat = parseFloat(self.val());
+  //   console.log(total_carat)
+  //   if(isNaN(total_carat)){
+  //     $('.sub_carats').val('')
+  //     $('.sub_percent').val('')
+  //     if($(this).next('.error-msg').length == 0){
+  //       $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
+  //     }
+  //   }else{
+  //     calculate_sub_size_percent(total_carat, carat, self)
+  //     $('.error-msg').remove()
+  //   }
+  // });
 
-  $(document).on('keyup focusout','.sub_percent', function(){
-    var self = $(this)
-    var total_carat = parseFloat($('#trading_parcel_weight').val());
-    var per = parseFloat(self.val());
-    if(isNaN(total_carat)){
-      $('.sub_carats').val('')
-      $('.sub_percent').val('')
-      if($(this).next('.error-msg').length == 0){
-        $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
-      }
-    }else{
-      calculate_sub_size_carats(total_carat, per, self)
-      $('.error-msg').remove()
-    }
-  });
+  // $(document).on('keyup focusout','.sub_percent', function(){
+  //   var self = $(this)
+  //   var total_carat = parseFloat($('#trading_parcel_weight').val());
+  //   var per = parseFloat(self.val());
+  //   if(isNaN(total_carat)){
+  //     $('.sub_carats').val('')
+  //     $('.sub_percent').val('')
+  //     if($(this).next('.error-msg').length == 0){
+  //       $(this).after("<p class='error-msg' style='color: red;'>Please fill carats first.</p>")
+  //     }
+  //   }else{
+  //     calculate_sub_size_carats(total_carat, per, self)
+  //     $('.error-msg').remove()
+  //   }
+  // });
 
   function calculate_sub_size_percent(total_carat, carat, self){
     percent = carat*100/total_carat    

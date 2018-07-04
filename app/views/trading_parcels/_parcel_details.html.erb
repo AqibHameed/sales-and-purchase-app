@@ -1,11 +1,11 @@
-<table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
+<table class="table table-bordered table-responsive">
   <tr>
     <td> UID</td>
     <td><%= @parcel.uid %></td>
   </tr>
   <tr>
     <td> Supplier</td>
-    <td><%= @parcel.try(:customer).try(:company) %></td>
+    <td><%= @parcel.try(:customer).try(:company).try(:name) %></td>
   </tr>
   <tr>
     <td> Source </td>
@@ -30,10 +30,6 @@
   <tr>
     <td> Cost</td>
     <td><%= @parcel.cost.nil? ? 'N/A' : @parcel.cost %></td>
-  </tr>
-  <tr>
-    <td> Box Value</td>
-    <td><%= (@parcel.box_value.nil? || @parcel.box_value.blank?) ? 'N/A' : @parcel.box_value %></td>
   </tr>
   <tr>
     <td> Sight</td>

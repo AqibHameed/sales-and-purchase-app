@@ -1,37 +1,84 @@
 class Company < ApplicationRecord
-  # attr_accessible :name, :address, :country, :email, :registration_vat_no, :registration_no, :fax, :telephone, :mobile, :contact_person_ids
-  has_many :sub_companies, :class_name => 'Company', :foreign_key => :parent_id
-  belongs_to :parent, :class_name => 'Company', :foreign_key => :parent_id, optional: true
-
-  has_many :contact_people
-  has_many :tenders
+  has_many :customers
   has_many :trading_parcels
-  has_many :supplier_notifications, :class_name => 'SupplierNotification', :foreign_key => :supplier_id
-  has_many :supplier_mines
+  has_many :proposals
+  has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
+  has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction"
+  has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction"
 
-  belongs_to :customer, optional: true
+  validates :name, presence: true
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
+  def get_owner
+    Customer.unscoped do
+      customers.order(:id).first
+    end
+  end
 
-  accepts_nested_attributes_for :contact_people
-  accepts_nested_attributes_for :sub_companies, :allow_destroy => true
+  def is_blocked_by_supplier(supplier)
+    bu = BlockUser.where(company_id: supplier, block_company_ids: self.id).first
+    if bu.nil?
+      false
+    else
+      true
+    end
+  end
 
-  rails_admin do
-    label "Suppliers"
-    edit do
-       [:name, :address, :country, :email, :registration_vat_no, :registration_no, :fax, :telephone, :mobile].each do |field_name|
-        field field_name
-      end
-      field :contact_people  do
-        label "Contact Peoples"
-        nested_form false
-        associated_collection_scope do
-          Proc.new { |scope|
-            scope = scope.includes(:company)
-          }
+  def has_limit(supplier)
+    CreditLimit.where(seller_id: supplier, buyer_id: self.id).first.present?
+  end
+
+  def has_overdue_transaction_of_30_days(supplier_id)
+    dl = DaysLimit.where(buyer_id: self.id, seller_id: supplier_id).first
+    if dl.nil?
+      number_of_days = 30
+    else
+      number_of_days = dl.days_limit.to_i
+    end
+    date = Date.today - number_of_days.days
+    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+      true
+    else
+      false
+    end
+  end
+
+  def check_group_overdue(supplier_id)
+    is_overdue = false
+    groups = CompaniesGroup.where("company_id like '%#{id}%'")
+    groups.each do |group|
+      group.company_id.each do |c|
+        company = Company.find(c)
+        if company.has_overdue_transaction_of_30_days(supplier_id)
+          is_overdue = true
+          return is_overdue
         end
       end
     end
+    return is_overdue
   end
+
+  def check_market_limit_overdue(market_limit_overdue, supplier_id)
+    cl = CreditLimit.where(seller_id: supplier_id, buyer_id: self.id).first
+    if cl.nil? || cl.market_limit.nil?
+      return false
+    else
+      company_market_limit = cl.market_limit
+      if market_limit_overdue.to_i < company_market_limit.to_i
+        return false
+      elsif company_market_limit.to_i == 0
+      else
+        return true
+      end
+    end
+  end
+
+  def is_overdue
+    date = Date.today
+    if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+      true
+    else
+      false
+    end
+  end
+
 end

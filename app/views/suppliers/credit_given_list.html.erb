@@ -2,32 +2,32 @@
   <h2>Credit Details</h2>
   <div class="credit_given">
     <div class="table">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter credit-table">
-        <tr class="thead-desktop">
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter credit-table">
+        <thead class="thead-desktop">
           <th></th>
           <th>Company</th>
           <th>Given</th>
           <th>Used</th>
           <th>Available</th>
           <th></th>
-        </tr>
+        </thead>
         <% @credit_limits.each.with_index(1) do |cl, i|%>
           <% if cl.buyer.present? %>
             <tr>
               <td><span class="table-head-in-td"></span><%= %></td>
-              <td><span class="table-head-in-td">Buyer</span><%= link_to cl.buyer.try(:company), customer_transactions_path(buyer_id: cl.buyer.id, supplier_id: current_customer.id) rescue 'N/A' %></td>
+              <td><span class="table-head-in-td">Buyer</span><%= link_to cl.buyer.try(:name), customer_transactions_path(buyer_id: cl.buyer.id, supplier_id: current_company.id) rescue 'N/A' %></td>
               <td class="given_limit">
               <span class="table-head-in-td">Given</span>
-              <%= number_to_currency(get_credit_limit(cl.buyer, current_customer)) rescue 'N/A' %>
+              <%= number_to_currency(get_credit_limit(cl.buyer, current_company)) rescue 'N/A' %>
               <a href="javascript:void(0)" class="credit_edit_block"><i class="fa fa-edit pull-right credit_edit" id='credit_edit'></i></a></td>
               <td class="edit_field hide">
               <%=text_field_tag "limit", '', 'data-id'=> cl.buyer.id, placeholder: 'Enter limit' %><a href="javascript:void(0)" class="save_btn_block"><i class="fa fa-check-square-o save_btn"></i></a></td>
               <td>
               <span class="table-head-in-td">Used</span>
-              <%= number_to_currency(get_used_credit_limit(cl.buyer, current_customer)) rescue 'N/A' %></td>
+              <%= number_to_currency(get_used_credit_limit(cl.buyer, current_company)) rescue 'N/A' %></td>
               <td>
               <span class="table-head-in-td">Available</span>
-              <%= number_to_currency(get_available_credit_limit(cl.buyer, current_customer))rescue 'N/A' %></td>
+              <%= number_to_currency(get_available_credit_limit(cl.buyer, current_company))rescue 'N/A' %></td>
             </tr>
           <% end %>
         <% end %>

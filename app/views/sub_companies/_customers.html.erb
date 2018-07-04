@@ -1,7 +1,7 @@
 <div class="clear20"></div>
 <div class="form-group">
 <h5>Customers</h5>
-<%= select_tag "selected-customer",options_for_select(all_customers), :class => 'selected-customer form-control select2'%>
+<%= select_tag "selected-customer",options_for_select(all_customers(current_customer)), :class => 'selected-customer form-control select2'%>
 </div>
 
 <script type="text/javascript">

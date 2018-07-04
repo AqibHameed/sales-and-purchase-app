@@ -1,4 +1,4 @@
-<table width="100%" border="0" cellspacing="0" cellpadding="0" id="tenderList" class="tablesorter">
+<table id="tenderList" class="table table-bordered table-striped table-responsive tablesorter">
   <tr>
     <th></th>
     <th>Description</th>
@@ -24,9 +24,9 @@
       <td><%= proposal.price.nil? ? 'N/A' : number_with_precision(proposal.price, precision: 2) %></td>
       <td><%= proposal.credit %></td>
       <% if current_customer.id == proposal.buyer_id%>
-        <td><%= proposal.supplier.company %></td>
+        <td><%= proposal.supplier.company.try(:name) %></td>
       <% else %>
-        <td><%= proposal.buyer.company %></td>
+        <td><%= proposal.buyer.company.try(:name) %></td>
       <% end %>
       <td><%= link_to 'View', proposal_path(proposal) %></td>
     </tr>

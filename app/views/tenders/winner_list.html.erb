@@ -1,7 +1,7 @@
 <h3>Detailed Winner List : <%= @tender.name %></h3>
 <br/>
 <div class="table">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="table table-bordered table-responsive">
         <tr>
             <th>
                 Lot No
@@ -28,7 +28,7 @@
                 3 rd
             </th>
         </tr>
-		<% total = 0 %>
+    <% total = 0 %>
         <% @tender.stones.each_with_index do |stone| %>
         <tr>
             <td>
@@ -44,7 +44,7 @@
                 <%= stone.bids.length %>
             </td>
             <td>
-            	<% total = total + stone.bids.sum(:total) %>
+              <% total = total + stone.bids.sum(:total) %>
                 <%= number_to_currency(stone.bids.sum(:total)) %>
             </td>
             <td>
@@ -58,7 +58,7 @@
             </td>
         </tr>
         <% end %>
-		<tr>
+    <tr>
             <td colspan="4">
              
             </td>

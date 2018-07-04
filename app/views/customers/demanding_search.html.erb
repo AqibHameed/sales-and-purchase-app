@@ -1,14 +1,16 @@
 <div class="form-wrapper">
   <%= form_for @demanding_parcel, url: demanding_search_customers_path, method: :get do |f| %>
-    <div class="form-row">
+
+    <!-- <div class="form-row">
       <div class="label">Diamond Type: </div>
       <div class="field">
         <%#= select_tag "demand_diamond_type", options_for_select(['Outside Goods', 'Sight']),  { class: 'input', include_blank: true } %>
-        <%= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
+        <%#= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
       </div>
-    </div>
+    </div> -->
+
     <div class="form-row">
-      <div class="label">Supplier: </div>
+      <div class="label">Source: </div>
       <div class="field">
         <%#= select_tag "demand_demand_supplier_id", options_for_select(supplier_list_for_demand),  { class: 'input', include_blank: true } %>
         <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand), { include_blank: true }, { class: 'input' } %>
@@ -27,7 +29,7 @@
       <div class="field">
         <%#= link_to 'Search', 'javascript:void(0)', class: 'btn-02 login-btn search'  %>
         <%=f.submit 'Search', class: 'login-btn btn-02' %>
-        <%=link_to 'Reset', demanding_search_customers_path, class: 'btn btn-default' %>
+        <%=link_to 'Reset', demanding_search_customers_path, class: 'btn btn-default', data: { turbolinks: false } %>
       </div>
     </div>
   <% end %>
@@ -35,11 +37,13 @@
   <% if @parcels.present? %>
     <%= render partial: 'customers/demanding_search_table_data', locals: { parcels: @parcels} %>
   <% else %>
-    <p>No result found!</p>
-    <% demand_supplier = params[:demand][:demand_supplier_id] %>
-    <% diamond_type = params[:demand][:diamond_type] %>
-    <% description = params[:demand][:description] %>
-    <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false} %>
+    <% if params[:demand] %>
+      <p>No result found!</p>
+      <% demand_supplier = params[:demand][:demand_supplier_id] %>
+      <% diamond_type = params[:demand][:diamond_type] %>
+      <% description = params[:demand][:description] %>
+      <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false } %>
+    <% end %>
   <% end %>
 </div>
 

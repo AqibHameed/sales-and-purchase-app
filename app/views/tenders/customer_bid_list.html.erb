@@ -1,7 +1,7 @@
 <h3>Detailed Bidder List : <%= @tender.name %></h3>
 <br/>
 <div class="table">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="table table-bordered table-responsive">
         <tr>
             <th>
                 No
@@ -35,7 +35,7 @@
                 <%= link_to bid.customer.name, customer_bid_detail_tender_path(@tender, :customer_id => bid.customer.id ) %>
             </td>
             <td>
-                <%= bid.customer.company %>
+                <%= bid.customer.company.try(:name) %>
             </td>
 			<td>
 				<%= bid.stone.description %>

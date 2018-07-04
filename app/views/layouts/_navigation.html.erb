@@ -21,7 +21,7 @@
               <%= link_to 'Home', trading_customers_path, :class => 'home', data: { turbolinks: false } %>
             </li>
             <li>
-              <%= link_to 'Dashboard', trading_customers_path, data: { turbolinks: false } %>
+              <%= link_to 'My Parcels', trading_customers_path, data: { turbolinks: false } %>
             </li>
             <li>
               <%= link_to 'Tenders', root_path, data: { turbolinks: false } %>
@@ -85,10 +85,13 @@
         <span><%=image_tag "down-arrow.png", width: '4%' %></span>
         <div id="myDropdown" class="dropdown-content">
           <%= link_to 'Profile', profile_customers_path, data: { turbolinks: false } %>
-          <%= link_to 'Info', info_customers_path, data: { turbolinks: false } unless current_admin %>
+          <%= link_to 'Info', info_customers_path, data: { turbolinks: false } unless current_admin || current_customer.has_role?('Broker')  %>
+          <% unless current_admin %>
+            <%= link_to 'Manage Users', approve_access_customers_path, data: { turbolinks: false } if (current_customer == current_company.get_owner) && !current_customer.has_role?('Broker')  %>
+          <% end %>
           <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
           <%= link_to 'Manage Brokers', requests_brokers_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
-          <%= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } %>
+          <%= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
           <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
         </div>
       </div>

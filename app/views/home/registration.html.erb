@@ -16,7 +16,7 @@
         </p>
         <p class=clear10></p>
         <% @customer = Customer.new %>
-    <%= form_for(@customer, :url => login_path(@customer), :html => {:class => 'signup_form'} ) do |f| %>
+      <%= form_for(@customer, :url => login_path(@customer), :html => {:class => 'signup_form'} ) do |f| %>
           <div class="label">Email</div>
           <div class="field">
             <%= f.text_field :email %>

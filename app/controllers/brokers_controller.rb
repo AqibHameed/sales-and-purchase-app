@@ -10,11 +10,11 @@ class BrokersController < ApplicationController
   end
 
   def send_request
-    broker_request = BrokerRequest.where(broker_id: current_customer.id, seller_id: params[:s]).first_or_initialize do |br|
+    broker_request = BrokerRequest.where(broker_id: current_company.id, seller_id: params[:s]).first_or_initialize do |br|
       br.accepted = false
     end
     if broker_request.save
-      Message.create_new_broker(broker_request, current_customer)
+      Message.create_new_broker(broker_request, current_company)
       flash[:notice] = 'Request sent successfully.'
       redirect_to brokers_path
     else
@@ -41,7 +41,6 @@ class BrokersController < ApplicationController
   end
 
   def remove
-    puts @broker_request.inspect
     @broker_request.destroy
     CustomerMailer.remove_broker_mail(@broker_request).deliver
     flash[:notice] = 'Broker removed successfully.'

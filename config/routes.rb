@@ -110,6 +110,9 @@ Rails.application.routes.draw do
       get :demanding_search, path: 'search'
       get :search_demand_list
       get :demand_from_search
+      get :approve_access
+      post :approve
+      post :remove
     end
     member do
       get :add_company
@@ -124,6 +127,7 @@ Rails.application.routes.draw do
     collection do
       get :list_company
       post :company_limits
+      get :check_company
     end
   end
 
@@ -172,6 +176,7 @@ Rails.application.routes.draw do
       get :single_parcel_form
       get :add_demand_list
       post :upload_demand_list
+      get :important
     end
   end
   resources :messages
@@ -254,7 +259,9 @@ Rails.application.routes.draw do
       get '/old_upcoming', to: 'tenders#old_upcoming'
       get '/old_tender_parcel', to: 'tenders#old_tender_parcel'
       get '/customer_list', to: 'api#customer_list'
+      get '/company_list', to: 'api#company_list'
       put '/update_chat_id', to: 'api#update_chat_id'
+      get '/blocked_customers', to: 'companies#blocked_customers'
       resources :tenders do
         collection do
           get :upcoming
@@ -272,10 +279,33 @@ Rails.application.routes.draw do
           post :upload
         end
       end
+      resources :limits do
+        collection do
+          post :add_credit_limit
+          post :add_market_limit
+          post :add_overdue_limit
+          post :block
+          post :unblock
+          get  :credit_limit_list
+          post :add_star
+        end
+      end
+      resources :proposals
+      resources :trading_parcels
+      resources :companies_groups
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
       post '/supplier_notification', to: 'api#supplier_notification'
+      get '/app_versions', to: 'api#app_versions'
       get '/suppliers', to: 'api#get_suppliers'
+
+      resources :demands, only: [:create, :index, :destroy] do
+        collection do
+          get :demand_suppliers
+          get :parcels_list
+          get :demand_description
+        end
+      end
     end
   end
 
@@ -296,4 +326,5 @@ Rails.application.routes.draw do
   get '/update_chat_id',to: 'tenders#update_chat_id'
   get '/share_with_brokers', to: 'trading_parcels#share_broker'
   get '/parcel_detail', to: 'trading_parcels#parcel_detail'
+  get '/access_denied', to: 'customers#access_denied'
 end

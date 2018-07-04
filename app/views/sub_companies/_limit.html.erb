@@ -1,4 +1,4 @@
-<h5><%= @customer.company %>'s Info</h5>
+<h5><%= @customer.company.try(:name) %>'s Info</h5>
 
 <div class="clear20"></div>
 <div class="form-group">

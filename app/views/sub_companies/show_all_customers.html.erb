@@ -14,7 +14,7 @@
         <tr>
           <td><%= i + 1 %></td>
           <td><%= customer.try(:customer).try(:name)%></td>
-          <td><%= customer.try(:customer).try(:company)%></td>
+          <td><%= customer.try(:customer).try(:company).try(:name)%></td>
           <td><%= customer.try(:credit_limit)%></td>
           <td><%= link_to 'Remove', remove_customer_limit_sub_companies_path(id: customer.try(:sub_company_customer_id), sub_company_credit_limit_id: customer.try(:sub_company_credit_limit_id)), method: :delete%></td>
         </tr>

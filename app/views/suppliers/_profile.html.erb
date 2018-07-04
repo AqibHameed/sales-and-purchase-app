@@ -1,30 +1,98 @@
-<div class="table">
+<div class="table company-details-modal">
   <div class = "container">
-  <h3 >Profile</h3>
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="tablesorter">
-      <tr>
-        <td> Name </td>
-        <td><%= @customer.name %></td>
-      </tr>
-      <tr>
-        <td> Email</td>
-        <td><%= @customer.email %></td>
-      </tr>
+    <h3 >Profile</h3>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="table table-bordered table-responsive tablesorter">
       <tr>
         <td> Company</td>
-        <td><%= @customer.company %></td>
+        <td><%= @company.try(:name) %></td>
       </tr>
       <tr>
-        <td> Address</td>
-        <td><%= @customer.address %></td>
+        <td> City</td>
+        <td><%= @company.try(:city) %></td>
       </tr>
       <tr>
-        <td> Mobile</td>
-        <td><%= @customer.mobile_no %></td>
+        <td> Country</td>
+        <td><%= @company.try(:county) %></td>
+      </tr>
+      <tr>
+       <td>Total Credit</td>
+       <td class="credit_limit">
+          <span class="table-head-in-td">Total Limit</span>
+          <a href="javascript:void(0)" class="given_limit" id='credit_edit'>
+            <%= number_to_currency(get_credit_limit(@company, current_company)) %>
+          <%#if @type.try(:credit_type) == 'Specific' || @type.try(:credit_type) == 'Yours'%>
+            <!-- <i class="fa fa-edit pull-right" id='credit_edit' style="display: none"></i> -->
+          <%# else %>
+            <i class="fa fa-edit pull-right" id='credit_edit'></i>
+          <%#end%>
+          </a>
+          <span class="edit_field hide">
+            <%=number_field_tag "limit", '', 'data-id'=> @company.id, placeholder: 'Enter credit limit' %>
+            <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%>
+            <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
+          </span>
+          </br>
+          <span class="error-message" style="color: red;"></span>
+        </td>
+      </tr>
+      <tr>
+       <td>Overdue Limit</td>
+       <td class="days_limit">
+        <span class="table-head-in-td">Overdue Limit</span>
+          <a href="javascript:void(0)" class="given_days" id='days_edit'>
+            <%= get_days_limit(@company, current_company) %>
+            <i class="fa fa-edit pull-right" id='days_edit'></i>
+          </a>
+          <span class="edit_days hide">
+            <!-- <a href="javascript:void(0)" class="edit_days hide"> -->
+              <%=text_field_tag "days_limit", '', 'data-id'=> @company.id, placeholder: 'Enter days' %>
+              <%=link_to 'Add', 'javascript:void(0)', class: "save_date_btn" %> <%=link_to 'Cancel', credit_suppliers_path, data: { turbolinks: false } %>
+              <!-- <i class="fa fa-check-square-o save_date_btn"></i> -->
+            <!-- </a> -->
+          </span>
+        </td>
+      </tr>
+      <tr>
+       <td>Market Limit</td>
+       <td class="market_limit">
+          <span class="table-head-in-td">Market Limit</span>
+          <a href="javascript:void(0)" class="given_market_limit" id='market_limit_edit'>
+            <%= get_market_limit_from_credit_limit_table(@company,current_company)%>
+            <i class="fa fa-edit pull-right" id='market_limit_edit'></i>
+          </a>
+          <a href="javascript:void(0)" class="edit_market_limit hide">
+            <%=text_field_tag "market_limit", '', 'data-id'=> @company.id, placeholder: 'Enter Market limit' %>
+            <i class="fa fa-check-square-o save_market_limit_btn"></i>
+            </br>
+            <span class="market-limit-error-message" style="color: red;"></span>
+          </a>
+        </td>
       </tr>
     </table>
+    <br/>
+    <h3 >Members</h3>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="myTable" class="table table-bordered table-responsive tablesorter">
+        <thead>
+          <tr>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Email</td>
+          </tr>
+        </thead>
+        <tbody>
+          <%if @company.try(:customers).present?%>
+            <% @company.try(:customers).each do |customer|%>
+              <tr>
+                <td><%= customer.try(:first_name)%></td>
+                <td><%= customer.try(:last_name)%></td>
+                <td><%= customer.try(:email)%></td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
     <div class="clear20"></div>
-    <%=link_to 'Close', :back, class: "btn-02 login-btn", data: {turbolinks: false}%>
+    <%=link_to 'Close', 'javascript:void(0)', class: "btn-02 login-btn close-modal"%>
   </div>
 </div>
 <script>addMask();</script>

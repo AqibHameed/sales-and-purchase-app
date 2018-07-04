@@ -1,35 +1,37 @@
 class CustomersController < ApplicationController
-
+  include CustomersHelper
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_info_shared, only: [:shared_info]
-  before_action :check_role_authorization, only: [:trading, :demanding]
+  before_action :check_role_authorization
+  before_action :can_approve_access, only: [:approve, :approve_access]
+  skip_before_action :check_request_access, only: [:access_denied]
 
   def profile
     @customer = current_customer
   end
 
   def info
-    @total_transaction = Transaction.total_transaction(current_customer.id).count
-    @pending_transactions = Transaction.pending_received_transaction(current_customer.id).count + Transaction.pending_sent_transaction(current_customer.id).count
-    @overdue_transactions = Transaction.overdue_received_transaction(current_customer.id).count + Transaction.overdue_sent_transaction(current_customer.id).count
-    @complete_transactions = Transaction.complete_received_transaction(current_customer.id).count + Transaction.complete_sent_transaction(current_customer.id).count
-    @total_pending_received = Transaction.pending_received_transaction(current_customer.id).sum(:total_amount)
-    @total_pending_sent = Transaction.pending_sent_transaction(current_customer.id).sum(:total_amount)
-    @total_overdue_received = Transaction.overdue_received_transaction(current_customer.id).sum(:total_amount)
-    @total_overdue_sent = Transaction.overdue_sent_transaction(current_customer.id).sum(:total_amount)
-    @total_complete_received = Transaction.complete_received_transaction(current_customer.id).sum(:total_amount)
-    @total_complete_sent = Transaction.complete_sent_transaction(current_customer.id).sum(:total_amount)
-    @credit_recieved = CreditLimit.where('buyer_id =?',current_customer.id)
-    @credit_given = CreditLimit.where('supplier_id =?',current_customer.id)
+    @total_transaction = Transaction.total_transaction(current_company.id).count
+    @pending_transactions = Transaction.pending_received_transaction(current_company.id).count + Transaction.pending_sent_transaction(current_company.id).count
+    @overdue_transactions = Transaction.overdue_received_transaction(current_company.id).count + Transaction.overdue_sent_transaction(current_company.id).count
+    @complete_transactions = Transaction.complete_received_transaction(current_company.id).count + Transaction.complete_sent_transaction(current_company.id).count
+    @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
+    @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
+    @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
+    @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
+    @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
+    @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
+    @credit_recieved = CreditLimit.where('buyer_id =?',current_company.id)
+    @credit_given = CreditLimit.where('seller_id =?',current_company.id)
     @shared = Shared.new
-    @shared_table = Shared.where(shared_by_id: current_customer.id)
-    @credit_recieved_transaction = Transaction.where('buyer_id =?',current_customer.id)
-    @credit_given_transaction = Transaction.where('supplier_id =?',current_customer.id)
+    @shared_table = Shared.where(shared_by_id: current_company.id)
+    @credit_recieved_transaction = Transaction.where('buyer_id =?',current_company.id)
+    @credit_given_transaction = Transaction.where('seller_id =?',current_company.id)
   end
 
   def shared
-    @check_duplicate = Shared.where(shared_to_id: params[:shared][:shared_to_id], shared_by_id: current_customer.id)
+    @check_duplicate = Shared.where(shared_to_id: params[:shared][:shared_to_id], shared_by_id: current_company.id)
     if @check_duplicate.present?
       redirect_to info_customers_path, notice: "Already shared."
     else
@@ -37,9 +39,9 @@ class CustomersController < ApplicationController
       if @shared.shared_to_id.nil?
         redirect_to info_customers_path, notice: "Select company first."
       else
-        @shared.shared_by_id = current_customer.id
+        @shared.shared_by_id = current_company.id
         if @shared.save
-          TenderMailer.shared_info_email(current_customer, @shared.shared_to_id).deliver_now
+          TenderMailer.shared_info_email(current_company, @shared.shared_to_id).deliver_now
           redirect_to info_customers_path, notice: "shared successfully"
         end
       end
@@ -58,21 +60,21 @@ class CustomersController < ApplicationController
     @total_complete_received = Transaction.complete_received_transaction(params[:id]).sum(:total_amount)
     @total_complete_sent = Transaction.complete_sent_transaction(params[:id]).sum(:total_amount)
     @credit_recieved = CreditLimit.where('buyer_id =?',params[:id])
-    @credit_given = CreditLimit.where('supplier_id =?',params[:id])
+    @credit_given = CreditLimit.where('seller_id =?',params[:id])
     @customer = Customer.find(params[:id])
     @credit_recieved_transaction = Transaction.where('buyer_id =?',params[:id])
-    @credit_given_transaction = Transaction.where('supplier_id =?',params[:id])
+    @credit_given_transaction = Transaction.where('seller_id =?',params[:id])
   end
 
   def transaction_list
-    @customer = Customer.where(id: params[:id]).first
-    unless @customer.nil?
+    @company = Company.where(id: params[:id]).first
+    unless @company.nil?
       if params[:type] == 'pending'
-       @transactions = Transaction.pending_received_transaction(@customer.id) + Transaction.pending_sent_transaction(@customer.id)
+       @transactions = Transaction.pending_received_transaction(@company.id) + Transaction.pending_sent_transaction(@company.id)
       elsif params[:type] == "complete"
-        @transactions = Transaction.complete_received_transaction(@customer.id) + Transaction.complete_sent_transaction(@customer_id)
+        @transactions = Transaction.complete_received_transaction(@company.id) + Transaction.complete_sent_transaction(@company_id)
       elsif params[:type] == "overdue"
-        @transactions = Transaction.overdue_received_transaction(@customer.id) + Transaction.overdue_sent_transaction(@customer.id)
+        @transactions = Transaction.overdue_received_transaction(@company.id) + Transaction.overdue_sent_transaction(@company.id)
       end
     else
       redirect_to trading_customers_path
@@ -123,11 +125,11 @@ class CustomersController < ApplicationController
 
   def block_unblock_user
     if params[:status] == 'block'
-      BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first_or_create
+      BlockUser.where(block_company_ids: params[:block_company_id], company_id: current_company.id).first_or_create
     else
-      BlockUser.where(block_user_ids: params[:block_user_id], customer_id: current_customer.id).first.destroy
+      BlockUser.where(block_company_ids: params[:block_company_id], company_id: current_company.id).first.destroy
     end
-    @customers = Customer.unscoped.where.not(id: current_customer.id).order(company: :asc).page params[:page]
+    # @companies = Company.where.not(id: current_company.id).order(company: :asc).page params[:page]
     respond_to do |format|
       format.js { render 'block_unblock' }
       format.html { redirect_to credit_suppliers_path }
@@ -150,17 +152,18 @@ class CustomersController < ApplicationController
     @history = []
     @info = []
     @proposal = Proposal.new
-    customer_id = BlockUser.where(block_user_ids: current_customer.id).map { |e| e.customer_id }
-    @parcels = TradingParcel.where(sold: false).where.not(customer_id: customer_id).order(created_at: :desc) #.page params[:page]
-    @my_parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc)
+    # customer_id = BlockUser.where(block_company_ids: current_company.id).map { |e| e.company_id }
+    # @parcels = TradingParcel.where(sold: false).where.not(company_id: current_company.id).order(created_at: :desc) #.page params[:page]
+    @my_parcels = TradingParcel.where(company_id: current_company.id, sold: false).order(created_at: :desc)
   end
 
   def demanding
     @demanding_parcel = Demand.new
-    @dtc_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 1, deleted: false)
-    @russian_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 2, deleted: false)
-    @outside_demands = Demand.where(customer_id: current_customer.id, demand_supplier_id: 3, deleted: false)
-    if current_customer.is_overdue
+    @dtc_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 1, deleted: false)
+    @russian_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 2, deleted: false)
+    @outside_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 3, deleted: false)
+    @something_special_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 4, deleted: false)
+    if current_company.is_overdue
       # current_customer.block_demands
       @disable = true
     else
@@ -175,22 +178,29 @@ class CustomersController < ApplicationController
     @proposal = Proposal.new
     @demanding_parcel = Demand.new
     if params[:demand].present?
-      if params[:demand][:description].present?
-        description = params[:demand][:description].reject { |c| c.empty? }
+      full_description = params[:demand][:description].reject { |c| c.empty? }
+      if full_description.present?
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.source = ? AND (trading_parcels.description IN (?))", params[:demand][:demand_supplier_id], full_description)
       else
-        description = ''
+        parcels = TradingParcel.where(sold: false).where("trading_parcels.source = ?", params[:demand][:demand_supplier_id])
       end
-      @parcels = TradingParcel.where(sold: false).where("trading_parcels.diamond_type = ? and trading_parcels.source = ? and trading_parcels.description IN (?)", params[:demand][:diamond_type], params[:demand][:demand_supplier_id], description) #.page(params[:page]).per(25)
     else
-      @parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
+      parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
     end
+    required_parcels = []
+    parcels.each do |parcel|
+      if check_parcel_visibility(parcel, current_company)
+        required_parcels << parcel
+      end
+    end
+    @parcels = required_parcels
   end
 
   def demanding_create
     demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
     description = params[:demand][:description].reject { |c| c.empty? }
     description.each do |d|
-      @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+      @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
         demand.weight = params[:demand][:weight]
         demand.price = params[:demand][:price]
         demand.diamond_type = params[:demand][:diamond_type]
@@ -215,7 +225,7 @@ class CustomersController < ApplicationController
       redirect_to demanding_search_customers_path
     else
       description.each do |d|
-        @demanding_parcel = Demand.where(description: d, customer_id: current_customer.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+        @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
           demand.weight = params[:weight]
           demand.price = params[:price]
           demand.diamond_type = params[:diamond_type]
@@ -241,10 +251,10 @@ class CustomersController < ApplicationController
   end
 
   def transactions
-    @pending_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
-    @overdue_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
-    @complete_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ?", current_customer.id, true).page params[:page]
-    @rejected_transactions = Proposal.includes(:trading_parcel).where("status = ? AND buyer_id = ?", 2, current_customer.id).page params[:page]
+    @pending_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ?", current_company.id, Date.today, false).page params[:page]
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ?", current_company.id, Date.today, false).page params[:page]
+    @complete_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ?", current_company.id, true).page params[:page]
+    @rejected_transactions = Proposal.includes(:trading_parcel).where("status = ? AND buyer_id = ?", 2, current_company.id).page params[:page]
   end
 
   def credit
@@ -258,7 +268,7 @@ class CustomersController < ApplicationController
   end
 
   def check_info_shared
-    check = Shared.where('shared_by_id = ? and shared_to_id = ?', params[:id], current_customer)
+    check = Shared.where('shared_by_id = ? and shared_to_id = ?', params[:id], current_company)
     if check.present?
       # do nothing
     else
@@ -270,13 +280,42 @@ class CustomersController < ApplicationController
     demand = Demand.where(id: params[:id]).first
     if demand.present?
       demand.update_attributes(deleted: true)
-      flash[:notice] = "Dmeand deleted successfully."
+      flash[:notice] = "Demand deleted successfully."
       redirect_to demanding_customers_path
     else
       flash[:error] = "No Record Found!"
       redirect_to demanding_customers_path
     end
   end
+
+  def approve_access
+    # @customers = current_company.customers.where(is_requested: true)
+    @customers = current_company.customers.where.not(id: current_customer.id)
+  end
+
+  def approve
+    customer = Customer.find(params[:cu])
+    if customer.update_attributes(is_requested: false)
+      CustomerMailer.approve_access(customer).deliver
+      redirect_to approve_access_customers_path, notice: 'Access granted'
+    else
+      redirect_to approve_access_customers_path, alert: customer.errors.full_messages.first
+    end
+  end
+
+  def remove
+    customer = Customer.find(params[:cu])
+    if customer.update_attributes(is_requested: true)
+      CustomerMailer.remove_access(customer).deliver
+      redirect_to approve_access_customers_path, notice: 'Access Denied successfully!!'
+    else
+      redirect_to approve_access_customers_path, alert: customer.errors.full_messages.first
+    end
+  end
+
+  def access_denied
+  end
+
 
   private
   def customer_params
@@ -295,17 +334,12 @@ class CustomersController < ApplicationController
     params.require(:demand).permit(:description, :weight, :price, :diamond_type)
   end
 
-  def check_role_authorization
-    if current_admin.present?
-      # do nothing
+  def can_approve_access
+    first_customer = current_company.get_owner
+    if first_customer == current_customer
+      # Do Nothing
     else
-      if current_customer.has_role?('Buyer') || current_customer.has_role?('Broker')
-        # do nothing
-      else
-        redirect_to trading_customers_path, notice: 'You are not authorized.'
-      end
+      redirect_to root_path, alert: "You are not authorized"
     end
   end
-
 end
-

@@ -1,6 +1,12 @@
 class Api::V1::ApiController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:device_token, :supplier_notification, :email_attachment, :update_chat_id]
   before_action :current_customer, only: [:device_token, :supplier_notification, :update_chat_id]
+  helper_method :current_company
+
+  include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TextHelper
+  include ApplicationHelper
+  include CustomersHelper
 
   def current_customer
     token = request.headers['Authorization'].presence
@@ -9,10 +15,19 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
-  # def supplier_list
-  #   suppliers = Company.all
-  #   render json: {success: true, suppliers: suppliers.as_json(only: [:id, :name])}
-  # end
+  def app_versions
+    if params[:version].present?
+      version = AppVersion.where(version: params[:version]).first
+      if version.present?
+        render json: { success: true, version: version.as_json(except: [:id, :created_at, :updated_at])}
+      else
+        render json: { success: false, message: "This version does not exist" }
+      end
+    else
+      versions = AppVersion.all
+      render json: { success: true, versions: versions.as_json(except: [:id, :created_at, :updated_at])}
+    end
+  end
 
   # def tender_by_months
   #   months = Tender.group("month(open_date)").count
@@ -24,7 +39,7 @@ class Api::V1::ApiController < ApplicationController
   # end
 
   def filter_data
-    suppliers = Company.all.map { |e| { id: e.id, name: e.name}  }
+    suppliers = Supplier.all.map { |e| { id: e.id, name: e.name}  }
     months = Tender.group("month(open_date)").count
     countries = Tender.group("country").count
     data = []
@@ -74,7 +89,7 @@ class Api::V1::ApiController < ApplicationController
 
   def get_suppliers
     if current_customer
-      companies = Company.all
+      companies = Supplier.all
       render json: { success: true, supplier_notifications: suppliers_data(companies, current_customer), response_code: 200 }
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
@@ -99,7 +114,12 @@ class Api::V1::ApiController < ApplicationController
 
   def customer_list
     customers = Customer.all
-    render json: { customers: customers.as_json(only: [:id, :first_name, :last_name, :email, :company, :chat_id]), response_code: 200}
+    render json: { customers: customers_data(customers), response_code: 200 }
+  end
+
+  def company_list
+    companies = Company.all
+    render json: { companies: companies_data(companies), response_code: 200 }
   end
 
   def update_chat_id
@@ -110,6 +130,12 @@ class Api::V1::ApiController < ApplicationController
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
+  end
+
+  protected
+
+  def current_company
+    @company ||= current_customer.company unless current_customer.nil?
   end
 
   private
@@ -125,6 +151,36 @@ class Api::V1::ApiController < ApplicationController
         supplier_id: supplier.id,
         supplier_name: supplier.name,
         is_notified: customer.notify_by_supplier(supplier)
+      }
+    end
+    @data
+  end
+
+  def customers_data(customers)
+    @data = []
+    customers.each do |c|
+      @data << {
+        id: c.id,
+        first_name: c.first_name,
+        last_name: c.last_name,
+        email: c.email,
+        company: c.company.try(:name),
+        chat_id: c.chat_id
+      }
+    end
+    @data
+  end
+
+  def companies_data(companies)
+    @data = []
+    companies.each do |c|
+      @data << {
+        id: c.id.to_s,
+        name: c.name,
+        city: c.city,
+        country: c.county,
+        created_at: c.created_at,
+        updated_at: c.updated_at
       }
     end
     @data

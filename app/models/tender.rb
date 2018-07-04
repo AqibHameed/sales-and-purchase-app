@@ -4,7 +4,7 @@ class Tender < ApplicationRecord
 
   attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
                   :weight, :carat, :tender_type, :size, :purity, :polished, :color, :stones_attributes, :send_confirmation,
-                  :delete_stones,:delete_winner_list, :winner_list, :temp_document, :company_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
+                  :delete_stones,:delete_winner_list, :winner_list, :temp_document, :supplier_id, :deec_no_field, :lot_no_field, :desc_field, :no_of_stones_field, :weight_field, :sheet_no,
                   :winner_lot_no_field, :winner_desc_field, :winner_no_of_stones_field, :winner_weight_field, :winner_selling_price_field, :winner_carat_selling_price_field,:winner_sheet_no, :reference_id, :diamond_type, :bid_open, :round_duration, :rounds_between_duration, :sight_document, :s_no_field, :source_no_field, :box_no_field, :carats_no_field, :cost_no_field, :boxvalue_no_field, :sight_no_field, :sight_reserved_field, :price_no_field, :credit_no_field, :reserved_field,
                   :supplier_mine_id, :country, :city, :timezone, :sights_attributes, :bid_close, :round, :sight_starting_price_field, :stone_starting_price_field
   # attr_accessible :name, :description, :open_date, :close_date, :tender_open, :customer_ids, :document, :no_of_stones,
@@ -24,7 +24,7 @@ class Tender < ApplicationRecord
   has_many :winners
   has_many :tender_winners
   has_many :tender_notifications
-  belongs_to :company, optional: true
+  belongs_to :supplier, optional: true
   has_many :reference, :class_name => "Tender", :foreign_key => "reference_id"
   belongs_to :parent_reference, :class_name => "Tender", :foreign_key => "reference_id", optional: true
   has_many :sights
@@ -36,8 +36,8 @@ class Tender < ApplicationRecord
   accepts_nested_attributes_for :stones
   accepts_nested_attributes_for :sights
 
-  validates_presence_of :name, :open_date, :close_date, :company_id, :round_duration, :rounds_between_duration, :bid_open, :tender_type, :diamond_type
-
+  validates_presence_of :name, :open_date, :close_date, :supplier_id, :round_duration, :rounds_between_duration, :bid_open, :tender_type, :diamond_type
+  validate :open_and_closing_date
   has_attached_file :temp_document
   do_not_validate_attachment_file_type :temp_document
   has_attached_file :document
@@ -81,9 +81,14 @@ class Tender < ApplicationRecord
     where(:id => Bid.all.map(&:tender_id).uniq)
   end
 
+  def open_and_closing_date
+    if self.open_date > self.close_date
+     self.errors.add :base, "Open date should be less than closing date!!!!!"
+    end
+  end
 
   def past_details
-    tenders = Tender.includes(:stones).where("id != ? and company_id = ? and created_at < ?", self.id, self.company_id, self.created_at).order("close_date DESC").limit(5)
+    tenders = Tender.includes(:stones).where("id != ? and supplier_id = ? and created_at < ?", self.id, self.supplier_id, self.created_at).order("close_date DESC").limit(5)
 
     past_count = {}
 
@@ -99,8 +104,7 @@ class Tender < ApplicationRecord
   end
 
   def past_winners
-    tenders = Tender.includes(:tender_winners).where("id != ? and company_id = ? and created_at < ?", self.id, self.company_id, self.created_at).order("close_date DESC").limit(5)
-
+    tenders = Tender.includes(:tender_winners).where("id != ? and supplier_id = ? and created_at < ?", self.id, self.supplier_id, self.created_at).order("close_date DESC").limit(5)
     past_count = {}
 
     tenders.each do |t|
@@ -658,13 +662,13 @@ class Tender < ApplicationRecord
   end
 
   def send_tender_create_push
-    full_message = "New Tender Alert: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
-    message = "New Tender Alert"
-    supplier_name = self.company.try(:name)
-    tender_name = self.name
-    dates = "#{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+    full_message = "New Tender Alert: #{self.supplier.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+    # message = "New Tender Alert"
+    # supplier_name = self.supplier.try(:name)
+    # tender_name = self.name
+    # dates = "#{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
     # Cusetomers
-    customers_to_notify = SupplierNotification.where(supplier_id: self.company_id, notify: true).map { |e| e.customer_id }
+    customers_to_notify = SupplierNotification.where(supplier_id: self.supplier_id, notify: true).map { |e| e.customer_id }
     android_devices = Device.where(device_type: 'android', customer_id: customers_to_notify)
     # android_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
     # ios_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'ios'")
@@ -675,8 +679,9 @@ class Tender < ApplicationRecord
 
     # send android notification
     android_registration_ids = android_devices.map { |e| e.token }
-    Notification.send_android_notifications(android_registration_ids, message, supplier_name, tender_name, dates, self.id)
-
+    # Notification.send_android_notifications(android_registration_ids, full_message, supplier_name, tender_name, dates, self.id)
+    Notification.send_android_notifications(android_registration_ids, full_message, self.id)
+    
     # # send iOS notification
     # ios_registration_ids = ios_devices.map { |e| e.token }
     # Notification.send_ios_notifications(ios_registration_ids, message, self.id)
@@ -689,7 +694,7 @@ class Tender < ApplicationRecord
     if self.saved_change_to_open_date? || self.saved_change_to_close_date?
       tender_notifications = TenderNotification.where(tender_id: self.id, notify: true)
       unless tender_notifications.empty?
-        message = "Tender Dates Changed: #{self.company.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
+        message = "Tender Dates Changed: #{self.supplier.try(:name)}: #{self.name}: #{self.open_date.try(:strftime, "%b,%d")} - #{self.close_date.try(:strftime, "%b,%d")}"
         customer_ids = tender_notifications.map { |e| e.customer_id }
         # Cusetomers devices
         android_devices = Device.where(customer_id: customer_ids, device_type: 'android')
@@ -726,36 +731,6 @@ class Tender < ApplicationRecord
     CustomersTender.create(customer_tenders)
   end
 
-  # def self.tender_push_notification
-  #   Tender.all.each do |t|
-  #     time_in_zone = Time.now.in_time_zone(t.try(:timezone))
-  #     unless t.open_date > time_in_zone
-        
-        
-  #       message = "You have 24 hours to bid on "
-  #       # Cusetomers
-  #       customers_to_notify = SupplierNotification.where(supplier_id: self.company_id, notify: true).map { |e| e.customer_id }
-  #       android_devices = Device.where(device_type: 'android', customer_id: customers_to_notify)
-  #       # android_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'android'")
-  #       # ios_devices = Device.find_by_sql("select token, customer_id from devices d, customers c where d.customer_id = c.id and d.device_type = 'ios'")
-  #       ios_devices = Device.where(device_type: 'ios', customer_id: customers_to_notify)
-
-  #       # Added notification
-  #       notification = Notification.create(title: 'new tender', description: message, tender_id: self.id)
-
-  #       # send android notification
-  #       android_registration_ids = android_devices.map { |e| e.token }
-  #       Notification.send_android_notifications(android_registration_ids, message, self.id)
-
-  #       # # send iOS notification
-  #       # ios_registration_ids = ios_devices.map { |e| e.token }
-  #       # Notification.send_ios_notifications(ios_registration_ids, message, self.id)
-
-  #       # Add customer notification for history
-  #       CustomerNotification.add_notification_history(android_devices, ios_devices, notification).
-  #     end
-  #   end
-  # end
   # YES/NO Bidding #
 
   def tender_timer
@@ -1135,7 +1110,7 @@ class Tender < ApplicationRecord
       field :rounds_between_duration
     end
     edit do
-      field :company do
+      field :supplier do
         label "Supplier"
       end
       field :supplier_mine_id, :enum do

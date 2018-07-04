@@ -1,20 +1,67 @@
+<% if current_company.id == @parcel.company.id %>
+  <h3>Vital Sales Data:</h3>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingOne">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+           <p class="mb0">Available Credit Buyers(<%= @available_customers.count %>)</p>
+          </a>
+        </h4>
+      </div>
+      <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div class="panel-body">
+          <%= render partial: 'suppliers/approve_customers_list', locals: { companies: @available_customers }  %>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingTwo">
+        <h4 class="panel-title">
+          <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <p class="mb0">Unavailable Credit Buyers(<%= @not_enough_available_customers.count %>)</p>
+          </a>
+        </h4>
+      </div>
+      <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+        <div class="panel-body">
+          <%= render partial: 'suppliers/approve_customers_list', locals: { companies: @not_enough_available_customers }  %>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingThree">
+        <h4 class="panel-title">
+          <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+           <p class="mb0">Demanded But Not Given Credit Buyers(<%= @demanded_but_not_available.count %>)</p>
+          </a>
+        </h4>
+      </div>
+      <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+        <div class="panel-body">
+           <%= render partial: 'suppliers/approve_customers_list', locals: { companies: @demanded_but_not_available } %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<hr>
 <h3>Parcel Details</h3>
-<div class="table">
   <%= render partial: 'parcel_details' %>
-</div><br>
 <div class="parcel-details">
-  <% if (current_customer.id == @parcel.customer_id)  %>
-  <% elsif current_customer.is_blocked_by_supplier(@parcel.customer_id) %>
-    <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
-  <% elsif !current_customer.has_limit(@parcel.customer_id) %>
-    <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has not given credit limit to you.
-    <%= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
-  <% elsif current_customer.has_overdue_transaction_of_30_days(@parcel.customer_id) %>
-    <p style="margin: 0px 0px 0px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p>
-  <% elsif grey_buy_btn(current_customer.id, @parcel.customer_id) %>
-    <%= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
-    <p style="margin: -14px 0px 0px 65px; color: red;">Credit limit is 0. Please contact supplier 
-    <%= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
+  <% if (current_company.id == @parcel.company_id)  %>
+  <%# elsif current_customer.is_blocked_by_supplier(@parcel.customer_id) %>
+    <!-- <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p> -->
+  <%# elsif !current_customer.has_limit(@parcel.customer_id) %>
+    <!-- <p style="margin: 0px 0px 0px 5px; color: red;">Supplier has not given credit limit to you. -->
+    <!-- <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p> -->
+  <%# elsif current_customer.has_overdue_transaction_of_30_days(@parcel.customer_id) %>
+    <!-- <p style="margin: 0px 0px 0px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p> -->
+  <%# elsif grey_buy_btn(current_customer.id, @parcel.customer_id) %>
+    <%#= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
+    <!-- <p style="margin: -14px 0px 0px 65px; color: red;">Credit limit is 0. Please contact supplier -->
+    <!-- <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.customer_id), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p> -->
 
   <% else %>
     <%= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn buy_btn'  %>
@@ -28,9 +75,9 @@
   <div class="form-wrapper send-proposal--form-wrapper">
   <%= form_for @proposal do |f| %>
     <%= render partial: 'proposals/form', locals: { f: f } %>
-    <%=f.hidden_field :buyer_id, value: current_customer.id %>
-    <%=f.hidden_field :supplier_id, value: @parcel.customer_id %>
-    <%=f.hidden_field :action_for, value: @parcel.customer_id %>
+    <%=f.hidden_field :buyer_id, value: current_company.id %>
+    <%=f.hidden_field :seller_id, value: @parcel.company_id %>
+    <%=f.hidden_field :action_for, value: @parcel.company_id %>
     <%=f.hidden_field :trading_parcel_id, value: @parcel.id %>
   <% end %>
   </div>
@@ -38,8 +85,150 @@
 <div class="clear"></div>
 
 <script type="text/javascript">
+   $(document).on('click', '.image_block', function(){
+    self = $(this)
+    id = $(this).data('id')
+    var r = confirm("Are you sure?");
+    if (r == true) {
+      $.ajax({
+        url: '<%= block_unblock_user_customer_path(current_company)%>',
+        method: 'get',
+        data: {status: 'block', block_company_id: id},
+        success:function(){
+          // $(self).parents('tr').fadeOut( "slow" );
+        }
+      })
+    }
+  })
+
+  $(document).on('click', '.image_approve', function(){
+    self = $(this)
+    id = $(this).data('id')
+    $.ajax({
+      url: '<%= block_unblock_user_customer_path(current_company)%>',
+      method: 'get',
+      data: {status: 'unblock', block_company_id: id},
+      success:function(){
+        // $(self).parents('tr').fadeOut( "slow" );
+      }
+    })
+  })
+
   $(document).on('click', '.buy_btn', function(){
     $('.parcel-details').addClass('hide')
     $('.proposal-form').removeClass('hide')
+  })
+
+  $(document).on('click', '.available', function(){
+    $(".credit_available").toggle();
+  });
+
+  $(document).on('click', '.not_available', function(){
+    $(".credit_not_available").toggle();
+  });
+
+  $(document).on('click', '.demanded', function(){
+    $(".credit_demanded").toggle();
+  });
+
+  $(document).ready(function(){
+    $(".credit_available").hide();
+    $(".credit_not_available").hide();
+    $(".credit_demanded").hide();
+  });
+  $('.collapse').collapse()
+
+  $(document).on('click', '#credit_edit', function(){
+    $(this).parents('.credit_limit').find('.given_limit').addClass('hide')
+    $(this).parents('.credit_limit').find('.edit_field').removeClass('hide')
+  })
+
+  $(document).on('click', '#days_edit', function(){
+    $(this).parents('.days_limit').find('.given_days').addClass('hide')
+    $(this).parents('.days_limit').find('.edit_days').removeClass('hide')
+  })
+
+  $(document).on('click', '#market_limit_edit', function(){
+    $(this).parents('.market_limit').find('.given_market_limit').addClass('hide')
+    $(this).parents('.market_limit').find('.edit_market_limit').removeClass('hide')
+  })
+
+  $(document).on('click', '.save_btn_2', function(){
+    self = $(this)
+    value = $(this).parent('.edit_field').find('#limit').val()
+    user_id = $(this).parent('.edit_field').find('#limit').data('id')
+    user_name = $(this).parents('tr').find('td.customer_name').find('div.c_n').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
+    old_limit = $(this).parents('td').find('#credit_edit').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
+    var r = confirm('You have changed'+ user_name +' Credit Limit from '+old_limit+' to $' + value);
+    if (r == true) {
+      $.ajax({
+        url: '<%=change_credit_limit_path %>',
+        method: 'get',
+        dataType: 'json',
+        data: {limit: value, buyer_id: user_id},
+        success:function(data){
+          if (data.errors){
+            $(self).parents('tr').find('span.error-message').text(data.message)
+          } else {
+            $(self).parents('tr').find('span.error-message').text('')
+            window.location.reload()
+          }
+          // $(self).parents('tr').find('td.credit_limit').removeClass('hide')
+          // $(self).parents('tr').find('td.edit_field').addClass('hide')
+          // $(self).parents('tr').find('td.credit_limit').html('<a href="#" class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></a><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')
+          // $(self).parent('.edit_field').find('#limit').val('')
+        }
+      })
+    } else {
+
+    }
+  })
+
+  $(document).on('click', '.save_date_btn', function(){
+    self = $(this)
+    value = $(this).parent('.edit_days').find('#days_limit').val()
+    user_id = $(this).parent('.edit_days').find('#days_limit').data('id')
+    user_name = $(this).parents('tr').find('td.customer_name').find('div.c_n').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
+    old_limit = $(this).parents('td').find('#days_edit').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
+    var r = confirm("You have added "+ user_name +" Overdue Limit "+old_limit+" by " + value + 'day');
+    if (r == true) {
+     $.ajax({
+        url: '<%=change_days_limit_path %>',
+        method: 'get',
+        dataType: 'json',
+        data: {limit: value, buyer_id: user_id},
+        success:function(data){
+          $(self).parents('tr').find('td.days_limit').removeClass('hide')
+          $(self).parents('tr').find('td.edit_days').addClass('hide')
+          $(self).parents('tr').find('td.days_limit').html('<a href="#" class="given_days">'+ data.value +'<i class="fa fa-edit pull-right" id="days_edit"></i></a><a href="#" class="edit_days hide"><input name="days_limit" id="days_limit" value="" data-id="'+ user_id +'" placeholder="Enter days limit" type="text"><i class="fa fa-check-square-o save_date_btn"></i></a>')
+          $(self).parent('.edit_field').find('#limit').val('')
+        }
+      })
+   }
+  })
+
+  $(document).on('click', '.save_market_limit_btn', function(){
+    self = $(this)
+    value = $(this).parent('.edit_market_limit').find('#market_limit').val()
+    user_id = $(this).parent('.edit_market_limit').find('#market_limit').data('id')
+    user_name = $(this).parents('tr').find('td.customer_name').find('div.c_n').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
+    old_limit = $(this).parents('td').find('#market_limit_edit').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
+    var r = confirm("You have changed "+ user_name +" Market Limit from "+old_limit+" to $" + value);
+    if (r == true) {
+      $.ajax({
+        url: '<%=change_market_limit_path %>',
+        method: 'get',
+        dataType: 'json',
+        data: {market_limit: value, buyer_id: user_id},
+        success:function(data){
+          if (data.errors){
+            $(self).parents('tr').find('span.market-limit-error-message').text(data.message)
+          } else {
+            $(self).parents('tr').find('span.market-limit-error-message').text('')
+            window.location.reload()
+          }
+        }
+      })
+    }
   })
 </script>

@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
   include SendGrid
-  default from: 'Dialuck Admin <admin@dialuck.net>'
+  default from: 'ClarityNetwork <admin@dialuck.net>'
   layout 'mailer'
 end

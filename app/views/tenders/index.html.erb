@@ -4,7 +4,7 @@
    <div class="tender_filter">
     <div class="company_div">
       <span><%= text_field_tag "search_tender", nil, :placeholder => 'Enter Tender Name'%></span>
-    	<span><%= select_tag "search_company",  options_from_collection_for_select(Company.all, "id", "name"), :selected => params[:search_company], :prompt => 'Select Company' %></span>
+    	<span><%= select_tag "search_company",  options_from_collection_for_select(Supplier.all, "id", "name"), :selected => params[:search_company], :prompt => 'Select Company' %></span>
      	<span><%= select_tag "search_status",  options_for_select(["All", "Active", "Upcoming"], :selected => params[:search_status])%></span>
      	<div class="actions">
 	     	<input type="submit" value="Filter" name="commit" class="fright btn-00" id="tender_index" >

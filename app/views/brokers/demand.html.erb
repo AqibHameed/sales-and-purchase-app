@@ -12,7 +12,7 @@
       <% @demand.each do |d| %>
         <tr>
           <td><%= d.customer.name %></td>
-          <td><%= d.customer.company %></td>
+          <td><%= d.customer.company.try(:name) %></td>
           <td><%= d.customer.mobile_no %></td>
         </tr>
       <% end %>

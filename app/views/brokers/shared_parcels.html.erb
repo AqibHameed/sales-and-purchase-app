@@ -46,9 +46,9 @@
               <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
               <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
               <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
-              <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company) %></td>
+              <td><span class="table-head-in-td">Supplier</span><%= parcel.try(:customer).try(:company).try(:name) %></td>
               <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
-              <td><%= link_to parcel.demand_count(parcel, current_customer), demand_supplier_path(id: parcel.id), data: { turbolinks: false } %></td>
+              <td><%= link_to parcel.demand_count(parcel, current_company), demand_supplier_path(id: parcel.id), data: { turbolinks: false } %></td>
               <td></td>
             </tr>
           <% end %>

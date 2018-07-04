@@ -36,7 +36,7 @@
                 <%= c.email %>
             </td>
             <td>
-                <%= c.company %>
+                <%= c.company.try(:name) %>
             </td>
         </tr>
 		 <% end %>
@@ -80,7 +80,7 @@
                 <%= c.email %>
             </td>
             <td>
-                <%= c.company %>
+                <%= c.company.try(:name) %>
             </td>
         </tr>
 		 <% end %>

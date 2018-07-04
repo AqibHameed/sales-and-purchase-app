@@ -33,7 +33,7 @@
         <div class="form-row">
           <div class="label">Buyer:</div>
           <div class='field'>
-            <%=f.text_field :buyer_id, value: @transaction.buyer.company,  class: 'input disabled' %>
+            <%=f.text_field :buyer_id, value: @transaction.buyer.try(:name),  class: 'input disabled' %>
           </div>
         </div>
         <div class="form-row">

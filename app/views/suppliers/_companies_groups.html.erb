@@ -1,54 +1,60 @@
-<h3>Company Groups</h3>
+<h4>Company Groups</h4>
+<%= link_to 'Create Companies Group', new_companies_group_path, data: { turbolinks: false }, class: 'pull-right btn btn-xs btn-danger' %>
+<div class="clear10"></div>
 <div class="container">
-      <% @group_names.each do |name| %>
-      <div class="panel panel-default">
-        <div class="panel-heading clickable">
-           <h5 style="color: #ED5A48;"><%= name %></h5>
-          <div class="pull-right group-delete" style="margin-top: -28px;">
-            <%= link_to delete_group_companies_groups_path(name: name) do %>
-              <%= image_tag("/assets/wrong.png", width: "15", class: 'image_block') %>
-            <%end%>
-          </div>
+  <% @companies_groups.each do |group| %>
+    <div class="panel panel-default">
+      <div class="panel-heading clickable">
+         <h5 style="color: #ED5A48;"><%= group.group_name %></h5>
+        <div class="pull-right group-delete" style="margin-top: -28px;">
+          <%= link_to edit_companies_group_path(id: group.id), data: {turbolinks: false} do %>
+            <span class="fa fa-edit"></span>
+          <% end %>
+          <%= link_to companies_group_path(id: group.try(:id)), method: :delete, data: {confirm: "Are you sure ?"} do %>
+            <span class="fa fa-trash"></span>
+          <% end %>
         </div>
-        <div class=" panel-collapse collapse">
-          <div class="panel-body">
-            <div class="col-md-12">
-              <h3>Customers</h3>
-              <div class="clear10"></div>
-              <table class="table table-bordered table-responsive">
-                <thead>
-                  <th>Customer Name</th>
+      </div>
+      <div class=" panel-collapse collapse">
+        <div class="panel-body">
+          <div class="col-md-12">
+            <h4>Companies</h4>
+            <div class="clear10"></div>
+            <table class="table table-bordered table-responsive">
+              <thead>
+                <tr>
                   <th>Company Name</th>
                   <th>Credit Limit</th>
                   <th>Overdue Limit</th>
                   <th>Market Limit</th>
                   <th>Available Limit</th>
                   <th></th>
-                </thead>
-                <tbody>
-                  <% @companies_groups.each_with_index do |companies_group,index| %>
-                    <% if companies_group.group_name == name %>
-                      <tr>
-                        <td><%= companies_group.try(:first_name)%>&nbsp;<%= companies_group.try(:last_name)%></td>
-                        <td><%= companies_group.try(:company_name)%></td>
-                        <td><%= number_to_currency(get_credit_limit(companies_group.companies_customer, current_customer)) %></td>
-                        <td><%= get_days_limit(companies_group.companies_customer, current_customer) %></td>
-                        <td><%= get_market_limit(companies_group.companies_customer, current_customer)%></td>
-                        <td><%= number_to_currency(get_available_credit_limit(companies_group.companies_customer, current_customer)) %></td>
-                        <td>
-                        <%= link_to companies_group_path(id: companies_group.try(:id)), method: :delete do %>
-                          <%= image_tag("/assets/wrong.png", width: "15", class: 'image_block') %>
-                        <%end%>
-                        </td>
-                      </tr>
-                    <% end %>
+                </tr>
+              </thead>
+              <tbody>
+                <% group.company_id.each do |c| %>
+                  <%- company = get_company(c) %>
+                  <% unless company.nil? %>
+                    <tr>
+                      <td><%= company.name %></td>
+                      <td><%= number_to_currency(get_credit_limit(company, current_company)) %></td>
+                      <td><%= get_days_limit(company, current_company) %></td>
+                      <td><%= get_market_limit(company, current_company) %></td>
+                      <td><%= number_to_currency(get_available_credit_limit(company, current_company)) %></td>
+                      <td>
+                      <%= link_to delete_group_companies_groups_path(id: company.id, group_id: group.id), data: {confirm: 'Are you sure ?', turbolinks: false} do %>
+                        <%= image_tag("/assets/wrong.png", width: "15", class: 'image') %>
+                      <% end %>
+                      </td>
+                    </tr>
                   <% end %>
-                </tbody>
-              </table>
-            </div>
+                <% end %>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+    </div>
   <% end %>
 </div>
 
@@ -62,4 +68,19 @@
       object.height('');
     }
   })
+
+  $(document).on('ready', function(){
+    if ("<%= params[:group] %>" == "true"){
+      $('.sectionA').parent('li').removeClass('active')
+      $('#sectionA').removeClass('active')
+      $('.sectionB').parent('li').addClass('active')
+      $('#sectionB').addClass('active in')
+    }else{
+      $('.sectionA').parent('li').addClass('active')
+      $('#sectionB').removeClass('active')
+      $('.sectionB').parent('li').removeClass('active')
+      $('#sectionA').addClass('active in')
+    }
+  })
 </script>
+

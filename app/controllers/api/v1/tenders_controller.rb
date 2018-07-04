@@ -9,7 +9,7 @@ module Api
         if params[:location] || params[:month] || params[:supplier]
           col_str =  "(lower(tenders.country) LIKE '%#{params[:location].downcase}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
-          col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
+          col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
           tenders = Tender.active.where(col_str).order("open_date")
@@ -24,7 +24,7 @@ module Api
         if params[:location] || params[:month] || params[:supplier]
           col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
-          col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
+          col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
           tenders = Tender.where(col_str).order("open_date")
@@ -55,7 +55,7 @@ module Api
         if params[:location] || params[:month] || params[:supplier]
           col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
-          col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
+          col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
           tenders = Tender.where(col_str).order("created_at desc")
@@ -70,7 +70,7 @@ module Api
         if params[:location] || params[:month] || params[:supplier]
           col_str =  "(lower(tenders.country) LIKE '%#{params[:location].downcase}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
-          col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
+          col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
           tenders = Tender.active.where(col_str).order("open_date")
@@ -85,7 +85,7 @@ module Api
         if params[:location] || params[:month] || params[:supplier]
           col_str +=  " AND (tenders.country LIKE '%#{params[:location]}%')"  unless params[:location].blank?
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
-          col_str += (col_str.blank?) ? "tenders.company_id =  #{params[:supplier]}" : " AND tenders.company_id = #{params[:supplier]}" unless params[:supplier].blank?
+          col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
           tenders = Tender.where(col_str).order("open_date")
@@ -183,7 +183,7 @@ module Api
               name: tender.name,
               start_date: tender.open_date,
               end_date: tender.close_date,
-              company_name: tender.company.try(:name),
+              company_name: tender.supplier.try(:name),
               company_logo: nil,
               city: tender.city,
               country: tender.country,
@@ -199,7 +199,7 @@ module Api
               name: tender.name,
               start_date: tender.open_date,
               end_date: tender.close_date,
-              company_name: tender.company.try(:name),
+              company_name: tender.supplier.try(:name),
               company_logo: nil,
               city: tender.city,
               country: tender.country,
@@ -220,7 +220,7 @@ module Api
               name: tender.name,
               start_date: tender.open_date,
               end_date: tender.close_date,
-              company_name: tender.company.try(:name),
+              company_name: tender.supplier.try(:name),
               company_logo: nil,
               city: tender.city,
               country: tender.country,
@@ -235,7 +235,7 @@ module Api
               name: tender.name,
               start_date: tender.open_date,
               end_date: tender.close_date,
-              company_name: tender.company.try(:name),
+              company_name: tender.supplier.try(:name),
               company_logo: nil,
               city: tender.city,
               country: tender.country,
@@ -397,7 +397,7 @@ module Api
               name: tender.name,
               start_date: tender.open_date,
               end_date: tender.close_date,
-              company_name: tender.company.try(:name),
+              company_name: tender.supplier.try(:name),
               company_logo: nil,
               city: tender.city,
               country: tender.country,
@@ -412,7 +412,7 @@ module Api
               name: tender.name,
               start_date: tender.open_date,
               end_date: tender.close_date,
-              company_name: tender.company.try(:name),
+              company_name: tender.supplier.try(:name),
               company_logo: nil,
               city: tender.city,
               country: tender.country,

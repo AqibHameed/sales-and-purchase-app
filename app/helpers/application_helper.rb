@@ -73,13 +73,17 @@ module ApplicationHelper
       if parcel.description.nil? || parcel.description.blank?
         return "#{parcel.source} #{parcel.box}"
       else
-        return parcel.description
+        return "#{parcel.source} #{parcel.description}"
       end
     end
   end
 
   def get_remaining_limit(total_limit, assigned_limit)
     total_limit.to_f - assigned_limit.to_f
+  end
+
+  def get_sub_company_credit_limit(company)
+    SubCompanyCreditLimit.find_by(sub_company_id: company).sum(:credit_limit) rescue nil
   end
 
   # def get_credit_purchase_percentage(count,total)
@@ -133,42 +137,42 @@ module ApplicationHelper
     end
   end
 
-  def sale_count_value(condition,total,option,customer)
+  def sale_count_value(condition,total,option,company)
     if condition == '0'
-      transactions = Transaction.where('credit = ? and supplier_id =?', 0, customer.id)
+      transactions = Transaction.where('credit = ? and seller_id =?', 0, company.id)
       count = transactions.count
-      pending = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", customer.id, Date.today, false, true, 0).sum(:total_amount)
-      overdue = Transaction.where("supplier_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", customer.id, Date.today, false, true, 0).sum(:total_amount)
-      complete = Transaction.where("supplier_id = ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", customer.id, true, true, 0).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", company.id, Date.today, false, true, 0).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", company.id, Date.today, false, true, 0).sum(:total_amount)
+      complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", company.id, true, true, 0).sum(:total_amount)
     elsif condition == 'less_30'
-      transactions = Transaction.where('credit >= ? and credit <= ? and supplier_id =?', 1, 30, customer.id)
+      transactions = Transaction.where('credit >= ? and credit <= ? and seller_id =?', 1, 30, company.id)
       count = transactions.count
-      pending = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.today, false, true, 1, 30).sum(:total_amount)
-      overdue = Transaction.where("supplier_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.today, false, true, 1, 30).sum(:total_amount)
-      complete = Transaction.where("supplier_id = ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, true, true,1,30).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", company.id, Date.today, false, true, 1, 30).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", company.id, Date.today, false, true, 1, 30).sum(:total_amount)
+      complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", company.id, true, true,1,30).sum(:total_amount)
     elsif condition == '60'
-      transactions = Transaction.where('credit > ? and credit <= ? and supplier_id =?', 30, 60, customer.id)
+      transactions = Transaction.where('credit > ? and credit <= ? and seller_id =?', 30, 60, company.id)
       count = transactions.count
-      pending = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.today, false, true,30,60).sum(:total_amount)
-      overdue = Transaction.where("supplier_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.today, false, true,30,60).sum(:total_amount)
-      complete = Transaction.where("supplier_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, true, true,30,60).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.today, false, true,30,60).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.today, false, true,30,60).sum(:total_amount)
+      complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, true, true,30,60).sum(:total_amount)
     elsif condition == '90'
-      transactions = Transaction.where('credit > ? and credit <= ? and supplier_id =?', 60, 90, customer.id)
+      transactions = Transaction.where('credit > ? and credit <= ? and seller_id =?', 60, 90, company.id)
       count = transactions.count
-      pending = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ?  and credit <= ?", customer.id, Date.today, false, true, 60, 90).sum(:total_amount)
-      overdue = Transaction.where("supplier_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.today, false, true, 60, 90).sum(:total_amount)
-      complete = Transaction.where("supplier_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, true, true, 60, 90).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ?  and credit <= ?", company.id, Date.today, false, true, 60, 90).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.today, false, true, 60, 90).sum(:total_amount)
+      complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, true, true, 60, 90).sum(:total_amount)
     else
-      transactions = Transaction.where('credit > ? and supplier_id =?', 90, customer.id)
+      transactions = Transaction.where('credit > ? and seller_id =?', 90, company.id)
       count = transactions.count
-      pending = Transaction.where("supplier_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >?", customer.id, Date.today, false, true, 90).sum(:total_amount)
-      overdue = Transaction.where("supplier_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", customer.id, Date.today, false, true, 90).sum(:total_amount)
-      complete = Transaction.where("supplier_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", customer.id, true, true, 90).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >?", company.id, Date.today, false, true, 90).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", company.id, Date.today, false, true, 90).sum(:total_amount)
+      complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", company.id, true, true, 90).sum(:total_amount)
     end
-    count_percent=((count/total.to_f)*100).to_i rescue 0
-    pending_percent=((pending/total.to_f)*100).to_i rescue 0
-    overdue_percent=((overdue/total.to_f)*100).to_i rescue 0
-    complete_percent=((complete/total.to_f)*100).to_i rescue 0
+    count_percent = ((count/total.to_f)*100).to_i rescue 0
+    pending_percent = ((pending/total.to_f)*100).to_i rescue 0
+    overdue_percent = ((overdue/total.to_f)*100).to_i rescue 0
+    complete_percent = ((complete/total.to_f)*100).to_i rescue 0
     if option == 'count'
     return "#{count}(#{count_percent}%)"
     elsif option == 'pending'
@@ -189,29 +193,29 @@ module ApplicationHelper
   end
 
   def get_credit_limit(buyer, supplier)
-    if current_customer.parent_id?
-      sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: supplier.id)
-      if sub_company_limit.try(:credit_type) == "Yours"
-        cl = credit_limit(buyer.id, current_customer.parent_id)
-      else
-        cl = credit_limit(buyer.id, supplier.id)
-      end
-    else
+    # if current_customer.parent_id?
+    #   sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: supplier.id)
+    #   # if sub_company_limit.try(:credit_type) == "Yours"
+    #     # cl = credit_limit(buyer.id, current_customer.parent_id)
+    #   else
+    #     cl = credit_limit(buyer.id, supplier.id)
+    #   end
+    # else
       cl = credit_limit(buyer.id, supplier.id)
-    end
+    # end
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
-      0.00
+      number_with_precision(0, precision: 2)
     else
       number_with_precision((cl.credit_limit), precision: 2)
     end
   end
 
   def credit_limit(buyer_id, supplier_id)
-    CreditLimit.where(buyer_id: buyer_id, supplier_id: supplier_id).first
+    CreditLimit.where(buyer_id: buyer_id, seller_id: supplier_id).first
   end
 
   def get_days_limit(buyer, supplier)
-    dl = DaysLimit.where(buyer_id: buyer.id, supplier_id: supplier.id).first
+    dl = DaysLimit.where(buyer_id: buyer.id, seller_id: supplier.id).first
     if dl.nil? || dl.days_limit.nil? || dl.days_limit.blank?
       pluralize(30, 'day')
     else
@@ -228,7 +232,7 @@ module ApplicationHelper
   def get_number_of_customers(supplier, amount,check)
     count = 0
     count1 = 0
-    buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
+    buyer_ids = CreditLimit.where(seller_id: supplier.id).map { |e| e.buyer_id  }
     buyers = Customer.where(id: buyer_ids)
     amount =  number_with_precision(amount, precision: 2)
     buyers.each do |b|
@@ -247,17 +251,17 @@ module ApplicationHelper
   end
 
   def get_count_no_credit(supplier)
-    buyer_ids = CreditLimit.where(supplier_id: supplier.id).map { |e| e.buyer_id  }
+    buyer_ids = CreditLimit.where(seller_id: supplier.id).map { |e| e.buyer_id  }
     buyers = Customer.where.not(id: buyer_ids)
     buyers.count-1
   end
 
-  def supplier_connected(buyer,customer)
-    count = CreditLimit.where("buyer_id =? and supplier_id !=?", buyer, customer.id).count
+  def supplier_connected(buyer,company)
+    count = CreditLimit.where("buyer_id =? and seller_id !=?", buyer, company.id).count
   end
 
   def get_used_credit_limit(buyer, supplier)
-    transactions = Transaction.where(buyer_id: buyer.id, supplier_id: supplier.id, paid: false, buyer_confirmed: true)
+    transactions = Transaction.where(buyer_id: buyer.id, seller_id: supplier.id, paid: false, buyer_confirmed: true)
     @amount = []
     transactions.each do |t|
       @amount << t.remaining_amount
@@ -282,11 +286,11 @@ module ApplicationHelper
   end
 
   def get_market_limit_from_credit_limit_table(buyer, supplier)
-    CreditLimit.where(supplier_id: supplier.id, buyer_id: buyer.id).first.market_limit.to_i rescue 0
+    CreditLimit.where(seller_id: supplier.id, buyer_id: buyer.id).first.market_limit.to_i rescue 0
   end
 
-  def overall_credit_received(customer)
-    current_limit = CreditLimit.where(buyer_id: customer.id).sum(:credit_limit)
+  def overall_credit_received(company)
+    current_limit = CreditLimit.where(buyer_id: company.id).sum(:credit_limit)
     number_with_precision((current_limit), precision: 2)
   end
 
@@ -304,13 +308,13 @@ module ApplicationHelper
     number_to_currency(overall_credit_received(current_customer).to_f - overall_credit_spent(current_customer).to_f)
   end
 
-  def overall_credit_given(customer)
-    current_limit = CreditLimit.where(supplier_id: customer.id).sum(:credit_limit)
+  def overall_credit_given(company)
+    current_limit = CreditLimit.where(seller_id: company.id).sum(:credit_limit)
     number_with_precision((current_limit), precision: 2)
   end
 
-  def overall_credit_spent_by_customer(customer)
-    transactions = Transaction.where(supplier_id: customer.id)
+  def overall_credit_spent_by_customer(company)
+    transactions = Transaction.where(seller_id: company.id)
     @amount = []
     transactions.each do |t|
       @amount << t.remaining_amount
@@ -319,8 +323,8 @@ module ApplicationHelper
     number_with_precision(transaction_amt, precision: 2)
   end
 
-  def credit_available(customer)
-    number_to_currency(overall_credit_given(customer).to_f-overall_credit_spent_by_customer(customer).to_f)
+  def credit_available(company)
+    number_to_currency(overall_credit_given(company).to_f-overall_credit_spent_by_customer(company).to_f)
   end
 
   def get_status transaction
@@ -340,7 +344,7 @@ module ApplicationHelper
   end
 
   def grey_buy_btn(buyer, supplier)
-    cl = CreditLimit.where(buyer_id: buyer, supplier_id: supplier).first
+    cl = CreditLimit.where(buyer_id: buyer, seller_id: supplier).first
     if cl.nil?
       return true
     else
@@ -358,9 +362,9 @@ module ApplicationHelper
 
   def customer_list verification_status=nil
     if verification_status
-      Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id, e.verified] }
+      Customer.unscoped.where.not(id: current_customer.id).order('first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company.name, e.id, e.verified] }
     else
-      Customer.unscoped.where.not(id: current_customer.id).order('company asc, first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company, e.id] }
+      Customer.unscoped.where.not(id: current_customer.id).order('first_name asc').map { |e| [(e.company.nil? || e.company.blank?) ? e.name : e.company.name, e.id] }
     end
   end
 
@@ -446,22 +450,104 @@ module ApplicationHelper
     current_customer.my_brokers.map { |e| [e.broker.name, e.broker.id]  }
   end
 
-  def all_customers
-    Customer.all.map{|customer| [customer.company, customer.id]}
+  def all_companies(current_company)
+    Company.where.not(id: current_company.id).map{|comapny| [comapny.name, comapny.id]}
   end
 
   def list_of_customers(current_customer)
     # customer = Customer.where("id != ? OR id != ? OR parent_id != ? ", current_customer.parent_id , current_customer.id, current_customer.id)
-    array = []
-    requests = current_customer.credit_requests
-    requests.each do |req|
-      unless req.buyer.nil?
-       array.push(req.buyer.id)
+    # array = []
+    # requests = current_customer.credit_requests
+    # requests.each do |req|
+    #   unless req.buyer.nil?
+    #    array.push(req.buyer.id)
+    #   end
+    # end
+    # array.push(current_customer.id)
+    # array.push(current_customer.parent_id)
+    # customer = Customer.where(" id NOT IN (?) ",  array)
+    customer = Customer.where(" id != ? ",  current_customer.id)
+    customer.map{|customer| [customer.company, customer.id]}
+  end
+
+  def get_company(c)
+    return Company.where(id: c).first
+  end
+
+  def get_demanded_but_no_credit(current_company , id)
+    count = 0
+    @parcel = TradingParcel.where(id: id).first
+    @demanded_but_not_available = []
+    companies = Company.where.not(id: current_company.id)
+    companies.each do |company|
+      p = Demand.where(company_id: company.id, description: @parcel.description).first
+      if p.present?
+        if !company.buyer_credit_limits.where(seller_id: current_company.id).present?
+         count = count+1
+        end
       end
     end
-    array.push(current_customer.id)
-    array.push(current_customer.parent_id)
-    customer = Customer.where(" id NOT IN (?) ",  array)
-    customer.map{|customer| [customer.company, customer.id]}
+    count
+  end
+
+  def check_for_star(id)
+  credit_limit = CreditLimit.where(buyer_id: id, seller_id: current_company.id).first
+   if credit_limit.present?
+     credit_limit.star
+   end
+  end
+
+  def get_amount_for_graph(id)
+   parcel =  TradingParcel.find(id)
+   amount = parcel.cost*(100 + parcel.percent)/100 rescue 0
+  end
+
+  # Vital sales data - parcel show
+  def get_available_buyers(parcel, current_customer)
+    available_customers = []
+    not_starred = []
+    customers = CreditLimit.where(seller_id: current_company.id).map { |e| e.buyer }
+    customers.each do |c|
+      if get_available_credit_limit(c, current_company).to_f >= parcel.price.to_f
+        if CreditLimit.where(buyer_id: c.id, seller_id: current_company.id, star: true).first.present?
+          available_customers << c
+        else
+          not_starred << c
+        end
+      end
+    end
+    return (available_customers + not_starred).uniq
+  end
+
+  def get_unavailable_buyers(parcel, current_customer)
+    unavailable_customers = []
+    not_starred = []
+    customers = CreditLimit.where(seller_id: current_company.id).map { |e| e.buyer }
+    customers.each do |c|
+      if get_available_credit_limit(c, current_company).to_f < parcel.price.to_f
+        if CreditLimit.where(buyer_id: c.id, seller_id: current_company.id, star: true).first.present?
+          unavailable_customers << c
+        else
+          not_starred << c
+        end
+      end
+    end
+    return (unavailable_customers + not_starred).uniq
+  end
+
+  def get_demanded_but_not_available_buyers(parcel, current_customer)
+    demanded = []
+    not_starred = []
+    demands = Demand.where(description: parcel.description).map { |e| e.company }
+    demands.each do |company|
+      if !company.buyer_credit_limits.where(seller_id: current_company.id).present?
+        if CreditLimit.where(buyer_id: company.id, seller_id: current_company.id, star: true).first.present?
+          demanded << company
+        else
+          not_starred << company
+        end
+      end
+    end
+    return (demanded + not_starred).uniq
   end
 end

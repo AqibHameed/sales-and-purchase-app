@@ -58,6 +58,9 @@ $(document).ready(function() {
     window.location.reload()
   });
 
+  $('.select2').select2({
+  });
+
   //$("#myTable").tablesorter();
   $(document).on('change', '#transaction', function(){
     val = $(this).val()
@@ -89,21 +92,21 @@ $(document).ready(function() {
     }
   })
 
-  $('#creditList').DataTable({
-    // "paging": false,
-    "pageLength": 20,
-    // "bLengthChange": false,
-    "bInfo" : false
-    // "columnDefs": [
-    //   { "orderable": false, "targets": 0 },
-    //   { "orderable": false, "targets": 1 },
-    //   { "orderable": false, "targets": 2 },
-    //   { "orderable": false, "targets": 3 },
-    //   { "orderable": false, "targets": 4 },
-    //   { "orderable": false, "targets": 5 },
-    //   { "orderable": false, "targets": 6 }
-    // ]
-  });
+  // $('#creditList').DataTable({
+  //   // "paging": false,
+  //   "pageLength": 20,
+  //   // "bLengthChange": false,
+  //   "bInfo" : false
+  //   // "columnDefs": [
+  //   //   { "orderable": false, "targets": 0 },
+  //   //   { "orderable": false, "targets": 1 },
+  //   //   { "orderable": false, "targets": 2 },
+  //   //   { "orderable": false, "targets": 3 },
+  //   //   { "orderable": false, "targets": 4 },
+  //   //   { "orderable": false, "targets": 5 },
+  //   //   { "orderable": false, "targets": 6 }
+  //   // ]
+  // });
 
 
 

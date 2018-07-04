@@ -1,7 +1,11 @@
 class TradingParcelsController < ApplicationController
+  include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TextHelper
+  include ApplicationHelper
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
+  before_action :check_role_authorization
   before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history, :size_info]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
 
@@ -12,8 +16,10 @@ class TradingParcelsController < ApplicationController
 
   def create
     @parcel = TradingParcel.new(trading_parcel_params)
+    if params[:trading_parcel][:no_of_stones] == ''
+      @parcel.no_of_stones = 0
+    end
     if @parcel.save
-      @parcel.update_column(:diamond_type, params[:trading_document_diamond_type])
       flash[:notice] = "Parcel created successfully"
       if params[:trading_parcel][:single_parcel].present?
         respond_to do |format|
@@ -35,6 +41,9 @@ class TradingParcelsController < ApplicationController
   def show
     @proposal = Proposal.new
     @info = []
+    @available_customers = get_available_buyers(@parcel, current_customer)
+    @not_enough_available_customers = get_unavailable_buyers(@parcel, current_customer)
+    @demanded_but_not_available = get_demanded_but_not_available_buyers(@parcel, current_customer)
   end
 
   def edit
@@ -42,7 +51,7 @@ class TradingParcelsController < ApplicationController
 
   def message
     @message = Message.new
-    @customer = Customer.find(params[:id])
+    @company = Company.find(params[:id])
   end
 
   def update
@@ -97,7 +106,7 @@ class TradingParcelsController < ApplicationController
   end
 
   def save_direct_sell
-    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], supplier_id: @parcel.customer_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
+    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
                                   price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
                                   created_at: params[:transaction][:created_at])
     if @transaction.save
@@ -118,8 +127,9 @@ class TradingParcelsController < ApplicationController
 
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:customer_id, :credit_period, :lot_no, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment,
+    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
+
   end
 
   def set_trading_parcel
@@ -127,10 +137,10 @@ class TradingParcelsController < ApplicationController
   end
 
   def check_authenticate_supplier
-    if current_customer.id == @parcel.customer_id
+    if current_customer.company.id == @parcel.company_id
     else
       flash[:notice] = 'You are not authorized for this action'
-      redirect_to suppliers_path
+      redirect_to trading_customers_path
     end
   end
 end

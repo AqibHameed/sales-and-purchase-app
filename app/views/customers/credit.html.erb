@@ -13,7 +13,7 @@
       <% @credit_limit.each.with_index(1) do |limit, i|%>
         <% if limit.supplier.present? && !current_customer.is_blocked_by_supplier(limit.supplier.id) %>
           <tr>
-            <td><%= limit.supplier.company %></td>
+            <td><%= limit.supplier.company.try(:name) %></td>
             <td><%= number_to_currency(get_credit_limit(current_customer, limit.supplier)) %></td>
             <td><%= number_to_currency(get_used_credit_limit(current_customer, limit.supplier)) %></td>
             <td><%= number_to_currency(get_available_credit_limit(current_customer, limit.supplier)) %></td>

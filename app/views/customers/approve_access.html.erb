@@ -1,0 +1,23 @@
+<table id="tenderList" class="table tablesorter table-responsive table-bordered">
+    <thead class="th">
+      <th></th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th></th>
+    </thead>
+    <% @customers.each do |customer| %>
+      <tr>
+      	<th></th>
+        <td><%= customer.first_name %></td>
+        <td><%= customer.last_name %></td>
+        <td><%= customer.email %></td>
+        <td>
+        <% if customer.is_requested == true %>
+          <%= link_to "Approve", approve_customers_path(cu: customer.id), class: 'btn btn-success btn-xs', method: :post %>&nbsp;&nbsp;&nbsp;&nbsp;
+        <% else %>
+          <%= link_to "Remove", remove_customers_path(cu: customer.id), class: 'btn btn-danger btn-xs', method: :post %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
