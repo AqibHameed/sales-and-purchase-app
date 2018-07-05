@@ -132,7 +132,7 @@ class TradingParcelsController < ApplicationController
 
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
+    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :anonymous,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
 
   end
