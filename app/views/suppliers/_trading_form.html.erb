@@ -308,21 +308,24 @@
   function disable_button(self){
     self_checked = self.prop('checked')
     if (self.attr('name') == 'trading_parcel[sale_all]') {
-      $('#trading_parcel_sale_all').prop('checked', self_checked)
-      $('#trading_parcel_sale_none').prop('checked', false)
+      sale_all_and_none(self_checked, false)
       disable_demand_broker_credit()
     }  else if (self.attr('name') == 'trading_parcel[sale_none]') {
-      $('#trading_parcel_sale_none').prop('checked', self_checked)
-      $('#trading_parcel_sale_all').prop('checked', false)
+      sale_all_and_none(false, self_checked)
       disable_demand_broker_credit()
     } else {
-      $('#trading_parcel_sale_all').prop('checked', false)
-      $('#trading_parcel_sale_none').prop('checked', false)
+      sale_all_and_none(false, false)
     }
   }
+
   function disable_demand_broker_credit() {
     $('#trading_parcel_sale_broker').prop('checked', false)
     $('#trading_parcel_sale_demanded').prop('checked', false)
     $('#trading_parcel_sale_credit').prop('checked', false)
+  }
+
+  function sale_all_and_none(sale_all, sale_none) {
+    $('#trading_parcel_sale_all').prop('checked', sale_all)
+    $('#trading_parcel_sale_none').prop('checked', sale_none)
   }
 </script>
