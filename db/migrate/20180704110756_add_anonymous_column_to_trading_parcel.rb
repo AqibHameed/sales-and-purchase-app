@@ -11,5 +11,7 @@ class AddAnonymousColumnToTradingParcel < ActiveRecord::Migration[5.1]
     add_column :trading_parcels, :city, :string
     add_column :trading_parcels, :country, :string
     add_column :trading_parcels, :anonymous, :boolean, :default => false
+    add_column :companies, :is_anonymous, :boolean, :default => false
+    add_column :companies, :add_polished, :boolean, :default => false
   end
 end
