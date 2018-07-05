@@ -1,0 +1,95 @@
+<table id="tenderList" class="table table-bordered tablesorter table-responsive">
+  <thead class="thead-desktop">
+    <th></th>
+    <th>Description</th>
+    <th>Shape</th>
+    <th>Color</th>
+    <th>Clarity</th>
+    <th>Cut</th>
+    <th>Polish</th>
+    <th>Symmetry</th>
+    <th>Fluorescence</th>
+    <th>Lab</th>
+    <th>City</th>
+    <th>Country</th>
+    <th>For Sale</th>
+    <th></th>
+  </thead>
+  <% parcels.each.with_index(1) do |parcel, i|%>
+    <% if check_parcel_visibility(parcel, current_company) %>
+      <tr>
+        <td class="td-mobile-count">
+          <div class="lefter">
+            <%= index_count(params[:page].to_i) + i %>
+          </div>
+          <div class="righter">
+            <div class="top">
+              <%= get_description(parcel) if parcel %>
+            </div>
+            <div class="bottom">
+              Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
+              Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="table-head-in-td">Description</span>
+          <%= get_description(parcel) if parcel %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Shape</span>
+          <%= parcel.shape.nil? ? 'N/A' : parcel.shape %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Color</span>
+          <%= parcel.color.nil? ? 'N/A' : parcel.color %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Clarity</span>
+          <%= parcel.clarity.nil? ? 'N/A' : parcel.clarity %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Cut</span>
+          <%= parcel.cut.nil? ? 'N/A' : parcel.cut %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Polish</span>
+          <%= parcel.polish.nil? ? 'N/A' : parcel.polish %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Symmetry</span>
+          <%= parcel.symmetry.nil? ? 'N/A' : parcel.symmetry %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Fluorescence</span>
+          <%= parcel.fluorescence.nil? ? 'N/A' : parcel.fluorescence %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Lab</span>
+          <%= parcel.lab.nil? ? 'N/A' : parcel.lab %>
+        </td>
+        <td>
+          <span class="table-head-in-td">City</span>
+          <%= parcel.city.nil? ? 'N/A' : parcel.city %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Country</span>
+          <%= parcel.country.nil? ? 'N/A' : parcel.country %>
+        <td>
+          <%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %></td>
+        <td>
+          <%= link_to trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} do %>
+            <span class="fa fa-eye"></span>
+          <% end %>
+          <%= link_to edit_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} do %>
+            <span class="fa fa-edit"></span>
+          <% end %>
+          <%= link_to trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} do %>
+            <span class="fa fa-trash"></span>
+          <% end %>
+          <%= link_to 'Direct Sell', direct_sell_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>

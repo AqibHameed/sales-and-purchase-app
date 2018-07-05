@@ -4,6 +4,10 @@
 <div class="dashboard">
   <div class="table trading-parcel-table">
     <div class="clear10"></div>
-    <%= render partial: 'customers/trading/supplier_parcels', locals: { parcels: @my_parcels } %>
+      <h4> My Rough </h4>
+      <%= render partial: 'customers/trading/supplier_parcels', locals: { parcels: @my_parcels } %>
+
+      <h4> My Polished </h4>
+      <%= render partial: 'customers/trading/supplier_polished_parcels', locals: { parcels: @polished_parcels } %>
   </div>
 </div>

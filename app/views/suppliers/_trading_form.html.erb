@@ -4,7 +4,7 @@
   <div class="tranding-parcel-errors">
     <%= render partial: 'suppliers/tranding_parcel_errors' %>
   </div>
-  <%= f.hidden_field :diamond_type, :value => ' ' %>
+  <%= f.hidden_field :diamond_type  %>
   </br>
   <div class="clear10"></div>
   <div class="form-group">
@@ -47,8 +47,7 @@
     </div>
   </div>
 
-  <div class="common <%=hide_class%>">
-
+  <div class="common <%=hide_class%> <%=(dt != 'Polished') ? '' : 'hide'%>">
     <div class="form-group">
       <label class="col-sm-2 control-label">Credit:</label>
       <div class="col-sm-10">
@@ -101,25 +100,16 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Comment:</label>
-      <div class="col-sm-10">
-        <%= f.text_area :comment, class: 'form-control' %>
-      </div>
-    </div>
-
     <div class="clear10"></div>
     <div class="row">
       <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
         <table class="table table-hover">
           <thead>
-            <!-- <th>Carats</th> -->
             <th>Size</th>
             <th>Percent</th>
           </thead>
           <tbody>
             <tr>
-              <!-- <td class="sub_c"><%#=s.text_field :carats, class: 'form-control col-sm-3 sub_carats' %></td> -->
               <td class="sub_s"><%=s.text_field :size, class: 'form-control col-sm-3 sub_size' %></td>
               <td class="sub_per"><%=s.text_field :percent, class: 'form-control col-sm-3 sub_percent' %></td>
               <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
@@ -128,7 +118,18 @@
         </table>
       <% end %>
     </div>
+  </div>
 
+  <div class="polished <%=hide_class%> <%=(dt == 'Polished') ? '' : 'hide'%>">
+    <%= render partial: 'suppliers/polished_form', locals: {f: f} %>
+  </div>
+  <div class="checkbox-division <%=hide_class%>">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Comment:</label>
+      <div class="col-sm-10">
+        <%= f.text_area :comment, class: 'form-control' %>
+      </div>
+    </div>
     <div class="clear10"></div>
     <div class="check-box-for-sale">
       <div class="form-group">
@@ -175,8 +176,10 @@
       </div>
     </div>
     </br>
+  </div>
 
-    <%= f.link_to_add "Add Size", :parcel_size_infos, class: 'btn btn-sm btn-info' %>
+  <div class="buttons <%=hide_class%>">
+    <%= f.link_to_add "Add Size", :parcel_size_infos, class: 'btn btn-sm btn-info add-size' %>
     <%=f.submit 'Submit', class: 'btn btn-md btn-danger' %>
   </div>
 <% end %>

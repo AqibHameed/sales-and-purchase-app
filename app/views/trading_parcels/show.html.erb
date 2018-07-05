@@ -48,7 +48,11 @@
 
 <hr>
 <h3>Parcel Details</h3>
+<%if @parcel.try(:source) == 'POLISHED'%>
+  <%= render partial: 'suppliers/polished_parcel_details', locals: {uid: true} %>
+<%else%>
   <%= render partial: 'parcel_details' %>
+<%end%>
 <div class="parcel-details">
   <% if (current_company.id == @parcel.company_id)  %>
   <%# elsif current_customer.is_blocked_by_supplier(@parcel.customer_id) %>
