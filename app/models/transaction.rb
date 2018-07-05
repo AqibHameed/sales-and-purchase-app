@@ -67,14 +67,14 @@ class Transaction < ApplicationRecord
   end
 
   def generate_and_add_amount
-    amount = price*trading_parcel.weight
+    amount = (price.nil? || trading_parcel.try(:weight).nil?) ? trading_parcel.try(:total_value) : price*trading_parcel.weight
     self.remaining_amount = amount
     self.total_amount = amount
     self.save(validate: false)
   end
 
   def calculate_amount
-    amount = price*trading_parcel.weight
+    amount = (price.nil? || trading_parcel.try(:weight).nil?) ? trading_parcel.try(:total_value) : price*trading_parcel.weight
     paid_amt = PartialPayment.where(transaction_id: self.id).sum(:amount)
     remaining_amount = amount - paid_amt
     self.update_columns({remaining_amount: remaining_amount, total_amount: amount})
