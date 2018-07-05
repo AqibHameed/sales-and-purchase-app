@@ -550,4 +550,8 @@ module ApplicationHelper
     end
     return (demanded + not_starred).uniq
   end
+
+  def check_anonymous_company_parcel(parcel, current_company)
+    (current_company.try(:id) == parcel.try(:company_id)) ? parcel.try(:company).try(:name) : parcel.try(:anonymous) ? 'Anonymous' : parcel.try(:company).try(:name)
+  end
 end

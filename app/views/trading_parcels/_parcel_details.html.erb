@@ -5,7 +5,9 @@
   </tr>
   <tr>
     <td> Supplier</td>
-    <td><%= @parcel.try(:customer).try(:company).try(:name) %></td>
+    <td>
+      <%= check_anonymous_company_parcel(@parcel, current_company)%>
+    </td>
   </tr>
   <tr>
     <td> Source </td>

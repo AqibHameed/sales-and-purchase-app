@@ -24,16 +24,19 @@ class TradingParcelsController < ApplicationController
       if params[:trading_parcel][:single_parcel].present?
         respond_to do |format|
           format.js {render :js => "window.location.href='"+single_parcel_supplier_path(@parcel)+"'"}
+          format.html { redirect_to single_parcel_supplier_path(@parcel) }
         end
       else
         respond_to do |format|
           format.js {render :js => "window.location.href='"+trading_customers_path+"'"}
+          format.html { redirect_to trading_customers_path }
         end
       end
     else
       @trading_parcel = @parcel
       respond_to do |format|
         format.js
+        format.html { redirect_to single_parcel_supplier_path(@parcel) }
       end
     end
   end
@@ -57,9 +60,16 @@ class TradingParcelsController < ApplicationController
   def update
     if @parcel.update_attributes(trading_parcel_params)
       flash[:notice] = 'Parcel updated successfully'
-      redirect_to trading_customers_path
+      respond_to do |format|
+        format.js {render :js => "window.location.href='"+trading_customers_path+"'"}
+        format.html { redirect_to trading_customers_path }
+      end
     else
-      render :edit
+      @trading_parcel = @parcel
+      respond_to do |format|
+        format.js {render :create}
+        format.html { redirect_to trading_customers_path }
+      end
     end
   end
 

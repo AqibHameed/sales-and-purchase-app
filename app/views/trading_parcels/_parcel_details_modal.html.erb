@@ -18,7 +18,7 @@
             </div>
             <div class="col-lg-4">
               <% total = @parcel.try(:price)*@parcel.try(:weight) rescue 0 %>
-              <p><b>Supplier:</b> <%= @parcel.try(:company).try(:name) %></p>
+              <p><b>Supplier:</b> <%= check_anonymous_company_parcel(@parcel, current_company)%></p>
               <p><b>Lot No.:</b> <%= @parcel.try(:lot_no) %></p>
               <p><b>Description:</b> <%= @parcel.try(:description) %></p>
               <p><b>Carats:</b> <%= @parcel.try(:weight) %></p>

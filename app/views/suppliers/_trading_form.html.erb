@@ -1,10 +1,6 @@
-<% if  @trading_parcel.new_record? %>
-  <%hide_class = 'hide'%>
-<% else %>
-  <%hide_class = ''%>
-<% end %>
+<%hide_class = @trading_parcel.new_record? ? 'hide' : ''%>
 <% dt = @trading_parcel.diamond_type %>
-<%= nested_form_for @trading_parcel, html: { class: 'form-horizontal' } do |f| %>
+<%= nested_form_for @trading_parcel, remote: true, html: { class: 'form-horizontal' } do |f| %>
   <div class="tranding-parcel-errors">
     <%= render partial: 'suppliers/tranding_parcel_errors' %>
   </div>
