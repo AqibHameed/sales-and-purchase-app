@@ -56,7 +56,7 @@
         <div class="form-row">
           <div class="label"> Source: </div>
           <div class="field">
-            <%= p.select :source, options_for_select(supplier_list_for_demand), {include_blank: true}, class: 'input' %>
+            <%= p.select :source, options_for_select(supplier_list_for_demand(current_company)), {include_blank: true}, class: 'input' %>
           </div>
         </div>
 
@@ -113,7 +113,7 @@
             <%= p.text_field :price, class: 'input' %>
           </div>
         </div>
-      
+
         <%= p.fields_for :my_transaction do |f| %>
           <div class="form-row">
             <div class="label">Buyer:</div>
@@ -256,7 +256,7 @@
 
   $(document.body).on("change", "#trading_parcel_my_transaction_attributes_buyer_id", function(){
     text = "Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection."
-    
+
     $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
     toggle_checkbox()
     // id = $(this).val()

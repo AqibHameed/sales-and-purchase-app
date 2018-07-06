@@ -10,7 +10,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">Source:</label>
     <div class="col-sm-10">
-      <%= f.select :source, options_for_select(supplier_list_for_demand, :selected => f.object.source), {include_blank: true}, {class: 'form-control'}%>
+      <%= f.select :source, options_for_select(supplier_list_for_demand(current_company), :selected => f.object.source), {include_blank: true}, {class: 'form-control'}%>
     </div>
   </div>
 
@@ -170,7 +170,11 @@
         <label class="col-sm-2 control-label">Anonymous:</label>
         <div class="col-sm-10">
           <div class="col-md-2">
-            <%= f.check_box :anonymous, class: 'form-check-input', style: 'margin-left: -20px;' %>
+            <% if current_company.is_anonymous %>
+              <%= f.check_box :anonymous, class: 'form-check-input', style: 'margin-left: -20px;' %>
+            <% else %>
+              <%= f.check_box :anonymous, class: 'form-check-input', style: 'margin-left: -20px;', disabled: true, checked: false %>
+            <% end %>
           </div>
         </div>
       </div>

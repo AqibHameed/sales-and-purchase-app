@@ -427,8 +427,8 @@ module ApplicationHelper
     end
   end
 
-  def supplier_list_for_demand
-    DemandSupplier.all.map { |e| e.name }
+  def supplier_list_for_demand(current_company)
+    current_company.try(:add_polished) ? DemandSupplier.all.map { |e| e.name } : DemandSupplier.where.not(name: 'POLISHED').map { |e| e.name }
   end
 
   def link_to_request(current_company, seller)
@@ -551,6 +551,6 @@ module ApplicationHelper
   end
 
   def check_anonymous_company_parcel(parcel, current_company)
-    (current_company.try(:id) == parcel.try(:company_id)) ? parcel.try(:company).try(:name) : parcel.try(:anonymous) ? 'Anonymous' : parcel.try(:company).try(:name)
+    (current_company.try(:id) == parcel.try(:company_id)) ? parcel.try(:company).try(:name) : (parcel.try(:anonymous) && parcel.try(:company).try(:is_anonymous)) ? 'Anonymous' : parcel.try(:company).try(:name)
   end
 end
