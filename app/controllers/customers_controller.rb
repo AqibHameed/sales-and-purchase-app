@@ -3,7 +3,7 @@ class CustomersController < ApplicationController
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_info_shared, only: [:shared_info]
-  before_action :check_role_authorization
+  before_action :check_role_authorization, except: [:access_denied]
   before_action :can_approve_access, only: [:approve, :approve_access]
   skip_before_action :check_request_access, only: [:access_denied]
 

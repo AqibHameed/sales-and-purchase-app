@@ -14,7 +14,6 @@ class TradingParcel < ApplicationRecord
   validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true
 
   after_create :generate_and_add_uid, :send_mail_to_demanded
-  before_create :set_defaults
 
   accepts_nested_attributes_for :my_transaction
   accepts_nested_attributes_for :parcel_size_infos, :allow_destroy => true
@@ -63,10 +62,10 @@ class TradingParcel < ApplicationRecord
     return count
   end
 
-  def related_parcels(customer)
-    networks = BrokerRequest.where(broker_id: customer.id, accepted: true).map { |e| e.seller_id } #. delete(customer.id.to_i)
-    networks.delete(self.customer_id)
-    parcels = TradingParcel.where(description: description, customer_id: networks)
+  def related_parcels(company)
+    networks = BrokerRequest.where(broker_id: company.id, accepted: true).map { |e| e.seller_id } #. delete(company.id.to_i)
+    networks.delete(self.company_id)
+    parcels = TradingParcel.where(description: description, company_id: networks)
   end
 
   def send_mail_to_demanded
@@ -78,10 +77,5 @@ class TradingParcel < ApplicationRecord
     customer = proposal.buyer
     parcel = proposal.trading_parcel
     TenderMailer.parcel_won_email(customer, parcel).deliver rescue logger.info "Error sending email"
-  end
-
-  def set_defaults
-    self.sale_all = true
-    self.sale_none = false
   end
 end

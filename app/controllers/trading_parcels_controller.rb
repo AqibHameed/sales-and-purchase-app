@@ -5,7 +5,7 @@ class TradingParcelsController < ApplicationController
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
-  before_action :check_role_authorization
+  before_action :check_role_authorization, except: [:related_seller, :parcel_history]
   before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history, :size_info]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
 
@@ -91,13 +91,13 @@ class TradingParcelsController < ApplicationController
   end
 
   def related_seller
-    @parcels = @parcel.related_parcels(current_customer)
+    @parcels = @parcel.related_parcels(current_company)
   end
 
   def parcel_history
-    networks = BrokerRequest.where(broker_id: current_customer.id, accepted: true).map { |e| e.seller_id }
-    @past_demands = Demand.where(description: @parcel.description, customer_id: networks)
-    @past_sell = TradingParcel.where(description: @parcel.description, customer_id: networks, sold: false)
+    networks = BrokerRequest.where(broker_id: current_company.id, accepted: true).map { |e| e.seller_id }
+    @past_demands = Demand.where(description: @parcel.description, company_id: networks)
+    @past_sell = TradingParcel.where(description: @parcel.description, company_id: networks, sold: false)
   end
 
   def direct_sell
