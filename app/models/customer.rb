@@ -207,23 +207,6 @@ class Customer < ApplicationRecord
     end
   end
 
-  def self.get_sellers
-    Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 2)
-  end
-
-  def self.get_buyers
-    Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 1)
-  end
-
-  # def is_overdue
-  #   date = Date.today
-  #   if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
-  #     true
-  #   else
-  #     false
-  #   end
-  # end
-
   def block_demands
     Demand.where(customer_id: self.id).update_all(block: true)
   end
@@ -249,20 +232,6 @@ class Customer < ApplicationRecord
   end
   ############
 
-  ### Brokers ###
-  def sent_broker_request(seller)
-    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: false).first.present?
-  end
-
-  def is_broker(seller)
-    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
-  end
-
-  def my_brokers
-    BrokerRequest.where(seller_id: self.id, accepted: true)
-  end
-  ###############
-
   def generate_jwt_token
     if Rails.env == "production"
       service_account_email = ENV['service_account_email']
@@ -284,32 +253,6 @@ class Customer < ApplicationRecord
     CustomerRole.create(role_id: 2, customer_id: self.id)
   end
 
-  # def check_group_overdue(supplier_id)
-  #   is_overdue = false
-  #   groups = CompaniesGroup.where("customer_id like '%#{id}%'")
-  #   groups.each do |group|
-  #     group.customer_id.each do |c|
-  #       customer = Customer.find(c)
-  #       if customer.has_overdue_transaction_of_30_days(supplier_id)
-  #         is_overdue = true
-  #         return
-  #       end
-  #     end
-  #   end
-  #   return is_overdue
-  # end
-
-  # def check_market_limit_overdue(market_limit_overdue, supplier_id)
-  #   cl = CreditLimit.where(seller_id: supplier_id, buyer_id: self.id).first
-  #   customer_market_limit = cl.market_limit
-  #   if market_limit_overdue.to_i < customer_market_limit.to_i
-  #     return false
-  #   elsif customer_market_limit.to_i == 0
-  #   else
-  #     return true
-  #   end
-  # end
-
   rails_admin do
     list do
       # field :verified, :toggle
@@ -318,7 +261,7 @@ class Customer < ApplicationRecord
       end
     end
     show do
-      [:id, :email, :first_name, :last_name, :certificate, :city, :address, :phone, :phone_2,:mobile_no, :company,:company_address].each do |field_name|
+      [:id, :email, :first_name, :last_name, :certificate, :city, :address, :phone, :phone_2,:mobile_no, :company,:company_address, :authentication_token].each do |field_name|
         field field_name
       end
     end

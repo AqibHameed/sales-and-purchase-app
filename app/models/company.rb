@@ -81,4 +81,23 @@ class Company < ApplicationRecord
     end
   end
 
+  def get_sellers
+    Company.where.not(id: id)
+  end
+
+
+  ### Brokers ###
+  def sent_broker_request(seller)
+    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: false).first.present?
+  end
+
+  def is_broker(seller)
+    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
+  end
+
+  def my_brokers
+    BrokerRequest.where(seller_id: self.id, accepted: true)
+  end
+  ###############
+
 end
