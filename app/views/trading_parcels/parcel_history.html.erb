@@ -12,7 +12,7 @@
         <tboady>
           <% @past_demands.each do |parcel| %>
             <tr>
-              <td><%= parcel.customer.name %>(<%= parcel.company.name %>)</td>
+              <td><%= parcel.customer.name %></td>
               <td><%= parcel.customer.mobile_no %></td>
             </tr>
           <% end %>
@@ -28,7 +28,7 @@
         <tboady>
           <% @past_sell.each do |parcel| %>
             <tr>
-              <td><%= parcel.customer.name %>(<%= parcel.company.name %>)</td>
+              <td><%= parcel.customer.name %></td>
               <td><%= parcel.customer.mobile_no %></td>
             </tr>
           <% end %>

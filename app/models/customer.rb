@@ -207,6 +207,23 @@ class Customer < ApplicationRecord
     end
   end
 
+  def self.get_sellers
+    Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 2)
+  end
+
+  def self.get_buyers
+    Customer.joins(:customer_roles).where('customer_roles.role_id = ?', 1)
+  end
+
+  # def is_overdue
+  #   date = Date.today
+  #   if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
+  #     true
+  #   else
+  #     false
+  #   end
+  # end
+
   def block_demands
     Demand.where(customer_id: self.id).update_all(block: true)
   end
@@ -231,6 +248,20 @@ class Customer < ApplicationRecord
     return false
   end
   ############
+
+  ### Brokers ###
+  def sent_broker_request(seller)
+    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: false).first.present?
+  end
+
+  def is_broker(seller)
+    BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
+  end
+
+  def my_brokers
+    BrokerRequest.where(seller_id: self.id, accepted: true)
+  end
+  ###############
 
   def generate_jwt_token
     if Rails.env == "production"

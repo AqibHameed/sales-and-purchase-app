@@ -128,7 +128,7 @@ class BidsController < ApplicationController
     end
   end
 
-  def update   
+  def update
     if params[:stone_id]
 
       @bid = Bid.find(params[:id])
