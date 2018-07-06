@@ -15,12 +15,12 @@ class Customer < ApplicationRecord
   has_many :bids
   has_many :winners
   has_many :notes
-  has_many :demands
+  # has_many :demands
   has_many :yes_no_buyer_winners
   has_many :yes_no_buyer_interests
   has_many :devices
-  has_many :suppliers
-  has_many :block_users, :class_name => 'BlockUser', :foreign_key => 'block_user_ids'
+  # has_many :suppliers
+  # has_many :block_users, :class_name => 'BlockUser', :foreign_key => 'block_user_ids'
   has_many :shared_to_users, :class_name => 'Shared', :foreign_key => 'shared_to_id'
   has_many :shared_by_users, :class_name => 'Shared', :foreign_key => 'shared_by_id'
   has_many :email_attachments
