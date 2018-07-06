@@ -282,6 +282,7 @@ class Customer < ApplicationRecord
       field :company
       field :company_address
       field :phone
+      field :is_requested
     end
   end
 end
