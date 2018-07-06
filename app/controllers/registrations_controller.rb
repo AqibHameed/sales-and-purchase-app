@@ -5,6 +5,8 @@ class RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params.merge(company_id: company.id))
     if sign_up_params[:role] == 'Broker'
       company.try(:customers).present? ? resource.errors.add(:company, 'Already exists...') : ''
+    else
+      company.is_broker ? resource.errors.add(:company, 'already registered as broker') : ''
     end
     resource.save unless resource.errors.present?
     yield resource if block_given?
