@@ -43,6 +43,7 @@ group :development do
   gem 'pry-byebug'
   gem "thin"
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem "letter_opener"
 end
 
 gem "whenever"
