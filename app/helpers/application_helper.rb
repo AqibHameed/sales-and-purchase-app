@@ -434,7 +434,7 @@ module ApplicationHelper
   def link_to_request(current_company, seller)
     if current_company.sent_broker_request(seller)
       'Requested'
-    elsif current_company.is_broker(seller)
+    elsif current_company.is_broker_or_not(seller)
       'Connected'
     else
       link_to 'Send Request', send_request_brokers_path(s: seller.id), data: { turbolinks: false }

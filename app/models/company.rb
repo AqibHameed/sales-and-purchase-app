@@ -1,12 +1,12 @@
 class Company < ApplicationRecord
-  has_many :customers
-  has_many :trading_parcels
-  has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
-  has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction"
-  has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction"
+  has_many :customers, dependent: :destroy
+  has_many :trading_parcels, dependent: :destroy
+  has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit", dependent: :destroy
+  has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction", dependent: :destroy
+  has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction", dependent: :destroy
 
-  has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id'
-  has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id'
+  has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
+  has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
 
   validates :name, presence: true
 
@@ -92,7 +92,7 @@ class Company < ApplicationRecord
     BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: false).first.present?
   end
 
-  def is_broker(seller)
+  def is_broker_or_not(seller)
     BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
   end
 
