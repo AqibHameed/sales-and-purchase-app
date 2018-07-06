@@ -10,11 +10,3 @@ class CreateAppVersions < ActiveRecord::Migration[5.1]
 end
 
 
-
-# {
-#  { version: 1.0, force_upgrade: true, recommendUpgrade: true },
-#  { version: 1.2, forceUpgrade: true, recommendUpgrade: true },
-#  { version: 2.0, forceUpgrade: false, recommendUpgrade: false },
-# }
-
-
