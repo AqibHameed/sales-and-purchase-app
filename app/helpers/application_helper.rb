@@ -427,15 +427,14 @@ module ApplicationHelper
     end
   end
 
-  def supplier_list_for_demand
-    DemandSupplier.all.map { |e| e.name }
+  def supplier_list_for_demand(current_company)
+    current_company.try(:add_polished) ? DemandSupplier.all.map { |e| e.name } : DemandSupplier.where.not(name: 'POLISHED').map { |e| e.name }
   end
 
-  def link_to_request(current_customer, seller)
-    puts current_customer.sent_broker_request(seller)
-    if current_customer.sent_broker_request(seller)
+  def link_to_request(current_company, seller)
+    if current_company.sent_broker_request(seller)
       'Requested'
-    elsif current_customer.is_broker(seller)
+    elsif current_company.is_broker(seller)
       'Connected'
     else
       link_to 'Send Request', send_request_brokers_path(s: seller.id), data: { turbolinks: false }
@@ -446,8 +445,8 @@ module ApplicationHelper
     [['All', '0'], ['None', '1'], ['Broker', '2'], ['Credit Given', '3'], ['Demanded', '4']]
   end
 
-  def list_of_brokers(current_customer)
-    current_customer.my_brokers.map { |e| [e.broker.name, e.broker.id]  }
+  def list_of_brokers(current_company)
+    current_company.my_brokers.map { |e| [e.broker.name, e.broker.id]  }
   end
 
   def all_companies(current_company)

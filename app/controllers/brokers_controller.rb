@@ -2,11 +2,11 @@ class BrokersController < ApplicationController
   before_action :load_request, only: [:accept, :reject, :remove]
 
   def index
-    @sellers = Customer.get_sellers
+    @sellers = Company.get_sellers
   end
 
   def dashboard
-    @parcels = TradingParcel.all.select { |e| e.broker_ids.include? current_customer.id.to_s unless e.broker_ids.nil? }
+    @parcels = TradingParcel.all.select { |e| e.broker_ids.include? current_company.id.to_s unless e.broker_ids.nil? }
   end
 
   def send_request
@@ -24,8 +24,8 @@ class BrokersController < ApplicationController
   end
 
   def requests
-    @requests = BrokerRequest.where(seller_id: current_customer.id, accepted: false)
-    @my_brokers = BrokerRequest.where(seller_id: current_customer.id, accepted: true)
+    @requests = BrokerRequest.where(seller_id: current_company.id, accepted: false)
+    @my_brokers = BrokerRequest.where(seller_id: current_company.id, accepted: true)
   end
 
   def accept
@@ -68,8 +68,7 @@ class BrokersController < ApplicationController
 
   def demand
     @parcel = TradingParcel.find(params[:id])
-    @demand = Demand.where(description: @parcel.description, block: false).where.not(customer_id: current_customer.id)
-    # @customers = Customer.unscoped.where(id: @demand.map(&:customer_id)).page params[:page]
+    @demand = Demand.where(description: @parcel.description, block: false).where.not(company_id: current_company.id)
   end
 
   private

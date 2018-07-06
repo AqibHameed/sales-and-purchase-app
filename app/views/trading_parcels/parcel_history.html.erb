@@ -12,8 +12,8 @@
         <tboady>
           <% @past_demands.each do |parcel| %>
             <tr>
-              <td><%= parcel.customer.name %></td>
-              <td><%= parcel.customer.mobile_no %></td>
+              <td><%= parcel.try(:company).try(:name) %></td>
+              <td><%= parcel.try(:company).try(:get_owner).try(:mobile_no) %></td>
             </tr>
           <% end %>
         </tboady>
@@ -28,8 +28,8 @@
         <tboady>
           <% @past_sell.each do |parcel| %>
             <tr>
-              <td><%= parcel.customer.name %></td>
-              <td><%= parcel.customer.mobile_no %></td>
+              <td><%= parcel.try(:company).try(:name) %></td>
+              <td><%= parcel.try(:company).try(:get_owner).try(:mobile_no) %></td>
             </tr>
           <% end %>
         </tboady>

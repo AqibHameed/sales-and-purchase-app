@@ -91,13 +91,13 @@ class TradingParcelsController < ApplicationController
   end
 
   def related_seller
-    @parcels = @parcel.related_parcels(current_customer)
+    @parcels = @parcel.related_parcels(current_company)
   end
 
   def parcel_history
-    networks = BrokerRequest.where(broker_id: current_customer.id, accepted: true).map { |e| e.seller_id }
-    @past_demands = Demand.where(description: @parcel.description, customer_id: networks)
-    @past_sell = TradingParcel.where(description: @parcel.description, customer_id: networks, sold: false)
+    networks = BrokerRequest.where(broker_id: current_company.id, accepted: true).map { |e| e.seller_id }
+    @past_demands = Demand.where(description: @parcel.description, company_id: networks)
+    @past_sell = TradingParcel.where(description: @parcel.description, company_id: networks, sold: false)
   end
 
   def direct_sell

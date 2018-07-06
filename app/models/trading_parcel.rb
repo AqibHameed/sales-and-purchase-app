@@ -62,10 +62,10 @@ class TradingParcel < ApplicationRecord
     return count
   end
 
-  def related_parcels(customer)
-    networks = BrokerRequest.where(broker_id: customer.id, accepted: true).map { |e| e.seller_id } #. delete(customer.id.to_i)
-    networks.delete(self.customer_id)
-    parcels = TradingParcel.where(description: description, customer_id: networks)
+  def related_parcels(company)
+    networks = BrokerRequest.where(broker_id: company.id, accepted: true).map { |e| e.seller_id } #. delete(customer.id.to_i)
+    networks.delete(self.company)
+    parcels = TradingParcel.where(description: description, company_id: networks, sold: false)
   end
 
   def send_mail_to_demanded
