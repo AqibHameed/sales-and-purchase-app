@@ -25,6 +25,11 @@
       </div>
 
       <div class="field">
+        <%= f.label :role %><br />
+        <%= f.select :role, options_for_select(['Buyer/Seller', "Broker"]), {include_blank: true},  class: 'input form-control', autocomplete: "off", style: "width: 330px;" %>
+      </div>
+
+      <div class="field">
         <%= f.label :company_id %><br />
         <%= f.text_field :company_name %>
         <%= f.hidden_field :is_requested, value: false %>
@@ -52,10 +57,6 @@
         <%= f.password_field :password_confirmation, autocomplete: "off" %>
       </div>
 
-      <div class="field">
-        <%= f.label :role %><br />
-        <%= f.select :role, options_for_select(['Buyer/Seller', "Broker"]), {include_blank: true},  class: 'input', autocomplete: "off" %>
-      </div>
 
       <div class="btns-groups">
         <%= f.submit "Sign up", class: "btn-02 login-btn signup-btn" %>
@@ -88,8 +89,20 @@
   })
 
   $('.tender-house0').on('click',function () {
-    $(".tender-house0").is(':checked') ? $('.tender-house7').attr('disabled', true).prop('checked', false) : $('.tender-house7').prop('checked', false).attr('disabled', false)   
+    $(".tender-house0").is(':checked') ? $('.tender-house7').attr('disabled', true).prop('checked', false) : $('.tender-house7').prop('checked', false).attr('disabled', false)
   })
+
+  $('#customer_role').change(function(){
+    role = $('#customer_role').val()
+    if (role == 'Broker'){
+      $('#customer_company_name').val($('#customer_first_name').val())
+      $('#customer_is_requested').val(false)
+      $('.signup-btn').removeClass('hide')
+      $('.request-btn').addClass('hide')
+    } else {
+      $('#customer_company_name').val('')
+    }
+  });
 
   function check_company(){
     val = $('#customer_company_name').val()
@@ -98,13 +111,19 @@
       data: { name: val },
       type: "GET",
       success: function(data) {
-        $('#customer_is_requested').val(data['success'])
-        if (data['success'] == true){
-          $('.signup-btn').addClass('hide')
-          $('.request-btn').removeClass('hide')
-        }else{
+        if ($('#customer_role').val() == 'Broker'){
+          $('#customer_is_requested').val(false)
           $('.signup-btn').removeClass('hide')
           $('.request-btn').addClass('hide')
+        } else {
+          $('#customer_is_requested').val(data['success'])
+          if (data['success'] == true){
+            $('.signup-btn').addClass('hide')
+            $('.request-btn').removeClass('hide')
+          }else{
+            $('.signup-btn').removeClass('hide')
+            $('.request-btn').addClass('hide')
+          }
         }
       }
     })
