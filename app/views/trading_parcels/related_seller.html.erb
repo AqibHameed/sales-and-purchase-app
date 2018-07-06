@@ -2,16 +2,14 @@
 <h5><%= @parcel.description %></h5>
 <table class="table table-bordered table-striped table-responsive ">
   <thead class="dark-header">
-    <td>Name</td>
-    <td>Company</td>
+    <td>Company Name</td>
     <td>Contact No.</td>
   </thead>
   <tboady>
     <% @parcels.each do |parcel| %>
       <tr>
-        <td><%= parcel.customer.name %></td>
-        <td><%= parcel.customer.company.try(:name) %></td>
-        <td><%= parcel.customer.mobile_no %></td>
+        <td><%= parcel.company.try(:name) %></td>
+        <td><%= parcel.try(:company).try(:get_owner).try(:mobile_no) %></td>
       </tr>
     <% end %>
   </tboady>

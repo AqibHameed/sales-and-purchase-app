@@ -37,7 +37,7 @@
                 </div>
               </div>
               <span class="broker-list <%=(@parcel.try(:sale_broker) == true) ? '' : 'hide' %>">
-                <%= select_tag "broker_id", options_for_select(list_of_brokers(current_customer), selected: @parcel.try(:broker_ids)), 'data-id' => @parcel.try(:id), include_blank: true, multiple: true, class: 'broker-select form-control' %>
+                <%= select_tag "broker_id", options_for_select(list_of_brokers(current_company), selected: @parcel.try(:broker_ids)), 'data-id' => @parcel.try(:id), include_blank: true, multiple: true, class: 'broker-select form-control' %>
               </span>
               <div class="form-group">
                 <div class="col-sm-10">

@@ -12,8 +12,8 @@
       <% @requests.each do |request| %>
         <tr>
           <td></td>
-          <td><%= request.broker.name %></td>
-          <td><%= request.broker.company.try(:name) %></td>
+          <td><%= request.broker.try(:customers).try(:first).try(:name) %></td>
+          <td><%= request.broker.try(:name) %></td>
           <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: { turbolinks: false } %> | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: { turbolinks: false } %></td>
         </tr>
       <% end %>
@@ -25,7 +25,7 @@
   <h3> My Brokers </h3>
   <div class="clear10"></div>
   <div class="table">
-    <table id="tenderList" class="table table-bordered table-responsive">                                                                            
+    <table id="tenderList" class="table table-bordered table-responsive">
     <tr>
       <th></th>
       <th>Broker Name</th>
@@ -35,8 +35,8 @@
     <% @my_brokers.each do |b| %>
       <tr>
         <td></td>
-        <td><%= b.broker.name %></td>
-        <td><%= b.broker.company.try(:name) %></td>
+        <td><%= b.broker.try(:customers).try(:first).try(:name) %></td>
+        <td><%= b.broker.try(:name) %></td>
         <td><%= link_to "Remove", remove_brokers_path(id: b.id), data: { turbolinks: false } %></td>
       </tr>
     <% end %>
