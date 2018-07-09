@@ -22,7 +22,7 @@ class ProposalsController < ApplicationController
     else
       if @proposal.save
         # Sent an email to supplier
-        Message.create_new_message(@proposal, current_customer)
+        Message.create_new(@proposal)
 
         flash[:notice] = "Proposal sent to supplier."
         redirect_to trading_customers_path
@@ -35,7 +35,7 @@ class ProposalsController < ApplicationController
   end
 
   def index
-    @proposals = Proposal.includes(:trading_parcel).where(status: 0).where(action_for: current_customer.id).page params[:page]
+    @proposals = Proposal.includes(:trading_parcel).where(status: 0).where(action_for: current_company.id).page params[:page]
   end
 
   def show
@@ -50,7 +50,7 @@ class ProposalsController < ApplicationController
   def update
     if @proposal.update_attributes(proposal_params)
       # Email sent to action for column user
-      Message.create_new_negotiate(@proposal, current_customer)
+      Message.create_new_negotiate(@proposal, current_company)
       flash[:notice] = "Proposal sent successfully."
       redirect_to trading_customers_path
     else
@@ -133,7 +133,7 @@ class ProposalsController < ApplicationController
   end
 
   def check_authenticate_person
-    if @proposal.action_for == current_customer.id
+    if @proposal.action_for == current_company.id
       # do nothing
     else
       flash[:notice] = "You have already sent proposal to other party."
