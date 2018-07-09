@@ -7,7 +7,7 @@
     </h4>
   </div>
   <div class="panel-body">
-    <p><%=@message.message.html_safe %></p>
+    <h5><%=@message.message.html_safe %></h5>
   </div>
 </div>
 <%= link_to 'Reply', new_message_path(id: @message.sender.id), class: 'login-btn btn-02', data: {turbolinks: false} %>

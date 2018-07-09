@@ -1,7 +1,7 @@
 <h3>Proposal Details</h3>
 <div class="table">
   <table class="table table-bordered table-striped table-responsive tablesorter">
-    <% if current_customer.id == proposal.try(:buyer_id) %>
+    <% if current_company.id == proposal.try(:buyer_id) %>
       <tr>
         <td> Supplier </td>
         <td><%= proposal.try(:supplier).try(:name) %></td>
@@ -57,8 +57,8 @@
 </div>
 <div class="clear10"></div>
 <% unless proposal.accepted? || proposal.rejected? %>
-  <%= link_to 'Accept', "/proposals/#{proposal.id}/accept?check=true", class: 'btn-01 login_btn green accept-btn', method: :put, data: {turbolinks: false}, remote: true %>
-  <%= link_to 'Reject', "/proposals/#{proposal.id}/reject", class: 'btn-01 login_btn red', method: :put, data: {turbolinks: false}  %>
+  <%= link_to 'Accept', "/proposals/#{proposal.id}/accept?check=true", class: 'btn-01 login_btn green accept-btn', method: :put, data: {turbolinks: false}, remote: true if current_company.id == proposal.try(:seller_id) %>
+  <%= link_to 'Reject', "/proposals/#{proposal.id}/reject", class: 'btn-01 login_btn red', method: :put, data: {turbolinks: false} if current_company.id == proposal.try(:seller_id) %>
   <%= link_to 'Negotiate', "/proposals/#{proposal.id}/edit", class: 'btn-01 login_btn', data: {turbolinks: false} %>
 <%end%>
 <div class="size-info">
@@ -66,8 +66,8 @@
   <%= render partial: 'trading_parcels/size_info', collection: @info%>
 </div>
 <script type="text/javascript">
-$(document).on('click', '.accept-btn', function(){
-  $(this).addClass('disabled')
-})
+// $(document).on('click', '.accept-btn', function(){
+//   $(this).addClass('disabled')
+// })
 
 </script>
