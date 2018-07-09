@@ -11,6 +11,7 @@ class TradingParcel < ApplicationRecord
 
   validates :source, presence: true #, if: :diamond_type_is_sight?
   validates :credit_period, :total_value, :description, presence: true, unless: :diamond_type_is_polish?
+  validates :total_value, presence: true
   validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
 
   after_create :generate_and_add_uid, :send_mail_to_demanded

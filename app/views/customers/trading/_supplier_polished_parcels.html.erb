@@ -3,6 +3,7 @@
     <th></th>
     <th>Description</th>
     <th>Shape</th>
+    <th>Size</th>
     <th>Color</th>
     <th>Clarity</th>
     <th>Cut</th>
@@ -12,6 +13,8 @@
     <th>Lab</th>
     <th>City</th>
     <th>Country</th>
+    <th>Avg. Price</th>
+    <th>Total $</th>
     <th>For Sale</th>
     <th></th>
   </thead>
@@ -39,6 +42,10 @@
         <td>
           <span class="table-head-in-td">Shape</span>
           <%= parcel.shape.nil? ? 'N/A' : parcel.shape %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Shape</span>
+          <%= parcel.weight.nil? ? 'N/A' : parcel.weight %>
         </td>
         <td>
           <span class="table-head-in-td">Color</span>
@@ -75,8 +82,18 @@
         <td>
           <span class="table-head-in-td">Country</span>
           <%= parcel.country.nil? ? 'N/A' : parcel.country %>
+        </td>
         <td>
-          <%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %></td>
+          <span class="table-head-in-td">Avg. Price</span>
+          <%= parcel.price.nil? ? 'N/A' : parcel.price %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Total/Box Value:</span>
+          <%= parcel.total_value.nil? ? 'N/A' : parcel.total_value %>
+        </td>
+        <td>
+          <%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %>
+        </td>
         <td>
           <%= link_to trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} do %>
             <span class="fa fa-eye"></span>
