@@ -44,6 +44,7 @@
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').addClass('hide')
       $('.add-size').addClass('hide')
+      removeFieldValue()
     }else{
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
@@ -52,12 +53,8 @@
       $('.buttons').addClass('hide')
       $('.checkbox-division').addClass('hide')
     }
-  });
-
-  $(document).on('change', '#trading_parcel_source', function(){
     supplier_list()
-  })
-
+  });
 
   $(document).ready(function(){
     supplier_list()
@@ -73,6 +70,14 @@
       method: 'get',
       data: {id: id}
     })
+  }
+
+  function removeFieldValue(){
+    $('#trading_parcel_cost').val(0)
+    $('#trading_parcel_percent').val(0)
+    $('#trading_parcel_weight').val('')
+    $('#trading_parcel_price').val('')
+    $('#trading_parcel_total_value').val('')
   }
 
 </script>

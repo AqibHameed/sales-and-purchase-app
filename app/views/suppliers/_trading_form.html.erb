@@ -65,13 +65,6 @@
     </div>
 
     <div class="form-group">
-      <label class="col-sm-2 control-label">Carats:</label>
-      <div class="col-sm-10">
-        <%= f.text_field :weight, class: 'form-control' %>
-      </div>
-    </div>
-
-    <div class="form-group">
       <label class="col-sm-2 control-label">Cost:</label>
       <div class="col-sm-10">
         <%= f.text_field :cost, class: 'form-control' %>
@@ -82,20 +75,6 @@
       <label class="col-sm-2 control-label">Percent:</label>
       <div class="col-sm-10">
         <%= f.text_field :percent, class: 'form-control' %>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Avg Price:</label>
-      <div class="col-sm-10">
-        <%= f.text_field :price, class: 'form-control' %>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Total/Box Value:</label>
-      <div class="col-sm-10">
-        <%= f.number_field :total_value, class: 'form-control' %>
       </div>
     </div>
 
@@ -123,6 +102,27 @@
     <%= render partial: 'suppliers/polished_form', locals: {f: f} %>
   </div>
   <div class="checkbox-division <%=hide_class%>">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Carats:</label>
+      <div class="col-sm-10">
+        <%= f.text_field :weight, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Avg Price:</label>
+      <div class="col-sm-10">
+        <%= f.text_field :price, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Total/Box Value:</label>
+      <div class="col-sm-10">
+        <%= f.number_field :total_value, class: 'form-control' %>
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="col-sm-2 control-label">Comment:</label>
       <div class="col-sm-10">
@@ -196,19 +196,21 @@
 <% end %>
 
 <script>
-  $(document).on('keyup focusout','#trading_parcel_percent', function(){
+
+  $(document).on('keyup focusout','#trading_parcel_cost, #trading_parcel_weight, #trading_parcel_percent, #trading_parcel_price', function(){
+    self = $(this)
     var carat = parseFloat($('#trading_parcel_weight').val());
     var cost = parseFloat($('#trading_parcel_cost').val());
     var percent = parseFloat($('#trading_parcel_percent').val());
     var price = parseFloat($('#trading_parcel_price').val());
-    calculate_price(carat, cost, percent, price)
-  });
-
-  $(document).on('keyup focusout','#trading_parcel_price', function(){
-    var carat = parseFloat($('#trading_parcel_weight').val());
-    var cost = parseFloat($('#trading_parcel_cost').val());
-    var price = parseFloat($('#trading_parcel_price').val());
-    calculate_percent(carat, cost, price)
+    if ((self.attr('name') == 'trading_parcel[cost]') || (self.attr('name') == 'trading_parcel[percent]')) {
+      calculate_price(carat, cost, percent, price)
+    } else if(self.attr('name') == 'trading_parcel[price]') {
+      calculate_percent(carat, cost, price)
+    } else if(self.attr('name') == 'trading_parcel[weight]') {
+      calculate_price(carat, cost, percent, price)
+      calculate_percent(carat, cost, price)
+    }
   });
 
   function calculate_price(carat, cost, percent, price){
