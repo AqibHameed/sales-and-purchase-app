@@ -6,7 +6,7 @@
         <h4 class="modal-title" id="myModalLabel">Select Parcel Visibility</h4>
       </div>
       <div class="modal-body">
-        <%= form_for @parcel, url: check_for_sale_trading_parcels_path(id: @parcel), remote: true, html: { class: 'form-horizontal', method: :post} do |f| %>
+        <%= form_for @parcel, url: check_for_sale_trading_parcels_path(id: @parcel), remote: true, html: { class: 'form-horizontal visibility-form', method: :post} do |f| %>
           <div class="form-group">
             <div class="col-sm-10">
               <div class="form-group">
@@ -40,8 +40,9 @@
                 </div>
               </div>
               <span class="broker-list <%=(@parcel.try(:sale_broker) == true) ? '' : 'hide' %>">
-                <%= select_tag "broker_id", options_for_select(list_of_brokers(current_company), selected: @parcel.try(:broker_ids)), 'data-id' => @parcel.try(:id), include_blank: true, multiple: true, class: 'broker-select form-control' %>
+                <%= select_tag "broker_id", options_for_select(list_of_brokers(current_company), selected: @parcel.try(:broker_ids)), 'data-id' => @parcel.try(:id), include_blank: true, multiple: true, class: 'broker-select form-control', style: 'width: 500px;' %>
               </span>
+              <span class="broker-error text-danger"></span>
               <div class="form-group">
                 <div class="col-sm-10">
                   <div class="checkbox">
@@ -62,7 +63,7 @@
                   </div>
                 </div>
               </div>
-             <%=f.submit 'Apply', class: 'btn btn-primary' %>
+              <%= link_to "Apply", 'javascript:void(0)', class: 'btn btn-primary apply' %>
             </div>
           </div>
         <%end%>
@@ -70,3 +71,13 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).on('click', '.apply', function(){
+    if ($('#trading_parcel_sale_broker').prop('checked') && $('.broker-select').val() == null) {
+      $('.broker-error').text('Please select brokers...')
+    } else {
+      $('form.visibility-form').submit();
+    }
+  })
+</script>
