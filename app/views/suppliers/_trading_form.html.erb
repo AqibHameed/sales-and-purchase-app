@@ -228,7 +228,7 @@
   }
 
   function calculate_percent(carat, cost, price){
-    var percent = ((price - cost) * 100)/cost;
+    var percent = (cost == 0 ) ? 0 : ((price - cost) * 100)/cost;
     var amount = carat*price;
     if (isNaN(percent)){
       $('#trading_parcel_percent').val('')
