@@ -14,6 +14,7 @@ class TradingParcel < ApplicationRecord
   validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true
 
   after_create :generate_and_add_uid, :send_mail_to_demanded
+  after_update :set_sale_none_when_all_none
 
   accepts_nested_attributes_for :my_transaction
   accepts_nested_attributes_for :parcel_size_infos, :allow_destroy => true
@@ -79,5 +80,9 @@ class TradingParcel < ApplicationRecord
     customer = proposal.buyer
     parcel = proposal.trading_parcel
     TenderMailer.parcel_won_email(customer, parcel).deliver rescue logger.info "Error sending email"
+  end
+
+  def set_sale_none_when_all_none
+    (!sale_all && !sale_none && !sale_broker && !sale_credit && !sale_demanded) ? self.update_column(:sale_none, true) : ''
   end
 end
