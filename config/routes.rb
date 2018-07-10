@@ -118,7 +118,6 @@ Rails.application.routes.draw do
       get :add_company
       get :block_unblock_user
       post :create_sub_company
-      get :check_for_sale
       delete :remove_demand
     end
   end
@@ -181,6 +180,9 @@ Rails.application.routes.draw do
   end
   resources :messages
   resources :trading_parcels do
+    collection do
+      post :check_for_sale
+    end
     member do
       get :message
       post :message_create
@@ -324,7 +326,6 @@ Rails.application.routes.draw do
   get '/supplier_demand_list' => 'suppliers#supplier_demand_list'
   get '/supplier_list' => 'suppliers#supplier_list'
   get '/update_chat_id',to: 'tenders#update_chat_id'
-  get '/share_with_brokers', to: 'trading_parcels#share_broker'
   get '/parcel_detail', to: 'trading_parcels#parcel_detail'
   get '/access_denied', to: 'customers#access_denied'
 end
