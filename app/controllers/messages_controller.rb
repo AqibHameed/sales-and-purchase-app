@@ -1,20 +1,19 @@
 class MessagesController < ApplicationController
 
- def index
-  @messages = Message.where(receiver_id: current_company.id)
- end
+  def index
+    @messages = Message.where(receiver_id: current_company.id)
+  end
 
- def show
+  def show
+    @message = Message.find(params[:id])
+  end
 
-  @message = Message.find(params[:id])
- end
-
- def new
- 	  @message = Message.new
+  def new
+    @message = Message.new
     @company = Company.find(params[:id])
- end
+  end
 
- def create
+  def create
     @message = Message.new(message_params)
     @message.sender_id = current_company.id
 
@@ -22,8 +21,9 @@ class MessagesController < ApplicationController
       redirect_to trading_customers_path, notice: "Message is successfully send"
     end
   end
-private
- def message_params
-    params.require(:message).permit(:subject, :message, :message_type, :receiver_id)
-  end
+
+  private
+    def message_params
+      params.require(:message).permit(:subject, :message, :message_type, :receiver_id)
+    end
 end

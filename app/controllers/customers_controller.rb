@@ -263,11 +263,6 @@ class CustomersController < ApplicationController
     @customers = [] #Customer.unscoped.where.not(id: current_customer.id)
   end
 
-  def check_for_sale
-    @trading_parcel = TradingParcel.find_by_id(params[:id])
-    @trading_parcel.update_attributes(params[:col].to_sym => params[:val])
-  end
-
   def check_info_shared
     check = Shared.where('shared_by_id = ? and shared_to_id = ?', params[:id], current_company)
     if check.present?

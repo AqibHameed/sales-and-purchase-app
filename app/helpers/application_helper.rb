@@ -446,7 +446,7 @@ module ApplicationHelper
   end
 
   def list_of_brokers(current_company)
-    current_company.my_brokers.map { |e| [e.broker.name, e.broker.id]  }
+    current_company.my_brokers.map { |e| [e.broker.name, e.broker.id]  } rescue ''
   end
 
   def all_companies(current_company)

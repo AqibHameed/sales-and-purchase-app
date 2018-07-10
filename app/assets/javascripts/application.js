@@ -42,7 +42,7 @@ $(document).ready(function() {
   });
 
   $('.tender-house4').on('click',function () {
-    $(".tender-house4").is(':checked') ? $('.tender-house3').attr('disabled', true).prop('checked', false) : $('.tender-house3').prop('checked', false).attr('disabled', false)   
+    $(".tender-house4").is(':checked') ? $('.tender-house3').attr('disabled', true).prop('checked', false) : $('.tender-house3').prop('checked', false).attr('disabled', false)
   })
   $(".footer-inner .c6").click(function() {
     $('#sidebar-share').fadeOut();
@@ -243,119 +243,49 @@ $(document).ready(function() {
     id = $(this).data('id')
     $.ajax({
       url : '/parcel_detail',
-      data : { id: id }
+      data : { id: id },
+      success: function (data) {
+        $('.broker-select').select2({})
+      }
     });
   })
 
-  $(document).on('change', '#sale_all', function() {
-    if ($(this).is(':checked')) {
-      $('#sale_broker').attr('disabled', true)
-      $('#sale_none').attr('disabled', true)
-      $('#sale_credit').attr('disabled', true)
-      $('#sale_demanded').attr('disabled', true)
-      $('.broker-list').addClass('hide')
-    } else {
-      $('#sale_broker').attr('disabled', false)
-      $('#sale_none').attr('disabled', false)
-      $('#sale_credit').attr('disabled', false)
-      $('#sale_demanded').attr('disabled', false)
-    }
-  })
+  $(document).on('change','#trading_parcel_sale_all, #trading_parcel_sale_none, #trading_parcel_sale_broker, #trading_parcel_sale_demanded, #trading_parcel_sale_credit', function(){
+    self = $(this)
+    disable_button(self)
+  });
 
-  $(document).on('change', '#sale_none', function() {
-    if ($(this).is(':checked')) {
-      $('#sale_broker').attr('disabled', true)
-      $('#sale_all').attr('disabled', true)
-      $('#sale_credit').attr('disabled', true)
-      $('#sale_demanded').attr('disabled', true)
-      $('.broker-list').addClass('hide')
+  function disable_button(self){
+    self_checked = self.prop('checked')
+    if (self.attr('name') == 'trading_parcel[sale_all]') {
+      sale_all_and_none(self_checked, false)
+      disable_demand_broker_credit()
+    } else if (self.attr('name') == 'trading_parcel[sale_none]') {
+      sale_all_and_none(false, self_checked)
+      disable_demand_broker_credit()
+    }else if (self.attr('name') == 'trading_parcel[sale_broker]') {
+      sale_all_and_none(false, false)
+      if (self_checked){
+        $('.broker-list').removeClass('hide')
+      } else {
+        $('.broker-list').addClass('hide')
+      }
     } else {
-      $('#sale_broker').attr('disabled', false)
-      $('#sale_all').attr('disabled', false)
-      $('#sale_credit').attr('disabled', false)
-      $('#sale_demanded').attr('disabled', false)
+      sale_all_and_none(false, false)
     }
-  })
+  }
 
-  $(document).on('change', '#sale_broker', function() {
-    if ($(this).is(':checked')) {
-      $('#sale_none').attr('disabled', true)
-      $('#sale_all').attr('disabled', true)
-      $('#sale_credit').attr('disabled', true)
-      $('#sale_demanded').attr('disabled', true)
-      $('.broker-list').removeClass('hide')
-    } else {
-      $('#sale_none').attr('disabled', false)
-      $('#sale_all').attr('disabled', false)
-      $('#sale_credit').attr('disabled', false)
-      $('#sale_demanded').attr('disabled', false)
-      $('.broker-list').addClass('hide')
-    }
-  })
+  function disable_demand_broker_credit() {
+    $('#trading_parcel_sale_broker').prop('checked', false)
+    $('#trading_parcel_sale_demanded').prop('checked', false)
+    $('#trading_parcel_sale_credit').prop('checked', false)
+    $('.broker-list').addClass('hide')
+  }
 
-  $(document).on('change', '#sale_demanded', function() {
-    if ($(this).is(':checked')) {
-      $('#sale_none').attr('disabled', true)
-      $('#sale_all').attr('disabled', true)
-      $('#sale_broker').attr('disabled', true)
-      $('#sale_credit').attr('disabled', false)
-      $('.broker-list').addClass('hide')
-    } else {
-      $('#sale_none').attr('disabled', false)
-      $('#sale_all').attr('disabled', false)
-      $('#sale_credit').attr('disabled', false)
-      $('#sale_broker').attr('disabled', false)
-    }
-  })
-
-  $(document).on('change', '#sale_credit', function() {
-    if ($(this).is(':checked')) {
-      $('#sale_none').attr('disabled', true)
-      $('#sale_all').attr('disabled', true)
-      $('#sale_broker').attr('disabled', true)
-      $('#sale_demanded').attr('disabled', false)
-      $('.broker-list').addClass('hide')
-    } else {
-      $('#sale_none').attr('disabled', false)
-      $('#sale_all').attr('disabled', false)
-      $('#sale_broker').attr('disabled', false)
-      $('#sale_demanded').attr('disabled', false)
-    }
-  })
-    
-  $(document).on('change', '.for_sale', function() {
-    var column = $(this).val()
-    var parcel_id = $(this).data('id');
-    if ($(this).is(':checked')) {
-      var val = true
-    } else {
-      var val = false
-    }
-    $.ajax({
-      url: '/customers/'+parcel_id+'/check_for_sale',
-      data: { val: val, col: column },
-      type: "GET"
-    })
-    
-    // if(val == "2"){
-    //   $(this).parent('td').find('.broker-list').removeClass('hide')
-    // }else{
-    //   $(this).parent('td').find('.broker-list').addClass('hide')
-    // }
-    // parcel_id = $(this).data('id');
-    // val = $(this).val()
-  })
-
-  $('.broker-select').select2({})
-
-  $('.broker-select').on("change", function (e) {
-    broker_ids = $(this).val();
-    parcel_id = $(this).data('id')
-    $.ajax({
-      url : '/share_with_brokers',
-      data : { broker_ids: broker_ids, id: parcel_id }
-    });
-  })
+  function sale_all_and_none(sale_all, sale_none) {
+    $('#trading_parcel_sale_all').prop('checked', sale_all)
+    $('#trading_parcel_sale_none').prop('checked', sale_none)
+  }
 });
 
 $(document).ready(function() {

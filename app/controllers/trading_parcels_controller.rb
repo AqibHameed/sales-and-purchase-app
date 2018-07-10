@@ -6,7 +6,7 @@ class TradingParcelsController < ApplicationController
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_role_authorization, except: [:related_seller, :parcel_history]
-  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :share_broker, :related_seller, :parcel_history, :size_info]
+  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
 
   rescue_from ActiveRecord::RecordNotFound do
@@ -79,10 +79,6 @@ class TradingParcelsController < ApplicationController
     redirect_to trading_customers_path
   end
 
-  def share_broker
-    @parcel.update_column(:broker_ids, params[:broker_ids])
-  end
-
   def parcel_detail
     @info = []
     @parcel = TradingParcel.find(params[:id])
@@ -111,7 +107,6 @@ class TradingParcelsController < ApplicationController
   end
 
   def direct_sell
-    # @my_parcel = TradingParcel.find(params[:id])
     @transaction = Transaction.new
   end
 
@@ -140,6 +135,18 @@ class TradingParcelsController < ApplicationController
     end
   end
 
+  def check_for_sale
+    @parcel.update(parcel_visibility_params)
+    (parcel_visibility_params[:sale_broker].to_i == 1) ? update_broker(params[:broker_id]) : update_broker(nil)
+    respond_to do |format|
+      format.js { render js: "$('#for_sale_modal').modal('hide')"}
+    end
+  end
+
+  def update_broker(broker_ids)
+    @parcel.update_column(:broker_ids, broker_ids)
+  end
+
   private
   def trading_parcel_params
     params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country,
@@ -149,6 +156,10 @@ class TradingParcelsController < ApplicationController
 
   def set_trading_parcel
     @parcel = TradingParcel.find(params[:id])
+  end
+
+  def parcel_visibility_params
+    params[:trading_parcel].permit!
   end
 
   def check_authenticate_supplier

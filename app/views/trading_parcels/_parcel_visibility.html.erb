@@ -2,18 +2,29 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+        <button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
         <h4 class="modal-title" id="myModalLabel">Select Parcel Visibility</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal">
+        <%= form_for @parcel, url: check_for_sale_trading_parcels_path(id: @parcel), remote: true, html: { class: 'form-horizontal', method: :post} do |f| %>
           <div class="form-group">
             <div class="col-sm-10">
               <div class="form-group">
                 <div class="col-sm-10">
                   <div class="checkbox">
+                  <label>
+                    <%= f.check_box :sale_all, class: 'form-check-input' %>
+                    <%= f.label "All", class: 'form-check-label' %>
+                  </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-10">
+                  <div class="checkbox">
                     <label>
-                      <%= check_box_tag "sale_all", "sale_all", @parcel.try(:sale_all),  "data-id" => @parcel.try(:id), class: 'for_sale' %> All
+                      <%= f.check_box :sale_none, class: 'form-check-input' %>
+                      <%= f.label "None", class: 'form-check-label' %>
                     </label>
                   </div>
                 </div>
@@ -22,16 +33,8 @@
                 <div class="col-sm-10">
                   <div class="checkbox">
                     <label>
-                      <%= check_box_tag "sale_none", "sale_none", @parcel.try(:sale_none), "data-id" => @parcel.try(:id), class: 'for_sale' %> None
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-sm-10">
-                  <div class="checkbox">
-                    <label>
-                      <%= check_box_tag "sale_broker", "sale_broker", @parcel.try(:sale_broker), "data-id" => @parcel.try(:id), class: 'for_sale' %> Broker
+                      <%= f.check_box :sale_broker, class: 'form-check-input' %>
+                      <%= f.label "Broker", class: 'form-check-label' %>
                     </label>
                   </div>
                 </div>
@@ -43,7 +46,8 @@
                 <div class="col-sm-10">
                   <div class="checkbox">
                     <label>
-                      <%= check_box_tag "sale_credit", "sale_credit", @parcel.try(:sale_credit), "data-id" => @parcel.try(:id), class: 'for_sale' %> Credit Given
+                      <%= f.check_box :sale_credit, class: 'form-check-input' %>
+                      <%= f.label "Credit Given", class: 'form-check-label' %>
                     </label>
                   </div>
                 </div>
@@ -52,15 +56,16 @@
                 <div class="col-sm-10">
                   <div class="checkbox">
                     <label>
-                      <%= check_box_tag "sale_demanded", "sale_demanded", @parcel.try(:sale_demanded), "data-id" => @parcel.try(:id), class: 'for_sale' %> Demanded
+                      <%= f.check_box :sale_demanded, class: 'form-check-input' %>
+                      <%= f.label "Demanded", class: 'form-check-label' %>
                     </label>
                   </div>
                 </div>
               </div>
-             <%= button_tag 'Apply', class: 'btn btn-primary', 'data-dismiss': "modal" %>
+             <%=f.submit 'Apply', class: 'btn btn-primary' %>
             </div>
           </div>
-        </form>
+        <%end%>
       </div>
     </div>
   </div>
