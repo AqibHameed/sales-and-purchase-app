@@ -9,7 +9,7 @@ class TradingParcel < ApplicationRecord
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
 
-  validates :source, presence: true #, if: :diamond_type_is_sight?
+  validates :source, presence: true
   validates :credit_period, :total_value, :description, presence: true, unless: :diamond_type_is_polish?
   validates :total_value, presence: true
   validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
