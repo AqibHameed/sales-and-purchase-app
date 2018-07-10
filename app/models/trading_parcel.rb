@@ -9,23 +9,33 @@ class TradingParcel < ApplicationRecord
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
 
-  validates :source, presence: true #, if: :diamond_type_is_sight?
-  validates :credit_period, :total_value, :description, presence: true
-  validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true
+  validates :source, presence: true
+  validates :credit_period, :total_value, :description, presence: true, unless: :diamond_type_is_polish?
+  validates :total_value, presence: true
+  validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
 
   after_create :generate_and_add_uid, :send_mail_to_demanded
   after_update :set_sale_none_when_all_none
 
   accepts_nested_attributes_for :my_transaction
   accepts_nested_attributes_for :parcel_size_infos, :allow_destroy => true
-  validate :validate_carats
+  validate :validate_carats, unless: :diamond_type_is_polish?
   attr_accessor :single_parcel
 
   enum for_sale: [ :to_all, :to_none, :broker, :credit_given, :demanded ]
 
-  # def diamond_type_is_sight?
-  #   self.diamond_type == "Sight"
-  # end
+  SHAPE = ["Round", "Princess", "Emerald", "Sq. Emerald", "Asscher", "Radiant", "Square Radiant", "Cushion Brilliant", "Cushion Modified", "Pear"]
+  COLOR = ["D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S"]
+  CLARITY= ["FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "SI3", "I1", "I2", "I3"]
+
+  CUT_POLISH_SYMMETRY = ["Excellent", "Very Good", "Good", "Fair", "Poor"]
+
+  FLUORESCENCE = ["None", "Very Slight", "Faint/Slight", "Medium", "Strong", "Very Stong"]
+  LAB = ["GIA", "AGS", "HRD", "IGI", "RDC", "CGL", "DCLA", "GCAL", "GHI", "IIDGR"]
+
+  def diamond_type_is_polish?
+    self.source == "POLISHED"
+  end
 
   def validate_carats
     sum = 0.0

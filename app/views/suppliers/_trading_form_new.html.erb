@@ -1,0 +1,78 @@
+<%= render partial: 'suppliers/trading_form' %>
+<script type="text/javascript">
+  $(document).on('change', '#trading_parcel_source', function(){
+    val = $(this).val()
+    $('.buttons').removeClass('hide')
+    $('.add-size').removeClass('hide')
+    $('.checkbox-division').removeClass('hide')
+    if(val == "Outside Goods" || val == "OUTSIDE GOODS"){
+      $('#trading_parcel_diamond_type').val('Rough')
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.polished').addClass('hide')
+      $('#trading_document_credit_field').val('E')
+      $('#trading_document_price_field').val('F')
+    }else if(val == "RUSSIAN" || val == "Russian"){
+      $('#trading_parcel_diamond_type').val('Sight')
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').removeClass('hide')
+      $('.polished').addClass('hide')
+      $('#trading_document_credit_field').val('I')
+      $('#trading_document_price_field').val('H')
+    }else if(val == "DTC") {
+      $('#trading_parcel_diamond_type').val('Sight')
+      $('.common').removeClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').removeClass('hide')
+      $('.polished').addClass('hide')
+      $('#trading_document_credit_field').val('I')
+      $('#trading_document_price_field').val('H')
+    }else if(val == "SOMETHING SPECIAL") {
+      $('#trading_parcel_diamond_type').val('Rough')
+      $('.common').removeClass('hide')
+      $('.rough_diamond').removeClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.polished').addClass('hide')
+      $('#trading_document_credit_field').val('E')
+      $('#trading_document_price_field').val('F')
+    }else if(val == "POLISHED" || val == "Polished") {
+      $('#trading_parcel_diamond_type').val('Polished')
+      $('.polished').removeClass('hide')
+      $('.common').addClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.add-size').addClass('hide')
+    }else{
+      $('.common').addClass('hide')
+      $('.rough_diamond').addClass('hide')
+      $('.sight_diamond').addClass('hide')
+      $('.polished').addClass('hide')
+      $('.buttons').addClass('hide')
+      $('.checkbox-division').addClass('hide')
+    }
+  });
+
+  $(document).on('change', '#trading_parcel_source', function(){
+    supplier_list()
+  })
+
+
+  $(document).ready(function(){
+    supplier_list()
+    setTimeout(function(){
+      $('#trading_parcel_description').val('<%=@trading_parcel.description%>')
+    }, 500);
+  })
+
+  function supplier_list() {
+    id = $('#trading_parcel_source').val()
+    $.ajax({
+      url: '/supplier_demand_list',
+      method: 'get',
+      data: {id: id}
+    })
+  }
+
+</script>

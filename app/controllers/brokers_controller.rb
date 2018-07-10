@@ -1,4 +1,5 @@
 class BrokersController < ApplicationController
+  before_action :check_authorization, except: [:reject, :accept, :remove, :requests]
   before_action :load_request, only: [:accept, :reject, :remove]
 
   def index
@@ -79,6 +80,14 @@ class BrokersController < ApplicationController
 
   def broker_invite_params
     params.require(:broker_invite).permit(:email, :customer_id)
+  end
+
+  def check_authorization
+    if current_customer.has_role?('Broker')
+      # do nothing
+    else
+      redirect_to trading_customers_path, notice: 'You are not authorized.'
+    end
   end
 end
 

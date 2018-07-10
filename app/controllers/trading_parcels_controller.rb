@@ -8,6 +8,7 @@ class TradingParcelsController < ApplicationController
   before_action :check_role_authorization, except: [:related_seller, :parcel_history]
   before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
+  before_action :authenticate_broker, only: [:related_seller, :parcel_history]
 
   rescue_from ActiveRecord::RecordNotFound do
     flash[:notice] = 'Parcel not found'
@@ -15,25 +16,27 @@ class TradingParcelsController < ApplicationController
   end
 
   def create
+    check_broker = true
     @parcel = TradingParcel.new(trading_parcel_params)
     if params[:trading_parcel][:no_of_stones] == ''
       @parcel.no_of_stones = 0
     end
-    if @parcel.save
+    if trading_parcel_params[:sale_broker].to_i == 1 && trading_parcel_params[:broker_ids].blank?
+      check_broker = false
+    end
+
+    if @parcel.save && check_broker
       flash[:notice] = "Parcel created successfully"
-      if params[:trading_parcel][:single_parcel].present?
-        respond_to do |format|
-          format.js {render :js => "window.location.href='"+single_parcel_supplier_path(@parcel)+"'"}
-        end
-      else
-        respond_to do |format|
-          format.js {render :js => "window.location.href='"+trading_customers_path+"'"}
-        end
+      respond_to do |format|
+        format.js {render :js => "window.location.href='"+single_parcel_supplier_path(@parcel)+"'"}
+        format.html { redirect_to single_parcel_supplier_path(@parcel) }
       end
     else
+      check_broker ? '' : @parcel.errors.add(:broker_ids, "can't be blank...")
       @trading_parcel = @parcel
       respond_to do |format|
         format.js
+        format.html { redirect_to single_parcel_supplier_path(@parcel) }
       end
     end
   end
@@ -55,11 +58,23 @@ class TradingParcelsController < ApplicationController
   end
 
   def update
-    if @parcel.update_attributes(trading_parcel_params)
+    check_broker = true
+    if trading_parcel_params[:sale_broker].to_i == 1 && trading_parcel_params[:broker_ids].blank?
+      check_broker = false
+    end
+    if @parcel.update_attributes(trading_parcel_params) && check_broker
       flash[:notice] = 'Parcel updated successfully'
-      redirect_to trading_customers_path
+      respond_to do |format|
+        format.js {render :js => "window.location.href='"+trading_customers_path+"'"}
+        format.html { redirect_to trading_customers_path }
+      end
     else
-      render :edit
+      check_broker ? '' : @parcel.errors.add(:broker_ids, "can't be blank...")
+      @trading_parcel = @parcel
+      respond_to do |format|
+        format.js {render :create}
+        format.html { redirect_to trading_customers_path }
+      end
     end
   end
 
@@ -139,7 +154,7 @@ class TradingParcelsController < ApplicationController
 
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
+    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :broker_ids, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
 
   end
@@ -157,6 +172,14 @@ class TradingParcelsController < ApplicationController
     else
       flash[:notice] = 'You are not authorized for this action'
       redirect_to trading_customers_path
+    end
+  end
+
+  def authenticate_broker
+    if current_customer.has_role?('Broker')
+      # do nothing
+    else
+      redirect_to trading_customers_path, notice: 'You are not authorized.'
     end
   end
 end

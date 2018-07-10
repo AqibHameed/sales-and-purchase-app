@@ -1,11 +1,12 @@
 class MessagesController < ApplicationController
+  before_action :set_message
+  before_action :check_authenticate_receiver, only: [:show]
 
   def index
     @messages = Message.where(receiver_id: current_company.id)
   end
 
   def show
-    @message = Message.find(params[:id])
   end
 
   def new
@@ -26,4 +27,17 @@ class MessagesController < ApplicationController
     def message_params
       params.require(:message).permit(:subject, :message, :message_type, :receiver_id)
     end
+
+    def set_message
+      @message = Message.find(params[:id])
+    end
+
+    def check_authenticate_receiver
+      if current_company.try(:id) == @message.try(:receiver_id)
+      else
+        flash[:notice] = 'You are not authorized for this action'
+        redirect_to trading_customers_path
+      end
+    end
+
 end

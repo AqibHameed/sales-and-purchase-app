@@ -4,6 +4,7 @@ class SuppliersController < ApplicationController
   before_action :authenticate_customer!, except: [:add_demand_list, :upload_demand_list, :check_role_authorization]
   before_action :authenticate_admin!, only: [:add_demand_list, :upload_demand_list]
   before_action :check_role_authorization
+  before_action :check_authenticate_supplier, only: [:single_parcel]
 
   def index
     @parcels = TradingParcel.where(customer_id: current_customer.id, sold: false).order(created_at: :desc) #.page params[:page]
@@ -72,7 +73,6 @@ class SuppliersController < ApplicationController
   end
 
   def single_parcel
-    @parcel = TradingParcel.find(params[:id])
     @info = []
   end
 
@@ -291,4 +291,14 @@ class SuppliersController < ApplicationController
   def credit_request_params
     params.require(:customer).permit(:first_name, :company, :mobile_no, credit_requests_attributes: [:buyer_id, :limit, :approve, :customer_id, :parent_id, :_destroy])
   end
+
+  def check_authenticate_supplier
+    @parcel = TradingParcel.find(params[:id])
+    if current_customer.company.id == @parcel.company_id
+    else
+      flash[:notice] = 'You are not authorized for this action'
+      redirect_to trading_customers_path
+    end
+  end
+
 end

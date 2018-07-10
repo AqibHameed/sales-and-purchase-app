@@ -1,97 +1,11 @@
 <div class="dashboard">
   <div class="links text-center">
-    <%#= link_to "Upload Bulk Parcel", 'javascript:void(0)', class: 'bulk_upload mr5 btn btn-danger' %>
-    <%#= link_to "Create Single Parcel", 'javascript:void(0)', class: 'single_parcel btn btn-danger' %>
   </div>
   <hr>
   <center>
-    <%= render partial: 'trading_form' %>
+    <div class="single">
+    <h3>New Parcel </h3>
+    <%= render partial: 'suppliers/trading_form_new' %>
   </center>
   <div class="clear10"></div>
-  <!-- <h3>My Parcels</h3>
-  <div class="clear10"></div>
-  <div class="table">
-    <%#= render partial: 'customers/trading/trading_parcels' , locals: { parcels: @parcels } %>
-  </div> -->
 </div>
-
-<script type="text/javascript">
-  $(document).on('change', '#trading_parcel_source', function(){
-    val = $(this).val()
-
-    if(val == "Outside Goods" || val == "OUTSIDE GOODS"){
-      $('#trading_parcel_diamond_type').val('Rough')
-      $('.common').removeClass('hide')
-      $('.rough_diamond').removeClass('hide')
-      $('.sight_diamond').addClass('hide')
-      $('#trading_document_credit_field').val('E')
-      $('#trading_document_price_field').val('F')
-    }else if(val == "RUSSIAN" || val == "Russian"){
-      // alert($('#trading_parcel_source').val())
-      $('#trading_parcel_diamond_type').val('Sight')
-      $('.common').removeClass('hide')
-      $('.rough_diamond').addClass('hide')
-      $('.sight_diamond').removeClass('hide')
-      $('#trading_document_credit_field').val('I')
-      $('#trading_document_price_field').val('H')
-    }else if(val == "DTC") {
-      $('#trading_parcel_diamond_type').val('Sight')
-      $('.common').removeClass('hide')
-      $('.rough_diamond').addClass('hide')
-      $('.sight_diamond').removeClass('hide')
-      $('#trading_document_credit_field').val('I')
-      $('#trading_document_price_field').val('H')
-    }else if(val == "SOMETHING SPECIAL") {
-      $('#trading_parcel_diamond_type').val('Rough')
-      $('.common').removeClass('hide')
-      $('.rough_diamond').removeClass('hide')
-      $('.sight_diamond').addClass('hide')
-      $('#trading_document_credit_field').val('E')
-      $('#trading_document_price_field').val('F')
-    }else{
-      $('.common').addClass('hide')
-      $('.rough_diamond').addClass('hide')
-      $('.sight_diamond').addClass('hide')
-    }
-  });
-
-  // $(document).on('click', '.bulk_upload', function(){
-  //   $('#trading_document_diamond_type').val('')
-  //   $('.bulk').removeClass('hide')
-  //   $('.single').addClass('hide')
-  // })
-
-  // $(document).on('click', '.single_parcel', function(){
-  //   $('#trading_document_diamond_type').val('')
-  //   $('.single').removeClass('hide')
-  //   $('.bulk').addClass('hide')
-  // })
-
-  // $(document).on('change', '#trading_parcel_diamond_type', function(){
-  //   val = $('.single #trading_parcel_diamond_type').val()
-  //   alert(val);
-  //   if (val == 'Rough'){
-  //     $.ajax({
-  //       url: '/supplier_demand_list',
-  //       method: 'get',
-  //       data: {id: val}
-  //     })
-  //   } else if (val == 'Sight'){
-  //     $.ajax({
-  //       url: '/supplier_list',
-  //       method: 'get',
-  //       data: {diamond_type: val}
-  //     })
-  //   }
-  // })
-
-  $(document).on('change', '#trading_parcel_source', function(){
-    id = $('.single #trading_parcel_source').val()
-    $.ajax({
-      url: '/supplier_demand_list',
-      method: 'get',
-      data: {id: id}
-    })
-  })
-
-</script>

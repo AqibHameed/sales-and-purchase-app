@@ -1,25 +1,15 @@
 <div class="form-wrapper">
   <%= form_for @demanding_parcel, url: demanding_search_customers_path, method: :get do |f| %>
 
-    <!-- <div class="form-row">
-      <div class="label">Diamond Type: </div>
-      <div class="field">
-        <%#= select_tag "demand_diamond_type", options_for_select(['Outside Goods', 'Sight']),  { class: 'input', include_blank: true } %>
-        <%#= f.select :diamond_type, options_for_select(['Outside Goods', 'Sight']), {include_blank: true}, {class: 'input'} %>
-      </div>
-    </div> -->
-
     <div class="form-row">
       <div class="label">Source: </div>
       <div class="field">
-        <%#= select_tag "demand_demand_supplier_id", options_for_select(supplier_list_for_demand),  { class: 'input', include_blank: true } %>
-        <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand), { include_blank: true }, { class: 'input' } %>
+        <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand(current_company)), { include_blank: true }, { class: 'input' } %>
       </div>
     </div>
     <div class="form-row">
       <div class="label">Description: </div>
       <div class="field demand_desc">
-        <%#= select_tag "demand_description", options_for_select(parcel_list_for_demand(nil)),  { class: 'input', include_blank: true, multiple: true } %>
         <%= f.select :description, options_for_select(parcel_list_for_demand(nil)), {include_blank: true}, { class: 'input', multiple: true }%>
       </div>
     </div>
@@ -27,7 +17,6 @@
     <div class="form-row">
       <div class="label"></div>
       <div class="field">
-        <%#= link_to 'Search', 'javascript:void(0)', class: 'btn-02 login-btn search'  %>
         <%=f.submit 'Search', class: 'login-btn btn-02' %>
         <%=link_to 'Reset', demanding_search_customers_path, class: 'btn btn-default', data: { turbolinks: false } %>
       </div>

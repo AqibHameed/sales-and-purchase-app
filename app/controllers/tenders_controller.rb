@@ -5,6 +5,7 @@ class TendersController < ApplicationController
   before_action :authenticate_logged_in_user!, :only => [:index, :history, :show, :filter, :view_past_result]
   before_action :authenticate_customer!, :except => [:index, :history, :delete_stones, :delete_sights, :delete_winner_details, :show, :filter, :view_past_result, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail ]
   before_action :authenticate_admin!, :only => [:delete_stones, :delete_sights,:delete_winner_details, :admin_details, :admin_winner_details, :update_stone_desc, :update_winner_desc, :winner_list,:bidder_list,:customer_bid_list,:customer_bid_detail]
+  before_action :check_role_authorization, only: [:trading_history]
 
   layout :false, :only => [:admin_details, :admin_winner_details]
 
