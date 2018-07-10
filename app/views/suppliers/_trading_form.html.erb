@@ -53,7 +53,6 @@
       <div class="col-sm-10">
         <%= f.number_field :credit_period, class: 'form-control' %>
         <%= f.hidden_field :customer_id, value: current_customer.id, class: 'form-control' %>
-        <%= f.hidden_field :single_parcel, value: true, class: 'form-control' %>
         <%= f.hidden_field :company_id, value: current_company.id, class: 'form-control' %>
       </div>
     </div>
@@ -159,7 +158,15 @@
             <%= f.check_box :sale_demanded, class: 'form-check-input' %>
             <%= f.label "Demanded", class: 'form-check-label' %>
           </div>
+        </div>
+      </div>
+    </div>
 
+    <div class="form-group broker-list hide">
+      <label class="col-sm-2 control-label">Brokers:</label>
+      <div class="col-sm-10">
+        <div class="col-md-6">
+          <%= f.select :broker_ids, options_for_select(list_of_brokers(current_company)), { include_blank: true }, { class: 'broker-select form-control', style: 'width: 500px; margin-left: -13px;' } %>
         </div>
       </div>
     </div>
@@ -230,34 +237,5 @@
       $('#amount').val(amount);
       $('#trading_parcel_total_value').val(amount)
     }
-  }
-
-  $(document).on('change','#trading_parcel_sale_all, #trading_parcel_sale_none, #trading_parcel_sale_broker, #trading_parcel_sale_demanded, #trading_parcel_sale_credit', function(){
-    self = $(this)
-    disable_button(self)
-  });
-
-  function disable_button(self){
-    self_checked = self.prop('checked')
-    if (self.attr('name') == 'trading_parcel[sale_all]') {
-      sale_all_and_none(self_checked, false)
-      disable_demand_broker_credit()
-    }  else if (self.attr('name') == 'trading_parcel[sale_none]') {
-      sale_all_and_none(false, self_checked)
-      disable_demand_broker_credit()
-    } else {
-      sale_all_and_none(false, false)
-    }
-  }
-
-  function disable_demand_broker_credit() {
-    $('#trading_parcel_sale_broker').prop('checked', false)
-    $('#trading_parcel_sale_demanded').prop('checked', false)
-    $('#trading_parcel_sale_credit').prop('checked', false)
-  }
-
-  function sale_all_and_none(sale_all, sale_none) {
-    $('#trading_parcel_sale_all').prop('checked', sale_all)
-    $('#trading_parcel_sale_none').prop('checked', sale_none)
   }
 </script>
