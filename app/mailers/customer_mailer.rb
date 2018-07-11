@@ -3,7 +3,7 @@ class CustomerMailer < ApplicationMailer
 
   def remove_broker_mail(request)
     @request = request
-    broker = @request.broker.email
+    broker = @request.try(:broker).try(:customers).try(:first).try(:email)
     mail(:to => broker, :subject => '[ClarityNetwork] Broker Remove' )
   end
 
