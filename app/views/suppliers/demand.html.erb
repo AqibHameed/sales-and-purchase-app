@@ -13,7 +13,9 @@
     </thead>
     <% @companies.each.with_index(1) do |company, i|%>
       <tr>
-        <td><%= link_to company.name, 'javascript:void(0)', :class => 'company_profile', "data-id"=> company.id %></td>
+        <td><%#= link_to company.name, 'javascript:void(0)', :class => 'company_profile', "data-id"=> company.id %>
+        <%=company.try(:name)%>
+        </td>
 
 
         <td class="credit_limit">

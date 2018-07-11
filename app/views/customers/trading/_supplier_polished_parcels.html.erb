@@ -94,7 +94,7 @@
         </td>
         <td>
           <span class="table-head-in-td">Demand:</span>
-          <%= link_to parcel.demand_count(parcel,current_company, true), demand_supplier_path(id: parcel.id, is_polished: true) %>
+          <%= link_to parcel.demand_count(parcel,current_company, true), demand_supplier_path(id: parcel.id, is_polished: true), data: {turbolinks: false} %>
         </td>
         <td>
           <%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %>
