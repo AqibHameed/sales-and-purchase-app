@@ -21,7 +21,7 @@
         <th></th>
       </tr>
       <% @parcels.each.with_index(1) do |parcel, i|%>
-          <% if check_parcel_visibility(parcel, current_customer, false)%>
+          <% if check_parcel_visibility(parcel, current_customer)%>
             <tr>
               <td class="td-mobile-count">
                 <div class="lefter">
