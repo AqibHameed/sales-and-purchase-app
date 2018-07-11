@@ -10,8 +10,7 @@ class TradingParcel < ApplicationRecord
   belongs_to :trading_document, optional: true
 
   validates :source, presence: true
-  validates :credit_period, :total_value, :description, presence: true, unless: :diamond_type_is_polish?
-  validates :total_value, presence: true
+  validates :credit_period, :total_value, :description, presence: true
   validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
 
   after_create :generate_and_add_uid, :send_mail_to_demanded, :replace_nil_value
@@ -64,23 +63,19 @@ class TradingParcel < ApplicationRecord
     self.save(validate: false)
   end
 
-  def demand_count(parcel, customer)
-    count = Demand.where(description: parcel.description, block: false, deleted: false).where.not(company_id: customer.id).count
-    # customer_ids = demands.customer_ids
-    # customer_ids.each do |id|
-    #   Customer.check_overdue(id)
-    # end
+  def demand_count(parcel, company, is_polished)
+    count = is_polished ? PolishedDemand.where(description: parcel.description, block: false, deleted: false).where.not(company_id: company.id).count: Demand.where(description: parcel.description, block: false, deleted: false).where.not(company_id: company.id).count
     return count
   end
 
   def related_parcels(company)
-    networks = BrokerRequest.where(broker_id: company.id, accepted: true).map { |e| e.seller_id } #. delete(customer.id.to_i)
+    networks = BrokerRequest.where(broker_id: company.id, accepted: true).map { |e| e.seller_id }
     networks.delete(self.company)
     parcels = TradingParcel.where(description: description, company_id: networks, sold: false)
   end
 
   def send_mail_to_demanded
-    demands = Demand.where.not(company_id: company_id).where(description: self.description).map { |e| e.customer.email }
+    demands = Demand.where.not(company_id: company_id).where(description: self.try(:description)).map{|e| e.company.customers.map(&:email)}.flatten.uniq
     unless demands.blank?
       TenderMailer.parcel_up_email(self, demands).deliver rescue logger.info "Error sending email"
     end

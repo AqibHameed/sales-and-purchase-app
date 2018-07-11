@@ -170,7 +170,7 @@
         $('.error-message').text("Please enter value greater than 0")
       } else if ($('#percent').val() == '' || $('#proposal_price').val() == '' || $('#total').val() == '' || $('#proposal_credit').val() == ''){
         $('.error-message').text("Value cannot be blank...");
-      }else if ( !$.isNumeric($('#percent').val()) || !$.isNumeric($('#proposal_price').val()) || !$.isNumeric($('#total').val()) || !$.isNumeric($('#proposal_credit').val()) ){
+      }else if ( !$.isNumeric($('#proposal_price').val()) || !$.isNumeric($('#total').val()) || !$.isNumeric($('#proposal_credit').val()) ){
         $('.error-message').text("Please enter numeric value...");
       } else {
         $('form.proposalform').submit();

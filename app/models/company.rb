@@ -7,7 +7,7 @@ class Company < ApplicationRecord
 
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
-
+  has_many :polished_demands
   validates :name, presence: true
 
   def get_owner

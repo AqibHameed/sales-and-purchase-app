@@ -4,7 +4,7 @@
     <div class="form-row">
       <div class="label">Source: </div>
       <div class="field">
-        <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand(current_company)), { include_blank: true }, { class: 'input' } %>
+        <%= f.select :demand_supplier_id, options_for_select(supplier_list_for_demand(current_company, true)), { include_blank: true }, { class: 'input' } %>
       </div>
     </div>
     <div class="form-row">
@@ -31,7 +31,11 @@
       <% demand_supplier = params[:demand][:demand_supplier_id] %>
       <% diamond_type = params[:demand][:diamond_type] %>
       <% description = params[:demand][:description] %>
-      <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false } %>
+      <% if params[:demand][:demand_supplier_id] == 'POLISHED'%>
+      <%=link_to "Add Polished demand", polished_demand_customers_path, class: 'btn btn-success', data: { turbolinks: false } %>
+      <%else%>
+        <%=link_to "Add this to demand", demand_from_search_customers_path(demand_supplier: demand_supplier, diamond_type: diamond_type, description: description), class: 'btn btn-success', data: { turbolinks: false } %>
+      <%end%>
     <% end %>
   <% end %>
 </div>

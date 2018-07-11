@@ -1,5 +1,5 @@
-<%hide_class = @trading_parcel.new_record? ? 'hide' : ''%>
 <% dt = @trading_parcel.diamond_type %>
+<%hide_class = @trading_parcel.new_record? ? 'hide' : ''%>
 <%= nested_form_for @trading_parcel, remote: true, html: { class: 'form-horizontal' } do |f| %>
   <div class="tranding-parcel-errors">
     <%= render partial: 'suppliers/tranding_parcel_errors' %>
@@ -10,7 +10,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">Source:</label>
     <div class="col-sm-10">
-      <%= f.select :source, options_for_select(supplier_list_for_demand(current_company), :selected => f.object.source), {include_blank: true}, {class: 'form-control'}%>
+      <%= f.select :source, options_for_select(supplier_list_for_demand(current_company, true), :selected => f.object.source), {include_blank: true}, {class: 'form-control'}%>
     </div>
   </div>
 
@@ -48,14 +48,6 @@
   </div>
 
   <div class="common <%=hide_class%> <%=(dt != 'Polished') ? '' : 'hide'%>">
-    <div class="form-group">
-      <label class="col-sm-2 control-label">Credit:</label>
-      <div class="col-sm-10">
-        <%= f.number_field :credit_period, class: 'form-control' %>
-        <%= f.hidden_field :customer_id, value: current_customer.id, class: 'form-control' %>
-        <%= f.hidden_field :company_id, value: current_company.id, class: 'form-control' %>
-      </div>
-    </div>
 
     <div class="form-group">
       <label class="col-sm-2 control-label">No of Stones:</label>
@@ -102,6 +94,15 @@
     <%= render partial: 'suppliers/polished_form', locals: {f: f} %>
   </div>
   <div class="checkbox-division <%=hide_class%>">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Credit:</label>
+      <div class="col-sm-10">
+        <%= f.number_field :credit_period, class: 'form-control' %>
+        <%= f.hidden_field :customer_id, value: current_customer.id, class: 'form-control' %>
+        <%= f.hidden_field :company_id, value: current_company.id, class: 'form-control' %>
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="col-sm-2 control-label">Carats:</label>
       <div class="col-sm-10">

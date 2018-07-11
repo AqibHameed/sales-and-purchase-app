@@ -41,7 +41,7 @@ class SuppliersController < ApplicationController
 
   def demand
     @parcel = TradingParcel.find(params[:id])
-    @demand = Demand.where(description: @parcel.description, block: false, deleted: false).where.not(company_id: current_company.id)
+    @demand = params[:is_polished] ? PolishedDemand.where(description: @parcel.description, block: false, deleted: false).where.not(company_id: current_company.id) : Demand.where(description: @parcel.description, block: false, deleted: false).where.not(company_id: current_company.id)
     @companies = Company.where(id: @demand.map(&:company_id)).page params[:page]
   end
 

@@ -15,6 +15,7 @@
     <th>Country</th>
     <th>Avg. Price</th>
     <th>Total $</th>
+    <th>Demand</th>
     <th>For Sale</th>
     <th></th>
   </thead>
@@ -90,6 +91,10 @@
         <td>
           <span class="table-head-in-td">Total/Box Value:</span>
           <%= parcel.total_value.nil? ? 'N/A' : parcel.total_value %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Demand:</span>
+          <%= link_to parcel.demand_count(parcel,current_company, true), demand_supplier_path(id: parcel.id, is_polished: true) %>
         </td>
         <td>
           <%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %>

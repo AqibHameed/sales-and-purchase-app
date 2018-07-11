@@ -43,7 +43,7 @@
            <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight %></td>
           <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
           <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
-          <td><%=parcel.demand_count(parcel)%></td>
+          <td><%=parcel.demand_count(parcel, current_company, false)%></td>
           <td>
             <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
             <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
@@ -75,7 +75,7 @@
           <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
           <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
           <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
-          <td><%= link_to parcel.demand_count(parcel,current_company), demand_supplier_path(id: parcel.id) %></td>
+          <td><%= link_to parcel.demand_count(parcel,current_company, false), demand_supplier_path(id: parcel.id, is_polished: false) %></td>
           <td><%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %></td>
           <td>
             <%= link_to trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} do %>
