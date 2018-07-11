@@ -113,16 +113,29 @@
   </div>
 </div>
 
-<script type="text/javascript">
-  // $(document).on('change', '#demand_diamond_type', function(){
-  //   type = $('#demand_diamond_type').val()
-  //   $.ajax({
-  //     url: '/supplier_list',
-  //     method: 'get',
-  //     data: {diamond_type: type}
-  //   })
-  // })
+<div class="row">
+  <div class="col-sm-3">
+    <h1>Polished </h1>
+    <div class="table no-padding">
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter">
+        <thead class="thead-desktop">
+            <th>Description</th>
+            <th>Supplier</th>
+            <th></th>
+        </thead>
+        <% @polished_demands.each do |demand| %>
+          <tr>
+            <td><%= demand.description %></td>
+            <td><%= demand.demand_supplier.name rescue 'N/A' %></td>
+            <td><%= link_to(image_tag("/assets/wrong.png", width: "15"), remove_demand_customer_path(id: demand.id), method: :delete)%></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
 
+<script type="text/javascript">
   $(document).on('change', '#demand_demand_supplier_id', function(){
     id = $('#demand_demand_supplier_id').val()
     $.ajax({

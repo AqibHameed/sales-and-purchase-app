@@ -164,11 +164,10 @@ class CustomersController < ApplicationController
     @russian_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 2, deleted: false)
     @outside_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 3, deleted: false)
     @something_special_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 4, deleted: false)
+    @polished_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 5, deleted: false)
     if current_company.is_overdue
-      # current_customer.block_demands
       @disable = true
     else
-      # current_customer.unblock_demands
       @disable = false
     end
   end

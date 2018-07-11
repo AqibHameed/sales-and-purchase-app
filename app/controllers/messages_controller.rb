@@ -29,7 +29,7 @@ class MessagesController < ApplicationController
     end
 
     def set_message
-      @message = Message.find(params[:id])
+      @message = Message.find_by(id: params[:id])
     end
 
     def check_authenticate_receiver
