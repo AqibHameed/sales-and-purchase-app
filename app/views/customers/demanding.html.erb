@@ -108,9 +108,11 @@
 </div>
 
 <div class="row">
-  <div class="pull-right">
-    <%=link_to "Add Polished demand", polished_demand_customers_path, class: 'btn btn-success', data: { turbolinks: false } %>
-  </div>
+  <% unless @disable %>
+    <div class="pull-right">
+      <%=link_to "Add Polished demand", polished_demand_customers_path, class: 'btn btn-success', data: { turbolinks: false } %>
+    </div>
+  <%end%>
   <h1>Polished </h1>
   <div class="table no-padding">
     <table id="tenderList" class="table table-bordered table-responsive tablesorter">

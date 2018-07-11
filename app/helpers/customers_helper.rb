@@ -14,7 +14,8 @@ module CustomersHelper
         parcel.broker_ids.include?(company.id.to_s) rescue false
       elsif parcel.sale_demanded == true
         demands = Demand.where(description: parcel.description, company_id: company.id)
-        if demands.exists?
+        polished_demand = PolishedDemand.where(description: parcel.description, company_id: company.id)
+        if demands.exists? || polished_demand.exists?
           true
         else
           false

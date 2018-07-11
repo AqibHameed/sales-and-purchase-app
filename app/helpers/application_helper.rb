@@ -450,7 +450,7 @@ module ApplicationHelper
   end
 
   def all_companies(current_company)
-    Company.where.not(id: current_company.id).map{|comapny| [comapny.name, comapny.id]}
+    Company.where.not(id: current_company.id, is_broker: true).map{|comapny| [comapny.name, comapny.id]}
   end
 
   def list_of_customers(current_customer)

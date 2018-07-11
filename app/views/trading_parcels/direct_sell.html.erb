@@ -206,7 +206,7 @@
   <div class="form-group">
     <label for="inputEmail3" class="col-sm-2 control-label">Buyer:</label>
     <div class="col-sm-8">
-      <%= f.select :buyer_id, all_companies(current_company), { include_blank: true }, class: 'form-control no-border' %>
+      <%= f.select :buyer_id, all_companies(current_company), { include_blank: true }, {class: 'form-control no-border'} %>
     </div>
     <div class="col-sm-2">
       <%= link_to 'Invite', invite_transactions_path, :class => 'invite' %>
