@@ -56,7 +56,7 @@
         <div class="form-row">
           <div class="label"> Source: </div>
           <div class="field">
-            <%= p.select :source, options_for_select(supplier_list_for_demand(current_company)), {include_blank: true}, class: 'input' %>
+            <%= p.select :source, options_for_select(supplier_list_for_demand(current_company, true)), {include_blank: true}, class: 'input' %>
           </div>
         </div>
 

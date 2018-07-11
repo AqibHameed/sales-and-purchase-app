@@ -1,0 +1,33 @@
+<%= form_for @polished_demand, url: create_polished_demand_customers_path, html: { class: 'form-horizontal' } do |f| %>
+  <div class="tranding-parcel-errors">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      <%@trading_parcel = @polished_demand%>
+      <center><%= render partial: 'suppliers/tranding_parcel_errors' %></center>
+    </div>
+  </div>
+  </br>
+  <div class="clear10"></div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Source:</label>
+    <div class="col-sm-10">
+      <%= text_field_tag "demand_supplier", "" ,:class => 'form-control', :disabled => true, value: 'POLISHED' %>
+      <%= f.hidden_field :demand_supplier_id, value: @demand_list.try(:first).try(:demand_supplier_id) %>
+      <%= f.hidden_field :company_id, value: current_company.id %>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Description:</label>
+    <div class="col-sm-10">
+      <%= f.select :description, options_for_select(parcel_list_for_demand(@demand_list), @polished_demand.description), {include_blank: true}, class: 'form-control' %>
+
+    </div>
+  </div>
+  <%= render partial: 'suppliers/polished_form', locals: {f: f} %>
+  <div class="form-group">
+    <div class="col-md-6"></div>
+    <div class="col-md-6">
+      <%=f.submit 'Submit', class: 'btn btn-md btn-danger' %>
+    </div>
+  </div>
+<%end%>

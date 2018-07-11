@@ -427,8 +427,8 @@ module ApplicationHelper
     end
   end
 
-  def supplier_list_for_demand(current_company)
-    current_company.try(:add_polished) ? DemandSupplier.all.map { |e| e.name } : DemandSupplier.where.not(name: 'POLISHED').map { |e| e.name }
+  def supplier_list_for_demand(current_company, is_show)
+    (current_company.try(:add_polished) && is_show)? DemandSupplier.all.map { |e| e.name } : DemandSupplier.where.not(name: 'POLISHED').map { |e| e.name }
   end
 
   def link_to_request(current_company, seller)

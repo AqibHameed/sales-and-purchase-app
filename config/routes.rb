@@ -113,6 +113,8 @@ Rails.application.routes.draw do
       get :approve_access
       post :approve
       post :remove
+      get :polished_demand
+      post :create_polished_demand
     end
     member do
       get :add_company

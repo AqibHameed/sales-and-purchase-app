@@ -164,7 +164,7 @@ class CustomersController < ApplicationController
     @russian_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 2, deleted: false)
     @outside_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 3, deleted: false)
     @something_special_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 4, deleted: false)
-    @polished_demands = Demand.where(company_id: current_company.id, demand_supplier_id: 5, deleted: false)
+    @polished_demands = PolishedDemand.where(company_id: current_company.id, demand_supplier_id: 5, deleted: false)
     if current_company.is_overdue
       @disable = true
     else
@@ -197,22 +197,22 @@ class CustomersController < ApplicationController
   end
 
   def demanding_create
-    demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
     description = params[:demand][:description].reject { |c| c.empty? }
-    description.each do |d|
-      @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
-        demand.weight = params[:demand][:weight]
-        demand.price = params[:demand][:price]
-        demand.diamond_type = params[:demand][:diamond_type]
-        demand.block = false
-        demand.deleted = false
+    if params[:demand][:demand_supplier_id].present? && !description.blank?
+      demand_supplier = DemandSupplier.where(name: params[:demand][:demand_supplier_id]).first
+      description.each do |d|
+        @demanding_parcel = Demand.where(description: d, company_id: current_company.id, demand_supplier_id: demand_supplier.id).first_or_create do |demand|
+          demand.weight = params[:demand][:weight]
+          demand.price = params[:demand][:price]
+          demand.diamond_type = params[:demand][:diamond_type]
+          demand.block = false
+          demand.deleted = false
+        end
       end
-    end
-    if @demanding_parcel.save
       flash[:notice] = "Demand created successfully."
       redirect_to demanding_customers_path
     else
-      flash[:notice] = "Something went wrong. Please try again."
+      flash[:alert] = "Please check fields value..."
       redirect_to demanding_customers_path
     end
   end
@@ -272,7 +272,7 @@ class CustomersController < ApplicationController
   end
 
   def remove_demand
-    demand = Demand.where(id: params[:id]).first
+    demand = params[:type] == 'POLISHED' ? PolishedDemand.find_by(id: params[:id]) : Demand.find_by(id: params[:id])
     if demand.present?
       demand.update_attributes(deleted: true)
       flash[:notice] = "Demand deleted successfully."
@@ -311,6 +311,21 @@ class CustomersController < ApplicationController
   def access_denied
   end
 
+  def polished_demand
+    @demand_list =  DemandSupplier.find_by(name: 'POLISHED').try(:demand_list)
+    @polished_demand = PolishedDemand.new
+  end
+
+  def create_polished_demand
+    @polished_demand = PolishedDemand.new(polished_demand_params)
+    if @polished_demand.save
+      redirect_to demanding_customers_path
+    else
+      @demand_list =  DemandSupplier.find_by(name: 'POLISHED').try(:demand_list)
+      render :polished_demand
+    end
+  end
+
 
   private
   def customer_params
@@ -327,6 +342,10 @@ class CustomersController < ApplicationController
 
   def demanding_params
     params.require(:demand).permit(:description, :weight, :price, :diamond_type)
+  end
+
+  def polished_demand_params
+    params.require(:polished_demand).permit!
   end
 
   def can_approve_access
