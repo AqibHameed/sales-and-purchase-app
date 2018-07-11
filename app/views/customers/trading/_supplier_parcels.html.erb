@@ -16,7 +16,7 @@
     <th></th>
   </thead>
   <% parcels.each.with_index(1) do |parcel, i|%>
-    <% if check_parcel_visibility(parcel, current_company) %>
+    <% if check_parcel_visibility(parcel, current_company, false) %>
       <% if parcel.sold %>
         <tr style="background: #ccc;">
           <td class="td-mobile-count">

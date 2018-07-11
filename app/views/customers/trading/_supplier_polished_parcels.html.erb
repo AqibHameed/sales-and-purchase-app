@@ -20,7 +20,7 @@
     <th></th>
   </thead>
   <% parcels.each.with_index(1) do |parcel, i|%>
-    <% if check_parcel_visibility(parcel, current_company) %>
+    <% if check_parcel_visibility(parcel, current_company, true) %>
       <tr>
         <td class="td-mobile-count">
           <div class="lefter">
