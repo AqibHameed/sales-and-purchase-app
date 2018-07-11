@@ -1,5 +1,6 @@
 <%= render partial: 'suppliers/trading_form' %>
 <script type="text/javascript">
+  $('.add-size').addClass('hide')
   $(document).on('change', '#trading_parcel_source', function(){
     val = $(this).val()
     $('.buttons').removeClass('hide')
