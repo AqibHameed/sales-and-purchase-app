@@ -1,13 +1,31 @@
 class Api::V1::RegistrationsController < ActionController::Base
   def create
-    customer = Customer.new(customer_params)
+    check_company = Company.where(name: params[:registration][:company_name]).first
+    if check_company.nil?
+      check_company = Company.create(name: params[:registration][:company_name])
+      is_requested = false
+    else
+      check_company = check_company
+      is_requested = true
+    end
+    customer = Customer.new(customer_params.merge(company_id: check_company.id, is_requested: is_requested, role: 'Buyer/Seller'))
+    # customer = Customer.new(customer_params)
     if customer.save
       customer.ensure_authentication_token
       customer.save!
       response.headers['Authorization'] = customer.authentication_token
       token = customer.generate_jwt_token
-      render :json => { customer: customer_data(customer, token), response_code: 200 }
+      if customer.confirmed?
+        if customer.is_requested
+          render :json => { success: false, message: 'A request has been to sent to your company admin for approval. You can access your account after approval', response_code: 201 }
+        else
+          render :json => { customer: customer_data(customer, token), response_code: 200 }
+        end
+      else
+        render :json => { success: false, message: 'An email has been sent to your email. Please verify the email.', response_code: 201 }
+      end
     else
+      check_company.destroy unless check_company.try(:customers).present?
       render :json => {:errors => customer.errors.full_messages, response_code: 201 }
     end
   end
@@ -37,6 +55,6 @@ class Api::V1::RegistrationsController < ActionController::Base
   end
 
   def customer_params
-    params.require(:registration).permit(:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company, :company_address, :phone_2, :mobile_no)
+    params.require(:registration).permit(:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company_address, :phone_2, :mobile_no, :company_id, :company_name)
   end
 end

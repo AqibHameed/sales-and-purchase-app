@@ -1,6 +1,6 @@
 class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :check_token, :current_customer
+  before_action :check_token, :current_customer, except: [:check_company]
   helper_method :current_company
 
   def list_company
@@ -32,6 +32,11 @@ class Api::V1::CompaniesController < ApplicationController
       blocked = BlockUser.where(company_id: current_company.id)
       render json: { success: true, blocked_customers: blocked.map { |e| { id: e.try(:block_user).try(:id).to_s, company: e.block_user.try(:name), city: e.block_user.try(:city), country: e.block_user.try(:county), created_at: e.block_user.try(:created_at), updated_at: e.block_user.try(:updated_at)}}, response_code: 200 }
     end
+  end
+
+  def check_company
+    company = Company.where(name: params[:company_name]).present?
+    render json: { request_acess: company, signup: !company }
   end
 
   def authenticate_with_token!
