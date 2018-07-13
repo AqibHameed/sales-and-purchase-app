@@ -4,7 +4,11 @@
     <% if current_company.id == proposal.try(:buyer_id) %>
       <tr>
         <td> Supplier </td>
-        <td><%= proposal.try(:supplier).try(:name) %></td>
+        <% if proposal.trading_parcel.is_anonymous %>
+          <td>Anonymous</td>
+        <% else %>
+          <td><%= proposal.try(:supplier).try(:name) %></td>
+        <% end %>
       </tr>
     <% else %>
       <tr>
