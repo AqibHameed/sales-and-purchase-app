@@ -5,11 +5,11 @@ class TradingParcelsController < ApplicationController
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
-  before_action :is_user_edit_polished?, only: [:edit]
   before_action :check_role_authorization, except: [:related_seller, :parcel_history]
   before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
   before_action :authenticate_broker, only: [:related_seller, :parcel_history]
+  before_action :is_user_edit_polished?, only: [:edit]
 
   rescue_from ActiveRecord::RecordNotFound do
     flash[:notice] = 'Parcel not found'
@@ -185,9 +185,10 @@ class TradingParcelsController < ApplicationController
   end
 
   def is_user_edit_polished?
-    unless current_company.add_polished
-      redirect_to trading_customers_path, notice: 'Please contact admin, permission denied...'
+    if @parcel.source == 'POLISHED'
+      unless current_company.add_polished
+        redirect_to trading_customers_path, notice: 'Please contact admin, permission denied...'
+      end
     end
   end
-
 end
