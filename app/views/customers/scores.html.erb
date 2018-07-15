@@ -1,0 +1,45 @@
+<div class="c1 dashboard">
+  <div class="clear10"></div>
+  <div class="company">
+
+    <h3>Payment History</h3>
+    <div class="clear10"></div>
+    <h1>Total Score: <strong><%= current_company.get_payment_history %></strong></h1>
+    <h2>Formula Parts</h2>
+    <ul>
+      <li>First Part <strong>1</strong> <span style="font-size: 90%;font-style: italic;">(Late Payments / (On Time Payments/Months of Data) * 0.25)</span>
+        <ul style="padding-left: 10px">
+          <li>Late Payments</li>
+          <li>On Time Payments</li>
+          <li>Months of Data</li>
+        </ul>
+      </li>
+      <li>Second Part: <strong>2</strong> <span style="font-size: 90%;font-style: italic;">(Pending Payments / Average 3 Month Pending Number of Payments * 0.25)</span>
+        <ul style="padding-left: 10px">
+          <li>Pending Payments</li>
+          <li>Average 3 Month Pending Number of Payments</li>
+        </ul>
+      </li>
+
+      <li>Third Part: <strong>3</strong> <span style="font-size: 90%;font-style: italic;">(Amount of Pending / Amount Completed In Last 3 Months * 0.25)</span>
+        <ul style="padding-left: 10px;">
+          <li>Amount of Pending</li>
+          <li>Amount Completed In Last 3 Months</li>
+        </ul>
+      </li>
+      <li>Fourth Part: <strong>4</strong> <span style="font-size: 90%;font-style: italic;">(Seller A’s Amount * Later Payer A’s Sales History Score + Seller B’s Amount * Late Payer B Sales History
+        Score / Later Payer A + B Amounts) * 0.25</span>
+        <ul style="padding-left: 10px;">
+          <li>Seller A’s Amount</li>
+          <li>Later Payer A’s Sales History Score</li>
+          <li>Seller B’s Amount</li>
+          <li>Late Payer B Sales History Score</li>
+        </ul>
+      </li>
+    </ul>
+    <div class="clear20"></div>
+
+
+  </div>
+</div>
+

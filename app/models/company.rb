@@ -101,4 +101,45 @@ class Company < ApplicationRecord
   end
   ###############
 
+  ##### Credit Scores #####
+
+  def get_payment_history
+    scores = self.get_payment_history_ex
+    return scores['total']
+  end
+
+  def get_payment_history_ex
+    scores = {
+        'first' => {
+            'late_payments' => 0,
+            'on_time_payments' => 0,
+            'months_of_data' => 0,
+            'total' => 1
+        },
+        'second' => {
+            'this_month_pending_count' => 0,
+            'avg_3_month_pending_count' => 0,
+            'total' => 2
+        },
+        'third' => {
+            'this_month_pending_amount' => 0,
+            'avg_3_month_completed_amount' => 0,
+            'total' => 3
+        },
+        'fourth' => {
+            'seller_a_amount' => 0,
+            'on_time_payments' => 0,
+            'months_of_data' => 0,
+            'total' => 4
+        },
+        'total' => 0
+    }
+
+    scores['total'] = scores['first']['total'] + scores['second']['total'] + scores['third']['total'] + scores['fourth']['total']
+
+    return scores
+  end
+
+  ##### End of Credit Scores #####
+
 end

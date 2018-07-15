@@ -105,6 +105,7 @@ Rails.application.routes.draw do
       get :transactions
       get :credit
       get :info
+      get :scores
       post :shared
       get :transaction_list
       get :demanding_search, path: 'search'

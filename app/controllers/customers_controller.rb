@@ -30,6 +30,10 @@ class CustomersController < ApplicationController
     @credit_given_transaction = Transaction.where('seller_id =?',current_company.id)
   end
 
+  def scores
+
+  end
+
   def shared
     @check_duplicate = Shared.where(shared_to_id: params[:shared][:shared_to_id], shared_by_id: current_company.id)
     if @check_duplicate.present?
