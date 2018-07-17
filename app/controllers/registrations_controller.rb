@@ -1,15 +1,19 @@
 class RegistrationsController < Devise::RegistrationsController
 
   def create
-    company = Company.where(name: sign_up_params[:company_name]).first_or_create
-    build_resource(sign_up_params.merge(company_id: company.id))
-    if sign_up_params[:role] == 'Broker'
-      company.try(:customers).present? ? resource.errors.add(:company, 'already exists') : ''
-    else
-      company.is_broker ? resource.errors.add(:company, 'already registered as broker') : ''
+    # company = Company.where(name: sign_up_params[:company_name]).first_or_create
+    company = Company.find(sign_up_params[:company_id]) if sign_up_params[:company_id].present?
+    build_resource(sign_up_params)
+    unless sign_up_params[:role].blank?
+      if sign_up_params[:role] == 'Broker'
+        company.try(:customers).present? ? resource.errors.add(:company, 'already exists') : ''
+      else
+        company.is_broker ? resource.errors.add(:company, 'already registered as broker') : ''
+      end
     end
     resource.save unless resource.errors.present?
     yield resource if block_given?
+
     if resource.persisted? && !resource.errors.present?
       if resource.active_for_authentication?
         set_flash_message! :notice, :signed_up
@@ -21,7 +25,7 @@ class RegistrationsController < Devise::RegistrationsController
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
     else
-      company.destroy unless company.try(:customers).present?
+      # company.destroy unless company.try(:customers).present?
       clean_up_passwords resource
       set_minimum_password_length
       respond_with resource

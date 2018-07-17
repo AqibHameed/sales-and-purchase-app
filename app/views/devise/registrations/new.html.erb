@@ -30,11 +30,16 @@
       </div>
 
       <div class="field">
+        <%= f.label :country %><br />
+        <%= select_tag "country", options_for_select(country_list), prompt: 'Please select', class: 'input form-control', style: "width: 330px;" %>
+      </div>
+
+      <div class="field">
         <%= f.label :company_id %><br />
-        <%= f.text_field :company_name %>
+        <%#= f.text_field :company_name %>
         <%= f.hidden_field :is_requested, value: false %>
-        <%= f.hidden_field :company_id %>
-        <%#= f.select :company, options_for_select(PreRegistration.all.map { |e| e.company_name }), {},  prompt: 'Please select', class: 'input' %>
+        <%#= f.hidden_field :company_id %>
+        <%= f.select :company_id, options_for_select([]), {prompt: 'Please select'}, class: 'input form-control', style: "width: 330px;" %>
       </div>
       <div class="field">
         <%= f.label :email %><br />
@@ -60,7 +65,7 @@
 
       <div class="btns-groups">
         <%= f.submit "Sign up", class: "btn-02 login-btn signup-btn" %>
-        <%= f.submit "Request Access", class: "btn-02 login-btn request-btn hide" %>
+        <%#= f.submit "Request Access", class: "btn-02 login-btn request-btn hide" %>
       </div>
     <% end %>
   </div>
@@ -82,9 +87,9 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $(".tender-house7, .tender-house0").prop("checked", false);
-    check_company()
+    // check_company()
     $(document).on('keyup', '#customer_company_name', function(){
-      check_company()
+      // check_company()
     })
   })
 
@@ -104,29 +109,40 @@
     }
   });
 
-  function check_company(){
-    val = $('#customer_company_name').val()
+  $('#country').change(function(){
+    var val = $(this).val()
+    alert(val);
     $.ajax({
-      url: '/companies/check_company',
+      url: '/companies/country_company_list',
       data: { name: val },
       type: "GET",
-      success: function(data) {
-        if ($('#customer_role').val() == 'Broker'){
-          $('#customer_is_requested').val(false)
-          $('.signup-btn').removeClass('hide')
-          $('.request-btn').addClass('hide')
-        } else {
-          $('#customer_is_requested').val(data['success'])
-          if (data['success'] == true){
-            $('.signup-btn').addClass('hide')
-            $('.request-btn').removeClass('hide')
-          }else{
-            $('.signup-btn').removeClass('hide')
-            $('.request-btn').addClass('hide')
-          }
-        }
-      }
+      success: function(data) {}
     })
-  }
+  });
+
+  // function check_company(){
+  //   val = $('#customer_company_name').val()
+  //   $.ajax({
+  //     url: '/companies/check_company',
+  //     data: { name: val },
+  //     type: "GET",
+  //     success: function(data) {
+  //       if ($('#customer_role').val() == 'Broker'){
+  //         $('#customer_is_requested').val(false)
+  //         $('.signup-btn').removeClass('hide')
+  //         $('.request-btn').addClass('hide')
+  //       } else {
+  //         $('#customer_is_requested').val(data['success'])
+  //         if (data['success'] == true){
+  //           $('.signup-btn').addClass('hide')
+  //           $('.request-btn').removeClass('hide')
+  //         }else{
+  //           $('.signup-btn').removeClass('hide')
+  //           $('.request-btn').addClass('hide')
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
 
 </script>

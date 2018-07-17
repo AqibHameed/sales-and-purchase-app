@@ -1,0 +1,3 @@
+var prompt_str = '<option value="">Please Select</option>'
+$('#customer_company_id').html(prompt_str +"<%= j render :partial => 'company_name_dropdown', collection: @company, as: 'c' %>")
+$('#customer_company_id').select2({})

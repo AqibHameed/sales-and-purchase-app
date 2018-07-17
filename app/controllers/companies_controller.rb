@@ -23,11 +23,20 @@ class CompaniesController < ApplicationController
     @company = Company.all
   end
 
+  ### Not in use
   def check_company
     if Company.where(name: params[:name]).exists?
       render json: { success: true }
     else
       render json: { success: false }
+    end
+  end
+  ###
+
+  def country_company_list
+    @company = Company.where(county: params[:name])
+    respond_to do |format|
+      format.js
     end
   end
 end

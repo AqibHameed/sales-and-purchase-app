@@ -129,6 +129,7 @@ Rails.application.routes.draw do
       get :list_company
       post :company_limits
       get :check_company
+      get :country_company_list
     end
   end
 
@@ -177,6 +178,8 @@ Rails.application.routes.draw do
       get :single_parcel_form
       get :add_demand_list
       post :upload_demand_list
+      get :add_company_list
+      post :upload_company_list
       get :important
     end
   end
@@ -191,7 +194,7 @@ Rails.application.routes.draw do
       get :related_seller
       get :parcel_history
       get :direct_sell
-      post :save_direct_sell
+      post '/direct_sell', to: 'trading_parcels#save_direct_sell'
       get :size_info
     end
   end

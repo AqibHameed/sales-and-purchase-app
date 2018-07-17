@@ -1,8 +1,8 @@
 class SuppliersController < ApplicationController
   # layout 'supplier', :except => [:profile]
   # layout 'application', :except => [:profile]
-  before_action :authenticate_customer!, except: [:add_demand_list, :upload_demand_list, :check_role_authorization]
-  before_action :authenticate_admin!, only: [:add_demand_list, :upload_demand_list]
+  before_action :authenticate_customer!, except: [:add_demand_list, :upload_demand_list, :add_company_list, :upload_company_list, :check_role_authorization]
+  before_action :authenticate_admin!, only: [:add_demand_list, :upload_demand_list, :add_company_list, :upload_company_list]
   before_action :check_role_authorization
   before_action :check_authenticate_supplier, only: [:single_parcel]
 
@@ -51,6 +51,14 @@ class SuppliersController < ApplicationController
   def upload_demand_list
     DemandList.import(params[:file], params[:supplier])
     redirect_to add_demand_list_suppliers_path, notice: "List imported."
+  end
+
+  def add_company_list
+  end
+
+  def upload_company_list
+    Company.import(params[:file])
+    redirect_to add_company_list_suppliers_path, notice: "Company List imported."
   end
 
   def parcels

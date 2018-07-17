@@ -3,7 +3,7 @@ class Customer < ApplicationRecord
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
-  attr_accessor :login, :role, :company_name
+  attr_accessor :login, :role
 
   devise :invitable, :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
@@ -45,12 +45,11 @@ class Customer < ApplicationRecord
   has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "CompaniesGroup"
   # has_many :companies_customers, :foreign_key => "customer_id", :class_name => "CompaniesGroup"
-  belongs_to :company, optional: true
-
+  belongs_to :company
 
   validates :mobile_no, uniqueness: true
   validates :first_name, :mobile_no, :presence => true
-  validates :company_name, :role, :presence => true, on: :create
+  validates :role, :presence => true, on: :create
 
   # send_account_creation_mail
   after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
@@ -65,6 +64,7 @@ class Customer < ApplicationRecord
   def check_for_confirmation
     if company.customers.count > 1
       self.skip_confirmation!
+      self.is_requested = true
     end
   end
 

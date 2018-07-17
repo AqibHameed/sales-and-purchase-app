@@ -8,7 +8,17 @@ class Company < ApplicationRecord
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
   has_many :polished_demands
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
+
+  def self.import(file)
+    data_file = Spreadsheet.open(open(file))
+    worksheet = data_file.worksheet(0)
+    unless worksheet.nil?
+      worksheet.each_with_index do |row, i|
+      Company.where(name: row[0] , county: row[1], is_anonymous: false, add_polished: false, is_broker: false).first_or_create
+      end
+    end
+  end
 
   def get_owner
     Customer.unscoped do
