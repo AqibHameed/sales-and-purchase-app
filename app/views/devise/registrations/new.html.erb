@@ -35,11 +35,9 @@
       </div>
 
       <div class="field">
-        <%= f.label :company_id %><br />
-        <%#= f.text_field :company_name %>
         <%= f.hidden_field :is_requested, value: false %>
-        <%#= f.hidden_field :company_id %>
-        <%= f.select :company_id, options_for_select([]), {prompt: 'Please select'}, class: 'input form-control', style: "width: 330px;" %>
+        <%= f.label :company_id %><br />
+        <%= f.select :company_id, options_for_select([]), { prompt: 'Please select' }, class: 'input form-control', style: "width: 330px;" %>
       </div>
       <div class="field">
         <%= f.label :email %><br />
@@ -111,7 +109,6 @@
 
   $('#country').change(function(){
     var val = $(this).val()
-    alert(val);
     $.ajax({
       url: '/companies/country_company_list',
       data: { name: val },

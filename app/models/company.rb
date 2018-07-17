@@ -15,7 +15,13 @@ class Company < ApplicationRecord
     worksheet = data_file.worksheet(0)
     unless worksheet.nil?
       worksheet.each_with_index do |row, i|
-      Company.where(name: row[0] , county: row[1], is_anonymous: false, add_polished: false, is_broker: false).first_or_create
+        unless i == 0
+          if row[0].nil? && row[1].nil?
+            return true
+          else
+            Company.where(name: row[0] , county: row[1]).first_or_create
+          end
+        end
       end
     end
   end

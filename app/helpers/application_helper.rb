@@ -555,6 +555,6 @@ module ApplicationHelper
   end
 
   def country_list
-    Company.all.map { |e| e.county  }.compact
+    Company.all.map { |e| e.county }.compact.reject { |e| e.to_s == "" }.uniq
   end
 end
