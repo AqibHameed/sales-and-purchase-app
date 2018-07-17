@@ -127,9 +127,6 @@ class Company < ApplicationRecord
             'total' => 0
         },
         'fourth' => {
-            'seller_a_amount' => 0,
-            'on_time_payments' => 0,
-            'months_of_data' => 0,
             'total' => 0
         },
         'total' => 0
@@ -138,28 +135,176 @@ class Company < ApplicationRecord
     if self.buyer_transactions.count > 0
       #Calculate each section of formula
 
+      #First
       scores['first']['late_payments'] = Transaction.overdue_received_transaction(self.id).count()
-      scores['first']['late_payments'] = 1
       scores['first']['on_time_payments'] = Transaction.complete_received_transaction(self.id).count()
+
       on_time_payments = Transaction.complete_received_transaction(self.id)
       payment_months = []
       on_time_payments.each do |t|
-        if !payment_months.include?(t.due_date.mon)
+        unless payment_months.include?(t.due_date.mon)
           payment_months.push(t.due_date.mon)
         end
       end
       scores['first']['months_of_data'] = payment_months.count
-      scores['first']['total'] =  ((scores['first']['late_payments'].to_f/(scores['first']['on_time_payments'].to_f/scores['first']['months_of_data'].to_f) ) * 0.25).round(2)
+      scores['first']['total'] = ((scores['first']['late_payments'].to_f / (scores['first']['on_time_payments'].to_f / scores['first']['months_of_data'].to_f) ) * 0.25).round(2)
 
+      #Second
+      avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
+      avg_month_end = Date.civil(Date.today.year, Date.today.mon-1, -1)
+      month_start = Date.civil(Date.today.year, Date.today.mon)
+      month_end = Date.civil(Date.today.year, Date.today.mon, -1)
+      avg_unpaid = Transaction.where("buyer_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, avg_month_start, avg_month_end, false, true).count()
+      scores['second']['avg_3_month_pending_count'] = (avg_unpaid.to_f/3).round(2)
+      if avg_unpaid > 0
+        scores['second']['this_month_pending_count'] = Transaction.where("buyer_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, month_start, month_end, false, true).count()
+        scores['second']['total'] = ((scores['second']['this_month_pending_count'].to_f/scores['second']['avg_3_month_pending_count'].to_f)*0.25).round(2)
+      end
 
+      #Third
+      scores['third']['avg_3_month_completed_amount'] = Transaction.where("buyer_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, avg_month_start, avg_month_end, true, true).sum(:total_amount)
+      if (scores['third']['avg_3_month_completed_amount']).positive?
+        scores['third']['this_month_pending_amount'] = Transaction.where("buyer_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, month_start, month_end, false, true).sum(:total_amount)
+        scores['third']['total'] = ((scores['third']['this_month_pending_amount'].to_f/scores['third']['avg_3_month_completed_amount'].to_f)*0.25).round(2)
+      end
 
+      #Fourth
+      seller_amount_and_score = 0
+      seller_late_amount = 0
+      self.buyer_transactions.each do |t|
+        is_late = Transaction.includes(:trading_parcel).where("seller_id = ? AND paid = ? AND buyer_confirmed = ?", t.seller_id, false, true).count()
+        if is_late.positive?
+          seller_amount = Transaction.total_transaction(t.seller_id)
+          seller_sales_score = Company.find(t.seller_id).get_sales_history
+          seller_amount_and_score += (seller_amount.to_f * seller_sales_score.to_f).round(2)
+          seller_late_amount += seller_amount
+        end
+      end
+      if seller_late_amount.positive?
+        scores['fourth']['total'] = ((seller_amount_and_score.to_f / seller_late_amount.to_f) * 0.25).round(2)
+      end
+
+      scores['total'] = 1 - scores['first']['total'] + scores['second']['total'] + scores['third']['total'] + scores['fourth']['total']
     end
-
-
-    scores['total'] = scores['first']['total'] + scores['second']['total'] + scores['third']['total'] + scores['fourth']['total']
 
     return scores
   end
+
+  def get_sales_history
+    scores = self.get_sales_history_ex
+
+    return scores['total']
+  end
+
+  def get_sales_history_ex
+    scores = {
+        'first' => {
+            'late_payments' => 0,
+            'on_time_payments' => 0,
+            'months_of_data' => 0,
+            'total' => 0
+        },
+        'second' => {
+            'this_month_pending_count' => 0,
+            'avg_3_month_pending_count' => 0,
+            'total' => 0
+        },
+        'third' => {
+            'this_month_pending_amount' => 0,
+            'avg_3_month_completed_amount' => 0,
+            'total' => 0
+        },
+        'fourth' => {
+            'total' => 0
+        },
+        'total' => 0
+    }
+
+    if self.seller_transactions.count > 0
+
+      #Calculate each section of formula
+
+      #First
+      scores['first']['late_payments'] = Transaction.overdue_sent_transaction(self.id).count()
+      scores['first']['on_time_payments'] = Transaction.complete_sent_transaction(self.id).count()
+
+      on_time_payments = Transaction.complete_sent_transaction(self.id)
+      payment_months = []
+      on_time_payments.each do |t|
+        unless payment_months.include?(t.due_date.mon)
+          payment_months.push(t.due_date.mon)
+        end
+      end
+      scores['first']['months_of_data'] = payment_months.count
+      scores['first']['total'] = ((scores['first']['late_payments'].to_f / (scores['first']['on_time_payments'].to_f / scores['first']['months_of_data'].to_f) ) * 0.25).round(2)
+
+      #Second
+      avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
+      avg_month_end = Date.civil(Date.today.year, Date.today.mon-1, -1)
+      month_start = Date.civil(Date.today.year, Date.today.mon)
+      month_end = Date.civil(Date.today.year, Date.today.mon, -1)
+      avg_unpaid = Transaction.where("seller_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, avg_month_start, avg_month_end, false, true).count()
+      scores['second']['avg_3_month_pending_count'] = (avg_unpaid.to_f/3).round(2)
+      if avg_unpaid > 0
+        scores['second']['this_month_pending_count'] = Transaction.where("seller_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, month_start, month_end, false, true).count()
+        scores['second']['total'] = ((scores['second']['this_month_pending_count'].to_f/scores['second']['avg_3_month_pending_count'].to_f)*0.25).round(2)
+      end
+
+      #Third
+      scores['third']['avg_3_month_completed_amount'] = Transaction.where("seller_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, avg_month_start, avg_month_end, true, true).sum(:total_amount)
+      if (scores['third']['avg_3_month_completed_amount']).positive?
+        scores['third']['this_month_pending_amount'] = Transaction.where("seller_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, month_start, month_end, false, true).sum(:total_amount)
+        scores['third']['total'] = ((scores['third']['this_month_pending_amount'].to_f/scores['third']['avg_3_month_completed_amount'].to_f)*0.25).round(2)
+      end
+
+      #Fourth
+      buyer_amount_and_score = 0
+      buyer_late_amount = 0
+      self.seller_transactions.each do |t|
+        is_late = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ? AND buyer_confirmed = ?", t.buyer_id, false, true).count()
+        if is_late.positive?
+          buyer_amount = Transaction.total_transaction(t.buyer_id)
+          buyer_sales_score = Company.find(t.buyer_id).get_payment_history
+          buyer_amount_and_score += (buyer_amount.to_f * buyer_sales_score.to_f).round(2)
+          buyer_late_amount += buyer_amount
+        end
+      end
+      if buyer_late_amount.positive?
+        scores['fourth']['total'] = ((buyer_amount_and_score.to_f / buyer_late_amount.to_f) * 0.25).round(2)
+      end
+
+      scores['total'] = 1 - scores['first']['total'] + scores['second']['total'] + scores['third']['total'] + scores['fourth']['total']
+    end
+
+
+    return scores
+  end
+
+  def get_activity
+    c = Date.today.day
+    date_start = 0
+    if (c-30).positive?
+      date_start = Date.civil(Date.today.year, Date.today.mon, (c - 30).to_i)
+    else
+      date_start =  Date.civil(Date.today.year, Date.today.mon - 1, (Date.civil(Date.today.year, Date.today.mon-1, -1).day - 29 + c))
+    end
+    avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
+    avg_month_end = Date.civil(Date.today.year, Date.today.mon-1, -1)
+
+    last_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id,self.id, date_start, Date.today, true)
+    avg_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id, self.id,avg_month_start, avg_month_end, true)
+
+    scores = {
+        'last_transaction_count' => last_transactions.count(),
+        'avg_transaction_count' => (avg_transactions.count/3).round(2),
+        'last_transaction_amount' => last_transactions.sum(:total_amount),
+        'avg_transaction_amount' => (avg_transactions.sum(:total_amount)/3).round(2)
+    }
+
+    return scores
+
+  end
+
 
   ##### End of Credit Scores #####
 
