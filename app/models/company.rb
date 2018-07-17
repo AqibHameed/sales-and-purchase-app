@@ -114,26 +114,47 @@ class Company < ApplicationRecord
             'late_payments' => 0,
             'on_time_payments' => 0,
             'months_of_data' => 0,
-            'total' => 1
+            'total' => 0
         },
         'second' => {
             'this_month_pending_count' => 0,
             'avg_3_month_pending_count' => 0,
-            'total' => 2
+            'total' => 0
         },
         'third' => {
             'this_month_pending_amount' => 0,
             'avg_3_month_completed_amount' => 0,
-            'total' => 3
+            'total' => 0
         },
         'fourth' => {
             'seller_a_amount' => 0,
             'on_time_payments' => 0,
             'months_of_data' => 0,
-            'total' => 4
+            'total' => 0
         },
         'total' => 0
     }
+
+    if self.buyer_transactions.count > 0
+      #Calculate each section of formula
+
+      scores['first']['late_payments'] = Transaction.overdue_received_transaction(self.id).count()
+      scores['first']['late_payments'] = 1
+      scores['first']['on_time_payments'] = Transaction.complete_received_transaction(self.id).count()
+      on_time_payments = Transaction.complete_received_transaction(self.id)
+      payment_months = []
+      on_time_payments.each do |t|
+        if !payment_months.include?(t.due_date.mon)
+          payment_months.push(t.due_date.mon)
+        end
+      end
+      scores['first']['months_of_data'] = payment_months.count
+      scores['first']['total'] =  ((scores['first']['late_payments'].to_f/(scores['first']['on_time_payments'].to_f/scores['first']['months_of_data'].to_f) ) * 0.25).round(2)
+
+
+
+    end
+
 
     scores['total'] = scores['first']['total'] + scores['second']['total'] + scores['third']['total'] + scores['fourth']['total']
 
