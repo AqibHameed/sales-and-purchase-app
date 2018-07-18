@@ -13,7 +13,7 @@
             </li>
             <!-- <li><%#= link_to 'Parcels', shared_parcels_brokers_path, data: { turbolinks: false } %></li> -->
             <li>
-              <%= link_to 'Invite', '#', data: { turbolinks: false } %>
+              <%#= link_to 'Invite', '#', data: { turbolinks: false } %>
               <%#= link_to 'Invite', invite_brokers_path, data: { turbolinks: false } %>
             </li>
 
@@ -34,15 +34,13 @@
             <% if can? :access, :sell %>
               <li><%= link_to 'Approve Clients', credit_suppliers_path, data: { turbolinks: false } %></li>
             <% end %>
-            <li><%= link_to 'Invite',  '#' , data: { turbolinks: false } %></li>
-            <% if current_customer.parent_id.nil? %>
-
-            <% else %>
-             <li>
-                <%= link_to 'Credit Request', credit_request_suppliers_path, data: { turbolinks: false } %>
-              </li>
-
-            <% end %>
+            <!-- <li><%#= link_to 'Invite',  '#' , data: { turbolinks: false } %></li> -->
+            <%# if current_customer.parent_id.nil? %>
+            <%# else %>
+              <!-- <li> -->
+                <%#= link_to 'Credit Request', credit_request_suppliers_path, data: { turbolinks: false } %>
+              <!-- </li> -->
+            <%# end %>
             <li>
               <%= link_to 'Search', demanding_search_customers_path, data: { turbolinks: false } %>
             </li>
@@ -95,7 +93,9 @@
           <% end %>
           <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
           <%= link_to 'Manage Brokers', requests_brokers_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
-          <%= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
+          <!-- SUB COMPANY Feature on Hold -->
+          <%#= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
+          <!--  -->
           <%= link_to 'Logout', destroy_customer_session_path, :method => :delete %>
         </div>
       </div>
