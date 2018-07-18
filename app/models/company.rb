@@ -19,7 +19,7 @@ class Company < ApplicationRecord
           if row[0].nil? && row[1].nil?
             return true
           else
-            Company.where(name: row[0] , county: row[1]).first_or_create
+            Company.where(name: row[0].strip , county: row[1].strip).first_or_create
           end
         end
       end
