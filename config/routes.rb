@@ -195,6 +195,7 @@ Rails.application.routes.draw do
       get :parcel_history
       get :direct_sell
       post '/direct_sell', to: 'trading_parcels#save_direct_sell'
+      post :accept_transaction
       get :size_info
     end
   end
