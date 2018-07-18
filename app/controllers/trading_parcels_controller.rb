@@ -135,10 +135,36 @@ class TradingParcelsController < ApplicationController
       @trading_parcel.sold = false
       @trading_parcel.sale_all = false
       @trading_parcel.save
-      redirect_to trading_customers_path, notice: 'Transaction added successfully'
-    else
-      render :direct_sell
+      respond_to do |format|
+        format.html { redirect_to trading_customers_path, notice: 'Transaction added successfully'}
+      end
     end
+  end
+
+  def accept_transaction
+    @transaction = Transaction.new(buyer_id: params[:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:paid],
+                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
+                                  created_at: params[:created_at])
+
+    limit = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: @parcel.company_id).first
+
+    @transaction.set_due_date
+    @parcel.update_attributes(sold: true)
+    @trading_parcel = @parcel.dup
+    @trading_parcel.company_id = @transaction.buyer_id
+    @trading_parcel.sold = false
+    @trading_parcel.sale_all = false
+    @transaction.save
+
+    total_price = @parcel.price*@parcel.weight
+    if limit.nil?
+      credit_limit = CreditLimit.new(buyer_id: params[:buyer_id], seller_id: @parcel.company_id, credit_limit: total_price)
+      credit_limit.save
+    elsif limit.credit_limit < total_price
+      limit.credit_limit = total_price
+      limit.save
+    end
+    redirect_to trading_customers_path, notice: 'Transaction added successfully'
   end
 
   def size_info
