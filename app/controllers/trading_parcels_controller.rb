@@ -6,7 +6,7 @@ class TradingParcelsController < ApplicationController
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_role_authorization, except: [:related_seller, :parcel_history]
-  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
+  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :accept_transaction, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
   before_action :authenticate_broker, only: [:related_seller, :parcel_history]
   before_action :is_user_edit_polished?, only: [:edit]
@@ -120,7 +120,14 @@ class TradingParcelsController < ApplicationController
     @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
                                   price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
                                   created_at: params[:transaction][:created_at])
-    if @transaction.save
+    limit = CreditLimit.where(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id).first
+
+    total_price = @parcel.price*@parcel.weight
+    if limit.nil? || limit < total_price
+      respond_to do |format|
+        format.js { render 'save_direct_sell.js.erb', locals: { buyer_id: params[:transaction][:buyer_id], created_at: params[:transaction][:created_at], paid: params[:transaction][:paid] }}
+      end
+    else @transaction.save
       @transaction.set_due_date
       @parcel.update_attributes(sold: true)
       @trading_parcel = @parcel.dup

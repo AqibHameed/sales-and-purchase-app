@@ -2,11 +2,11 @@
 <%= javascript_include_tag "https://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
 <% dt = @parcel.diamond_type%>
 <h3>Transaction </h3>
-<%= form_for @transaction, url: direct_sell_trading_parcel_path(@parcel), html: { class: 'form-horizontal' } do |f| %>
+<%= form_for @transaction, url: direct_sell_trading_parcel_path(@parcel),remote: true, html: { class: 'form-horizontal' } do |f| %>
   <% if @transaction.errors.any? %>
     <ul>
       <% @transaction.errors.full_messages.each do |msg| %>
-        <li class="text-danger"><%= msg %></li>
+        <li class="text-danger"><%#= msg %></li>
       <% end %>
     </ul>
   <% end %>

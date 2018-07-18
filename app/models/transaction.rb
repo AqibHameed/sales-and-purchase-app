@@ -4,7 +4,7 @@ class Transaction < ApplicationRecord
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
 
-  validate :credit_validation, :validate_invoice_date
+  validate :validate_invoice_date
   after_create :update_credit_limit, :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
 
@@ -12,27 +12,27 @@ class Transaction < ApplicationRecord
 
   def credit_validation
     limit = CreditLimit.where(buyer_id: buyer_id, seller_id: seller_id).first
-    if limit.nil?
-      errors[:base] << "Please increase credit limit. Available credit is less than the invoice amount. Please <a href = '/suppliers/credit'>click here</a> to assign.".html_safe
-    else
-      credit_limit = limit.credit_limit
-      transactions = Transaction.where(buyer_id: buyer_id, seller_id: seller_id, paid: false, buyer_confirmed: true)
-      @amount = []
-      transactions.each do |t|
-        @amount << t.remaining_amount
-      end
-      used_amt = @amount.sum
-      get_weight = weight.blank? ? 1 : weight
-      if diamond_type == 'Rough'
-        total_price = price.to_f * weight.to_f
-      else
-        total_price = price.to_f * weight.to_f
-      end
-      available_limit = credit_limit.to_f - used_amt.to_f
-      if total_price.to_f > available_limit
-        errors[:base] << "Customer has available credit limit of #{available_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
-      end
+    # if limit.nil?
+    #   errors[:base] << "Please increase credit limit. Available credit is less than the invoice amount. Please <a href = '/suppliers/credit'>click here</a> to assign.".html_safe
+    # else
+    credit_limit = limit.credit_limit
+    transactions = Transaction.where(buyer_id: buyer_id, seller_id: seller_id, paid: false, buyer_confirmed: true)
+    @amount = []
+    transactions.each do |t|
+      @amount << t.remaining_amount
     end
+    used_amt = @amount.sum
+    get_weight = weight.blank? ? 1 : weight
+    if diamond_type == 'Rough'
+      total_price = price.to_f * weight.to_f
+    else
+      total_price = price.to_f * weight.to_f
+    end
+    available_limit = credit_limit.to_f - used_amt.to_f
+    if total_price.to_f > available_limit
+      errors[:base] << "Customer has available credit limit of #{available_limit}. Please <a href = '/suppliers/credit'>click here</a> to increase it.".html_safe
+    end
+    # end
   end
 
   def validate_invoice_date
