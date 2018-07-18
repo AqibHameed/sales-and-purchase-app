@@ -1,6 +1,6 @@
 class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :check_token, :current_customer, except: [:check_company]
+  before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
 
   def list_company
@@ -37,6 +37,16 @@ class Api::V1::CompaniesController < ApplicationController
   def check_company
     company = Company.where(name: params[:company_name]).present?
     render json: { request_acess: company, signup: !company }
+  end
+
+  def country_list
+    countries = Company.all.map { |e| e.county }.compact.reject { |e| e.to_s == "" }.uniq
+    render json: { success: true, countries: countries }
+  end
+
+  def companies_list
+    companies = Company.where(county: params[:country])
+    render json: { success: true, companies: companies.as_json(only: [:id, :name, :county]) }
   end
 
   def authenticate_with_token!

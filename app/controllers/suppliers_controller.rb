@@ -122,7 +122,8 @@ class SuppliersController < ApplicationController
 
   def save_credit_request
     if current_customer.update_attributes(credit_request_params)
-      Message.create_new_credit_request(current_company)
+      ## Commented now ##
+      # Message.create_new_credit_request(current_company)
       flash[:notice] = "successfully send"
       redirect_to credit_request_suppliers_path
     else

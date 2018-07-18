@@ -271,6 +271,8 @@ Rails.application.routes.draw do
       put '/update_chat_id', to: 'api#update_chat_id'
       get '/blocked_customers', to: 'companies#blocked_customers'
       get '/check_company', to: 'companies#check_company'
+      get '/countries_list', to: 'companies#country_list'
+      get '/companies_list', to: 'companies#companies_list'
       resources :tenders do
         collection do
           get :upcoming
