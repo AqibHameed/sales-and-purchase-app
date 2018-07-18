@@ -337,4 +337,5 @@ Rails.application.routes.draw do
   get '/update_chat_id',to: 'tenders#update_chat_id'
   get '/parcel_detail', to: 'trading_parcels#parcel_detail'
   get '/access_denied', to: 'customers#access_denied'
+  get '/live_demands', to: 'customers#live_demands'
 end

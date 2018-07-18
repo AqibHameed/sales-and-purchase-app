@@ -117,54 +117,43 @@ class TradingParcelsController < ApplicationController
   end
 
   def save_direct_sell
-    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
-                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
+    transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
+                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, transaction_type: 'manual',
                                   created_at: params[:transaction][:created_at])
-    limit = CreditLimit.where(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id).first
-
-    total_price = @parcel.price*@parcel.weight
-    if limit.nil? || limit < total_price
-      respond_to do |format|
-        format.js { render 'save_direct_sell.js.erb', locals: { buyer_id: params[:transaction][:buyer_id], created_at: params[:transaction][:created_at], paid: params[:transaction][:paid] }}
-      end
-    else @transaction.save
-      @transaction.set_due_date
-      @parcel.update_attributes(sold: true)
-      @trading_parcel = @parcel.dup
-      @trading_parcel.company_id = @transaction.buyer_id
-      @trading_parcel.sold = false
-      @trading_parcel.sale_all = false
-      @trading_parcel.save
-      respond_to do |format|
-        format.html { redirect_to trading_customers_path, notice: 'Transaction added successfully'}
-      end
+    if params[:check] == "true"
+      check_credit_limit(transaction, @parcel)
+    else
+      save_transaction(transaction, @parcel)
     end
   end
 
-  def accept_transaction
-    @transaction = Transaction.new(buyer_id: params[:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:paid],
-                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
-                                  created_at: params[:created_at])
-
-    limit = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: @parcel.company_id).first
-
-    @transaction.set_due_date
-    @parcel.update_attributes(sold: true)
-    @trading_parcel = @parcel.dup
-    @trading_parcel.company_id = @transaction.buyer_id
-    @trading_parcel.sold = false
-    @trading_parcel.sale_all = false
-    @transaction.save
-
-    total_price = @parcel.price*@parcel.weight
-    if limit.nil?
-      credit_limit = CreditLimit.new(buyer_id: params[:buyer_id], seller_id: @parcel.company_id, credit_limit: total_price)
-      credit_limit.save
-    elsif limit.credit_limit < total_price
-      limit.credit_limit = total_price
-      limit.save
+  def save_transaction(transaction, parcel)
+    available_credit_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
+    if transaction.save
+      transaction.set_due_date
+      transaction.generate_and_add_uid
+      ## set limit ##
+      total_price = parcel.total_value
+      if available_credit_limit < total_price
+        credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+        if credit_limit.nil?
+          CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
+        else
+          new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
+          credit_limit.update_attributes(credit_limit: new_limit)
+        end
+      end
+      parcel.update_attributes(sold: true)
+      trading_parcel = @parcel.dup
+      trading_parcel.company_id = transaction.buyer_id
+      trading_parcel.sold = false
+      trading_parcel.sale_all = false
+      trading_parcel.save
+      redirect_to trading_customers_path, notice: 'Transaction added successfully'
+    else
+      @transaction = transaction
+      render :direct_sell
     end
-    redirect_to trading_customers_path, notice: 'Transaction added successfully'
   end
 
   def size_info
@@ -190,7 +179,6 @@ class TradingParcelsController < ApplicationController
   def trading_parcel_params
     params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :broker_ids, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
-
   end
 
   def set_trading_parcel
@@ -222,6 +210,18 @@ class TradingParcelsController < ApplicationController
       unless current_company.add_polished
         redirect_to trading_customers_path, notice: 'Please contact admin, permission denied...'
       end
+    end
+  end
+
+  def check_credit_limit(transaction, parcel)
+    buyer = Company.where(id: transaction.buyer_id).first
+    credit_limit = get_available_credit_limit(buyer, current_company).to_f
+    if credit_limit < parcel.total_value
+      respond_to do |format|
+        format.js { render 'save_direct_sell.js.erb', locals: { buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: parcel.id }}
+      end
+    else
+      save_transaction(transaction, parcel)
     end
   end
 end

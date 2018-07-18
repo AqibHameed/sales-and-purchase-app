@@ -1,0 +1,17 @@
+<h3>Live Demand List</h3>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="table no-padding">
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter">
+        <thead class="thead-desktop">
+          <th>Description</th>
+        </thead>
+        <% @demands.each do |demand| %>
+          <tr>
+            <td><%= demand.description %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>

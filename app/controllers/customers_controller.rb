@@ -326,6 +326,10 @@ class CustomersController < ApplicationController
     end
   end
 
+  def live_demands
+    ids = current_company.block_users
+    @demands = Demand.where.not(company_id: ids).order(created_at: :desc)
+  end
 
   private
   def customer_params

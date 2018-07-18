@@ -6,7 +6,7 @@
   <% if @transaction.errors.any? %>
     <ul>
       <% @transaction.errors.full_messages.each do |msg| %>
-        <li class="text-danger"><%#= msg %></li>
+        <li class="text-danger"><%= msg %></li>
       <% end %>
     </ul>
   <% end %>
@@ -91,6 +91,7 @@
       <label for="inputPassword3" class="col-sm-2 control-label">Avg Price:</label>
       <div class="col-sm-10">
         <%= text_field_tag "avg_price", @parcel.price, class: 'form-control disabled' %>
+        <%= hidden_field_tag "check", true %>
       </div>
     </div>
   </div>
@@ -198,6 +199,7 @@
       <label class="col-sm-2 control-label">Total/Box Value:</label>
       <div class="col-sm-10">
         <%= text_field_tag "total_value", @parcel.total_value, class: 'form-control disabled' %>
+        <%= hidden_field_tag "check", true %>
       </div>
     </div>
   </div>

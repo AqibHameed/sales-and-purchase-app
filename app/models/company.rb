@@ -103,6 +103,10 @@ class Company < ApplicationRecord
     Company.where(is_broker: false)
   end
 
+  def block_users
+    BlockUser.where(company_id: id)
+  end
+
   ### Brokers ###
   def sent_broker_request(seller)
     BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: false).first.present?
