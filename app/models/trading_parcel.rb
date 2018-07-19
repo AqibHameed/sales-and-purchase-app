@@ -10,7 +10,7 @@ class TradingParcel < ApplicationRecord
   belongs_to :trading_document, optional: true
 
   validates :source, presence: true
-  validates :credit_period, :total_value, :description, presence: true
+  validates :credit_period, :total_value, :description, :price, :weight, presence: true
   validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
 
   after_create :generate_and_add_uid, :send_mail_to_demanded, :replace_nil_value

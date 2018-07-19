@@ -234,7 +234,8 @@
     if (isNaN(percent)){
       $('#trading_parcel_percent').val('')
       $('#amount').val(amount);
-      $('#trading_parcel_total_value').val('')
+      var total_price = carat * price;
+      $('#trading_parcel_total_value').val(total_price)
     }else{
       $('#trading_parcel_percent').val(percent)
       $('#amount').val(amount);
