@@ -1,5 +1,6 @@
 class CompaniesController < ApplicationController
-
+  before_action :authenticate_customer!, except: [:country_company_list]
+  
   def list_company
     if params[:name].present?
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)

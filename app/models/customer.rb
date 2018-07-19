@@ -52,9 +52,8 @@ class Customer < ApplicationRecord
   validates :role, :presence => true, on: :create
 
   # send_account_creation_mail
-  after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user
+  after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user, :check_for_confirmation
   after_invitation_accepted :set_roles_to_customer
-  after_create :check_for_confirmation
 
   has_attached_file :certificate
   do_not_validate_attachment_file_type :certificate
@@ -65,6 +64,9 @@ class Customer < ApplicationRecord
     if company.customers.count > 1
       self.skip_confirmation!
       self.is_requested = true
+      self.save(validate: false)
+      owner = company.get_owner
+      CustomerMailer.request_access_mail(owner).deliver  rescue logger.info "Error sending email"
     end
   end
 

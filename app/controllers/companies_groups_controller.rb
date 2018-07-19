@@ -1,4 +1,6 @@
 class CompaniesGroupsController < ApplicationController
+  before_action :authenticate_customer!
+  
   # before_action :check_compaines_group_customers, only: [:create]
 
   def index

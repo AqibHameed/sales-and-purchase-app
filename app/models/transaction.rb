@@ -129,4 +129,12 @@ class Transaction < ApplicationRecord
   #     cl.save!
   #   end
   # end
+
+  def create_parcel_for_buyer
+    new_parcel = trading_parcel.dup
+    new_parcel.company_id = self.buyer_id
+    new_parcel.sold = false
+    new_parcel.sale_all = false
+    new_parcel.save
+  end
 end

@@ -58,6 +58,7 @@ class TransactionsController < ApplicationController
     @transaction = Transaction.find(params[:id])
     @transaction.buyer_confirmed = true
     if @transaction.save
+      @transaction.create_parcel_for_buyer
       redirect_to trading_history_path, notice: 'Transaction confirm successfully'
     else
       redirect_to trading_history_path, notice: 'Not confirm now. Please try again.'

@@ -16,16 +16,18 @@ class RegistrationsController < Devise::RegistrationsController
 
     if resource.persisted? && !resource.errors.present?
       if resource.active_for_authentication?
-        set_flash_message! :notice, :signed_up
-        sign_up(resource_name, resource)
-        respond_with resource, location: after_sign_up_path_for(resource)
+        if resource.is_requested
+          set_flash_message! :notice, :is_requested
+          respond_with resource, location: after_signup_when_requested(resource)
+        else
+          respond_with resource, location: after_sign_up_path_for(resource)
+        end
       else
         set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
         expire_data_after_sign_in!
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
     else
-      # company.destroy unless company.try(:customers).present?
       clean_up_passwords resource
       set_minimum_password_length
       respond_with resource
@@ -43,5 +45,9 @@ class RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(resource)
     # '/customers/'+resource.id.to_s+'/add_company'
     trading_customers_path
+  end
+
+  def after_signup_when_requested(resource)
+    login_path
   end
 end

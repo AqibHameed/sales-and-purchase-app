@@ -144,11 +144,6 @@ class TradingParcelsController < ApplicationController
         end
       end
       parcel.update_attributes(sold: true)
-      trading_parcel = @parcel.dup
-      trading_parcel.company_id = transaction.buyer_id
-      trading_parcel.sold = false
-      trading_parcel.sale_all = false
-      trading_parcel.save
       redirect_to trading_customers_path, notice: 'Transaction added successfully'
     else
       @transaction = transaction
