@@ -105,7 +105,7 @@ class SuppliersController < ApplicationController
     else
       # @companies = Company.where.not(id: current_company.id)
       @star_companies = CreditLimit.where(seller_id: current_company.id, star: true).map{|c| c.buyer}
-      @custs = Company.where.not(id: current_company.id) #.page
+      @custs = Company.where.not(id: current_company.id, is_broker: true) #.page
       @companies = @star_companies + @custs
       @companies = @companies.uniq
       @companies = @companies.delete_if {|company| excepted_companies_id.include?(company.id.to_s) }
