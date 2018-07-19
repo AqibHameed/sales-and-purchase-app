@@ -16,10 +16,10 @@
     <td> Source </td>
     <td><%= (@parcel.source.nil? || @parcel.source.blank?) ? 'N/A' : @parcel.source %></td>
   </tr>
-  <tr>
+  <!-- <tr>
     <td> Description</td>
-    <td><%= get_description(@parcel) %></td>
-  </tr>
+    <td><%#= get_description(@parcel) %></td>
+  </tr> -->
   <tr>
     <td> Shape</td>
     <td><%= @parcel.shape.nil? ? 'N/A' : @parcel.shape %></td>

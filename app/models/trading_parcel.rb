@@ -9,9 +9,9 @@ class TradingParcel < ApplicationRecord
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
 
-  validates :source, presence: true
-  validates :credit_period, :total_value, :description, :price, :weight, presence: true
-  validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
+  validates :description, presence: true, unless: :diamond_type_is_polish?
+  validates :source, :credit_period, :total_value, :price, :weight, presence: true
+  # validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
 
   after_create :generate_and_add_uid, :send_mail_to_demanded, :replace_nil_value
   after_update :set_sale_none_when_all_none, :replace_nil_value

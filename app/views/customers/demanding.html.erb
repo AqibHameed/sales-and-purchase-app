@@ -107,7 +107,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row1">
   <% unless @disable %>
     <div class="pull-right">
       <%=link_to "Add Polished demand", polished_demand_customers_path, class: 'btn btn-success', data: { turbolinks: false } %>
@@ -117,7 +117,6 @@
   <div class="table no-padding">
     <table id="tenderList" class="table table-bordered table-responsive tablesorter">
       <thead class="thead-desktop">
-          <th>Description</th>
           <th>Supplier</th>
           <th>Shape</th>
           <th>Color</th>
@@ -133,7 +132,6 @@
       </thead>
       <% @polished_demands.each do |demand| %>
         <tr>
-          <td><%= demand.try(:description) %></td>
           <td><%= demand.try(:demand_supplier).try(:name) rescue 'N/A' %></td>
           <td><%= demand.try(:shape) rescue 'N/A' %></td>
           <td><%= demand.try(:color) rescue 'N/A' %></td>
