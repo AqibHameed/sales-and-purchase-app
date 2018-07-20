@@ -1,8 +1,8 @@
 class SuppliersController < ApplicationController
   # layout 'supplier', :except => [:profile]
   # layout 'application', :except => [:profile]
-  before_action :authenticate_customer!, except: [:add_demand_list, :upload_demand_list, :check_role_authorization]
-  before_action :authenticate_admin!, only: [:add_demand_list, :upload_demand_list]
+  before_action :authenticate_customer!, except: [:add_demand_list, :upload_demand_list, :add_company_list, :upload_company_list, :check_role_authorization]
+  before_action :authenticate_admin!, only: [:add_demand_list, :upload_demand_list, :add_company_list, :upload_company_list]
   before_action :check_role_authorization
   before_action :check_authenticate_supplier, only: [:single_parcel]
 
@@ -53,6 +53,14 @@ class SuppliersController < ApplicationController
     redirect_to add_demand_list_suppliers_path, notice: "List imported."
   end
 
+  def add_company_list
+  end
+
+  def upload_company_list
+    Company.import(params[:file])
+    redirect_to add_company_list_suppliers_path, notice: "Company List imported."
+  end
+
   def parcels
     if params[:trading_document][:document].present?
       if params[:trading_document][:diamond_type] == 'Rough'
@@ -97,7 +105,7 @@ class SuppliersController < ApplicationController
     else
       # @companies = Company.where.not(id: current_company.id)
       @star_companies = CreditLimit.where(seller_id: current_company.id, star: true).map{|c| c.buyer}
-      @custs = Company.where.not(id: current_company.id) #.page
+      @custs = Company.where.not(id: current_company.id, is_broker: true) #.page
       @companies = @star_companies + @custs
       @companies = @companies.uniq
       @companies = @companies.delete_if {|company| excepted_companies_id.include?(company.id.to_s) }
@@ -114,7 +122,8 @@ class SuppliersController < ApplicationController
 
   def save_credit_request
     if current_customer.update_attributes(credit_request_params)
-      Message.create_new_credit_request(current_company)
+      ## Commented now ##
+      # Message.create_new_credit_request(current_company)
       flash[:notice] = "successfully send"
       redirect_to credit_request_suppliers_path
     else

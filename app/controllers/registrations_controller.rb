@@ -1,27 +1,33 @@
 class RegistrationsController < Devise::RegistrationsController
 
   def create
-    company = Company.where(name: sign_up_params[:company_name]).first_or_create
-    build_resource(sign_up_params.merge(company_id: company.id))
-    if sign_up_params[:role] == 'Broker'
-      company.try(:customers).present? ? resource.errors.add(:company, 'already exists') : ''
-    else
-      company.is_broker ? resource.errors.add(:company, 'already registered as broker') : ''
+    # company = Company.where(name: sign_up_params[:company_name]).first_or_create
+    company = Company.find(sign_up_params[:company_id]) if sign_up_params[:company_id].present?
+    build_resource(sign_up_params)
+    unless sign_up_params[:role].blank? || sign_up_params[:company_id].blank?
+      if sign_up_params[:role] == 'Broker'
+        company.try(:customers).present? ? resource.errors.add(:company, 'already registered as buyer/seller') : ''
+      else
+        company.is_broker ? resource.errors.add(:company, 'already registered as broker') : ''
+      end
     end
     resource.save unless resource.errors.present?
     yield resource if block_given?
+
     if resource.persisted? && !resource.errors.present?
       if resource.active_for_authentication?
-        set_flash_message! :notice, :signed_up
-        sign_up(resource_name, resource)
-        respond_with resource, location: after_sign_up_path_for(resource)
+        if resource.is_requested
+          set_flash_message! :notice, :is_requested
+          respond_with resource, location: after_signup_when_requested(resource)
+        else
+          respond_with resource, location: after_sign_up_path_for(resource)
+        end
       else
         set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
         expire_data_after_sign_in!
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
     else
-      company.destroy unless company.try(:customers).present?
       clean_up_passwords resource
       set_minimum_password_length
       respond_with resource
@@ -39,5 +45,9 @@ class RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(resource)
     # '/customers/'+resource.id.to_s+'/add_company'
     trading_customers_path
+  end
+
+  def after_signup_when_requested(resource)
+    login_path
   end
 end

@@ -4,8 +4,8 @@ class Transaction < ApplicationRecord
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
 
-  validate :credit_validation, :validate_invoice_date
-  after_create :update_credit_limit, :generate_and_add_uid, :generate_and_add_amount
+  validate :validate_invoice_date
+  after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
 
   attr_accessor :weight
@@ -47,12 +47,12 @@ class Transaction < ApplicationRecord
                       paid: false, buyer_confirmed: true, created_at: Time.now, diamond_type: trading_parcel.diamond_type)
   end
 
-  def update_credit_limit
-    cl = CreditLimit.where(buyer_id: self.buyer_id, seller_id: self.seller_id).first
-    if cl.nil?
-      cl = CreditLimit.create(buyer_id: self.buyer_id, seller_id: self.seller_id, credit_limit: 0.0)
-    end
-  end
+  # def update_credit_limit
+  #   cl = CreditLimit.where(buyer_id: self.buyer_id, seller_id: self.seller_id).first
+  #   if cl.nil?
+  #     cl = CreditLimit.create(buyer_id: self.buyer_id, seller_id: self.seller_id, credit_limit: 0.0)
+  #   end
+  # end
 
   def set_due_date
     self.due_date = created_at + (credit).days
@@ -60,16 +60,19 @@ class Transaction < ApplicationRecord
   end
 
   def generate_and_add_uid
+    if buyer.customers.blank?
+      is_buyer_confirmed = true
+    else
+      is_buyer_confirmed = false
+    end
     uid = SecureRandom.hex(12)
-    self.transaction_uid = uid
-    self.description = trading_parcel.description
-    self.save(validate: false)
+    self.update_columns({description: trading_parcel.description, transaction_uid: uid, buyer_confirmed: is_buyer_confirmed})
   end
 
   def generate_and_add_amount
-    amount = (price.nil? || trading_parcel.try(:weight).nil?) ? trading_parcel.try(:total_value) : price*trading_parcel.weight
-    self.remaining_amount = amount
-    self.total_amount = amount
+    amount = trading_parcel.try(:total_value) rescue price*trading_parcel.weight
+    remaining_amount = amount
+    total_amount = amount
     self.save(validate: false)
   end
 
@@ -126,4 +129,12 @@ class Transaction < ApplicationRecord
   #     cl.save!
   #   end
   # end
+
+  def create_parcel_for_buyer
+    new_parcel = trading_parcel.dup
+    new_parcel.company_id = self.buyer_id
+    new_parcel.sold = false
+    new_parcel.sale_all = false
+    new_parcel.save
+  end
 end

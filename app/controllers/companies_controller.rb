@@ -1,5 +1,6 @@
 class CompaniesController < ApplicationController
-
+  before_action :authenticate_customer!, except: [:country_company_list]
+  
   def list_company
     if params[:name].present?
       @companies = Customer.where('lower(company) LIKE ?', "%#{params[:name].downcase}%").where.not(id: current_customer.id)
@@ -23,11 +24,20 @@ class CompaniesController < ApplicationController
     @company = Company.all
   end
 
+  ### Not in use
   def check_company
     if Company.where(name: params[:name]).exists?
       render json: { success: true }
     else
       render json: { success: false }
+    end
+  end
+  ###
+
+  def country_company_list
+    @company = Company.where(county: params[:name])
+    respond_to do |format|
+      format.js
     end
   end
 end

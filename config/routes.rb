@@ -130,6 +130,7 @@ Rails.application.routes.draw do
       get :list_company
       post :company_limits
       get :check_company
+      get :country_company_list
     end
   end
 
@@ -178,6 +179,8 @@ Rails.application.routes.draw do
       get :single_parcel_form
       get :add_demand_list
       post :upload_demand_list
+      get :add_company_list
+      post :upload_company_list
       get :important
     end
   end
@@ -192,7 +195,8 @@ Rails.application.routes.draw do
       get :related_seller
       get :parcel_history
       get :direct_sell
-      post :save_direct_sell
+      post '/direct_sell', to: 'trading_parcels#save_direct_sell'
+      post :accept_transaction
       get :size_info
     end
   end
@@ -268,6 +272,8 @@ Rails.application.routes.draw do
       put '/update_chat_id', to: 'api#update_chat_id'
       get '/blocked_customers', to: 'companies#blocked_customers'
       get '/check_company', to: 'companies#check_company'
+      get '/countries_list', to: 'companies#country_list'
+      get '/companies_list', to: 'companies#companies_list'
       resources :tenders do
         collection do
           get :upcoming
@@ -332,4 +338,5 @@ Rails.application.routes.draw do
   get '/update_chat_id',to: 'tenders#update_chat_id'
   get '/parcel_detail', to: 'trading_parcels#parcel_detail'
   get '/access_denied', to: 'customers#access_denied'
+  get '/live_demands', to: 'customers#live_demands'
 end

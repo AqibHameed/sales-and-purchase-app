@@ -14,11 +14,16 @@ class CustomerMailer < ApplicationMailer
 
   def approve_access(customer)
     @customer = customer
-    mail(:to => @customer.email, :subject => '[ClarityNetwork] Your access request is approved  ')
+    mail(:to => @customer.email, :subject => '[ClarityNetwork] Your access request is approved')
   end
 
   def remove_access(customer)
     @customer = customer
-    mail(:to => @customer.email, :subject => '[ClarityNetwork] Your access is removed  ')
+    mail(:to => @customer.email, :subject => '[ClarityNetwork] Your access is removed ')
+  end
+
+  def request_access_mail(customer)
+    @customer = customer
+    mail(:to => @customer.email, :subject => '[ClarityNetwork] You have a new access request ')
   end
 end

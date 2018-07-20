@@ -1,4 +1,5 @@
 class BrokersController < ApplicationController
+  before_action :authenticate_customer!
   before_action :check_authorization, except: [:reject, :accept, :remove, :requests]
   before_action :load_request, only: [:accept, :reject, :remove]
 

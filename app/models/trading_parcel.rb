@@ -9,9 +9,9 @@ class TradingParcel < ApplicationRecord
   has_one :my_transaction, class_name: 'Transaction'
   belongs_to :trading_document, optional: true
 
-  validates :source, presence: true
-  validates :credit_period, :total_value, :description, presence: true
-  validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
+  validates :description, presence: true, unless: :diamond_type_is_polish?
+  validates :source, :credit_period, :total_value, :price, :weight, presence: true
+  # validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
 
   after_create :generate_and_add_uid, :send_mail_to_demanded, :replace_nil_value
   after_update :set_sale_none_when_all_none, :replace_nil_value
@@ -75,7 +75,7 @@ class TradingParcel < ApplicationRecord
   end
 
   def send_mail_to_demanded
-    demands = Demand.where.not(company_id: company_id).where(description: self.try(:description)).map{|e| e.company.customers.map(&:email)}.flatten.uniq
+    demands = Demand.where.not(company_id: company_id).where(description: self.try(:description)).map{|e| e.company.try(:customers).map(&:email)}.flatten.uniq
     unless demands.blank?
       TenderMailer.parcel_up_email(self, demands).deliver rescue logger.info "Error sending email"
     end

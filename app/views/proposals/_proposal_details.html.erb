@@ -16,14 +16,16 @@
         <td><%= proposal.try(:buyer).try(:name) %></td>
       </tr>
     <% end %>
+    <% unless proposal.try(:trading_parcel).try(:source) == 'POLISHED' %>
       <tr>
         <td> Description </td>
         <td><%= proposal.trading_parcel.try(:description) %></td>
       </tr>
-      <tr>
-        <td> Comment by Seller </td>
-        <td><%= proposal.trading_parcel.try(:comment) %><%=link_to "Size info", 'javascript:void(0)', class: 'pull-right size_info', "data-id" => proposal.trading_parcel.try(:id) %></td>
-      </tr>
+    <% end %>
+    <tr>
+      <td> Comment by Seller </td>
+      <td><%= proposal.trading_parcel.try(:comment) %><%=link_to "Size info", 'javascript:void(0)', class: 'pull-right size_info', "data-id" => proposal.trading_parcel.try(:id) %></td>
+    </tr>
     <tr>
       <td> Carats </td>
       <td><%= proposal.trading_parcel.weight.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.weight, precision: 2) %></td>

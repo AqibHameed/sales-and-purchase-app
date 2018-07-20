@@ -1,0 +1,53 @@
+<h3>Live Demand List</h3>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="table no-padding">
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter">
+        <thead class="thead-desktop">
+          <th>Description</th>
+        </thead>
+        <% @normal_demands.each do |demand| %>
+          <tr>
+            <td><%= demand.description %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
+
+<h3>Live Polished Demand </h3>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="table no-padding">
+      <table id="tenderList" class="table table-bordered table-responsive tablesorter">
+      <thead class="thead-desktop">
+          <th>Shape</th>
+          <th>Size</th>
+          <th>Color</th>
+          <th>Clarity</th>
+          <th>Cut</th>
+          <th>Polish</th>
+          <th>Symmetry</th>
+          <th>fluorescence</th>
+          <th>lab</th>
+          <th></th>
+      </thead>
+      <% @polished_demands.each do |demand| %>
+        <tr>
+          <td><%= demand.try(:shape) rescue 'N/A' %></td>
+          <td><%= demand.try(:weight) rescue 'N/A' %></td>
+          <td><%= demand.try(:color) rescue 'N/A' %></td>
+          <td><%= demand.try(:clarity) rescue 'N/A' %></td>
+          <td><%= demand.try(:cut) rescue 'N/A' %></td>
+          <td><%= demand.try(:polish) rescue 'N/A' %></td>
+          <td><%= demand.try(:symmetry) rescue 'N/A' %></td>
+          <td><%= demand.try(:fluorescence) rescue 'N/A' %></td>
+          <td><%= demand.try(:lab) rescue 'N/A' %></td>
+        </tr>
+      <% end %>
+    </table>
+    </div>
+  </div>
+</div>
+

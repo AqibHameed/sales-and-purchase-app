@@ -553,4 +553,8 @@ module ApplicationHelper
   def check_anonymous_company_parcel(parcel, current_company)
     (current_company.try(:id) == parcel.try(:company_id)) ? parcel.try(:company).try(:name) : (parcel.try(:anonymous) && parcel.try(:company).try(:is_anonymous)) ? 'Anonymous' : parcel.try(:company).try(:name)
   end
+
+  def country_list
+    Company.all.map { |e| e.county }.compact.reject { |e| e.to_s == "" }.uniq
+  end
 end

@@ -2,7 +2,7 @@
 <%= javascript_include_tag "https://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
 <% dt = @parcel.diamond_type%>
 <h3>Transaction </h3>
-<%= form_for @transaction, url: save_direct_sell_trading_parcel_path(@parcel), html: { class: 'form-horizontal' } do |f| %>
+<%= form_for @transaction, url: direct_sell_trading_parcel_path(@parcel),remote: true, html: { class: 'form-horizontal' } do |f| %>
   <% if @transaction.errors.any? %>
     <ul>
       <% @transaction.errors.full_messages.each do |msg| %>
@@ -91,6 +91,7 @@
       <label for="inputPassword3" class="col-sm-2 control-label">Avg Price:</label>
       <div class="col-sm-10">
         <%= text_field_tag "avg_price", @parcel.price, class: 'form-control disabled' %>
+        <%= hidden_field_tag "check", true %>
       </div>
     </div>
   </div>
@@ -100,13 +101,6 @@
       <label for="inputPassword3" class="col-sm-2 control-label"> Source:</label>
       <div class="col-sm-10">
         <%= text_field_tag "source", @parcel.source, class: 'form-control disabled' %>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="inputPassword3" class="col-sm-2 control-label">Description:</label>
-      <div class="col-sm-10">
-        <%= text_field_tag "description", @parcel.description, class: 'form-control disabled' %>
       </div>
     </div>
 
@@ -198,6 +192,7 @@
       <label class="col-sm-2 control-label">Total/Box Value:</label>
       <div class="col-sm-10">
         <%= text_field_tag "total_value", @parcel.total_value, class: 'form-control disabled' %>
+        <%= hidden_field_tag "check", true %>
       </div>
     </div>
   </div>

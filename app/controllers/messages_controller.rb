@@ -1,4 +1,5 @@
 class MessagesController < ApplicationController
+  before_action :authenticate_customer!
   before_action :set_message
   before_action :check_authenticate_receiver, only: [:show]
 

@@ -1,7 +1,6 @@
 <table id="tenderList" class="table table-bordered tablesorter table-responsive">
   <thead class="thead-desktop">
     <th></th>
-    <th>Description</th>
     <th>Shape</th>
     <th>Size</th>
     <th>Color</th>
@@ -35,10 +34,6 @@
               Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
             </div>
           </div>
-        </td>
-        <td>
-          <span class="table-head-in-td">Description</span>
-          <%= get_description(parcel) if parcel %>
         </td>
         <td>
           <span class="table-head-in-td">Shape</span>

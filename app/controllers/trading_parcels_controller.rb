@@ -6,7 +6,7 @@ class TradingParcelsController < ApplicationController
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_role_authorization, except: [:related_seller, :parcel_history]
-  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
+  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :accept_transaction, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
   before_action :authenticate_broker, only: [:related_seller, :parcel_history]
   before_action :is_user_edit_polished?, only: [:edit]
@@ -117,19 +117,36 @@ class TradingParcelsController < ApplicationController
   end
 
   def save_direct_sell
-    @transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
-                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, buyer_confirmed: false, transaction_type: 'manual',
+    transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
+                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, transaction_type: 'manual',
                                   created_at: params[:transaction][:created_at])
-    if @transaction.save
-      @transaction.set_due_date
-      @parcel.update_attributes(sold: true)
-      @trading_parcel = @parcel.dup
-      @trading_parcel.company_id = @transaction.buyer_id
-      @trading_parcel.sold = false
-      @trading_parcel.sale_all = false
-      @trading_parcel.save
+    if params[:check] == "true"
+      check_credit_limit(transaction, @parcel)
+    else
+      save_transaction(transaction, @parcel)
+    end
+  end
+
+  def save_transaction(transaction, parcel)
+    available_credit_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
+    if transaction.save
+      transaction.set_due_date
+      transaction.generate_and_add_uid
+      ## set limit ##
+      total_price = parcel.total_value
+      if available_credit_limit < total_price
+        credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+        if credit_limit.nil?
+          CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
+        else
+          new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
+          credit_limit.update_attributes(credit_limit: new_limit)
+        end
+      end
+      parcel.update_attributes(sold: true)
       redirect_to trading_customers_path, notice: 'Transaction added successfully'
     else
+      @transaction = transaction
       render :direct_sell
     end
   end
@@ -157,7 +174,6 @@ class TradingParcelsController < ApplicationController
   def trading_parcel_params
     params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :broker_ids, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
-
   end
 
   def set_trading_parcel
@@ -189,6 +205,18 @@ class TradingParcelsController < ApplicationController
       unless current_company.add_polished
         redirect_to trading_customers_path, notice: 'Please contact admin, permission denied...'
       end
+    end
+  end
+
+  def check_credit_limit(transaction, parcel)
+    buyer = Company.where(id: transaction.buyer_id).first
+    credit_limit = get_available_credit_limit(buyer, current_company).to_f
+    if credit_limit < parcel.total_value
+      respond_to do |format|
+        format.js { render 'save_direct_sell.js.erb', locals: { buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: parcel.id }}
+      end
+    else
+      save_transaction(transaction, parcel)
     end
   end
 end

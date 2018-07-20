@@ -16,13 +16,6 @@
       <%= f.hidden_field :company_id, value: current_company.id %>
     </div>
   </div>
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Description:</label>
-    <div class="col-sm-10">
-      <%= f.select :description, options_for_select(parcel_list_for_demand(@demand_list), @polished_demand.description), {include_blank: true}, class: 'form-control' %>
-
-    </div>
-  </div>
   <%= render partial: 'suppliers/polished_form', locals: {f: f} %>
   <div class="form-group">
     <div class="col-md-6"></div>
