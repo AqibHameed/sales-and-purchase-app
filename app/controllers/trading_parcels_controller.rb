@@ -170,9 +170,19 @@ class TradingParcelsController < ApplicationController
     @parcel.update_column(:broker_ids, broker_ids)
   end
 
+  def historical_polished
+    params[:data][:size] = params[:data][:size].to_i
+    trading_parcels = TradingParcel.where(params[:data])
+    last_five_transactions = trading_parcels.try(:parcel_transactions).order(created_at: :desc).first(5)
+    sum_of_five_transaction =  last_five_transactions.map(&:total_amount).sum rescue 0
+    last_transaction = trading_parcels.try(:parcel_transactions).order(created_at: :desc).try(:first)
+    avg = last_five_transactions/last_five_transactions.count
+    render json: {sum_of_five_transaction: sum_of_five_transaction, last_transaction: last_transaction, avg: avg}
+  end
+
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :broker_ids, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country,
+    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :broker_ids, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country, :size,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
   end
 

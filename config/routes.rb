@@ -188,6 +188,7 @@ Rails.application.routes.draw do
   resources :trading_parcels do
     collection do
       post :check_for_sale
+      get :historical_polished
     end
     member do
       get :message

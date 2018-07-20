@@ -236,4 +236,26 @@
       $('#trading_parcel_total_value').val(amount)
     }
   }
+
+  $('#trading_parcel_shape, #trading_parcel_color, #trading_parcel_clarity, #trading_parcel_cut, #trading_parcel_polish, #trading_parcel_symmetry, #trading_parcel_fluorescence, #trading_parcel_lab, #trading_parcel_size').change(function() {
+    data = {}
+    data['shape'] = $('#trading_parcel_shape').val()
+    data['color'] = $('#trading_parcel_color').val()
+    data['clarity'] = $('#trading_parcel_clarity').val()
+    data['cut'] = $('#trading_parcel_cut').val()
+    data['polish'] = $('#trading_parcel_polish').val()
+    data['symmetry'] = $('#trading_parcel_symmetry').val()
+    data['fluorescence'] = $('#trading_parcel_fluorescence').val()
+    data['lab'] = $('#trading_parcel_lab').val()
+    data['size'] = $('#trading_parcel_size').val()
+    data['sold'] = true
+
+    $.ajax({
+      url : '<%= historical_polished_trading_parcels_path %>',
+      type : 'GET',
+      data : {data: data},
+      success : function(response) {
+      }
+    })
+  });
 </script>

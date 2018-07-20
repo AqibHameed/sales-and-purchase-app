@@ -105,4 +105,8 @@ class TradingParcel < ApplicationRecord
       self.sale_demanded = true
     end
   end
+
+  def parcel_transactions
+    Transaction.where(trading_parcel_id: self.id)
+  end
 end
