@@ -1,5 +1,6 @@
 class CustomerNotification < ApplicationRecord
   belongs_to :notification
+  belongs_to :customer
 
   def self.add_notification_history(android_devices, ios_devices, notification)
     ios_users = ios_devices.uniq {|t| t.customer_id }

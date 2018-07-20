@@ -1,5 +1,5 @@
 class Notification < ApplicationRecord
-  has_many :customer_notifications
+  has_many :customer_notifications, dependent: :destroy
 
 
   # def self.send_android_notifications(registration_ids, message, supplier_name, tender_name, dates, id)

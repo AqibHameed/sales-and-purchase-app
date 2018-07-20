@@ -10,42 +10,38 @@ class Customer < ApplicationRecord
 
   default_scope { where(invitation_token: nil).order("first_name asc, last_name asc") }
 
-  has_many :customers_tenders
-  has_many :tenders, :through => :customers_tenders
+  belongs_to :company
+
+  has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
+
   has_many :bids
+  has_many :devices
   has_many :winners
-  has_many :notes
-  # has_many :demands
+  has_many :broker_invites
+  has_many :trading_parcels, dependent: :destroy
+  has_many :email_attachments
   has_many :yes_no_buyer_winners
   has_many :yes_no_buyer_interests
-  has_many :devices
-  # has_many :suppliers
-  # has_many :block_users, :class_name => 'BlockUser', :foreign_key => 'block_user_ids'
-  has_many :shared_to_users, :class_name => 'Shared', :foreign_key => 'shared_to_id'
-  has_many :shared_by_users, :class_name => 'Shared', :foreign_key => 'shared_by_id'
-  has_many :email_attachments
+  has_many :notes, dependent: :destroy
+  has_many :credit_requests, dependent: :destroy
+  has_many :customer_roles, dependent: :destroy
+  has_many :customer_ratings, dependent: :destroy
+  has_many :customer_comments, dependent: :destroy
+  has_many :customer_pictures, dependent: :destroy
+  has_many :customers_tenders, dependent: :destroy
+  has_many :tenders, :through => :customers_tenders
+  has_many :customer_notifications, dependent: :destroy
   has_many :sender, :class_name => 'Message', :foreign_key => 'sender_id'
   has_many :receiver, :class_name => 'Message', :foreign_key => 'receiver_id'
-  has_many :broker_invites
-  has_many :credit_requests, dependent: :destroy
-  has_many :customer_roles
-  has_many :customer_ratings
-  has_many :customer_comments
-  has_many :customer_pictures
-  has_many :trading_parcels
-  # has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction"
-  # has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction"
-  # has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit"
+  has_many :shared_to_users, :class_name => 'Shared', :foreign_key => 'shared_to_id'
+  has_many :shared_by_users, :class_name => 'Shared', :foreign_key => 'shared_by_id'
   has_many :seller_credit_limits, :foreign_key => "seller_id", :class_name => "CreditLimit"
   has_many :supplier_notifications, :foreign_key => "supplier_id", :class_name => "SupplierNotification"
   has_many :buyer_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit"
   has_many :seller_days_limits, :foreign_key => "seller_id", :class_name => "DaysLimit"
   has_many :brokers, :foreign_key => "broker_id", :class_name => "BrokerRequest"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "BrokerRequest"
-  has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "CompaniesGroup"
-  # has_many :companies_customers, :foreign_key => "customer_id", :class_name => "CompaniesGroup"
-  belongs_to :company
 
   validates :mobile_no, uniqueness: true
   validates :first_name, :mobile_no, :presence => true
