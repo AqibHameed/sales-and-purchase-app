@@ -128,6 +128,12 @@ class Company < ApplicationRecord
 
   ##### Credit Scores #####
 
+  def get_total_credit_score
+    total = self.get_payment_history + self.get_sales_history
+
+    return total
+  end
+
   def get_payment_history
     scores = self.get_payment_history_ex
     return scores['total']
@@ -307,6 +313,7 @@ class Company < ApplicationRecord
 
   def get_activity
     c = Date.today.day
+    #TODO - set default value for start date
     date_start = 0
     if (c-30).positive?
       date_start = Date.civil(Date.today.year, Date.today.mon, (c - 30).to_i)
@@ -328,6 +335,28 @@ class Company < ApplicationRecord
 
     return scores
 
+  end
+
+  # Calculate "Network Diversity" for one company
+  def business_with_company(company_id)
+    result = {
+        'company_name' => '',
+        'company_business_amount_as_buyer' => 0,
+        'company_business_amount_as_seller' => 0,
+        'my_business_amount' => 0,
+        'total' => 0
+    }
+
+    result['my_business_amount'] = Transaction.total_transaction(self.id).sum(:total_amount)
+    result['company_name'] = Company.find(company_id).name
+    if result['my_business_amount'].positive?
+      result['company_business_amount_as_seller'] = Transaction.where("buyer_id = ? AND seller_id = ? AND buyer_confirmed = ?", company_id, self.id, true).sum(:total_amount)
+      result['company_business_amount_as_buyer '] = Transaction.where("buyer_id = ? AND seller_id = ? AND buyer_confirmed = ?", self.id, company_id, true).sum(:total_amount)
+      result['total'] = ( (result['company_business_amount_as_seller'] + result['company_business_amount_as_buyer ']) / result['my_business_amount'] ).round(2)
+    end
+
+
+    return result
   end
 
 
