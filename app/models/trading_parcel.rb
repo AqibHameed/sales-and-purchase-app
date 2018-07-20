@@ -28,7 +28,7 @@ class TradingParcel < ApplicationRecord
   COLOR = ["D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S"]
   CLARITY= ["FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "SI3", "I1", "I2", "I3"]
 
-  CUT_POLISH_SYMMETRY = ["Excellent", "Very Good", "Good", "Fair", "Poor"]
+  CUT_POLISH_SYMMETRY = ["I", "Excellent", "Very Good", "Good", "Fair", "Poor"]
 
   FLUORESCENCE = ["None", "Very Slight", "Faint/Slight", "Medium", "Strong", "Very Stong"]
   LAB = ["GIA", "AGS", "HRD", "IGI", "RDC", "CGL", "DCLA", "GCAL", "GHI", "IIDGR"]

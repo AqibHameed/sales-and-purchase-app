@@ -123,6 +123,21 @@
       </div>
     </div>
 
+    <div class="polished <%=hide_class%> <%=(dt == 'Polished') ? '' : 'hide'%>">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Last Sold Price::</label>
+        <div class="col-sm-10">
+          <%=text_field_tag "last_sold", '', class: 'form-control', disabled: true %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Avg. of last 5 Sold :</label>
+        <div class="col-sm-10">
+          <%=text_field_tag "last_five_sold", '', class: 'form-control', disabled: true %>
+        </div>
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="col-sm-2 control-label">Comment:</label>
       <div class="col-sm-10">
@@ -237,7 +252,7 @@
     }
   }
 
-  $('#trading_parcel_shape, #trading_parcel_color, #trading_parcel_clarity, #trading_parcel_cut, #trading_parcel_polish, #trading_parcel_symmetry, #trading_parcel_fluorescence, #trading_parcel_lab, #trading_parcel_size').change(function() {
+  $('#trading_parcel_shape, #trading_parcel_color, #trading_parcel_clarity, #trading_parcel_cut, #trading_parcel_polish, #trading_parcel_symmetry, #trading_parcel_fluorescence, #trading_parcel_lab, #trading_parcel_weight').change(function() {
     data = {}
     data['shape'] = $('#trading_parcel_shape').val()
     data['color'] = $('#trading_parcel_color').val()
@@ -247,14 +262,17 @@
     data['symmetry'] = $('#trading_parcel_symmetry').val()
     data['fluorescence'] = $('#trading_parcel_fluorescence').val()
     data['lab'] = $('#trading_parcel_lab').val()
-    data['size'] = $('#trading_parcel_size').val()
-    data['sold'] = true
+    data['weight'] = $('#trading_parcel_weight').val()
+    
 
     $.ajax({
+      dataType: "JSON",
       url : '<%= historical_polished_trading_parcels_path %>',
       type : 'GET',
       data : {data: data},
       success : function(response) {
+        $('#last_sold').val(response.last_transaction)
+        $('#last_five_sold').val(response.sum_of_five_transaction)
       }
     })
   });

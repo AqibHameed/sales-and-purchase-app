@@ -92,37 +92,6 @@ $(document).ready(function() {
     }
   })
 
-  // $('#creditList').DataTable({
-  //   // "paging": false,
-  //   "pageLength": 20,
-  //   // "bLengthChange": false,
-  //   "bInfo" : false
-  //   // "columnDefs": [
-  //   //   { "orderable": false, "targets": 0 },
-  //   //   { "orderable": false, "targets": 1 },
-  //   //   { "orderable": false, "targets": 2 },
-  //   //   { "orderable": false, "targets": 3 },
-  //   //   { "orderable": false, "targets": 4 },
-  //   //   { "orderable": false, "targets": 5 },
-  //   //   { "orderable": false, "targets": 6 }
-  //   // ]
-  // });
-
-
-
-  // $(document).click(function(e){
-  //   if (!e.target.matches('.dropbtn')) {
-  //     var dropdowns = $(".dropdown-content");
-  //     var i;
-  //     for (i = 0; i < dropdowns.length; i++) {
-  //       var openDropdown = dropdowns[i];
-  //       if (dropdowns.hasClass('show')) {
-  //         dropdowns.removeClass('show');
-  //       }
-  //     }
-  //   }
-  // })
-
   $('.dropdown').hover(function() {
     $(this).parent().find('#myDropdown').stop(true, true).delay(200).fadeIn(500);
   }, function() {
@@ -138,9 +107,6 @@ $(document).on('click', '.login-btn', function(){
   $("#customer_mobile_no").val($("#mobile_no").intlTelInput("getNumber"))
 });
 
-// function myFunction() {
-//   $("#myDropdown").toggleClass("show");
-// }
 
 function addMask() {
   $('body').append("<div id='screenMask'></div>")
@@ -308,8 +274,7 @@ $(document).ready(function() {
     });
   }
 
-  $('#demand_description').select2({
-
+  $('#demand_description, #polished_demand_country, #trading_parcel_country').select2({
   });
 });
 
@@ -344,7 +309,6 @@ function ajaxRequest(url, data, callback, errorCallback, type) {
   });
 
 }
-
 
 $(document).on('click', '.size_info', function(){
   id = $(this).data('id')
