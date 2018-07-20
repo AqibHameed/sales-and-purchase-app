@@ -1,7 +1,8 @@
 class Company < ApplicationRecord
+
   has_many :customers, dependent: :destroy
   has_many :demands, dependent: :destroy
-
+  has_many :polished_demands, dependent: :destroy
   has_many :trading_parcels, dependent: :destroy
   has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit", dependent: :destroy
   has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction", dependent: :destroy
@@ -9,10 +10,9 @@ class Company < ApplicationRecord
   has_many :buyer_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit", dependent: :destroy
   has_many :seller_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit", dependent: :destroy
   has_many :company_group_seller, :foreign_key => "seller_id", :class_name => "CompaniesGroup", dependent: :destroy
-
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
-  has_many :polished_demands
+
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
   def self.import(file)

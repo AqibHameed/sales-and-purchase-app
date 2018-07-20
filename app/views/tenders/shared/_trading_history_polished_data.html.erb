@@ -1,0 +1,119 @@
+<table id="tenderList" class="table table-bordered table-striped tablesorter table-responsive" >
+  <thead class="thead-desktop">
+    <tr>
+      <th>S No.</th>
+      <th>Shape</th>
+      <th>Size</th>
+      <th>Color</th>
+      <th>Clarity</th>
+      <th>Cut/Polish/Symmetry</th>
+      <th>FL</th>
+      <th>Lab</th>
+      <th>Carat</th>
+      <th>Credit</th>
+      <th>Avg. Price</th>
+      <th>Total $</th>
+      <th>Activity</th>
+      <th>Counterparty</th>
+      <th>Status</th>
+      <th>Invoice Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% transactions.each.with_index(1) do |transaction, i| %>
+      <% if get_status(transaction) == 'Overdue' %>
+        <% color = 'bg-red' %>
+        <% link = 'white' %>
+      <% else %>
+         <% color = 'bg-normal' %>
+         <% link = '' %>
+      <% end %>
+      <tr class="<%= color %>" >
+        <td>
+          <%= i  %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Shape</span>
+          <%= transaction.trading_parcel.shape.nil? ? 'N/A' : transaction.trading_parcel.shape %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Shape</span>
+          <%= transaction.trading_parcel.weight.nil? ? 'N/A' : transaction.trading_parcel.weight %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Color</span>
+          <%= transaction.trading_parcel.color.nil? ? 'N/A' : transaction.trading_parcel.color %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Clarity</span>
+          <%= transaction.trading_parcel.clarity.nil? ? 'N/A' : transaction.trading_parcel.clarity %>
+        </td>
+        <td>
+          <%= transaction.trading_parcel.cut.nil? ? 'N/A' : transaction.trading_parcel.cut %>/
+          <%= transaction.trading_parcel.polish.nil? ? 'N/A' : transaction.trading_parcel.polish %>/
+          <%= transaction.trading_parcel.symmetry.nil? ? 'N/A' : transaction.trading_parcel.symmetry %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Fluorescence</span>
+          <%= transaction.trading_parcel.fluorescence.nil? ? 'N/A' : transaction.trading_parcel.fluorescence %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Lab</span>
+          <%= transaction.trading_parcel.lab.nil? ? 'N/A' : transaction.trading_parcel.lab %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Carat</span>
+          <%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Credit</span>
+          <%= transaction.credit rescue 'N/A' %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Avg. Price</span>
+          <%= transaction.trading_parcel.price.nil? ? 'N/A' : transaction.trading_parcel.price %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Total/Box Value:</span>
+          <%= transaction.trading_parcel.total_value.nil? ? 'N/A' : transaction.trading_parcel.total_value %>
+        </td>
+        <% if current_company.id == transaction.buyer_id %>
+          <td>Bought</td>
+          <td>
+            <span class="table-head-in-td">Activity</span><%= transaction.seller.try(:name) rescue 'N/A' %>
+          </td>
+        <% elsif current_company.id == transaction.seller_id  %>
+          <td>Sold</td>
+          <td>
+            <span class="table-head-in-td">Counterparty</span><%= transaction.buyer.try(:name) rescue 'N/A' %>
+          </td>
+        <% end %>
+        <td>
+          <span class="table-head-in-td">Status</span><%= get_status(transaction) %></td>
+        <td>
+          <span class="table-head-in-td">Invoice Date</span><%= transaction.created_at.strftime("%B, %d %Y")  %>
+        </td>
+        <% if transaction.buyer_confirmed %>
+          <td>Confirmed</td>
+        <% elsif current_company.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && get_status(transaction) != 'Completed' %>
+          <td>
+            <%=link_to 'Confirm', confirm_transaction_path(transaction), data: {turbolinks: false}, class: link %>
+          </td>
+        <% else %>
+          <td></td>
+        <% end %>
+        <td>
+          <%=link_to 'view' , transaction_path(transaction), data: {turbolinks: false}, class: link %>
+        </td>
+        <% if current_company.id == transaction.seller_id %>
+          <td>
+            <%=link_to 'Invoice' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %>
+          </td>
+        <% end %>
+      </tr>
+    <%end%>
+  </tbody>
+</table>

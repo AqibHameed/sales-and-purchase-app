@@ -13,6 +13,7 @@ class TradingParcel < ApplicationRecord
   validates :source, :credit_period, :total_value, :price, :weight, presence: true
   # validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
 
+  after_initialize :set_default_demand
   after_create :generate_and_add_uid, :send_mail_to_demanded, :replace_nil_value
   after_update :set_sale_none_when_all_none, :replace_nil_value
 
@@ -88,7 +89,7 @@ class TradingParcel < ApplicationRecord
   end
 
   def set_sale_none_when_all_none
-    (!sale_all && !sale_none && !sale_broker && !sale_credit && !sale_demanded) ? self.update_column(:sale_none, true) : ''
+    (!sale_all && !sale_none && !sale_broker && !sale_credit && !sale_demanded) ? self.update_column(:sale_demanded, true) : ''
   end
 
   def replace_nil_value
@@ -96,5 +97,12 @@ class TradingParcel < ApplicationRecord
     percent.nil? ? self.update_column(:percent, 0) : ''
     weight.nil? ? self.update_column(:weight, 0) : ''
     price.nil? ? self.update_column(:price, 0) : ''
+  end
+
+  def set_default_demand
+    if self.new_record?
+      self.sale_none = false
+      self.sale_demanded = true
+    end
   end
 end

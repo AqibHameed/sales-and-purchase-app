@@ -330,9 +330,12 @@ class TendersController < ApplicationController
   end
 
   def trading_history
-    @pending_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ?',current_company.id, current_company.id, Date.today, false)
-    @overdue_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ?',current_company.id, current_company.id, Date.today, false)
-    @completed_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and paid = ?',current_company.id, current_company.id, true)
+    @pending_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ?',current_company.id, current_company.id, Date.today, false)
+    @overdue_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ?',current_company.id, current_company.id, Date.today, false)
+    @completed_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and paid = ?',current_company.id, current_company.id, true)
+    @polished_pending_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.today, false, 'Polished')
+    @polished_overdue_transactions = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.today, false, 'Polished')
+    @polished_completed_transactions = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and paid = ? and diamond_type = ?',current_company.id, current_company.id, true, 'Polished')
   end
 
   def calendar

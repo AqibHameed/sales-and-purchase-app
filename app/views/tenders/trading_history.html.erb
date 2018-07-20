@@ -13,6 +13,8 @@
         <div class='tenders_list'>
           <% @transactions = @pending_transaction %>
           <%= render 'trading_history_list' %>
+          <div class="clear20"></div>
+          <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_pending_transactions} %>
         </div>
       </div>
       <div id="sectionB" class="tab-pane fade">
@@ -20,6 +22,8 @@
         <div class='tenders_list'>
           <% @transactions = @overdue_transaction %>
           <%= render 'trading_history_list' %>
+          <div class="clear20"></div>
+          <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_overdue_transactions} %>
         </div>
       </div>
       <div id="sectionC" class="tab-pane fade">
@@ -27,6 +31,8 @@
         <div class='tenders_list'>
           <% @transactions = @completed_transaction %>
           <%= render 'trading_history_list' %>
+          <div class="clear20"></div>
+          <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_completed_transactions} %>
         </div>
       </div>
     </div>
