@@ -1,14 +1,13 @@
 class Api::V1::RegistrationsController < ActionController::Base
   def create
-    check_company = Company.where(name: params[:registration][:company_name]).first
-    if check_company.nil?
-      check_company = Company.create(name: params[:registration][:company_name])
-      is_requested = false
-    else
-      check_company = check_company
-      is_requested = true
-    end
-    customer = Customer.new(customer_params.merge(company_id: check_company.id, is_requested: is_requested, role: 'Buyer/Seller'))
+    # check_company = Company.where(name: params[:registration][:company_id]).first
+    # if check_company.customer
+    #   is_requested = false
+    # else
+    #   check_company = check_company
+    #   is_requested = true
+    # end
+    customer = Customer.new(customer_params.merge(role: 'Buyer/Seller'))
     # customer = Customer.new(customer_params)
     if customer.save
       customer.ensure_authentication_token
@@ -25,7 +24,7 @@ class Api::V1::RegistrationsController < ActionController::Base
         render :json => { success: false, message: 'An email has been sent to your email. Please verify the email.', response_code: 201 }
       end
     else
-      check_company.destroy unless check_company.try(:customers).present?
+      # check_company.destroy unless check_company.try(:customers).present?
       render :json => {:errors => customer.errors.full_messages, response_code: 201 }
     end
   end
