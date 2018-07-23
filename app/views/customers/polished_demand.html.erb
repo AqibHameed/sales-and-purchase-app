@@ -16,7 +16,7 @@
       <%= f.hidden_field :company_id, value: current_company.id %>
     </div>
   </div>
-  <%= render partial: 'suppliers/polished_form', locals: {f: f} %>
+  <%= render partial: 'suppliers/polished_form', locals: {f: f, direct_sell: false} %>
   <div class="form-group">
     <div class="col-md-6"></div>
     <div class="col-md-6">
