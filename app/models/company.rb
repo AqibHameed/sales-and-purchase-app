@@ -350,9 +350,10 @@ class Company < ApplicationRecord
     result['my_business_amount'] = Transaction.total_transaction(self.id).sum(:total_amount)
     result['company_name'] = Company.find(company_id).name
     if result['my_business_amount'].positive?
-      result['company_business_amount_as_seller'] = Transaction.where("buyer_id = ? AND seller_id = ? AND buyer_confirmed = ?", company_id, self.id, true).sum(:total_amount)
-      result['company_business_amount_as_buyer '] = Transaction.where("buyer_id = ? AND seller_id = ? AND buyer_confirmed = ?", self.id, company_id, true).sum(:total_amount)
-      result['total'] = ( (result['company_business_amount_as_seller'] + result['company_business_amount_as_buyer ']) / result['my_business_amount'] ).round(2)
+      result['company_business_amount_as_seller'] = Transaction.where("buyer_id = ? AND seller_id = ? AND buyer_confirmed = ?", company_id, self.id, true).sum(:total_amount).to_f
+      result['company_business_amount_as_buyer'] = Transaction.where("buyer_id = ? AND seller_id = ? AND buyer_confirmed = ?", self.id, company_id, true).sum(:total_amount).to_f
+
+      result['total'] = ( (result['company_business_amount_as_seller'] + result['company_business_amount_as_buyer']) / result['my_business_amount'] ).round(2)
     end
 
 
