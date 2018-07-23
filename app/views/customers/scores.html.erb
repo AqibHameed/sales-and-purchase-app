@@ -1,18 +1,25 @@
 <%
   # get scores data
+  total_scores = current_company.get_total_credit_score
+
   payment_history = current_company.get_payment_history
   payment_history_ex = current_company.get_payment_history_ex
 
   sales_history = current_company.get_sales_history
   sales_history_ex = current_company.get_sales_history_ex
 
+  network_diversity = current_company.business_with_company(241)
   activity = current_company.get_activity
+
+
 %>
-<div class="c1 dashboard">
+<div class="c1 dashboard" xmlns="http://www.w3.org/1999/html">
   <div class="clear10"></div>
   <div class="company">
-
+    <h3>Total Credit Score: <strong><%= total_scores %></strong></h3>
+    <div class="clear20"></div>
     <%#= Date.civil(Date.today.year, Date.today.mon, Date.today.day).inspect%>
+    <%#= current_company.inspect%>
     <h3>Payment History</h3>
     <div class="clear10"></div>
     <h1>Total Score: <strong><%= payment_history %></strong></h1>
@@ -82,6 +89,17 @@
       </li>
     </ul>
     <div class="clear20"></div>
+
+    <h3>Network Diversity</h3>
+    <div class="clear10"></div>
+    <h2>Score for Business with company <i><%= network_diversity['company_name'] %></i>: <strong><%= network_diversity['total']%></strong></h2>
+    <div><span style="font-size: 90%;font-style: italic;">(Amount of Business with A / Total Business)</span></div>
+    <div class="clear10"></div>
+    <ul>
+      <li>Amount of business with company as buyer: <strong><%=network_diversity['company_business_amount_as_buyer']%></strong></li>
+      <li>Amount of business with company as seller: <strong><%=network_diversity['company_business_amount_as_seller']%></strong></li>
+      <li> My company total business <strong><%= network_diversity['my_business_amount']%></strong></li>
+    </ul>
 
     <h3>Activity</h3>
     <div class="clear10"></div>
