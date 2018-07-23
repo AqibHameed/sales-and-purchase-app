@@ -31,6 +31,7 @@
 //= require jquery.ui.monthpicker
 //= require intlTelInput
 //= require libphonenumber/utils
+//= require bootstrap-datepicker
 
 
 //Admin Login

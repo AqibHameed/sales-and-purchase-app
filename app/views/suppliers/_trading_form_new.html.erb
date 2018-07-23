@@ -1,10 +1,12 @@
-<%= render partial: 'suppliers/trading_form' %>
+<%if direct_sell == true%>
+  <%= render partial: 'trading_parcels/direct_sell_form', locals: {direct_sell: direct_sell} %>
+<%else%>
+  <%= render partial: 'suppliers/trading_form', locals: {direct_sell: direct_sell} %>
+<%end%>
 <script type="text/javascript">
-  $('.add-size').addClass('hide')
   $(document).on('change', '#trading_parcel_source', function(){
     val = $(this).val()
     $('.buttons').removeClass('hide')
-    $('.add-size').removeClass('hide')
     $('.checkbox-division').removeClass('hide')
     if(val == "Outside Goods" || val == "OUTSIDE GOODS"){
       $('#trading_parcel_diamond_type').val('Rough')
@@ -44,7 +46,6 @@
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').addClass('hide')
-      $('.add-size').addClass('hide')
       removeFieldValue()
     }else{
       $('.common').addClass('hide')
@@ -54,14 +55,26 @@
       $('.buttons').addClass('hide')
       $('.checkbox-division').addClass('hide')
     }
+    <%if direct_sell %>
+      $('.add-size').addClass('hide');
+    <%else%>
+      $('.add-size').removeClass('hide');
+    <%end%>
     supplier_list()
   });
+
 
   $(document).ready(function(){
     supplier_list()
     setTimeout(function(){
       $('#trading_parcel_description').val('<%=@trading_parcel.description%>')
     }, 500);
+
+    $("#trading_parcel_my_transaction_attributes_buyer_id").select2({
+      formatResult: add_icons_to_select,
+      formatSelection: add_icons_to_select
+    });
+    $('#trading_parcel_my_transaction_attributes_created_at').datepicker({format: 'dd/mm/yyyy'});
   })
 
   function supplier_list() {
@@ -81,4 +94,122 @@
     $('#trading_parcel_total_value').val('')
   }
 
+  $(document).on('click', '.invite', function(e) {
+    e.preventDefault()
+    var _this = $(this);
+    var top = $(this).position()['top'] - 300;
+    $.ajax({
+      url : '/transactions/invite',
+      type : 'GET',
+      success : function(response) {
+        console.log(response)
+        $('.bid_form').html(response).show()
+        $('tr').removeClass('current_bid');
+        $(_this).parents('tr').addClass('current_bid');
+
+      }
+    })
+  });
+
+   $(document.body).on("change", "#trading_parcel_my_transaction_attributes_buyer_id", function(){
+    text = "Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection."
+
+    $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
+    toggle_checkbox()
+  });
+
+  function toggle_checkbox() {
+    $('#read').click(function () {
+      if ($(this).is(':checked')) {
+        $('#transaction_submit').removeClass('disabled');
+        $('#transaction_submit').prop('disabled', false);
+      } else {
+        $('#transaction_submit').addClass('disabled');
+        $('#transaction_submit').prop('disabled', true);
+      }
+    });
+  }
+
+  function add_icons_to_select(state) {
+    var originalOption = state.element;
+
+    if (!state.id) return state.text; // optgroup
+    return "<img class='customer_list_verified_icon' src='" + $(originalOption).data('icon') +"'/>" + " " + state.text;
+  }
+
+   $(document).on('keyup focusout','#trading_parcel_cost, #trading_parcel_weight, #trading_parcel_percent, #trading_parcel_price', function(){
+    self = $(this)
+    var carat = parseFloat($('#trading_parcel_weight').val());
+    var cost = parseFloat($('#trading_parcel_cost').val());
+    var percent = parseFloat($('#trading_parcel_percent').val());
+    var price = parseFloat($('#trading_parcel_price').val());
+    if ((self.attr('name') == 'trading_parcel[cost]') || (self.attr('name') == 'trading_parcel[percent]')) {
+      calculate_price(carat, cost, percent, price)
+    } else if(self.attr('name') == 'trading_parcel[price]') {
+      calculate_percent(carat, cost, price)
+    } else if(self.attr('name') == 'trading_parcel[weight]') {
+      calculate_price(carat, cost, percent, price)
+      calculate_percent(carat, cost, price)
+    }
+  });
+
+  function calculate_price(carat, cost, percent, price){
+    var avg_price = (percent/100)*cost + cost;
+    var amount = carat*avg_price;
+    if (isNaN(avg_price)){
+      $('#trading_parcel_price').val('')
+      $('#amount').val('');
+      $('#trading_parcel_total_value').val('')
+    }else{
+      $('#trading_parcel_price').val(avg_price)
+      $('#amount').val(amount);
+      $('#trading_parcel_total_value').val(amount)
+    }
+  }
+
+  function calculate_percent(carat, cost, price){
+    var percent = (cost == 0 ) ? 0 : ((price - cost) * 100)/cost;
+    var amount = carat*price;
+    if (isNaN(percent)){
+      $('#trading_parcel_percent').val('')
+      $('#amount').val(amount);
+      var total_price = carat * price;
+      $('#trading_parcel_total_value').val(total_price)
+    }else{
+      $('#trading_parcel_percent').val(percent)
+      $('#amount').val(amount);
+      $('#trading_parcel_total_value').val(amount)
+    }
+  }
+
+  $('#trading_parcel_shape, #trading_parcel_color, #trading_parcel_clarity, #trading_parcel_cut, #trading_parcel_polish, #trading_parcel_symmetry, #trading_parcel_fluorescence, #trading_parcel_lab, #trading_parcel_weight').change(function() {
+    data = {}
+    data['shape'] = $('#trading_parcel_shape').val()
+    data['color'] = $('#trading_parcel_color').val()
+    data['clarity'] = $('#trading_parcel_clarity').val()
+    data['cut'] = $('#trading_parcel_cut').val()
+    data['polish'] = $('#trading_parcel_polish').val()
+    data['symmetry'] = $('#trading_parcel_symmetry').val()
+    data['fluorescence'] = $('#trading_parcel_fluorescence').val()
+    data['lab'] = $('#trading_parcel_lab').val()
+    data['weight'] = $('#trading_parcel_weight').val()
+
+
+    $.ajax({
+      dataType: "JSON",
+      url : '<%= historical_polished_trading_parcels_path %>',
+      type : 'GET',
+      data : {data: data},
+      success : function(response) {
+        $('#last_sold').val(response.last_transaction)
+        $('#last_five_sold').val(response.sum_of_five_transaction)
+      }
+    })
+  });
+
 </script>
+<style>
+  .current_bid {
+    background-color: #E4E4E4 !important;
+  }
+</style>
