@@ -1,0 +1,208 @@
+<% dt = @trading_parcel.diamond_type %>
+<%hide_class = @trading_parcel.new_record? ? 'hide' : ''%>
+<div class="tranding-parcel-errors">
+  <%= render partial: 'suppliers/tranding_parcel_errors' %>
+</div>
+<%= f.hidden_field :diamond_type  %>
+</br>
+<div class="clear10"></div>
+<div class="form-group">
+  <label class="col-sm-2 control-label">Source:</label>
+  <div class="col-sm-10">
+    <%= f.select :source, options_for_select(supplier_list_for_demand(current_company, true), :selected => f.object.source), {include_blank: true}, {class: 'form-control'}%>
+  </div>
+</div>
+
+<div class="sight_diamond <%=hide_class%> <%=(dt == 'Sight') ? '' : 'hide'%>">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Discount Per Month:</label>
+    <div class="col-sm-10">
+      <%= f.number_field :box_value, :value => 0, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Month Sight:</label>
+    <div class="col-sm-10">
+      <%= f.text_field :sight, class: 'form-control' %>
+    </div>
+  </div>
+</div>
+
+<div class="rough_diamond <%=hide_class%> <%=(dt == 'Rough') ? '' : 'hide'%>">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Lot No:</label>
+    <div class="col-sm-10">
+      <%= f.number_field :lot_no, class: 'form-control' %>
+    </div>
+  </div>
+</div>
+
+
+<div class="common <%=hide_class%> <%=(dt != 'Polished') ? '' : 'hide'%>">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Description:</label>
+    <div class="col-sm-10">
+      <%= f.select :description, options_for_select(parcel_list_for_demand(nil), @trading_parcel.description), {include_blank: true}, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">No of Stones:</label>
+    <div class="col-sm-10">
+      <%= f.number_field :no_of_stones, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Cost:</label>
+    <div class="col-sm-10">
+      <%= f.text_field :cost, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Percent:</label>
+    <div class="col-sm-10">
+      <%= f.text_field :percent, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="clear10"></div>
+  <div class="row">
+    <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
+      <table class="table table-hover">
+        <thead>
+          <th>Size</th>
+          <th>Percent</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sub_s"><%=s.text_field :size, class: 'form-control col-sm-3 sub_size' %></td>
+            <td class="sub_per"><%=s.text_field :percent, class: 'form-control col-sm-3 sub_percent' %></td>
+            <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
+          </tr>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>
+
+<div class="polished <%=hide_class%> <%=(dt == 'Polished') ? '' : 'hide'%>">
+  <%= render partial: 'suppliers/polished_form', locals: {f: f, direct_sell: direct_sell} %>
+</div>
+<div class="checkbox-division <%=hide_class%>">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Credit:</label>
+    <div class="col-sm-10">
+      <%= f.number_field :credit_period, class: 'form-control' %>
+      <%= f.hidden_field :customer_id, value: current_customer.id, class: 'form-control' %>
+      <%= f.hidden_field :company_id, value: current_company.id, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Carats:</label>
+    <div class="col-sm-10">
+      <%= f.number_field :weight, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Avg Price:</label>
+    <div class="col-sm-10">
+      <%= f.number_field :price, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Total/Box Value:</label>
+    <div class="col-sm-10">
+      <%= f.number_field :total_value, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="polished <%=hide_class%> <%=(dt == 'Polished') ? '' : 'hide'%>">
+    <div class="form-group <%= direct_sell ? 'hide' : ''%>">
+      <label class="col-sm-2 control-label">Last Sold Price:</label>
+      <div class="col-sm-10">
+        <%=text_field_tag "last_sold", '', class: 'form-control', disabled: true %>
+      </div>
+    </div>
+    <div class="form-group <%= direct_sell ? 'hide' : ''%>">
+      <label class="col-sm-2 control-label">Avg. of last 5 Sold :</label>
+      <div class="col-sm-10">
+        <%=text_field_tag "last_five_sold", '', class: 'form-control', disabled: true %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group <%=(direct_sell) ? 'hide' : ''%>">
+    <label class="col-sm-2 control-label">Comment:</label>
+    <div class="col-sm-10">
+      <%= f.text_area :comment, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="clear10"></div>
+  <div class="check-box-for-sale <%=(direct_sell) ? 'hide' : ''%>">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Select Parcel Visibility:</label>
+      <div class="col-sm-10">
+        <div class="col-md-2">
+          <%= f.check_box :sale_none, class: 'form-check-input' %>
+          <%= f.label "None", class: 'form-check-label' %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.check_box :sale_broker, class: 'form-check-input' %>
+          <%= f.label "Broker", class: 'form-check-label' %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.check_box :sale_credit, class: 'form-check-input' %>
+          <%= f.label "Credit Given", class: 'form-check-label' %>
+        </div>
+
+        <div class="col-md-2">
+          <%= f.check_box :sale_demanded, class: 'form-check-input' %>
+          <%= f.label "Demanded", class: 'form-check-label' %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group broker-list hide">
+    <label class="col-sm-2 control-label">Brokers:</label>
+    <div class="col-sm-10">
+      <div class="col-md-6">
+        <%= f.select :broker_ids, options_for_select(list_of_brokers(current_company)), { include_blank: true }, { class: 'broker-select form-control', style: 'width: 500px; margin-left: -13px;' } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="clear10"></div>
+  <div class="check-box-for-sale <%=(direct_sell) ? 'hide' : ''%>">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Anonymous:</label>
+      <div class="col-sm-10">
+        <div class="col-md-2">
+          <% if current_company.is_anonymous %>
+            <%= f.check_box :anonymous, class: 'form-check-input', style: 'margin-left: -20px;' %>
+          <% else %>
+            <%= f.check_box :anonymous, class: 'form-check-input', style: 'margin-left: -20px;', disabled: true, checked: false %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  </br>
+</div>
+<div class="clear10"></div>
+<div class="direct-sell <%=(direct_sell) ? '' : 'hide'%>">
+  <%= render partial: 'trading_parcels/transaction_fields', locals: {f: f} %>
+</div>
+
+<div class="buttons <%=hide_class%>">
+  <%= f.link_to_add "Add Size", :parcel_size_infos, class: 'btn btn-sm btn-info add-size' %>
+  <%=f.submit 'Submit', class: 'btn btn-md btn-danger' %>
+</div>

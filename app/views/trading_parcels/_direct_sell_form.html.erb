@@ -1,0 +1,3 @@
+<%= nested_form_for @trading_parcel, url: direct_sell_trading_parcels_path, remote: true, html: { class: 'form-horizontal', method: :post} do |f| %>
+  <%= render partial: 'suppliers/form_fields', locals: {direct_sell: direct_sell, f: f} %>
+<% end %>

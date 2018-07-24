@@ -19,6 +19,7 @@
  *= require select2
  *= require font-awesome
  *= require intlTelInput
+ *= require bootstrap-datepicker
  */
 input, button, select, textarea {
   line-height: normal; }

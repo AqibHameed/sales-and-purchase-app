@@ -105,6 +105,7 @@ Rails.application.routes.draw do
       get :transactions
       get :credit
       get :info
+      get :scores
       post :shared
       get :transaction_list
       get :demanding_search, path: 'search'
@@ -187,14 +188,15 @@ Rails.application.routes.draw do
   resources :trading_parcels do
     collection do
       post :check_for_sale
+      get :historical_polished
+      get :direct_sell
+      post '/direct_sell', to: 'trading_parcels#save_direct_sell'
     end
     member do
       get :message
       post :message_create
       get :related_seller
       get :parcel_history
-      get :direct_sell
-      post '/direct_sell', to: 'trading_parcels#save_direct_sell'
       post :accept_transaction
       get :size_info
     end

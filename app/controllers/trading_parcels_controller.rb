@@ -6,7 +6,7 @@ class TradingParcelsController < ApplicationController
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_role_authorization, except: [:related_seller, :parcel_history]
-  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :direct_sell, :save_direct_sell, :accept_transaction, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
+  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :accept_transaction, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
   before_action :authenticate_broker, only: [:related_seller, :parcel_history]
   before_action :is_user_edit_polished?, only: [:edit]
@@ -113,13 +113,20 @@ class TradingParcelsController < ApplicationController
   end
 
   def direct_sell
-    @transaction = Transaction.new
+    @trading_parcel = TradingParcel.new
+    @trading_parcel.build_my_transaction
   end
 
   def save_direct_sell
-    transaction = Transaction.new(buyer_id: params[:transaction][:buyer_id], seller_id: @parcel.company_id, trading_parcel_id: @parcel.id, paid: params[:transaction][:paid],
-                                  price: @parcel.price, credit: @parcel.credit_period, diamond_type: @parcel.diamond_type, transaction_type: 'manual',
-                                  created_at: params[:transaction][:created_at])
+    if params[:check] == 'true'
+      @parcel = TradingParcel.create(trading_parcel_params)
+      @parcel.update(sold: true)
+    else
+      @parcel = TradingParcel.find_by(id: params[:id])
+    end
+    transaction = Transaction.new(buyer_id: params[:trading_parcel][:my_transaction_attributes][:buyer_id], seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
+                                    price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: params[:trading_parcel][:my_transaction_attributes][:transaction_type],
+                                    created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
     if params[:check] == "true"
       check_credit_limit(transaction, @parcel)
     else
@@ -170,10 +177,43 @@ class TradingParcelsController < ApplicationController
     @parcel.update_column(:broker_ids, broker_ids)
   end
 
+  def historical_polished
+    trading_parcels = TradingParcel.where(historical_params)
+    if trading_parcels.empty?
+      sum_of_five_transaction = 'Not enough data'
+      last_transaction_amt = 'Not enough data'
+    else
+      @all_transactions = []
+      trading_parcels.each do |parcel|
+        @all_transactions << parcel.parcel_transactions
+      end
+      # Add order
+      @all_transactions = @all_transactions
+      last_transaction = @all_transactions.first.last
+      last_transaction_amt = last_transaction.total_amount
+
+      last_five_transactions = @all_transactions.last(5)
+      if last_five_transactions.count < 5
+        sum_of_five_transaction = 'Not enough data'
+      else
+        sum_of_five_transaction = last_five_transactions.map(&:total_amount).try(:sum) rescue 0
+        sum_of_five_transaction = sum_of_five_transaction/5
+      end
+    end
+    respond_to do |format|
+      format.js { render json: { sum_of_five_transaction: sum_of_five_transaction, last_transaction: last_transaction_amt }}
+    end
+  end
+
   private
   def trading_parcel_params
-    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :broker_ids, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country,
+    params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :broker_ids, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country, :size,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
+  end
+
+  def historical_params
+    params[:data].merge({sold: true})
+    params.require(:data).permit!
   end
 
   def set_trading_parcel
