@@ -54,3 +54,7 @@ en:
       destroy_all_stones:
         menu: 'Destroy stones'
 
+  activerecord:
+    attributes:
+      trading_parcel:
+        weight: "Carats"

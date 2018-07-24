@@ -119,6 +119,7 @@
       <thead class="thead-desktop">
           <th>Supplier</th>
           <th>Shape</th>
+          <th>Carat</th>
           <th>Color</th>
           <th>Clarity</th>
           <th>Cut</th>
@@ -134,6 +135,7 @@
         <tr>
           <td><%= demand.try(:demand_supplier).try(:name) rescue 'N/A' %></td>
           <td><%= demand.try(:shape) rescue 'N/A' %></td>
+          <td><%= demand.try(:weight) rescue 'N/A' %></td>
           <td><%= demand.try(:color) rescue 'N/A' %></td>
           <td><%= demand.try(:clarity) rescue 'N/A' %></td>
           <td><%= demand.try(:cut) rescue 'N/A' %></td>

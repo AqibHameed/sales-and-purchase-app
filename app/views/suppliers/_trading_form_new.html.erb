@@ -61,8 +61,8 @@
       $('.add-size').removeClass('hide');
     <%end%>
     supplier_list()
+    addCaratField(val)
   });
-
 
   $(document).ready(function(){
     supplier_list()
@@ -76,6 +76,16 @@
     });
     $('#trading_parcel_my_transaction_attributes_created_at').datepicker({format: 'dd/mm/yyyy'});
   })
+
+  function addCaratField(type) {
+    if(val == "POLISHED" || val == "Polished") {
+      $('.polish-carat').append("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field') %>")
+      $('.other-carat').html('')
+    } else {
+      $('.other-carat').append("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field') %>")
+      $('.polish-carat').html('')
+    }
+  }
 
   function supplier_list() {
     id = $('#trading_parcel_source').val()
