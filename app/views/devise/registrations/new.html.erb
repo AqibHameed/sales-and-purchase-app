@@ -65,6 +65,10 @@
         <%= f.submit "Sign up", class: "btn-02 login-btn signup-btn" %>
         <%#= f.submit "Request Access", class: "btn-02 login-btn request-btn hide" %>
       </div>
+      <br>
+      <div class="text">
+        <span>If your company is not listed, please e-mail us at <%= mail_to 'info@prismlab.co', "info@prismlab.co" %> with your company details and relevant documents as proof.</span>
+      </div>
     <% end %>
   </div>
   <%= render "devise/shared/links" %>
