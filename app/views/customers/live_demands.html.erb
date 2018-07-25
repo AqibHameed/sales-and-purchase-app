@@ -31,18 +31,17 @@
           <th>Symmetry</th>
           <th>fluorescence</th>
           <th>lab</th>
-          <th></th>
       </thead>
       <% @polished_demands.each do |demand| %>
         <tr>
           <td><%= demand.try(:shape) rescue 'N/A' %></td>
-          <td><%= demand.try(:weight) rescue 'N/A' %></td>
-          <td><%= demand.try(:color) rescue 'N/A' %></td>
-          <td><%= demand.try(:clarity) rescue 'N/A' %></td>
-          <td><%= demand.try(:cut) rescue 'N/A' %></td>
-          <td><%= demand.try(:polish) rescue 'N/A' %></td>
-          <td><%= demand.try(:symmetry) rescue 'N/A' %></td>
-          <td><%= demand.try(:fluorescence) rescue 'N/A' %></td>
+          <td><%= demand.try(:weight_from) rescue 'N/A' %>-<%= demand.try(:weight_to) rescue 'N/A' %></td>
+          <td><%= demand.try(:color_from) rescue 'N/A' %>-<%= demand.try(:color_to) rescue 'N/A' %></td>
+          <td><%= demand.try(:clarity_from).first rescue 'N/A' %>-<%= demand.try(:clarity_to).first rescue 'N/A' %></td>
+          <td><%= demand.try(:cut_from).first rescue 'N/A' %>-<%= demand.try(:cut_to).first rescue 'N/A' %></td>
+          <td><%= demand.try(:polish_from).first rescue 'N/A' %>-<%= demand.try(:polish_to).first rescue 'N/A' %></td>
+          <td><%= demand.try(:symmetry_from).first rescue 'N/A' %>-<%= demand.try(:symmetry_to).first rescue 'N/A' %></td>
+          <td><%= demand.try(:fluorescence_from).first rescue 'N/A' %>-<%= demand.try(:fluorescence_to).first rescue 'N/A' %></td>
           <td><%= demand.try(:lab) rescue 'N/A' %></td>
         </tr>
       <% end %>

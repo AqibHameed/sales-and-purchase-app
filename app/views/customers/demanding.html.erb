@@ -127,24 +127,21 @@
           <th>Symmetry</th>
           <th>fluorescence</th>
           <th>lab</th>
-          <th>city</th>
-          <th>Country</th>
           <th></th>
+
       </thead>
       <% @polished_demands.each do |demand| %>
         <tr>
           <td><%= demand.try(:demand_supplier).try(:name) rescue 'N/A' %></td>
           <td><%= demand.try(:shape) rescue 'N/A' %></td>
-          <td><%= demand.try(:weight) rescue 'N/A' %></td>
-          <td><%= demand.try(:color) rescue 'N/A' %></td>
-          <td><%= demand.try(:clarity) rescue 'N/A' %></td>
-          <td><%= demand.try(:cut) rescue 'N/A' %></td>
-          <td><%= demand.try(:polish) rescue 'N/A' %></td>
-          <td><%= demand.try(:symmetry) rescue 'N/A' %></td>
-          <td><%= demand.try(:fluorescence) rescue 'N/A' %></td>
+          <td><%= demand.try(:weight_from) rescue 'N/A' %>-<%= demand.try(:weight_to) rescue 'N/A' %></td>
+          <td><%= demand.try(:color_from) rescue 'N/A' %>-<%= demand.try(:color_to) rescue 'N/A' %></td>
+          <td><%= demand.try(:clarity_from) rescue 'N/A' %>-<%= demand.try(:clarity_to) rescue 'N/A' %></td>
+          <td><%= demand.try(:cut_from).first rescue 'N/A' %>-<%= demand.try(:cut_to).first rescue 'N/A' %></td>
+          <td><%= demand.try(:polish_from).first rescue 'N/A' %>-<%= demand.try(:polish_to).first rescue 'N/A' %></td>
+          <td><%= demand.try(:symmetry_from).first rescue 'N/A' %>-<%= demand.try(:symmetry_to).first rescue 'N/A' %></td>
+          <td><%= demand.try(:fluorescence_from).first rescue 'N/A' %>-<%= demand.try(:fluorescence_to).first rescue 'N/A' %></td>
           <td><%= demand.try(:lab) rescue 'N/A' %></td>
-          <td><%= demand.try(:city) rescue 'N/A' %></td>
-          <td><%= demand.try(:country) rescue 'N/A' %></td>
           <td><%= link_to(image_tag("/assets/wrong.png", width: "15"), remove_demand_customer_path(id: demand.id, type: 'POLISHED'), method: :delete)%></td>
         </tr>
       <% end %>
