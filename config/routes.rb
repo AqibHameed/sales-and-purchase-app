@@ -192,6 +192,7 @@ Rails.application.routes.draw do
       post :check_for_sale
       get :historical_polished
       get :direct_sell
+      get :remove_direct_parcel
       post '/direct_sell', to: 'trading_parcels#save_direct_sell'
     end
     member do
