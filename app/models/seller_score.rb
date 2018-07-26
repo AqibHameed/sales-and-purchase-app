@@ -2,7 +2,19 @@ class SellerScore < ApplicationRecord
   belongs_to :company
 
   #Calculate Seller Scores for each "seller" company
-  def calculate_scores
+  def self.calculate_scores
+=begin
+    companies = Company.joins(:seller_transactions)
+    if companies.count.positive?
+      puts "$$$$$$$$$$$$$"
+      puts companies.inspect
+      puts "$$$$$$$$$$$$$$$$$$"
+    else
+      puts "$$$$$$$$$$$$$"
+      puts "companies.inspect"
+      puts "$$$$$$$$$$$$$$$$$$"
+    end
+=end
 
   end
 
