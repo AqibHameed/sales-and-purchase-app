@@ -105,7 +105,9 @@ Rails.application.routes.draw do
       get :transactions
       get :credit
       get :info
-      get :scores
+      #get :scores
+      get :buyer_scores
+      get :seller_scores
       post :shared
       get :transaction_list
       get :demanding_search, path: 'search'
@@ -115,7 +117,7 @@ Rails.application.routes.draw do
       post :approve
       post :remove
       get :polished_demand
-      post :create_polished_demand
+      post '/polished_demand', to: 'customers#create_polished_demand'
     end
     member do
       get :add_company

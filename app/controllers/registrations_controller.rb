@@ -17,7 +17,8 @@ class RegistrationsController < Devise::RegistrationsController
     if resource.persisted? && !resource.errors.present?
       if resource.active_for_authentication?
         if resource.is_requested
-          set_flash_message! :notice, :is_requested
+          # set_flash_message! :notice, :is_requested
+          flash[:notice] = "Your request has been sent to #{company.get_owner.name}. When your account is approved, you will receive an e-mail."
           respond_with resource, location: after_signup_when_requested(resource)
         else
           respond_with resource, location: after_sign_up_path_for(resource)

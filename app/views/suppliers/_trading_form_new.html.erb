@@ -10,8 +10,6 @@
     $('.checkbox-division').removeClass('hide')
     if(val == "Outside Goods" || val == "OUTSIDE GOODS"){
       $('#trading_parcel_diamond_type').val('Rough')
-      $('.polish').html("");
-      $('.other').html("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field', locals: {type: 'Carats:'}) %>");
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
@@ -21,8 +19,6 @@
     }else if(val == "RUSSIAN" || val == "Russian"){
       $('#trading_parcel_diamond_type').val('Sight')
       $('.common').removeClass('hide')
-      $('.polish').html("");
-      $('.other').html("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field', locals: {type: 'Carats:'}) %>");
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
       $('.polished').addClass('hide')
@@ -31,8 +27,6 @@
     }else if(val == "DTC") {
       $('#trading_parcel_diamond_type').val('Sight')
       $('.common').removeClass('hide')
-      $('.polish').html("");
-      $('.other').html("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field', locals: {type: 'Carats:'}) %>");
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').removeClass('hide')
       $('.polished').addClass('hide')
@@ -40,8 +34,6 @@
       $('#trading_document_price_field').val('H')
     }else if(val == "SOMETHING SPECIAL") {
       $('#trading_parcel_diamond_type').val('Rough')
-      $('.polish').html("");
-      $('.other').html("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field', locals: {type: 'Carats:'}) %>");
       $('.common').removeClass('hide')
       $('.rough_diamond').removeClass('hide')
       $('.sight_diamond').addClass('hide')
@@ -50,15 +42,12 @@
       $('#trading_document_price_field').val('F')
     }else if(val == "POLISHED" || val == "Polished") {
       $('#trading_parcel_diamond_type').val('Polished')
-      $('.polish').html("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field', locals: {type: 'Weight:'}) %>");
-      $('.other').html("");
       $('.polished').removeClass('hide')
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').addClass('hide')
       removeFieldValue()
     }else{
-      $('.other').append("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field', locals: {type: 'Carats:'}) %>");
       $('.common').addClass('hide')
       $('.rough_diamond').addClass('hide')
       $('.sight_diamond').addClass('hide')
@@ -72,6 +61,7 @@
       $('.add-size').removeClass('hide');
     <%end%>
     supplier_list()
+    addCaratField(val)
   });
 
   $(document).ready(function(){
@@ -86,6 +76,16 @@
     });
     $('#trading_parcel_my_transaction_attributes_created_at').datepicker({format: 'dd/mm/yyyy'});
   })
+
+  function addCaratField(type) {
+    if(val == "POLISHED" || val == "Polished") {
+      $('.polish-carat').append("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field') %>")
+      $('.other-carat').html('')
+    } else {
+      $('.other-carat').append("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field') %>")
+      $('.polish-carat').html('')
+    }
+  }
 
   function supplier_list() {
     id = $('#trading_parcel_source').val()

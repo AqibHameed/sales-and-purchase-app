@@ -96,7 +96,9 @@
           <% end %>
           <%= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
           <%= link_to 'Manage Brokers', requests_brokers_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
-          <%= link_to 'Scores', scores_customers_path, data: { turbolinks: false } unless current_admin %>
+          <%#= link_to 'Scores', scores_customers_path, data: { turbolinks: false } unless current_admin %>
+          <%= link_to 'Buyer Scores', buyer_scores_customers_path, data: { turbolinks: false } unless current_admin %>
+          <%= link_to 'Seller Scores', seller_scores_customers_path, data: { turbolinks: false } unless current_admin %>
           
           <!-- SUB COMPANY Feature on Hold -->
           <%#= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
