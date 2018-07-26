@@ -17,3 +17,10 @@ end
 scheduler.every '5m' do
   PolishedDemand.update_polished_demands_block_unblock
 end
+
+=begin
+scheduler.cron '* * * * *' do
+  ApplicationHelper.test_foo
+end
+=end
+

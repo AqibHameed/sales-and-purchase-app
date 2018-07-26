@@ -361,6 +361,14 @@ class Company < ApplicationRecord
   end
 
 
+  def get_buyer_score
+    return BuyerScore.where("company_id = ? ", self.id).order(:created_at).last
+  end
+
+  def get_seller_score
+    return SellerScore.where("company_id = ? ", self.id).order(:created_at).last
+  end
+
   ##### End of Credit Scores #####
 
 end

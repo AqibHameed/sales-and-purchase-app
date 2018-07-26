@@ -517,4 +517,11 @@ module ApplicationHelper
   def country_list
     Company.all.map { |e| e.county }.compact.reject { |e| e.to_s == "" }.uniq
   end
+
+
+=begin
+  def self.test_foo
+    puts "TESTTTTTTTTTT"
+  end
+=end
 end

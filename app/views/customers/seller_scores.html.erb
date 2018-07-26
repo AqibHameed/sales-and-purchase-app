@@ -1,12 +1,17 @@
 <%
   # get scores data
-
+  seller_score = current_company.get_seller_score
 %>
 <div class="c1 dashboard" xmlns="http://www.w3.org/1999/html">
   <div class="clear10"></div>
   <div class="company">
     <h3>Total Seller Score: <strong><%#=  %></strong></h3>
     <div class="clear20"></div>
+    <% unless seller_score.nil? %>
+      <%=seller_score.inspect %>
+    <%else %>
+      <h1>empty</h1>
+    <%end %>
     <!--<h3>Payment History</h3>
     <div class="clear10"></div>
     <h1>Total Score: <strong><%#= payment_history %></strong></h1>

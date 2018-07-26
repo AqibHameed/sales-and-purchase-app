@@ -1,6 +1,7 @@
 <%
   # get scores data
 
+  buyer_score = current_company.get_buyer_score
 
 
 %>
@@ -9,7 +10,11 @@
   <div class="company">
     <h3>Total Buyer Score: <strong><%#=  %></strong></h3>
     <div class="clear20"></div>
-
+    <% unless buyer_score.nil? %>
+      <%=buyer_score.inspect %>
+    <%else %>
+      <h1>empty</h1>
+    <%end %>
     <!--<h3>Payment History</h3>
     <div class="clear10"></div>
     <h1>Total Score: <strong><%#= payment_history %></strong></h1>
