@@ -24,11 +24,7 @@
     <th></th>
   </thead>
   <% parcels.each.with_index(1) do |parcel, i|%>
-    <%if current_company.id == parcel.company_id%>
-      <tr style="background: #ffff99;">
-    <%else%>
-      <tr>
-    <%end%>
+    <tr>
       <td class="td-mobile-count">
         <div class="lefter">
         </div>
