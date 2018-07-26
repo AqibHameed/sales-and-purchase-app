@@ -1,0 +1,2 @@
+class MarketBuyerScore < ApplicationRecord
+end
