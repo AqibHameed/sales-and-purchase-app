@@ -45,9 +45,7 @@ class TradingParcelsController < ApplicationController
   def show
     @proposal = Proposal.new
     @info = []
-    @available_customers = get_available_buyers(@parcel, current_customer)
-    @not_enough_available_customers = get_unavailable_buyers(@parcel, current_customer)
-    @demanded_but_not_available = get_demanded_but_not_available_buyers(@parcel, current_customer)
+    @demanded_clients = get_demanded_clients(@parcel, current_company)
   end
 
   def edit
