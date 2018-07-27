@@ -123,7 +123,7 @@ class TradingParcelsController < ApplicationController
       @parcel = TradingParcel.find_by(id: params[:id])
     end
     transaction = Transaction.new(buyer_id: params[:trading_parcel][:my_transaction_attributes][:buyer_id], seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
-                                    price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: params[:trading_parcel][:my_transaction_attributes][:transaction_type],
+                                    price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                     created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
     if params[:check] == "true"
       check_credit_limit(transaction, @parcel)
