@@ -33,7 +33,7 @@ class Company < ApplicationRecord
 
   def get_owner
     Customer.unscoped do
-      customers.order(:id).first
+      customers.where.not(confirmed_at: nil).order(:id).first
     end
   end
 
