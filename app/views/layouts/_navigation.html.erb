@@ -22,15 +22,15 @@
               <%= link_to 'Home', trading_customers_path, :class => 'home', data: { turbolinks: false } %>
             </li>
             <li>
-              <%= link_to 'My Parcels', trading_customers_path, data: { turbolinks: false } %>
+              <%= link_to 'Dashboard', trading_customers_path, data: { turbolinks: false } %>
             </li>
             <!-- <li>
               <%#= link_to 'Tenders', root_path, data: { turbolinks: false } %>
             </li> -->
             <li><%= link_to 'History', trading_history_path, data: { turbolinks: false } %></li>
-            <% if can? :access, :buy %>
-              <li><%= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %></li>
-            <% end %>
+            <!-- <%# if can? :access, :buy %>
+              <li><%#= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %></li>
+            <%# end %> -->
             <% if can? :access, :sell %>
               <li><%= link_to 'Approve Clients', credit_suppliers_path, data: { turbolinks: false } %></li>
             <% end %>
@@ -44,9 +44,9 @@
             <li>
               <%= link_to 'Search', demanding_search_customers_path, data: { turbolinks: false } %>
             </li>
-            <li>
-              <%= link_to 'Live Demands', '/live_demands', data: { turbolinks: false } %>
-            </li>
+            <!-- <li>
+              <%#= link_to 'Live Demands', '/live_demands', data: { turbolinks: false } %>
+            </li> -->
           <% end %>
         <% end %>
           <!-- <li><%#= link_to 'Inbox', messages_path, data: { turbolinks: false } %></li> -->
@@ -99,7 +99,7 @@
           <%#= link_to 'Scores', scores_customers_path, data: { turbolinks: false } unless current_admin %>
           <%= link_to 'Buyer Scores', buyer_scores_customers_path, data: { turbolinks: false } unless current_admin %>
           <%= link_to 'Seller Scores', seller_scores_customers_path, data: { turbolinks: false } unless current_admin %>
-          
+
           <!-- SUB COMPANY Feature on Hold -->
           <%#= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
           <!--  -->
