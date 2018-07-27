@@ -364,6 +364,13 @@ class Company < ApplicationRecord
   def get_buyer_score
     #ApplicationHelper.update_scores
 
+    #puts "!!!!!!!!!!!!!!!!!"
+    #r = Transaction.select("sum(total_amount*DATEDIFF(now(), due_date))/sum(total_amount) as result").where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND DATEDIFF(now(), due_date) > ?", 239, Date.today, true, true, 0).first
+
+    #r= Transaction.includes(:partial_payment).where("buyer_id = ?", 239)
+    #puts r.inspect
+    #puts "!!!!!!!!!!!!!!!!!"
+
     return BuyerScore.get_score(self.id)
   end
 

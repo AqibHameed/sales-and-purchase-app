@@ -67,7 +67,17 @@ class SellerScore < ApplicationRecord
   end
 
   def self.calculate_current_risk(company_id)
-    return 2
+    result = Transaction.select("
+        SUM(total_amount*DATEDIFF(now(), due_date))/sum(total_amount) as current_risk
+      ").where("
+        seller_id = ? AND
+        due_date < ? AND
+        paid = ? AND
+        buyer_confirmed = ? ",
+               company_id, Date.today, false, true
+    ).first
+
+    return (result.current_risk.to_f).round(2)
   end
 
   def self.calculate_network_diversity(company_id)
