@@ -431,6 +431,10 @@ module ApplicationHelper
     (current_company.try(:add_polished) && is_show)? DemandSupplier.all.map { |e| e.name } : DemandSupplier.where.not(name: 'POLISHED').map { |e| e.name }
   end
 
+  def supplier_list_for_search
+    DemandSupplier.where.not(name: 'POLISHED').map { |e| e.name }
+  end
+
   def link_to_request(current_company, seller)
     if current_company.sent_broker_request(seller)
       'Requested'

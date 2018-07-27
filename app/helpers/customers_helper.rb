@@ -1,7 +1,10 @@
 module CustomersHelper
 
   def check_parcel_visibility(parcel, company)
-    if parcel.company_id == company.id
+
+    if parcel.diamond_type == 'Polished'
+      false
+    elsif parcel.company_id == company.id
       true
     else
       if current_company.is_blocked_by_supplier(parcel.try(:company_id))
