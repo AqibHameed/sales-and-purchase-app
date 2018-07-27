@@ -6,9 +6,9 @@
         <li class="first" onClick=" window.location.href = '/' ">
           <%= link_to 'Home', trading_customers_path, :class => 'home', data: { turbolinks: false } %>
         </li>
-        <li>
-          <%= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
-        </li>
+        <!-- <li> -->
+          <%#= link_to 'Tenders', tenders_path, data: { turbolinks: false } %>
+        <!-- </li> -->
         <% if current_customer %>
           <li>
             <div class="dropdown list_dropdown" style="width: 68px;">

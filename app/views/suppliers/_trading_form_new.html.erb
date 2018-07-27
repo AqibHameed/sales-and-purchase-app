@@ -78,11 +78,13 @@
   })
 
   function addCaratField(type) {
-    if(val == "POLISHED" || val == "Polished") {
+    if(type == "POLISHED" || type == "Polished") {
       $('.polish-carat').append("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field') %>")
       $('.other-carat').html('')
     } else {
-      $('.other-carat').append("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field') %>")
+      if ($('.other-carat').find('.form-group').length == 0){
+        $('.other-carat').append("<%= escape_javascript (render :partial => 'suppliers/carat_or_weight_field') %>")
+      }
       $('.polish-carat').html('')
     }
   }

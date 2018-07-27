@@ -24,9 +24,9 @@
             <li>
               <%= link_to 'My Parcels', trading_customers_path, data: { turbolinks: false } %>
             </li>
-            <li>
-              <%= link_to 'Tenders', root_path, data: { turbolinks: false } %>
-            </li>
+            <!-- <li>
+              <%#= link_to 'Tenders', root_path, data: { turbolinks: false } %>
+            </li> -->
             <li><%= link_to 'History', trading_history_path, data: { turbolinks: false } %></li>
             <% if can? :access, :buy %>
               <li><%= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %></li>

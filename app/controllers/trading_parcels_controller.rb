@@ -6,7 +6,7 @@ class TradingParcelsController < ApplicationController
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
   before_action :check_role_authorization, except: [:related_seller, :parcel_history]
-  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :accept_transaction, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :check_for_sale]
+  before_action :set_trading_parcel, only: [:show, :edit, :update, :destroy, :accept_transaction, :check_authenticate_supplier, :related_seller, :parcel_history, :size_info, :remove_direct_parcel, :check_for_sale]
   before_action :check_authenticate_supplier, only: [:edit, :update, :destroy]
   before_action :authenticate_broker, only: [:related_seller, :parcel_history]
   before_action :is_user_edit_polished?, only: [:edit]
@@ -130,6 +130,10 @@ class TradingParcelsController < ApplicationController
     else
       save_transaction(transaction, @parcel)
     end
+  end
+
+  def remove_direct_parcel
+    @parcel.destroy
   end
 
   def save_transaction(transaction, parcel)

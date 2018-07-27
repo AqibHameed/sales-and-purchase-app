@@ -9,7 +9,7 @@
       <th>Size</th>
       <th>Color</th>
       <th>Clarity</th>
-      <th>Cut/Polish/Symmetry</th>
+      <th>Cut</th>
       <th>FL</th>
       <th>Lab</th>
       <th>Carat</th>
@@ -18,11 +18,11 @@
       <th>Total $</th>
       <th>Activity</th>
       <th>Counterparty</th>
-      <th>Status</th>
+      <th>Payment Status</th>
       <th>Invoice Date</th>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th>Confirm Status</th>
+      <th>Transaction Detail</th>
+      <th>View Invoice</th>
     </tr>
   </thead>
   <tbody>
@@ -55,9 +55,9 @@
           <%= transaction.trading_parcel.clarity.nil? ? 'N/A' : transaction.trading_parcel.clarity %>
         </td>
         <td>
-          <%= transaction.trading_parcel.cut.nil? ? 'N/A' : transaction.trading_parcel.cut %>/
-          <%= transaction.trading_parcel.polish.nil? ? 'N/A' : transaction.trading_parcel.polish %>/
-          <%= transaction.trading_parcel.symmetry.nil? ? 'N/A' : transaction.trading_parcel.symmetry %>
+          <%= transaction.trading_parcel.cut.nil? ? 'N/A' : transaction.trading_parcel.cut[0..1] %>/
+          <%= transaction.trading_parcel.polish.nil? ? 'N/A' : transaction.trading_parcel.polish[0..1] %>/
+          <%= transaction.trading_parcel.symmetry.nil? ? 'N/A' : transaction.trading_parcel.symmetry[0..1] %>
         </td>
         <td>
           <span class="table-head-in-td">Fluorescence</span>
@@ -119,6 +119,8 @@
           <td>
             <%=link_to 'Invoice' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %>
           </td>
+        <%else%>
+          <td></td>
         <% end %>
       </tr>
     <%end%>
