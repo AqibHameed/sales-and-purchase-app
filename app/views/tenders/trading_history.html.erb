@@ -15,8 +15,7 @@
       <div id="sectionA" class="tab-pane fade in active">
         <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
         <div class='tenders_list'>
-          <% @transactions = @pending_transaction %>
-          <%= render 'trading_history_list' %>
+          <%= render partial: 'trading_history_list', locals: { transactions: @pending_transaction } %>
           <div class="clear20"></div>
           <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_pending_transactions} %>
         </div>
@@ -24,8 +23,7 @@
       <div id="sectionB" class="tab-pane fade">
         <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
         <div class='tenders_list'>
-          <% @transactions = @overdue_transaction %>
-          <%= render 'trading_history_list' %>
+          <%= render partial: 'trading_history_list', locals: { transactions: @overdue_transaction } %>
           <div class="clear20"></div>
           <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_overdue_transactions} %>
         </div>
@@ -33,8 +31,7 @@
       <div id="sectionC" class="tab-pane fade">
         <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
         <div class='tenders_list'>
-          <% @transactions = @completed_transaction %>
-          <%= render 'trading_history_list' %>
+          <%= render partial: 'trading_history_list', locals: { transactions: @completed_transaction } %>
           <div class="clear20"></div>
           <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_completed_transactions} %>
         </div>

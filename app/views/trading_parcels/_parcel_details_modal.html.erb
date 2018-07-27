@@ -45,7 +45,7 @@
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Credit:</div>
                   <div class=' col-sm-9'>
-                    <%=f.text_field :credit, value: @parcel.try(:credit), class: 'form-control', required: true %>
+                    <%=f.text_field :credit, value: @parcel.try(:credit_period), class: 'form-control', required: true %>
                   </div>
                 </div>
                 <div class="clear10"></div>
@@ -109,7 +109,7 @@
               <% end %>
             </div>
             <div class="col-lg-8">
-              <p><b>Comment: </b></p>
+              <p><b> Seller's Comment: </b></p>
               <ul class="list-group">
                 <li class="list-group-item"><%= @parcel.try(:comment) %></li>
               </ul>
