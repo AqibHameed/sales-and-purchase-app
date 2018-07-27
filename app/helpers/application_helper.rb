@@ -519,9 +519,11 @@ module ApplicationHelper
   end
 
 
-=begin
-  def self.test_foo
-    puts "TESTTTTTTTTTT"
+  def self.update_scores
+    BuyerScore.calculate_scores_first_step
+    SellerScore.calculate_scores_first_step
+
+    BuyerScore.calculate_scores_second_step
+    SellerScore.calculate_scores_second_step
   end
-=end
 end

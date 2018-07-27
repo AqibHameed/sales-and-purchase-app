@@ -362,13 +362,15 @@ class Company < ApplicationRecord
 
 
   def get_buyer_score
-    BuyerScore.calculate_scores
-    return BuyerScore.where("company_id = ? AND actual = ?", self.id, true).order(:created_at).last
+    #ApplicationHelper.update_scores
+
+    return BuyerScore.get_score(self.id)
   end
 
   def get_seller_score
-    SellerScore.calculate_scores
-    return SellerScore.where("company_id = ? AND actual = ?", self.id, true).order(:created_at).last
+    #ApplicationHelper.update_scores
+
+    return SellerScore.get_score(self.id)
   end
 
   ##### End of Credit Scores #####
