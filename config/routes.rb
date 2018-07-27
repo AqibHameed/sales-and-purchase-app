@@ -331,7 +331,7 @@ Rails.application.routes.draw do
       get :round_completed
     end
   end
-  root :to => 'tenders#index'
+  root :to => 'customers#trading'
 
   get '/change_limits' => 'suppliers#change_limits', as: 'change_credit_limit'
   get '/change_market_limit' => 'suppliers#change_market_limit', as: 'change_market_limit'
