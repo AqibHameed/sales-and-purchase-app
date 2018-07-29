@@ -63,12 +63,30 @@ class SellerScore < ApplicationRecord
 
   #Calculate each score separately
   def self.calculate_late_payment(company_id)
-    return 1
+    result = 0
+
+    paid_transactions = Transaction.joins(:partial_payment).where("seller_id = ? and paid = ? and buyer_confirmed = ?", company_id, true, true).uniq
+    if paid_transactions.count.positive?
+      sum_total_amount = 0
+      sum_multiple_amount = 0
+
+      paid_transactions.each do |t|
+        payments = PartialPayment.where("transaction_id = ?", t.id).order('created_at DESC').first
+        days_paid = (payments.created_at.to_date - t.created_at.to_date).to_i + 1
+        if days_paid.positive?
+          sum_total_amount += t.total_amount
+          sum_multiple_amount += t.total_amount*days_paid
+        end
+      end
+      result = (sum_multiple_amount / sum_total_amount).to_f.round(2)
+    end
+
+    return result
   end
 
   def self.calculate_current_risk(company_id)
     result = Transaction.select("
-        SUM(total_amount*DATEDIFF(now(), due_date))/sum(total_amount) as current_risk
+        SUM(remaining_amount*DATEDIFF(now(), due_date))/sum(remaining_amount) as current_risk
       ").where("
         seller_id = ? AND
         due_date < ? AND

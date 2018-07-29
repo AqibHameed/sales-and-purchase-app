@@ -367,9 +367,27 @@ class Company < ApplicationRecord
     #puts "!!!!!!!!!!!!!!!!!"
     #r = Transaction.select("sum(total_amount*DATEDIFF(now(), due_date))/sum(total_amount) as result").where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND DATEDIFF(now(), due_date) > ?", 239, Date.today, true, true, 0).first
 
-    #r= Transaction.includes(:partial_payment).where("buyer_id = ?", 239)
-    #puts r.inspect
-    #puts "!!!!!!!!!!!!!!!!!"
+=begin
+    r = Transaction.joins(:partial_payment).where("buyer_id = ? and paid = ? and buyer_confirmed = ?", 239, true, true).uniq
+    if r.count.positive?
+      puts r.inspect
+      sum_total_amount = 0
+      sum_multiple_amount = 0
+
+      r.each do |t|
+        payments = PartialPayment.where("transaction_id = ?", t.id).order('created_at DESC').first
+        days_paid = (payments.created_at.to_date - t.created_at.to_date).to_i + 1
+        if days_paid.positive?
+          puts days_paid
+          sum_total_amount += t.total_amount
+          sum_multiple_amount += t.total_amount*days_paid
+        end
+      end
+
+    end
+
+    puts "!!!!!!!!!!!!!!!!!"
+=end
 
     return BuyerScore.get_score(self.id)
   end
