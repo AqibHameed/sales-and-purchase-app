@@ -3,7 +3,7 @@ class SellerScore < ApplicationRecord
 
   #Calculate Seller Scores for each "seller" company
   def self.calculate_scores_first_step
-    companies = Company.joins(:buyer_transactions).uniq
+    companies = Company.joins(:seller_transactions).uniq
     if companies.count.positive?
       #clear "actual" flag
       SellerScore.update_all(actual: false)
@@ -38,7 +38,7 @@ class SellerScore < ApplicationRecord
   end
 
   def self.calculate_scores_second_step
-    companies = Company.joins(:buyer_transactions).uniq
+    companies = Company.joins(:seller_transactions).uniq
     if companies.count.positive?
       market_seller_scores = MarketSellerScore.get_scores
       companies.each do |company|
@@ -103,15 +103,54 @@ class SellerScore < ApplicationRecord
   end
 
   def self.calculate_seller_network(company_id)
-    return 4
+    result = 0
+    buyers = Transaction.select("distinct buyer_id").where("seller_id = ? and buyer_confirmed = ?", company_id, true).all
+    if buyers.count.positive?
+      total_amount = 0
+      total_multiple_amount = 0
+      buyers.each do |t|
+        total_amount += Transaction.where("buyer_id = ? and seller_id = ? and buyer_confirmed = ?", t.buyer_id, company_id, true).sum(:total_amount)
+        total_multiple_amount += BuyerScore.get_score(t.seller_id).total * total_amount
+      end
+      result = (total_multiple_amount / total_amount).to_f.round(2)
+    end
+
+    return result
   end
 
   def self.calculate_due_date(company_id)
-    return 5
+    result = Transaction.select(
+        "SUM(credit*total_amount)/SUM(total_amount) as due_date_score"
+    ).where("
+      seller_id = ? AND
+      buyer_confirmed = ? AND
+      credit > ?",
+            company_id, true, 0
+    ).first
+
+    return result.due_date_score.to_f.round(2)
   end
 
   def self.calculate_credit_used(company_id)
-    return 6
+    result = 0
+    buyers = Transaction.select("distinct buyer_id").where("seller_id = ? and buyer_confirmed = ?", company_id, true).all
+    if buyers.count.positive?
+      sum_credit_used = 0
+      sum_credit_given = 0
+      buyers.each do |t|
+        credit_used = Transaction.where(buyer_id: t.buyer_id, seller_id: company_id, paid: false, buyer_confirmed: true).sum(:remaining_amount)
+        if credit_used.positive?
+          sum_credit_used += credit_used
+          sum_credit_given += CreditLimit.where("buyer_id = ? and seller_id = ?", t.buyer_id, company_id).sum(:credit_limit)
+        end
+      end
+
+      if sum_credit_given.positive?
+        result = (sum_credit_used / sum_credit_given).to_f.round(2)
+      end
+    end
+
+    return result
   end
 
   def self.calculate_total(seller_score, avg_scores, exclude_fields = [])

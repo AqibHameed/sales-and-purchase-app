@@ -364,30 +364,26 @@ class Company < ApplicationRecord
   def get_buyer_score
     #ApplicationHelper.update_scores
 
-    #puts "!!!!!!!!!!!!!!!!!"
-    #r = Transaction.select("sum(total_amount*DATEDIFF(now(), due_date))/sum(total_amount) as result").where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND DATEDIFF(now(), due_date) > ?", 239, Date.today, true, true, 0).first
-
 =begin
-    r = Transaction.joins(:partial_payment).where("buyer_id = ? and paid = ? and buyer_confirmed = ?", 239, true, true).uniq
-    if r.count.positive?
-      puts r.inspect
-      sum_total_amount = 0
-      sum_multiple_amount = 0
+    puts "!!!!!!!!!!!!!!!!!"
+    sellers = Transaction.select("distinct seller_id").where("buyer_id = ? and buyer_confirmed = ?", 239, true).all
 
-      r.each do |t|
-        payments = PartialPayment.where("transaction_id = ?", t.id).order('created_at DESC').first
-        days_paid = (payments.created_at.to_date - t.created_at.to_date).to_i + 1
-        if days_paid.positive?
-          puts days_paid
-          sum_total_amount += t.total_amount
-          sum_multiple_amount += t.total_amount*days_paid
-        end
+    #r = Transaction.where(buyer_id: 239, paid: false, buyer_confirmed: true)
+    if sellers.count.positive?
+      total_amount = 0
+      total_multiple_amount = 0
+      sellers.each do |t|
+        total_amount += Transaction.where("buyer_id = ? and seller_id = ? and buyer_confirmed = ?", 239, t.seller_id, true).sum(:total_amount)
+        total_multiple_amount += SellerScore.get_score(t.seller_id).total * total_amount
       end
+
+      result = (total_multiple_amount / total_amount).to_f.round(2)
 
     end
 
     puts "!!!!!!!!!!!!!!!!!"
 =end
+
 
     return BuyerScore.get_score(self.id)
   end

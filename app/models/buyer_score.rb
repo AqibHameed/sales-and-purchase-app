@@ -107,19 +107,60 @@ class BuyerScore < ApplicationRecord
   end
 
   def self.calculate_buyer_network(company_id)
-    return 4
+    result = 0
+    sellers = Transaction.select("distinct seller_id").where("buyer_id = ? and buyer_confirmed = ?", company_id, true).all
+    if sellers.count.positive?
+      total_amount = 0
+      total_multiple_amount = 0
+      sellers.each do |t|
+        total_amount += Transaction.where("buyer_id = ? and seller_id = ? and buyer_confirmed = ?", company_id, t.seller_id, true).sum(:total_amount)
+        total_multiple_amount += SellerScore.get_score(t.seller_id).total * total_amount
+      end
+
+      result = (total_multiple_amount / total_amount).to_f.round(2)
+
+    end
+
+    return result
   end
 
   def self.calculate_due_date(company_id)
-    return 5
+    result = Transaction.select(
+        "SUM(credit*total_amount)/SUM(total_amount) as due_date_score"
+    ).where("
+      buyer_id = ? AND
+      buyer_confirmed = ? AND
+      credit > ?",
+        company_id, true, 0
+    ).first
+
+    return result.due_date_score.to_f.round(2)
   end
 
   def self.calculate_credit_used(company_id)
-    return 6
+    result = 0
+    sellers = Transaction.select("distinct seller_id").where("buyer_id = ? and buyer_confirmed = ?", company_id, true).all
+    if sellers.count.positive?
+      puts sellers.inspect
+      sum_credit_used = 0
+      sum_credit_given = 0
+      sellers.each do |t|
+        credit_used = Transaction.where(buyer_id: company_id, seller_id: t.seller_id, paid: false, buyer_confirmed: true).sum(:remaining_amount)
+        if credit_used.positive?
+          sum_credit_used += credit_used
+          sum_credit_given += CreditLimit.where("buyer_id = ? and seller_id = ?", company_id, t.seller_id).sum(:credit_limit)
+        end
+      end
+      if sum_credit_given.positive?
+        result = (sum_credit_used / sum_credit_given).to_f.round(2)
+      end
+    end
+
+    return result
   end
 
   def self.calculate_credit_given(company_id)
-    return 7
+    return CreditLimit.where(buyer_id: company_id).count
   end
 
   def self.calculate_total(buyer_score, avg_scores, exclude_fields = [])
