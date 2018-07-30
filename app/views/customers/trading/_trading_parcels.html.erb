@@ -1,10 +1,5 @@
-<% if params[:demand].present? %>
-  <p><%= parcels.count %> result found!</p>
-<%end %>
 <table id="tenderList" class="table table-bordered table-striped tablesorter table-responsive">
   <thead class="thead-desktop">
-    <th></th>
-    <th>Description</th>
     <th>No. of Stones</th>
     <th>Carats</th>
     <th>Cost</th>
@@ -13,121 +8,45 @@
     <th>Sight</th>
     <th>Total $</th>
     <th>Days</th>
-    <% if params[:controller] == 'customers' %>
-      <th>Supplier</th>
-    <% end %>
+    <th>Supplier</th>
     <th>UID</th>
-    <% unless params[:controller] == 'customers' %>
-      <th>Demand</th>
-      <th>For Sale</th>
-    <% end %>
     <th></th>
   </thead>
-  <% parcels.each.with_index(1) do |parcel, i|%>
+  <tbody>
     <tr>
-      <td class="td-mobile-count">
-        <div class="lefter">
-        </div>
-        <div class="righter">
-          <div class="top">
-            <%= get_description(parcel) if parcel %>
-          </div>
-          <div class="bottom">
-            Weight: <%= number_with_precision(parcel.weight, precision: 2) %>,
-            Stone: <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
-          </div>
-        </div>
-      </td>
-      <td>
-        <span class="table-head-in-td">Description</span>
-        <%= get_description(parcel) if parcel %>
-      </td>
-      <td>
-        <span class="table-head-in-td">No. of Stones</span>
-        <%= parcel.no_of_stones.nil? ? 'N/A' : parcel.no_of_stones %>
-      </td>
-      <td>
-        <span class="table-head-in-td">Carats</span>
-        <%= number_with_precision(parcel.weight, precision: 2) %>
-      </td>
-      <td>
-        <span class="table-head-in-td">Cost</span>
-        <%= parcel.cost.nil? ? 'N/A' : parcel.cost %>
-      </td>
-      <td>
-        <span class="table-head-in-td">Percent</span>
-        <%= (parcel.percent.nil? || parcel.percent.blank?) ? 'N/A' : parcel.percent %>
-      </td>
-      <td>
-        <span class="table-head-in-td">Avg Price</span>
-        <%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %>
-      </td>
-      <td>
-        <span class="table-head-in-td">Sight</span>
-        <%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %>
-      </td>
-      <td>
-        <span class="table-head-in-td">Price</span>
-        <%= parcel.price*parcel.weight rescue 0 %>
-      </td>
-      <td>
-        <span class="table-head-in-td">Credit</span>
-        <%= parcel.credit_period %>
-      </td>
-      <% if params[:controller] == 'customers' %>
+      <td><%= parcel.no_of_stones %></td>
+      <td><%= parcel.weight %></td>
+      <td><%= parcel.cost %></td>
+      <td><%= parcel.percent %></td>
+      <td><%= parcel.price %></td>
+      <td><%= parcel.sight %></td>
+      <td><%= parcel.total_value %></td>
+      <td><%= parcel.credit_period %></td>
+      <td><%= parcel.company.try(:name) %></td>
+      <td><%= parcel.uid %></td>
+      <% unless parcel.company_id == current_company.id %>
         <td>
-          <span class="table-head-in-td">Supplier</span>
-          <%= check_anonymous_company_parcel(parcel, current_company)%>
-        </td>
-      <% end %>
-      <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
-      <% unless params[:controller] == 'customers' %>
-        <td>
-          <%= link_to parcel.demand_count(parcel,current_company, false), demand_supplier_path(id: parcel.id, is_polished: false) %>
-        </td>
-      <% end %>
-      <% if parcel.company_id == current_company.id %>
-        <% if params[:controller] != 'customers' %>
-          <td>
-            <%=link_to "Click", 'javascript:void(0)', class: 'btn btn-primary btn-xs sale_visibility', "data-id" => parcel.id %>
-          </td>
-          <td>
-            <%= link_to 'View', trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-            <%= link_to 'Edit', edit_trading_parcel_path(parcel), class: 'mr5',data: {turbolinks: false} %>
-            <%= link_to 'Delete', trading_parcel_path(parcel), class: 'mr5', method: :delete, data: { confirm: "Are you sure?", turbolinks: false} %>
-          </td>
-        <% end %>
-      <% else %>
-        <td>
-          <%= link_to "Let's buy", 'javascript:void(0)', data: {turbolinks: false}, class: 'lets_buy', "data-id" => parcel.id %>
+          <%= link_to "Let's buy", 'javascript:void(0)', data: {turbolinks: false}, class: 'lets_buy', "data-id" => parcel.id, id: 'lets_buy_id', :onclick => "calling('#{parcel.id}')" %>
         </td>
       <% end %>
     </tr>
-  <% end %>
+  </tbody>
 </table>
+<div class="clear"></div>
 
-<% unless params[:controller] == 'customers' %>
-  <div class="parcel-detail">
-    <%= render partial: 'trading_parcels/parcel_visibility'%>
-  </div>
-<% else %>
-  <div class="parcel-detail">
-    <%= render partial: 'trading_parcels/parcel_details_modal'%>
-  </div>
-<% end %>
 
 <script type="text/javascript">
-  $(document).on('click', '.lets_buy', function(){
-    id = $(this).data('id')
+  function calling (id) {
+    // id = $('#parcel_id').val()
     $.ajax({
       url : '/parcel_detail',
       data : { id: id, proposal: true }
     });
-  })
+  }
 
- $('#tenderList').DataTable({
-    "pageLength": 25,
-    "bFilter" :false,
-    "bLengthChange": false
-  });
+ // $('#tenderList').DataTable({
+ //    "pageLength": 25,
+ //    "bFilter" :false,
+ //    "bLengthChange": false
+ //  });
 </script>

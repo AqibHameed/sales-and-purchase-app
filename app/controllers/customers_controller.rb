@@ -192,12 +192,31 @@ class CustomersController < ApplicationController
       parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
     end
     required_parcels = []
+    dtc_parcels = []
+    outside_parcels = []
+    something_special_parcels =[]
+    polished_parcels = []
+    russian_parcels = []
     parcels.each do |parcel|
       if check_parcel_visibility(parcel, current_company)
-        required_parcels << parcel
+        if parcel.source == 'OUTSIDE GOODS'
+           outside_parcels << parcel
+        elsif parcel.source == 'POLISHED'
+           polished_parcels << parcel
+        elsif parcel.source == 'RUSSIAN'
+           russian_parcels << parcel
+        elsif parcel.source == 'SOMETHING SPECIAL'
+           something_special_parcels << parcel
+        else parcel.source == 'DTC'
+           dtc_parcels << parcel
+        end
       end
     end
-    @parcels = required_parcels
+    @dtc = dtc_parcels
+    @russian = russian_parcels
+    @something_special = something_special_parcels
+    @polished = polished_parcels
+    @outside = outside_parcels
   end
 
   def demanding_create

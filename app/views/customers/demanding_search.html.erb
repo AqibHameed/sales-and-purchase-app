@@ -1,3 +1,4 @@
+<%= render partial: 'layouts/internal_navigation' %>
 <div class="form-wrapper">
   <%= form_for @demanding_parcel, url: demanding_search_customers_path, method: :get do |f| %>
 
@@ -23,8 +24,8 @@
     </div>
   <% end %>
   <div class="clear20"></div>
-  <% if @parcels.present? %>
-    <%= render partial: 'customers/demanding_search_table_data', locals: { parcels: @parcels} %>
+  <% if @dtc.present? || @russian.present? || @outside.present? || @something_special.present? %>
+    <%= render partial: 'customers/demanding_search_table_data', locals: { dtc: @dtc, russian: @russian, outside: @outside, something_special: @something_special, polished: @polished } %>
   <% else %>
     <% if params[:demand] %>
       <p>No result found!</p>

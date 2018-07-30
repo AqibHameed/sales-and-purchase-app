@@ -1,7 +1,95 @@
+
 <div class="dashboard">
   <h2>Trading</h2>
   <div class="clear10"></div>
-  <div class="table trading-parcel-table">
-    <%= render partial: 'customers/trading/trading_parcels', locals: { parcels: @parcels } %>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+    <p>DTC</p>
+    <% dtc.each do |d| %>
+      <div class="panel panel-default">
+        <div class="panel-heading  <%= 'my_parcels' if d.company_id == current_company.id %>" role="tab" id="headingOne">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%=d.id%>" aria-expanded="false" aria-controls="collapseOne">
+             <p class="mb0"><%= d.description %> </p>
+            </a>
+          </h4>
+        </div>
+        <div id="parcel_<%=d.id%>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+              <%= render partial: 'customers/trading/trading_parcels', locals: { parcel: d } %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class='clear10'></div>
+    <p>RUSSIAN</p>
+    <% russian.each do |r| %>
+      <div class="panel panel-default">
+        <div class="panel-heading  <%= 'my_parcels' if r.company_id == current_company.id %>" role="tab" id="headingTwo">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%=r.id%>" aria-expanded="false" aria-controls="collapseTwo">
+             <p class="mb0"><%= r.description %></p>
+            </a>
+          </h4>
+        </div>
+        <div id="parcel_<%=r.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+              <%= render partial: 'customers/trading/trading_parcels', locals: { parcel: r } %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class='clear10'></div>
+    <p>OUTSIDEGOODS</p>
+    <% outside.each do |o| %>
+      <div class="panel panel-default">
+        <div class="panel-heading  <%= 'my_parcels' if o.company_id == current_company.id %>" role="tab" id="headingThree">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%=o.id%>" aria-expanded="false" aria-controls="collapseThree">
+             <p class="mb0"><%= o.description %></p>
+            </a>
+          </h4>
+        </div>
+        <div id="parcel_<%=o.id%>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+              <%= render partial: 'customers/trading/trading_parcels', locals: { parcel: o } %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class='clear10'></div>
+    <p>SOMTHING SPECIAL</p>
+    <% something_special.each do |ss| %>
+      <div class="panel panel-default">
+        <div class="panel-heading  <%= 'my_parcels' if ss.company_id == current_company.id %>" role="tab" id="headingFour">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%=ss.id%>" aria-expanded="false" aria-controls="collapseFour">
+             <p class="mb0"><%= ss.description %></p>
+            </a>
+          </h4>
+        </div>
+        <div id="parcel_<%=ss.id%>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingFour">
+          <div class="panel-body">
+              <%= render partial: 'customers/trading/trading_parcels', locals: { parcel: ss } %>
+          </div>
+        </div>
+      </div>
+    <% end %>
   </div>
+
+  <% unless params[:controller] == 'customers' %>
+    <div class="parcel-detail">
+      <%= render partial: 'trading_parcels/parcel_visibility'%>
+    </div>
+  <% else %>
+    <div class="parcel-detail">
+      <%= render partial: 'trading_parcels/parcel_details_modal'%>
+    </div>
+  <% end %>
+  <!-- <div class="table trading-parcel-table">
+    <%#= render partial: 'customers/trading/trading_parcels', locals: { parcels: @parcels } %>
+  </div> -->
 </div>

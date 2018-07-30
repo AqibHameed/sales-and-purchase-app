@@ -9,8 +9,8 @@ module CustomersHelper
     else
       if current_company.is_blocked_by_supplier(parcel.try(:company_id))
         false
-      elsif parcel.sale_none == true
-        false
+      # elsif parcel.sale_none == true
+      #   false
       elsif parcel.sale_all == true
         true
       elsif parcel.sale_broker == true
@@ -23,8 +23,8 @@ module CustomersHelper
         else
           false
         end
-      elsif parcel.sale_credit == true
-        company.has_limit(parcel.try(:company).try(:id))
+      # elsif parcel.sale_credit == true
+      #   company.has_limit(parcel.try(:company).try(:id))
       else
         false
       end
