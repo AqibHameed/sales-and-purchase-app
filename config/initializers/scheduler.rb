@@ -18,9 +18,7 @@ scheduler.every '5m' do
   PolishedDemand.update_polished_demands_block_unblock
 end
 
-=begin
-scheduler.cron '* * * * *' do
-  ApplicationHelper.test_foo
+scheduler.cron '0 5 * * *' do
+  ApplicationHelper.update_scores
 end
-=end
 

@@ -99,7 +99,27 @@ class SellerScore < ApplicationRecord
   end
 
   def self.calculate_network_diversity(company_id)
-    return 3
+    result = 0
+    buyers = Transaction.select("distinct buyer_id").where("seller_id = ? and buyer_confirmed = ?", company_id, true).all
+    if buyers.count.positive?
+      total_amount = Transaction.where("seller_id = ? and buyer_confirmed = ?", company_id, true).sum(:total_amount).to_f
+      buyers_percents = []
+      buyers.each do |t|
+        buyers_amount = Transaction.where("buyer_id = ? and seller_id = ? and buyer_confirmed = ?", company_id, t.buyer_id, true).sum(:total_amount)
+        percent = buyers_amount/total_amount
+        buyers_percents.push(percent.to_f.round(2))
+      end
+
+      if buyers_percents.length > 1
+        result = buyers_percents.sort.reverse.take((buyers_percents.length/2.to_f).ceil).sum
+      else
+        result = buyers_percents.sum
+      end
+
+      result = result*100
+    end
+
+    return result
   end
 
   def self.calculate_seller_network(company_id)
@@ -110,7 +130,7 @@ class SellerScore < ApplicationRecord
       total_multiple_amount = 0
       buyers.each do |t|
         total_amount += Transaction.where("buyer_id = ? and seller_id = ? and buyer_confirmed = ?", t.buyer_id, company_id, true).sum(:total_amount)
-        total_multiple_amount += BuyerScore.get_score(t.seller_id).total * total_amount
+        total_multiple_amount += BuyerScore.get_score(t.buyer_id).total * total_amount
       end
       result = (total_multiple_amount / total_amount).to_f.round(2)
     end

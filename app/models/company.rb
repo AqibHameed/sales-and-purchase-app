@@ -362,35 +362,10 @@ class Company < ApplicationRecord
 
 
   def get_buyer_score
-    #ApplicationHelper.update_scores
-
-=begin
-    puts "!!!!!!!!!!!!!!!!!"
-    sellers = Transaction.select("distinct seller_id").where("buyer_id = ? and buyer_confirmed = ?", 239, true).all
-
-    #r = Transaction.where(buyer_id: 239, paid: false, buyer_confirmed: true)
-    if sellers.count.positive?
-      total_amount = 0
-      total_multiple_amount = 0
-      sellers.each do |t|
-        total_amount += Transaction.where("buyer_id = ? and seller_id = ? and buyer_confirmed = ?", 239, t.seller_id, true).sum(:total_amount)
-        total_multiple_amount += SellerScore.get_score(t.seller_id).total * total_amount
-      end
-
-      result = (total_multiple_amount / total_amount).to_f.round(2)
-
-    end
-
-    puts "!!!!!!!!!!!!!!!!!"
-=end
-
-
     return BuyerScore.get_score(self.id)
   end
 
   def get_seller_score
-    #ApplicationHelper.update_scores
-
     return SellerScore.get_score(self.id)
   end
 

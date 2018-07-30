@@ -103,7 +103,27 @@ class BuyerScore < ApplicationRecord
   end
 
   def self.calculate_network_diversity(company_id)
-    return 3
+    result = 0
+    sellers = Transaction.select("distinct seller_id").where("buyer_id = ? and buyer_confirmed = ?", company_id, true).all
+    if sellers.count.positive?
+      total_amount = Transaction.where("buyer_id = ? and buyer_confirmed = ?", company_id, true).sum(:total_amount).to_f
+      sellers_percents = []
+      sellers.each do |t|
+        sellers_amount = Transaction.where("buyer_id = ? and seller_id = ? and buyer_confirmed = ?", company_id, t.seller_id, true).sum(:total_amount)
+        percent = sellers_amount/total_amount
+        sellers_percents.push(percent.to_f.round(2))
+      end
+
+      if sellers_percents.length > 1
+        result = sellers_percents.sort.reverse.take((sellers_percents.length/2.to_f).ceil).sum
+      else
+        result = sellers_percents.sum
+      end
+
+      result = result*100
+    end
+
+    return result
   end
 
   def self.calculate_buyer_network(company_id)
