@@ -361,6 +361,14 @@ class Company < ApplicationRecord
   end
 
 
+  def get_buyer_score
+    return BuyerScore.get_score(self.id)
+  end
+
+  def get_seller_score
+    return SellerScore.get_score(self.id)
+  end
+
   ##### End of Credit Scores #####
 
 end

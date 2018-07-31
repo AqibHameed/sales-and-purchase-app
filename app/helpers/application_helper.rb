@@ -517,4 +517,13 @@ module ApplicationHelper
   def country_list
     Company.all.map { |e| e.county }.compact.reject { |e| e.to_s == "" }.uniq
   end
+
+
+  def self.update_scores
+    BuyerScore.calculate_scores_first_step
+    SellerScore.calculate_scores_first_step
+
+    BuyerScore.calculate_scores_second_step
+    SellerScore.calculate_scores_second_step
+  end
 end

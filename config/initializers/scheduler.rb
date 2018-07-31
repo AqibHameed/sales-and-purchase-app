@@ -17,3 +17,8 @@ end
 scheduler.every '5m' do
   PolishedDemand.update_polished_demands_block_unblock
 end
+
+scheduler.cron '0 5 * * *' do
+  ApplicationHelper.update_scores
+end
+

@@ -4,6 +4,8 @@ class Transaction < ApplicationRecord
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
 
+  has_many :partial_payment, class_name: 'PartialPayment', foreign_key: 'transaction_id'
+
   validate :validate_invoice_date
   after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount

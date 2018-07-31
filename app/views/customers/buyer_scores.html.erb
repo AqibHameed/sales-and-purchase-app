@@ -1,52 +1,112 @@
 <%
   # get scores data
-
-
-
+  buyer_score = current_company.get_buyer_score
+  market_buyer_score = MarketBuyerScore.get_scores
 %>
+<style>
+  table.scores-table tr th {
+    text-align: center;
+  }
+
+</style>
 <div class="c1 dashboard" xmlns="http://www.w3.org/1999/html">
   <div class="clear10"></div>
   <div class="company">
-    <h3>Total Buyer Score: <strong><%#=  %></strong></h3>
-    <div class="clear20"></div>
+    <% unless buyer_score.nil? && market_buyer_score.present? %>
+      <h3>Total Buyer Score: <strong><%= buyer_score.total %></strong></h3>
+      <div class="clear20"></div>
+      <h2>Buyer Scores</h2>
+      <div class="clear10"></div>
+      <table class="scores-table table table-bordered table-striped tablesorter table-responsive">
+        <tr>
+          <th>Score Name</th>
+          <th>User Score</th>
+          <th>User Score vs Market Score</th>
+        </tr>
+        <tr>
+          <td>Late Payment Score</td>
+          <td><%= buyer_score.late_payment %></td>
+          <td><%= (buyer_score.late_payment/market_buyer_score.late_payment).to_f.round(2) %></td>
+        </tr>
+        <tr>
+          <td>Current Risk Score</td>
+          <td><%= buyer_score.current_risk %></td>
+          <td><%= (buyer_score.current_risk/market_buyer_score.current_risk).to_f.round(2) %></td>
+        </tr>
+        <tr>
+          <td>Network Diversity</td>
+          <td><%= buyer_score.network_diversity %></td>
+          <td><%= (buyer_score.network_diversity/market_buyer_score.network_diversity).to_f.round(2) %></td>
+        </tr>
+        <tr>
+          <td>Buyer Network Score</td>
+          <td><%= buyer_score.buyer_network %></td>
+          <td><%= (buyer_score.buyer_network/market_buyer_score.buyer_network).to_f.round(2) %></td>
+        </tr>
+        <tr>
+          <td>Due Date Score</td>
+          <td><%= buyer_score.due_date %></td>
+          <td><%= (buyer_score.due_date/market_buyer_score.due_date).to_f.round(2) %></td>
+        </tr>
+        <tr>
+          <td>Credit Used Score</td>
+          <td><%= buyer_score.credit_used %></td>
+          <td><%= (buyer_score.credit_used/market_buyer_score.credit_used).to_f.round(2) %></td>
+        </tr>
+        <tr>
+          <td>Number of Suppliers Giving You Credit</td>
+          <td><%= buyer_score.count_of_credit_given %></td>
+          <td><%= (buyer_score.count_of_credit_given/market_buyer_score.count_of_credit_given).to_f.round(2) %></td>
+        </tr>
+      </table>
+    <%else %>
+      <h2>The Buyer Score is empty.</h2>
+      <div>It seems like it is not enough to calculate scores for your company. <br/>Please buy something to see your Buyer Score</div>
+    <%end %>
 
-    <!--<h3>Payment History</h3>
-    <div class="clear10"></div>
-    <h1>Total Score: <strong><%#= payment_history %></strong></h1>
-    <div class="clear20"></div>
-    <h2>Formula Parts</h2>
-    <div class="clear10"></div>
-    <ul>
-      <li>First Part <strong><%#= payment_history_ex['first']['total'] %></strong> <span style="font-size: 90%;font-style: italic;">(Late Payments / (On Time Payments/Months of Data) * 0.25)</span>
-        <ul style="padding-left: 10px">
-          <li>Late Payments: <strong><%#= payment_history_ex['first']['late_payments'] %></strong></li>
-          <li>On Time Payments: <strong><%#= payment_history_ex['first']['on_time_payments'] %></strong></li>
-          <li>Months of Data: <strong><%#= payment_history_ex['first']['months_of_data'] %></strong></li>
-        </ul>
-        <div class="clear10"></div>
-      </li>
-      <li>Second Part: <strong><%#= payment_history_ex['second']['total'] %></strong> <span style="font-size: 90%;font-style: italic;">(Pending Payments / Average 3 Month Pending Number of Payments * 0.25)</span>
-        <ul style="padding-left: 10px">
-          <li>Pending Payments: <strong><%#= payment_history_ex['second']['this_month_pending_count'] %></strong></li>
-          <li>Average 3 Month Pending Number of Payments: <strong><%#= payment_history_ex['second']['avg_3_month_pending_count'] %></strong></li>
-        </ul>
-        <div class="clear10"></div>
-      </li>
+    <% if market_buyer_score.present? %>
+      <div class="clear20"></div>
+      <h2>Market Buyer Scores</h2>
+      <div class="clear10"></div>
+      <table class="scores-table table table-bordered table-striped tablesorter table-responsive">
+        <tr>
+          <td>Score Name</td>
+          <td>Score</td>
+        </tr>
 
-      <li>Third Part: <strong><%#= payment_history_ex['third']['total'] %></strong> <span style="font-size: 90%;font-style: italic;">(Amount of Pending / Amount Completed In Last 3 Months * 0.25)</span>
-        <ul style="padding-left: 10px;">
-          <li>Amount of Pending: <strong><%#= payment_history_ex['third']['this_month_pending_amount'] %></strong></li>
-          <li>Amount Completed In Last 3 Months: <strong><%#= payment_history_ex['third']['avg_3_month_completed_amount'] %></strong></li>
-        </ul>
-        <div class="clear10"></div>
-      </li>
-      <li>Fourth Part: <strong><%#= payment_history_ex['fourth']['total'] %></strong> <span style="font-size: 90%;font-style: italic;">(Seller A’s Amount * Later Payer A’s Sales History Score + Seller B’s Amount * Late Payer B Sales History Score / Later Payer A + B Amounts) * 0.25</span>
-      </li>
-    </ul>
-    <div class="clear20"></div>-->
-
-
-
+        <tr>
+          <td>Lifetime Late Payment Score</td>
+          <td><%= market_buyer_score.late_payment %></td>
+        </tr>
+        <tr>
+          <td>Current Late Risk Score</td>
+          <td><%= market_buyer_score.current_risk %></td>
+        </tr>
+        <tr>
+          <td>Concentration Score</td>
+          <td><%= market_buyer_score.network_diversity %></td>
+        </tr>
+        <tr>
+          <td>Buyer Network Score</td>
+          <td><%= market_buyer_score.buyer_network %></td>
+        </tr>
+        <tr>
+          <td>Due Date Score</td>
+          <td><%= market_buyer_score.due_date %></td>
+        </tr>
+        <tr>
+          <td>Credit Used Score</td>
+          <td><%= market_buyer_score.credit_used %></td>
+        </tr>
+        <tr>
+          <td>No of Suppliers Giving Credit</td>
+          <td><%= market_buyer_score.count_of_credit_given %></td>
+        </tr>
+      </table>
+    <%else %>
+      <h1>The Buyer Score is empty.</h1>
+      <h2>It seems like it is not enough to calculate scores for your company. <br/>Please buy something to see your Buyer Score</h2>
+    <%end %>
   </div>
 </div>
 
