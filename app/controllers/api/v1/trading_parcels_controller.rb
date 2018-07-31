@@ -61,14 +61,15 @@ module Api
 
       private
       def parcel_params
-        params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
+        params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :avg_price,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
       end
 
       def parcel_data(parcel)
-        available_customers = get_available_buyers(parcel, current_customer)
-        not_enough_available_customers = get_unavailable_buyers(parcel, current_customer)
-        demanded_but_not_available = get_demanded_but_not_available_buyers(parcel, current_customer)
+        # available_customers = get_available_buyers(parcel, current_customer)
+        # not_enough_available_customers = get_unavailable_buyers(parcel, current_customer)
+        # demanded_but_not_available = get_demanded_but_not_available_buyers(parcel, current_customer)
+        demanded_clients = get_demanded_clients(parcel, current_company)
         @info = []
         parcel.parcel_size_infos.each do |i|
           size = i.size.to_f
@@ -94,9 +95,7 @@ module Api
           total_value: parcel.try(:total_value).to_f,
           size_info: @info,
           vital_sales_data: {
-            available_credit_buyers: customers_data(available_customers),
-            unavailable_credit_buyers: customers_data(not_enough_available_customers),
-            demanded_but_not_given_credit: customers_data(demanded_but_not_available),
+            demanded_clients: demanded_clients
           }
         }
       end
