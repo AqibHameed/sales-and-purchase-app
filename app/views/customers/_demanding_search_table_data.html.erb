@@ -1,83 +1,83 @@
 
 <div class="dashboard">
-  <h2>Trading</h2>
   <div class="clear10"></div>
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-    <p>DTC</p>
-    <% dtc.each do |d| %>
+    <h2>DTC</h2>
+    <%# dtc.each do |d| %>
+    <% dtc.group_by(&:description).each do |description, parcels| %>
       <div class="panel panel-default">
-        <div class="panel-heading  <%= 'my_parcels' if d.company_id == current_company.id %>" role="tab" id="headingOne">
+        <div class="panel-heading <%#= 'my_parcels' if o.company_id == current_company.id %>" role="tab" id="headingOne">
           <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%=d.id%>" aria-expanded="false" aria-controls="collapseOne">
-             <p class="mb0"><%= d.description %> </p>
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%= parcels.first.id %>" aria-expanded="false" aria-controls="collapseOne">
+             <p class="mb0"><%= description %>(<%= parcels.count %>)</p>
             </a>
           </h4>
         </div>
-        <div id="parcel_<%=d.id%>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingOne">
+        <div id="parcel_<%= parcels.first.id %>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingOne">
           <div class="panel-body">
-              <%= render partial: 'customers/trading/trading_parcels', locals: { parcel: d } %>
+              <%= render partial: 'customers/trading/trading_parcels', locals: { parcels: parcels } %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class='clear10'></div>
+    <h2>RUSSIAN</h2>
+    <% russian.group_by(&:description).each do |description, parcels| %>
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%= parcels.first.id %>" aria-expanded="false" aria-controls="collapseTwo">
+             <p class="mb0"><%= description %>(<%= parcels.count %>)</p>
+            </a>
+          </h4>
+        </div>
+        <div id="parcel_<%= parcels.first.id %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+              <%= render partial: 'customers/trading/trading_parcels', locals: { parcels: parcels } %>
           </div>
         </div>
       </div>
     <% end %>
 
     <div class='clear10'></div>
-    <p>RUSSIAN</p>
-    <% russian.each do |r| %>
+    <h2>OUTSIDEGOODS</h2>
+    <% outside.group_by(&:description).each do |description, parcels| %>
       <div class="panel panel-default">
-        <div class="panel-heading  <%= 'my_parcels' if r.company_id == current_company.id %>" role="tab" id="headingTwo">
+        <div class="panel-heading " role="tab" id="headingThree">
           <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%=r.id%>" aria-expanded="false" aria-controls="collapseTwo">
-             <p class="mb0"><%= r.description %></p>
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%= parcels.first.id %>" aria-expanded="false" aria-controls="collapseThree">
+             <p class="mb0"><%= description %>(<%= parcels.count %>)</p>
             </a>
           </h4>
         </div>
-        <div id="parcel_<%=r.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+        <div id="parcel_<%= parcels.first.id %>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingThree">
           <div class="panel-body">
-              <%= render partial: 'customers/trading/trading_parcels', locals: { parcel: r } %>
+              <%= render partial: 'customers/trading/trading_parcels', locals: { parcels: parcels } %>
           </div>
         </div>
       </div>
     <% end %>
 
     <div class='clear10'></div>
-    <p>OUTSIDEGOODS</p>
-    <% outside.each do |o| %>
+    <h2>SOMTHING SPECIAL</h2>
+    <% something_special.group_by(&:description).each do |description, parcels| %>
       <div class="panel panel-default">
-        <div class="panel-heading  <%= 'my_parcels' if o.company_id == current_company.id %>" role="tab" id="headingThree">
+        <div class="panel-heading " role="tab" id="headingFour">
           <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%=o.id%>" aria-expanded="false" aria-controls="collapseThree">
-             <p class="mb0"><%= o.description %></p>
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%= parcels.first.id %>" aria-expanded="false" aria-controls="collapseFour">
+             <p class="mb0"><%= description %>(<%= parcels.count %>)</p>
             </a>
           </h4>
         </div>
-        <div id="parcel_<%=o.id%>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingThree">
+        <div id="parcel_<%= parcels.first.id %>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingFour">
           <div class="panel-body">
-              <%= render partial: 'customers/trading/trading_parcels', locals: { parcel: o } %>
+              <%= render partial: 'customers/trading/trading_parcels', locals: { parcels: parcels } %>
           </div>
         </div>
       </div>
     <% end %>
 
-    <div class='clear10'></div>
-    <p>SOMTHING SPECIAL</p>
-    <% something_special.each do |ss| %>
-      <div class="panel panel-default">
-        <div class="panel-heading  <%= 'my_parcels' if ss.company_id == current_company.id %>" role="tab" id="headingFour">
-          <h4 class="panel-title">
-            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#parcel_<%=ss.id%>" aria-expanded="false" aria-controls="collapseFour">
-             <p class="mb0"><%= ss.description %></p>
-            </a>
-          </h4>
-        </div>
-        <div id="parcel_<%=ss.id%>" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingFour">
-          <div class="panel-body">
-              <%= render partial: 'customers/trading/trading_parcels', locals: { parcel: ss } %>
-          </div>
-        </div>
-      </div>
-    <% end %>
   </div>
 
   <% unless params[:controller] == 'customers' %>

@@ -13,23 +13,25 @@
     <th></th>
   </thead>
   <tbody>
-    <tr>
-      <td><%= parcel.no_of_stones %></td>
-      <td><%= parcel.weight %></td>
-      <td><%= parcel.cost %></td>
-      <td><%= parcel.percent %></td>
-      <td><%= parcel.price %></td>
-      <td><%= parcel.sight %></td>
-      <td><%= parcel.total_value %></td>
-      <td><%= parcel.credit_period %></td>
-      <td><%= parcel.company.try(:name) %></td>
-      <td><%= parcel.uid %></td>
-      <% unless parcel.company_id == current_company.id %>
-        <td>
-          <%= link_to "Let's buy", 'javascript:void(0)', data: {turbolinks: false}, class: 'lets_buy', "data-id" => parcel.id, id: 'lets_buy_id', :onclick => "calling('#{parcel.id}')" %>
-        </td>
-      <% end %>
-    </tr>
+    <% parcels.each do |parcel|%>
+      <tr>
+        <td><%= parcel.no_of_stones %></td>
+        <td><%= parcel.weight %></td>
+        <td><%= parcel.cost %></td>
+        <td><%= parcel.percent %></td>
+        <td><%= parcel.price %></td>
+        <td><%= parcel.sight %></td>
+        <td><%= parcel.total_value %></td>
+        <td><%= parcel.credit_period %></td>
+        <td><%= parcel.company.try(:name) %></td>
+        <td><%= parcel.uid %></td>
+        <% unless parcel.company_id == current_company.id %>
+          <td>
+            <%= link_to "Let's buy", 'javascript:void(0)', data: {turbolinks: false}, class: 'lets_buy', "data-id" => parcel.id, id: 'lets_buy_id', :onclick => "calling('#{parcel.id}')" %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 <div class="clear"></div>
