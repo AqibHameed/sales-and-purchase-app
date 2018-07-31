@@ -10,6 +10,7 @@ module Api
           parcel.customer_id = current_customer.id
           parcel.weight = params[:trading_parcel][:carats]
           parcel.box_value = params[:trading_parcel][:discount]
+          parcel.price = params[:trading_parcel][:avg_price]
           parcel.no_of_stones = 0 if params[:trading_parcel][:no_of_stones].blank? || params[:trading_parcel][:no_of_stones].nil?
           if parcel.save
             render json: { success: true, message: 'Parcel created successfully' }
@@ -26,6 +27,7 @@ module Api
           parcel = TradingParcel.find(params[:id])
           parcel.weight = params[:trading_parcel][:carats]
           parcel.box_value = params[:trading_parcel][:discount]
+          parcel.price = params[:trading_parcel][:avg_price]
           parcel.no_of_stones = 0 if params[:trading_parcel][:no_of_stones].blank? || params[:trading_parcel][:no_of_stones].nil?
           if parcel.update_attributes(parcel_params)
             render json: { success: true, message: 'Parcel updated successfully', response_code: 200 }
@@ -61,7 +63,7 @@ module Api
 
       private
       def parcel_params
-        params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :avg_price,
+        params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
       end
 

@@ -1,7 +1,7 @@
 <div class="form-group">
   <label class="col-sm-2 control-label">Shape:</label>
   <div class="col-sm-10">
-    <%= f.select :shape, options_for_select(TradingParcel::SHAPE), {include_blank: true}, {class: 'form-control' }%>
+    <%= f.select :shape, options_for_select(TradingParcel::SHAPE, @trading_parcel.shape), {include_blank: true}, {class: 'form-control' }%>
   </div>
 </div>
 
@@ -11,49 +11,49 @@
 <div class="form-group">
   <label class="col-sm-2 control-label">Color:</label>
   <div class="col-sm-10">
-    <%= f.select :color, options_for_select(TradingParcel::COLOR), {include_blank: true}, {class: 'form-control' }%>
+    <%= f.select :color, options_for_select(TradingParcel::COLOR, @trading_parcel.color), {include_blank: true}, {class: 'form-control' }%>
   </div>
 </div>
 
 <div class="form-group">
   <label class="col-sm-2 control-label">Clarity:</label>
   <div class="col-sm-10">
-    <%= f.select :clarity, options_for_select(TradingParcel::CLARITY), {include_blank: true}, {class: 'form-control' }%>
+    <%= f.select :clarity, options_for_select(TradingParcel::CLARITY, @trading_parcel.clarity), {include_blank: true}, {class: 'form-control' }%>
   </div>
 </div>
 
 <div class="form-group">
   <label class="col-sm-2 control-label">Cut:</label>
   <div class="col-sm-10">
-    <%= f.select :cut, options_for_select(TradingParcel::CUT_POLISH_SYMMETRY), {include_blank: true}, {class: 'form-control' }%>
+    <%= f.select :cut, options_for_select(TradingParcel::CUT_POLISH_SYMMETRY, @trading_parcel.cut), {include_blank: true}, {class: 'form-control' }%>
   </div>
 </div>
 
 <div class="form-group">
   <label class="col-sm-2 control-label">Polish:</label>
   <div class="col-sm-10">
-    <%= f.select :polish, options_for_select(TradingParcel::CUT_POLISH_SYMMETRY), {include_blank: true}, {class: 'form-control' }%>
+    <%= f.select :polish, options_for_select(TradingParcel::CUT_POLISH_SYMMETRY, @trading_parcel.polish), {include_blank: true}, {class: 'form-control' }%>
   </div>
 </div>
 
 <div class="form-group">
   <label class="col-sm-2 control-label">Symmetry:</label>
   <div class="col-sm-10">
-    <%= f.select :symmetry, options_for_select(TradingParcel::CUT_POLISH_SYMMETRY), {include_blank: true}, {class: 'form-control' }%>
+    <%= f.select :symmetry, options_for_select(TradingParcel::CUT_POLISH_SYMMETRY, @trading_parcel.symmetry), {include_blank: true}, {class: 'form-control' }%>
   </div>
 </div>
 
 <div class="form-group">
   <label class="col-sm-2 control-label">Fluorescence:</label>
   <div class="col-sm-10">
-    <%= f.select :fluorescence, options_for_select(TradingParcel::FLUORESCENCE), {include_blank: true}, {class: 'form-control' }%>
+    <%= f.select :fluorescence, options_for_select(TradingParcel::FLUORESCENCE, @trading_parcel.fluorescence), {include_blank: true}, {class: 'form-control' }%>
   </div>
 </div>
 
 <div class="form-group">
   <label class="col-sm-2 control-label">Lab:</label>
   <div class="col-sm-10">
-    <%= f.select :lab, options_for_select(TradingParcel::LAB), {include_blank: true}, {class: 'form-control' }%>
+    <%= f.select :lab, options_for_select(TradingParcel::LAB, @trading_parcel.lab), {include_blank: true}, {class: 'form-control' }%>
   </div>
 </div>
 
