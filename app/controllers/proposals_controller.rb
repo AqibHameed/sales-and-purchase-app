@@ -15,7 +15,7 @@ class ProposalsController < ApplicationController
   def create
     @proposal = Proposal.new(proposal_params)
     # @proposal.check_sub_company_limit(current_customer)
-
+    
     if @proposal.errors.any?
         flash[:notice] = @proposal.errors.full_messages.first
         redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])

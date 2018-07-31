@@ -306,6 +306,7 @@ Rails.application.routes.draw do
           post :add_star
         end
       end
+      resources :messages
       resources :proposals
       resources :trading_parcels
       resources :companies_groups
