@@ -1,5 +1,5 @@
 $('#credit_warning').modal('show');
-$('#credit_warning .modal-body').html('<h1>This buyer does not meet your credit requirements. Do you want to continue anyway?</h1><div class="row text-center mt10"><%=link_to "Yes", direct_sell_trading_parcels_path(trading_parcel: {my_transaction_attributes: { buyer_id: buyer_id, created_at: created_at, paid: paid}}, check: false, id: parcel_id), class: "btn btn-primary", method: :post %><button type="button" class="btn btn-default hide-credit-limit-modal" data-value= <%= @parcel.id%>>No</button></div>')
+$('#credit_warning .modal-body').html('<h1>This buyer does not meet your credit requirements. Do you want to continue anyway?</h1><div class="row text-center mt10"><%=link_to "Yes", direct_sell_trading_parcels_path(trading_parcel: {my_transaction_attributes: { buyer_id: buyer_id, created_at: created_at, paid: paid}}, check: false, id: parcel_id), class: "btn btn-primary",remote: true, method: :post %><button type="button" class="btn btn-default hide-credit-limit-modal" data-value= <%= @parcel.id%>>No</button></div>')
 
 $('.hide-credit-limit-modal').click(function() {
   id = $('.hide-credit-limit-modal').data('value')
