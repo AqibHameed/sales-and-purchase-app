@@ -1,0 +1,46 @@
+<div class="form-wrapper">
+  <%= form_for @company, url: invite_customers_path, method: :post do |f| %>
+    <% if @company.errors.any? %>
+        <div class="alert alert-danger">
+          <h2><%= pluralize(@company.errors.count, "error") %> prohibited this invitation to send:</h2>
+          <ul>
+            <% @company.errors.each do |atr, msg| %>
+              <li>
+                <% if atr.to_s.include? "base" %>
+                  <%= msg %>
+                <% else %>
+                  <%= @company.errors.full_message(atr, msg) %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+    <div class="form-row">
+      <div class="label">Company: </div>
+      <div class="field">
+        <%= f.text_field :name, { class: 'input' } %>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="label">Country: </div>
+      <div class="field demand_desc">
+        <%= f.text_field :county, { class: 'input' }%>
+      </div>
+    </div>
+     <div class="form-row">
+      <div class="label">Email: </div>
+      <div class="field demand_desc">
+        <%= text_field_tag :email, '', class: 'input'%>
+      </div>
+    </div>
+    <div class="clear20"></div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%=f.submit 'Send', class: 'login-btn btn-02' %>
+      </div>
+    </div>
+  <% end %>
+  <div class="clear20"></div>
+</div>

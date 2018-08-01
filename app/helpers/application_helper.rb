@@ -507,7 +507,7 @@ module ApplicationHelper
 
   # Vital sales data - parcel show
   def get_demanded_clients(parcel, current_company)
-    Demand.where(description: parcel.description).map { |e| e.company }
+    Demand.where(description: parcel.description).where.not(company_id: current_company.id).map { |e| e.company }
   end
 
   def check_anonymous_company_parcel(parcel, current_company)

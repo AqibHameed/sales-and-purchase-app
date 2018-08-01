@@ -105,6 +105,8 @@ Rails.application.routes.draw do
       get :transactions
       get :credit
       get :info
+      get :invite
+      post '/invite', to: 'customers#save_invite'
       #get :scores
       get :buyer_scores
       get :seller_scores

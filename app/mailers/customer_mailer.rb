@@ -26,4 +26,9 @@ class CustomerMailer < ApplicationMailer
     @customer = customer
     mail(:to => @customer.email, :subject => '[ClarityNetwork] You have a new access request ')
   end
+
+  def send_invitation(email)
+    @email = email
+    mail(:to => email, :subject => '[ClarityNetwork] You have a invitation ')
+  end
 end

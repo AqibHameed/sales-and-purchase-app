@@ -52,6 +52,20 @@ class CustomersController < ApplicationController
     end
   end
 
+  def invite
+   @company = Company.new
+  end
+
+  def save_invite
+   @company = Company.new(company_params)
+   if @company.save
+      CustomerMailer.send_invitation(params[:email]).deliver
+      redirect_to root_path, notice: "Invitation successfully sended!!"
+   else
+      render :invite
+   end
+  end
+
   def shared_info
     @total_transaction = Transaction.total_transaction(params[:id]).count
     @pending_transactions = Transaction.pending_received_transaction(params[:id]).count + Transaction.pending_sent_transaction(params[:id]).count
@@ -370,6 +384,10 @@ class CustomersController < ApplicationController
 
   def demanding_params
     params.require(:demand).permit(:description, :weight, :price, :diamond_type)
+  end
+
+  def company_params
+    params.require(:company).permit(:name, :county)
   end
 
   def polished_demand_params

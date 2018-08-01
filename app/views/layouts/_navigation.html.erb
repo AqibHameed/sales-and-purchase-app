@@ -34,6 +34,9 @@
             <% if can? :access, :sell %>
               <li><%= link_to 'Approve Clients', credit_suppliers_path, data: { turbolinks: false } %></li>
             <% end %>
+            <li>
+              <%= link_to 'Invite', invite_customers_path , data: { turbolinks: false } %>
+            </li>
             <!-- <li><%#= link_to 'Invite',  '#' , data: { turbolinks: false } %></li> -->
             <%# if current_customer.parent_id.nil? %>
             <%# else %>
