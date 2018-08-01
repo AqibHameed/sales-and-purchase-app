@@ -21,83 +21,50 @@
         <tr>
           <th>Score Name</th>
           <th>User Score</th>
+          <th>Market Seller Score</th>
           <th>User Score vs Market Score</th>
         </tr>
         <tr>
           <td>Late Payment Score</td>
           <td><%= seller_score.late_payment %></td>
-          <td><%= (seller_score.late_payment/market_seller_score.late_payment).to_f.round(2) %></td>
+          <td><%= market_seller_score.late_payment %></td>
+          <td><%= ApplicationHelper.safe_divide_float(seller_score.late_payment, market_seller_score.late_payment) %></td>
         </tr>
         <tr>
           <td>Current Risk Score</td>
           <td><%= seller_score.current_risk %></td>
-          <td><%= (seller_score.current_risk/market_seller_score.current_risk).to_f.round(2) %></td>
+          <td><%= market_seller_score.current_risk %></td>
+          <td><%= ApplicationHelper.safe_divide_float(seller_score.current_risk, market_seller_score.current_risk) %></td>
         </tr>
         <tr>
           <td>Network Diversity</td>
           <td><%= seller_score.network_diversity %></td>
-          <td><%= (seller_score.network_diversity/market_seller_score.network_diversity).to_f.round(2) %></td>
+          <td><%= market_seller_score.network_diversity%></td>
+          <td><%= ApplicationHelper.safe_divide_float(seller_score.network_diversity, market_seller_score.network_diversity)%></td>
         </tr>
         <tr>
           <td>Seller Network Score</td>
           <td><%= seller_score.seller_network %></td>
-          <td><%= (seller_score.seller_network/market_seller_score.seller_network).to_f.round(2) %></td>
+          <td><%= market_seller_score.seller_network %></td>
+          <td><%= ApplicationHelper.safe_divide_float(seller_score.seller_network, market_seller_score.seller_network) %></td>
         </tr>
         <tr>
           <td>Due Date Score</td>
           <td><%= seller_score.due_date %></td>
-          <td><%= (seller_score.due_date/market_seller_score.due_date).to_f.round(2) %></td>
+          <td><%= market_seller_score.due_date %></td>
+          <td><%= ApplicationHelper.safe_divide_float(seller_score.due_date, market_seller_score.due_date) %></td>
         </tr>
         <tr>
           <td>Credit Used Score</td>
           <td><%= seller_score.credit_used %></td>
-          <td><%= (seller_score.credit_used/market_seller_score.credit_used).to_f.round(2) %></td>
+          <td><%= market_seller_score.credit_used %></td>
+          <td><%= ApplicationHelper.safe_divide_float(seller_score.credit_used, market_seller_score.credit_used) %></td>
         </tr>
       </table>
     <%else %>
       <h2>The Seller Score is empty.</h2>
       <div>It seems like it is not enough to calculate scores for your company. <br/>Please sell something to see your Seller Score</div>
     <%end %>
-
-    <% if market_seller_score.present?  %>
-      <div class="clear20"></div>
-      <h2>Market Buyer Scores</h2>
-      <div class="clear10"></div>
-      <table class="scores-table table table-bordered table-striped tablesorter table-responsive">
-        <tr>
-          <td>Score Name</td>
-          <td>Score</td>
-        </tr>
-        <tr>
-          <td>Lifetime Late Payment Score</td>
-          <td><%= market_seller_score.late_payment %></td>
-        </tr>
-        <tr>
-          <td>Current Late Risk Score</td>
-          <td><%= market_seller_score.current_risk %></td>
-        </tr>
-        <tr>
-          <td>Concentration Score</td>
-          <td><%= market_seller_score.network_diversity %></td>
-        </tr>
-        <tr>
-          <td>Seller Network Score</td>
-          <td><%= market_seller_score.seller_network %></td>
-        </tr>
-        <tr>
-          <td>Due Date Score</td>
-          <td><%= market_seller_score.due_date %></td>
-        </tr>
-        <tr>
-          <td>Credit Used Score</td>
-          <td><%= market_seller_score.credit_used %></td>
-        </tr>
-      </table>
-    <%else %>
-      <h2>The Market Seller Score is empty.</h2>
-    <%end %>
-
-
   </div>
 </div>
 
