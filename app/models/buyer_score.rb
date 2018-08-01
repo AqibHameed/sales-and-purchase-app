@@ -42,26 +42,48 @@ class BuyerScore < ApplicationRecord
   def self.calculate_scores_second_step
     companies = Company.joins(:buyer_transactions).uniq
     if companies.count.positive?
-      market_buyer_scores = MarketBuyerScore.get_scores
       companies.each do |company|
         buyer_score = self.get_score(company.id)
         unless buyer_score.nil?
           buyer_score.update(
               buyer_network: self.calculate_buyer_network(company.id),
+              updated_at: Time.now
+          )
+        end
+      end
+      #update average Market Buyer Scores
+      market_buyer_scores = MarketBuyerScore.calculate_scores(false )
+      companies.each do |company|
+        buyer_score = self.get_score(company.id)
+        unless buyer_score.nil?
+          buyer_score.update(
               total: self.calculate_total(buyer_score, market_buyer_scores),
               updated_at: Time.now
           )
         end
-
       end
-      #update average Market Buyer Scores
-      MarketBuyerScore.calculate_scores(false )
     end
 
   end
 
   def self.get_score(company_id)
-    return BuyerScore.where("company_id = ? AND actual = ?", company_id, true).order(:created_at).last
+    scores = BuyerScore.where("company_id = ? AND actual = ?", company_id, true).order(:created_at).last
+    if scores.nil?
+      scores = BuyerScore.new
+      scores.company_id = company_id
+      scores.late_payment = 0
+      scores.current_risk = 0
+      scores.network_diversity = 0
+      scores.buyer_network = 0
+      scores.due_date = 0
+      scores.credit_used = 0
+      scores.count_of_credit_given = 0
+      scores.actual = true
+      scores.created_at = Time.now
+      scores.updated_at = Time.now
+      scores.save
+    end
+    return scores
   end
 
   #Calculate each score separately
@@ -185,7 +207,7 @@ class BuyerScore < ApplicationRecord
 
   def self.calculate_total(buyer_score, avg_scores, exclude_fields = [])
     #add fields to exclude always
-    exclude_fields.push( "id", "company_id", "actual", "created_at", "updated_at")
+    exclude_fields.push( "id", "company_id", "actual", "created_at", "updated_at", "total")
     #init variables
     fields_count = 0
     fields_sum = 0
@@ -195,17 +217,18 @@ class BuyerScore < ApplicationRecord
     buyer_score.attributes.each_pair do |name, value|
       unless exclude_fields.include? name
         avg_value = avg_scores.attributes[name]
-        if !avg_value.nil? && avg_value.positive?
-          fields_sum += (value/avg_value).round(2)
-          fields_count += 1
+        if avg_value.positive?
+          score = (value/avg_value).round(2)
+          if score.positive?
+            fields_sum += score
+            fields_count += 1
+          end
         end
       end
     end
-
     if fields_count.positive?
       total = (fields_sum/fields_count).round(2)
     end
-
     return total
   end
 end
