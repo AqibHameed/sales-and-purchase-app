@@ -526,4 +526,12 @@ module ApplicationHelper
     BuyerScore.calculate_scores_second_step
     SellerScore.calculate_scores_second_step
   end
+
+  def self.safe_divide_float(numerator, denominator, precision = 2)
+    result = (numerator / denominator).to_f.round(precision)
+    unless result.finite?
+      result = 0.0
+    end
+    return result
+  end
 end

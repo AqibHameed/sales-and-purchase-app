@@ -33,7 +33,7 @@ class MarketBuyerScore < ApplicationRecord
     else
       actual_score = self.get_scores
       unless actual_score.nil?
-        avg_scores = actual_score.update(
+        actual_score.update(
             late_payment: (result.late_payment/buyers_count).round(2),
             current_risk: (result.current_risk/buyers_count).round(2),
             network_diversity: (result.network_diversity/buyers_count).round(2),
@@ -43,6 +43,7 @@ class MarketBuyerScore < ApplicationRecord
             count_of_credit_given: (result.count_of_credit_given/buyers_count).round(2),
             updated_at: Time.now
         )
+        avg_scores = actual_score
       end
     end
 
@@ -50,7 +51,22 @@ class MarketBuyerScore < ApplicationRecord
   end
 
   def self.get_scores
-    return MarketBuyerScore.where("actual = ?", true).order(:created_at).last
+    scores = MarketBuyerScore.where("actual = ?", true).order(:created_at).last 
+    if scores.nil?
+      scores.MarketBuyerScore.new
+      scores.actual = true
+      scores.late_payment = 0,
+      scores.current_risk = 0,
+      scores.network_diversity = 0,
+      scores.buyer_network = 0,
+      scores.due_date = 0,
+      scores.credit_used = 0,
+      scores.count_of_credit_given = 0,
+      scores.created_at = Time.now,
+      scores.updated_at = Time.now
+      scores.save
+    end
+    return scores
   end
 
 end
