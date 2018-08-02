@@ -137,9 +137,13 @@ class TradingParcelsController < ApplicationController
 
     if params[:check].present? && params[:check] == "true"
       if registered_users < 1
-        check_overdue_and_market_limit(transaction, @parcel)
+        if params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today
+          check_credit_limit(transaction, @parcel)
+        else
+          check_overdue_and_market_limit(transaction, @parcel)
+        end
       else
-        check_credit_limit(transaction, @parcel)
+        save_transaction(transaction, @parcel)
       end
     elsif params[:market_limit].present? && params[:market_limit] == "true"
       check_credit_limit(transaction, @parcel)

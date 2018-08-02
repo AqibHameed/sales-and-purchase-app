@@ -62,10 +62,14 @@ class Transaction < ApplicationRecord
   end
 
   def generate_and_add_uid
-    if buyer.customers.blank?
-      is_buyer_confirmed = true
+    if transaction_type == 'manual'
+      if buyer.customers.blank?
+        is_buyer_confirmed = true
+      else
+        is_buyer_confirmed = false
+      end
     else
-      is_buyer_confirmed = false
+      is_buyer_confirmed = true
     end
     uid = SecureRandom.hex(12)
     self.update_columns({description: trading_parcel.description, transaction_uid: uid, buyer_confirmed: is_buyer_confirmed})
