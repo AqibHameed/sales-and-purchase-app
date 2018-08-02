@@ -36,22 +36,34 @@
             <%=f.text_field :buyer_id, value: @transaction.buyer.try(:name),  class: 'input disabled' %>
           </div>
         </div>
-        <div class="form-row">
+        <!-- <div class="form-row">
           <div class="label">Avg Price:</div>
           <div class='field'>
-            <%=f.text_field :price, value: @transaction.price,  class: 'input disabled' %>
+            <%#=f.text_field :price, value: @transaction.price,  class: 'input disabled' %>
           </div>
-        </div>
-        <div class="form-row">
+        </div> -->
+       <!--  <div class="form-row">
           <div class="label">Carats:</div>
           <div class='field'>
-            <%=text_field_tag :weight, @transaction.trading_parcel.weight,  class: 'input' %>
+            <%#=text_field_tag :weight, @transaction.trading_parcel.weight,  class: 'input' %>
+          </div>
+        </div> -->
+        <!-- <div class="form-row">
+          <div class="label">Amount:</div>
+          <div class='field'>
+            <%#=f.text_field :total_amount, value: @transaction.total_amount,  class: 'input disabled' %>
+          </div>
+        </div> -->
+        <div class="form-row">
+          <div class="label">Credit:</div>
+          <div class='field'>
+            <%=f.text_field :total_amount, value: @transaction.credit,  class: 'input disabled' %>
           </div>
         </div>
         <div class="form-row">
-          <div class="label">Amount:</div>
+          <div class="label">Due Date:</div>
           <div class='field'>
-            <%=f.text_field :total_amount, value: @transaction.total_amount,  class: 'input disabled' %>
+            <%=f.text_field :total_amount, value: @transaction.due_date.strftime("%d/%m/%Y"),  class: 'input disabled' %>
           </div>
         </div>
         <!-- <div class="form-row">
@@ -66,13 +78,13 @@
             <%=f.text_field :created_at, value: @transaction.created_at.strftime("%d/%m/%Y"),  class: 'form-control date-picker' %>
           </div>
         </div>
-        <div class="form-row">
+       <!--  <div class="form-row">
           <div class="label">Send to Buyer:</div>
           <div class='field'>
-            <%=f.check_box :ready_for_buyer,  class: 'input' %>
+            <%#=f.check_box :ready_for_buyer,  class: 'input' %>
           </div>
-        </div>
-        
+        </div> -->
+      <%= hidden_field_tag 'startdate', @transaction.due_date %>
       </div>
       <div class="clear"></div>
       <div class="form-row">
@@ -88,9 +100,13 @@
 <div class="clear"></div>
 
 <script type="text/javascript">
+
   $(document).ready(function (){
+    var nowDate = new Date();
+    var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
     $(".date-picker").datepicker({
-      "dateFormat" : 'dd/mm/yy'
+      "dateFormat" : 'dd/mm/yy',
+       minDate: today
     });
   })
 
@@ -107,4 +123,5 @@
     var amount = carat*price;
     $('#transaction_total_amount').val(amount);
   });
+
 </script>

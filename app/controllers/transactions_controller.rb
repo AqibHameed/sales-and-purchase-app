@@ -78,9 +78,9 @@ class TransactionsController < ApplicationController
 
   def update
     @transaction = Transaction.find(params[:id])
-    unless params[:weight].blank?
-      @transaction.trading_parcel.update_column(:weight, params[:weight])
-    end
+    # unless params[:weight].blank?
+    #   @transaction.trading_parcel.update_column(:weight, params[:weight])
+    # end
     if @transaction.update_attributes(update_transaction_params)
       redirect_to transaction_path(@transaction)
     else
@@ -116,6 +116,6 @@ class TransactionsController < ApplicationController
   end
 
   def update_transaction_params
-    params.require(:transaction).permit(:total_amount, :price, :invoice_no, :ready_for_buyer, :created_at)
+    params.require(:transaction).permit(:invoice_no, :created_at)
   end
 end
