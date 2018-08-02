@@ -132,8 +132,15 @@ class TradingParcelsController < ApplicationController
                                     price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                     created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
 
+
+    registered_users = Company.where(id: params[:trading_parcel][:my_transaction_attributes][:buyer_id]).first.customers.count
+
     if params[:check].present? && params[:check] == "true"
-      check_overdue_and_market_limit(transaction, @parcel)
+      if registered_users < 1
+        check_overdue_and_market_limit(transaction, @parcel)
+      else
+        check_credit_limit(transaction, @parcel)
+      end
     elsif params[:market_limit].present? && params[:market_limit] == "true"
       check_credit_limit(transaction, @parcel)
     else
