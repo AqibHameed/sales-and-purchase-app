@@ -1,5 +1,5 @@
 <div class="dashboard trading_history">
-  <h3> Rough Trading History</h3>
+  <h3>Polished Trading History</h3>
   <div class="clear10"></div>
   <div class="bs-example">
 
@@ -12,25 +12,19 @@
       <div id="sectionA" class="tab-pane fade in active">
         <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
         <div class='tenders_list'>
-          <%= render partial: 'trading_history_list', locals: { transactions: @pending_transaction } %>
-          <div class="clear20"></div>
-          <%#= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_pending_transactions} %>
+          <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_pending_transactions} %>
         </div>
       </div>
       <div id="sectionB" class="tab-pane fade">
         <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
         <div class='tenders_list'>
-          <%= render partial: 'trading_history_list', locals: { transactions: @overdue_transaction } %>
-          <div class="clear20"></div>
-          <%#= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_overdue_transactions} %>
+          <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_overdue_transactions} %>
         </div>
       </div>
       <div id="sectionC" class="tab-pane fade">
         <div class=" bid_form" style="width:80%!important; margin-left:-10px; display:none; background: #fff;"></div>
         <div class='tenders_list'>
-          <%= render partial: 'trading_history_list', locals: { transactions: @completed_transaction } %>
-          <div class="clear20"></div>
-          <%#= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_completed_transactions} %>
+          <%= render partial: 'tenders/shared/trading_history_polished_data', locals: {transactions: @polished_completed_transactions} %>
         </div>
       </div>
     </div>

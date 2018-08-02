@@ -27,7 +27,17 @@
             <!-- <li>
               <%#= link_to 'Tenders', root_path, data: { turbolinks: false } %>
             </li> -->
-            <li><%= link_to 'History', trading_history_path, data: { turbolinks: false } %></li>
+            <li>
+              <%#= link_to 'History', trading_history_path, data: { turbolinks: false } %>
+              <div class="dropdown history-nav-dropdown">
+                <a id="dropbtn" class="dropbtn">History</a>
+                <div id="myDropdown" class="dropdown-content history">
+                  <%= link_to 'Rough', trading_history_path, data: { turbolinks: false } %>
+                  <div class="dropdown-divider"></div>
+                  <%= link_to 'Polished', polished_trading_history_path,  data: { turbolinks: false } %>
+                </div>
+              </div>
+            </li>
             <!-- <%# if can? :access, :buy %>
               <li><%#= link_to 'Demand',  demanding_customers_path , data: { turbolinks: false } %></li>
             <%# end %> -->
