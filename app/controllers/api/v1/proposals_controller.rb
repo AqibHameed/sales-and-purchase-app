@@ -5,10 +5,10 @@ module Api
 
       def create
         if current_company
-          parcel = TradingParcel.where(params[:trading_parcel_id]).first
+          parcel = TradingParcel.where(id: params[:trading_parcel_id]).first
           proposal = Proposal.new(proposal_params)
-          proposal.buyer_id = parcel.company_id
-          proposal.seller_id = current_company.id
+          proposal.buyer_id = current_company.id
+          proposal.seller_id = parcel.company_id
           if proposal.save
             Message.create_new(proposal)
             render json: { success: true, message: 'Proposal Submitted Successfully' }
