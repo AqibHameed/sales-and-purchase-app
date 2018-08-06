@@ -28,16 +28,16 @@
               <p><b>Total Price:</b> <%= @parcel.try(:total_value) %></p>
               <p><b>Credit:</b> <%= @parcel.try(:credit_period) %></p>
               <p><b>Percent:</b> <%= @parcel.try(:percent)  %>%</p>
-              <p><b>Last Avg. selling Price:</b> <%=   %></p>
-              <p><b>Avg. Price for last 3 sell:</b> <%=last_3_trading_avg(@history)  %></p>
+              <p><b>Last Avg. selling Price:</b> <%= @history.first.price if @history.present? %></p>
+              <p><b>Avg. Price for last 3 sell:</b> <%= (@history.count < 3) ? 'N/A' :last_3_trading_avg(@history)  %></p>
               <%= form_for @proposal, html: { class: "proposalform" } do |f| %>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">%</div>
                   <div class=' col-sm-9'>
                     <%if @parcel.try(:cost) == 0 || !@parcel.try(:cost).present?%>
-                      <%=text_field_tag "percent", 'N/A', class: 'form-control', style: 'background-color: grey;', disabled: true%>
+                      <%=f.text_field :percent, value: 'N/A', class: 'form-control', style: 'background-color: grey;', disabled: true%>
                     <%else%>
-                      <%=text_field_tag "percent", @parcel.try(:percent), class: 'form-control', required: true %>
+                      <%=f.text_field :percent, value: @parcel.try(:percent), class: 'form-control', required: true %>
                     <%end%>
                   </div>
                 </div>
@@ -45,8 +45,7 @@
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Credit:</div>
                   <div class=' col-sm-9'>
-                    <%=f.text_field :credit, value: @parcel.try(:credit_period), class: 'form-control', required: true %>
-                  </div>
+                   <%=f.text_field :credit, value: @parcel.try(:credit_period), class: 'form-control', required: true %>                                      </div>
                 </div>
                 <div class="clear10"></div>
                 <div class="form-row">
@@ -62,8 +61,8 @@
                 <div class="clear10"></div>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Total $:</div>
-                  <div class=' col-sm-9'>
-                    <%=text_field_tag "total", total, class: 'form-control', required: true %>
+                  <div class=' col-sm-9'>  
+                     <%=f.text_field :total_value, value: total, class: 'form-control', required: true %>                
                   </div>
                 </div>
                 <div class="clear10"></div>
@@ -166,11 +165,11 @@
 
   $(document).ready(function(){
     $('#form-submit').on('click', function(e) {
-      if ((parseInt($('#percent').val()) == 0) || (parseInt($('#proposal_price').val()) == 0) || (parseInt($('#total').val()) == 0)){
+      if ((parseInt($('#proposal_percent').val()) == 0) || (parseInt($('#proposal_price').val()) == 0) || (parseInt($('#proposal_total_value').val()) == 0)){
         $('.error-message').text("Please enter value greater than 0")
-      } else if ($('#percent').val() == '' || $('#proposal_price').val() == '' || $('#total').val() == '' || $('#proposal_credit').val() == ''){
+      } else if ($('#proposal_percent').val() == '' || $('#proposal_price').val() == '' || $('#proposal_total_value').val() == '' || $('#proposal_credit').val() == ''){
         $('.error-message').text("Value cannot be blank...");
-      }else if ( !$.isNumeric($('#proposal_price').val()) || !$.isNumeric($('#total').val()) || !$.isNumeric($('#proposal_credit').val()) ){
+      }else if ( !$.isNumeric($('#proposal_price').val()) || !$.isNumeric($('#proposal_total_value').val()) || !$.isNumeric($('#proposal_credit').val()) ){
         $('.error-message').text("Please enter numeric value...");
       } else {
         $('form.proposalform').submit();

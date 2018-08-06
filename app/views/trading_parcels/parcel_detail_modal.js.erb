@@ -1,11 +1,11 @@
 $('.parcel-detail').html("<%= j render 'parcel_details_modal' %>")
 $('#parcel_details_modal').modal('show')
 
-$(document).on('keyup focusout','#percent', function(){
+$(document).on('keyup focusout','#proposal_percent', function(){
   var carat = parseFloat($('#carats').val());
   var cost = parseFloat($('#cost').val());
   var price = parseFloat($('#proposal_price').val());
-  var percent = parseFloat($('#percent').val());
+  var percent = parseFloat($('#proposal_percent').val());
   calculate_prices(carat, cost, percent, price)
 });
 
@@ -28,9 +28,9 @@ function calculate_prices(carat, cost, percent, price){
     }
   }
   if(isNaN(amount)){
-    $('#total').val('')
+    $('#proposal_total_value').val('')
   }else{
-    $('#total').val(amount)
+    $('#proposal_total_value').val(amount)
   }
   showDiff(amount, last_sold)
 }
@@ -41,15 +41,15 @@ function calculate_percents(carat, cost, price){
   var last_sold = '<%= @history.try(:first).total_amount.to_f rescue 0 %>'
   if ('<%= @parcel.try(:cost) %>' > 0){
     if (isNaN(percent)){
-      $('#percent').val('')
+      $('#proposal_percent').val('')
     }else{
-      $('#percent').val(percent)
+      $('#proposal_percent').val(percent)
     }
   }
   if(isNaN(amount)){
-    $('#total').val('')
+    $('#proposal_total_value').val('')
   }else{
-    $('#total').val(amount)
+    $('#proposal_total_value').val(amount)
   }
   showDiff(amount, last_sold)
 }

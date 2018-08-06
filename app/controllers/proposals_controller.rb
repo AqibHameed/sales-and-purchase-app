@@ -15,7 +15,7 @@ class ProposalsController < ApplicationController
   def create
     @proposal = Proposal.new(proposal_params)
     # @proposal.check_sub_company_limit(current_customer)
-    
+
     if @proposal.errors.any?
         flash[:notice] = @proposal.errors.full_messages.first
         redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
@@ -152,6 +152,6 @@ class ProposalsController < ApplicationController
   end
 
   def proposal_params
-    params.require(:proposal).permit(:buyer_id, :seller_id, :credit, :price, :action_for, :trading_parcel_id, :notes)
+    params.require(:proposal).permit(:buyer_id, :seller_id, :credit, :price, :action_for, :trading_parcel_id, :notes, :total_value, :percent)
   end
 end
