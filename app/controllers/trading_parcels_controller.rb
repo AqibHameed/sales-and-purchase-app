@@ -143,7 +143,7 @@ class TradingParcelsController < ApplicationController
           check_overdue_and_market_limit(transaction, @parcel)
         end
       else
-        save_transaction(transaction, @parcel)
+        check_credit_limit(transaction, @parcel)
       end
     elsif params[:market_limit].present? && params[:market_limit] == "true"
       check_credit_limit(transaction, @parcel)
