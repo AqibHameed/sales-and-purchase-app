@@ -9,8 +9,8 @@ module CustomersHelper
         false
       # elsif parcel.sale_none == true
       #   false
-      elsif parcel.sale_all == true
-        true
+      # elsif parcel.sale_all == true
+      #   true
       elsif parcel.sale_broker == true
         parcel.broker_ids.include?(company.id.to_s) rescue false
       elsif parcel.sale_demanded == true

@@ -1,6 +1,10 @@
 <div class="form-group">
 	<label class="col-sm-2 control-label">Carats:</label>
 	<div class="col-sm-10">
-	<%= text_field_tag :weight, '', class: 'form-control', id: 'trading_parcel_weight', name: 'trading_parcel[weight]' %>
+	<% if @trading_parcel.present? && @trading_parcel.weight.present? %>
+	  <%= text_field_tag :weight, @trading_parcel.weight , class: 'form-control', id: 'trading_parcel_weight', name: 'trading_parcel[weight]' %>
+	<% else %>
+	  <%= text_field_tag :weight, '', class: 'form-control', id: 'trading_parcel_weight', name: 'trading_parcel[weight]' %>
+	<% end %>
 	</div>
 </div>

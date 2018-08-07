@@ -8,7 +8,7 @@
       <th>Total Limit</th>
       <th>Used Limit</th>
       <th>Available Limit</th>
-      <th>Eligiable</th>
+      <!-- <th>Eligiable</th> -->
 
     </thead>
     <% @companies.each.with_index(1) do |company, i|%>
@@ -25,12 +25,12 @@
         <td><%= number_to_currency(get_used_credit_limit(company, current_company)) rescue 'N/A' %></td>
         <td><%= number_to_currency(get_available_credit_limit(company, current_company)) rescue 'N/A' %></td>
 
-
-          <%if (@parcel.price*@parcel.weight).to_f < get_available_credit_limit(company, current_company).to_f %>
-             <td><%= number_to_currency(get_available_credit_limit(company, current_company)) rescue 'N/A' %></td>
-          <%else%>
-             <td class= "eligiable"><%= number_to_currency(get_available_credit_limit(company, current_company)) rescue 'N/A' %></td>
-          <%end%>
+<!--
+          <%#if (@parcel.price*@parcel.weight).to_f < get_available_credit_limit(company, current_company).to_f %>
+             <td><%#= number_to_currency(get_available_credit_limit(company, current_company)) rescue 'N/A' %></td>
+          <%#else%>
+             <td class= "eligiable"><%#= number_to_currency(get_available_credit_limit(company, current_company)) rescue 'N/A' %></td>
+          <%#end%> -->
 
       </tr>
     <% end %>

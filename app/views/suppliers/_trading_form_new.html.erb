@@ -66,8 +66,10 @@
 
   $(document).ready(function(){
     supplier_list()
+    val = $('#trading_parcel_source').val()
+    addCaratField(val)
     setTimeout(function(){
-      $('#trading_parcel_description').val('<%=@trading_parcel.description%>')
+      $('#trading_parcel_description').val('<%=@trading_parcel.description.html_safe %>').trigger('change');
     }, 500);
 
     $("#trading_parcel_my_transaction_attributes_buyer_id").select2({

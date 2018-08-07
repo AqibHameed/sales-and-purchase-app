@@ -43,7 +43,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">Description:</label>
     <div class="col-sm-10">
-      <%= f.select :description, options_for_select(parcel_list_for_demand(nil), @trading_parcel.description), {include_blank: true}, class: 'form-control' %>
+      <%= f.select :description, options_for_select(parcel_list_for_demand(nil), :selected => f.object.description), {include_blank: true}, {class: 'form-control'} %>
     </div>
   </div>
 
@@ -68,24 +68,6 @@
     </div>
   </div>
 
-  <div class="clear10"></div>
-  <div class="row">
-    <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
-      <table class="table table-hover">
-        <thead>
-          <th>Size</th>
-          <th>Percent</th>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="sub_s"><%=s.text_field :size, class: 'form-control col-sm-3 sub_size' %></td>
-            <td class="sub_per"><%=s.text_field :percent, class: 'form-control col-sm-3 sub_percent' %></td>
-            <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
-          </tr>
-        </tbody>
-      </table>
-    <% end %>
-  </div>
 </div>
 
 <div class="polished <%=hide_class%> <%=(dt == 'Polished') ? '' : 'hide'%>">
@@ -186,6 +168,25 @@
 <div class="clear10"></div>
 <div class="direct-sell <%=(direct_sell) ? '' : 'hide'%>">
   <%= render partial: 'trading_parcels/transaction_fields', locals: {f: f} %>
+</div>
+
+<div class="clear10"></div>
+<div class="row">
+  <%= f.fields_for :parcel_size_infos, html: { class: 'form-inline' } do |s| %>
+    <table class="table table-hover">
+      <thead>
+        <th>Size</th>
+        <th>Percent</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="sub_s"><%=s.text_field :size, class: 'form-control col-sm-3 sub_size' %></td>
+          <td class="sub_per"><%=s.text_field :percent, class: 'form-control col-sm-3 sub_percent' %></td>
+          <td><%=s.link_to_remove "Remove", class: 'btn btn-xs btn-success mt5' %></td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
 </div>
 
 <div class="buttons <%=hide_class%>">
