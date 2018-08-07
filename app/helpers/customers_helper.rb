@@ -1,8 +1,8 @@
 module CustomersHelper
 
   def check_parcel_visibility(parcel, company)
-
-    if parcel.company_id == company.id
+    demanded = Demand.where(company_id: current_company.id, description: parcel.description, deleted: false).first
+    if parcel.company_id == company.id && demanded.present?
       true
     else
       if current_company.is_blocked_by_supplier(parcel.try(:company_id))
@@ -28,6 +28,15 @@ module CustomersHelper
       end
     end
   end
+
+  def check_parcel_visibility_for_my_parcels(parcel, company)
+    if parcel.company_id == company.id
+      true
+    else
+      false
+    end
+  end
+
 
   def parcel_demanded(parcel, company)
     if Demand.where(description: parcel.description, company_id: company.id).exists?
