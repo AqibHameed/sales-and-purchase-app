@@ -118,11 +118,11 @@ class ProposalsController < ApplicationController
           format.html { redirect_to trading_customers_path }
         end
       end
-      @trading_parcel = @proposal.trading_parcel.dup
-      @trading_parcel.company_id = @proposal.buyer_id
-      @trading_parcel.sold = false
-      @trading_parcel.sale_all = false
-      @trading_parcel.save
+      # @trading_parcel = @proposal.trading_parcel.dup
+      # @trading_parcel.company_id = @proposal.buyer_id
+      # @trading_parcel.sold = false
+      # @trading_parcel.sale_all = false
+      # @trading_parcel.save
     end
   end
 

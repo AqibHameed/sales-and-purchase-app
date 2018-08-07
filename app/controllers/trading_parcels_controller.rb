@@ -138,7 +138,7 @@ class TradingParcelsController < ApplicationController
     if params[:check].present? && params[:check] == "true"
       if registered_users < 1
         if params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today
-          check_credit_limit(transaction, @parcel)
+          save_transaction(transaction, @parcel)
         else
           check_overdue_and_market_limit(transaction, @parcel)
         end
@@ -276,7 +276,7 @@ class TradingParcelsController < ApplicationController
     credit_limit = get_available_credit_limit(buyer, current_company).to_f
     if credit_limit < parcel.total_value
       respond_to do |format|
-        format.js { render 'save_direct_sell.js.erb', locals: { buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: parcel.id }}
+        format.js { render 'save_direct_sell.js.erb', locals: {price: parcel.total_value, buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: parcel.id, available_credit_limit: credit_limit}}
       end
     else
       save_transaction(transaction, parcel)
