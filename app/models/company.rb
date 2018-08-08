@@ -371,4 +371,15 @@ class Company < ApplicationRecord
 
   ##### End of Credit Scores #####
 
+  rails_admin do
+
+    edit do
+      field :name
+      field :city
+      field :county
+      field :is_anonymous
+      field :is_broker
+      field :add_polished
+    end
+  end
 end
