@@ -1,7 +1,7 @@
 class Message < ApplicationRecord
   belongs_to :sender, class_name: 'Company', foreign_key: 'sender_id', optional: true
   belongs_to :receiver, class_name: 'Company', foreign_key: 'receiver_id', optional: true
-
+  belongs_to :proposal
   def self.create_message(transaction)
     message = Message.create(subject: "Reject Transaction", message: transaction.reject_reason, sender_id: transaction.buyer_id, receiver_id: transaction.seller_id, message_type: "Reject")
   end
@@ -10,23 +10,23 @@ class Message < ApplicationRecord
     @message  = "#{proposal.notes} </br>"
     @message << "For more Details about proposal, #{ApplicationController.helpers.view_proposal(proposal)}"
 
-    Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.seller_id, message_type: "Proposal")
+    Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.seller_id, message_type: "Proposal", proposal_id: proposal.id)
   end
 
   def self.create_new_message(proposal, current_company)
     @message  = "#{proposal.notes} </br>"
     @message << "#{ApplicationController.helpers.view_proposal_details(proposal, current_company)}"
 
-    Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.seller_id, message_type: "Proposal")
+    Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.seller_id, message_type: "Proposal", proposal_id: proposal.id)
   end
 
   def self.create_new_negotiate(proposal, current_company)
     @message  = "#{proposal.notes} </br>"
     @message << "For more Details about proposal, #{ApplicationController.helpers.view_proposal(proposal)}"
     if current_company.id == proposal.seller_id
-      Message.create(subject: "Seller sent a new proposal.", message: @message, sender_id: proposal.seller_id, receiver_id: proposal.buyer_id, message_type: "Proposal")
+      Message.create(subject: "Seller sent a new proposal.", message: @message, sender_id: proposal.seller_id, receiver_id: proposal.buyer_id, message_type: "Proposal", proposal_id: proposal.id)
     else
-      Message.create(subject: "Buyer sent a new proposal.", message: @message, sender_id: proposal.buyer_id, receiver_id: proposal.seller_id, message_type: "Proposal")
+      Message.create(subject: "Buyer sent a new proposal.", message: @message, sender_id: proposal.buyer_id, receiver_id: proposal.seller_id, message_type: "Proposal", proposal_id: proposal.id)
     end
   end
 

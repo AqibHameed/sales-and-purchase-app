@@ -309,7 +309,12 @@ Rails.application.routes.draw do
         end
       end
       resources :messages
-      resources :proposals
+      resources :proposals do
+        member do
+          get :accept_and_decline
+          post :negotiate
+        end
+      end
       resources :trading_parcels
       resources :companies_groups
       get '/filter_data', to: 'api#filter_data'

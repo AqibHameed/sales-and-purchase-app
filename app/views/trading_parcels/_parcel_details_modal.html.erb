@@ -51,18 +51,19 @@
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Avg. price:</div>
                   <div class=' col-sm-9'>
-                  <%if @parcel.try(:weight) == 0 || !@parcel.try(:weight).present? %>
-                    <%=f.text_field :price, value: 'N/A', class: 'form-control', style: 'background-color: grey;', disabled: true%>
-                  <%else%>
-                    <%=f.text_field :price, value: @parcel.try(:price), class: 'form-control', required: true %>
-                  <%end%>
+                    <%if @parcel.try(:weight) == 0 || !@parcel.try(:weight).present? %>
+                      <%=f.number_field :price, value: 'N/A', class: 'form-control', style: 'background-color: grey;', disabled: true, step: "0.01"%>
+                    <%else%>
+                      <%=f.number_field :price, value: @parcel.try(:price), step: "0.01", class: 'form-control', required: true%>
+                    <%end%>
                   </div>
                 </div>
                 <div class="clear10"></div>
                 <div class="form-row">
                   <div class="row control-label col-sm-3">Total $:</div>
-                  <div class=' col-sm-9'>  
-                     <%=f.text_field :total_value, value: total, class: 'form-control', required: true %>                
+                  <div class=' col-sm-9'>
+                      <%=f.text_field :total_value, value: @parcel.try(:total_value), class: 'form-control', required: true %>
+                      <%#=f.text_field :total_value, value: total, class: 'form-control', required: true %>
                   </div>
                 </div>
                 <div class="clear10"></div>
