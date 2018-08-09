@@ -86,11 +86,7 @@
           <td>Confirmed</td>
         <% elsif current_company.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && get_status(transaction) != 'Completed' %>
           <td>
-            <% if current_company.has_overdue_transaction_of_30_days(transaction.try(:trading_parcel).try(:company_id)) || current_company.check_market_limit_overdue(get_market_limit(current_company, transaction.try(:trading_parcel).try(:company_id)), transaction.try(:trading_parcel).try(:company_id)) %>
-              <%=link_to 'Confirm', 'javascript:void(0)', data: {turbolinks: false}, disabled: true, class: 'disabled' %>
-            <%else%>
-              <%=link_to 'Confirm', confirm_transaction_path(transaction), data: {turbolinks: false}, class: link %>
-            <%end%>
+            <%=link_to 'Confirm', confirm_transaction_path(transaction), data: {turbolinks: false}, class: link %>
           </td>
         <% else %>
           <td></td>

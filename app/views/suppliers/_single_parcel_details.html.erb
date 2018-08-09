@@ -45,35 +45,8 @@
       <td><%= @parcel.credit_period %> days </td>
     </tr>
     <tr>
-      <td> Available Credit Buyers</td>
-      <td>
-        <%amount = 0 %>
-        <% if @parcel.diamond_type == "Rough" %>
-          <% amount = @parcel.price.to_f %>
-        <% else %>
-          <% amount = @parcel.weight.to_f * @parcel.price.to_f%>
-        <% end %>
-        <%= get_number_of_customers(current_company, amount, 'available')%>
-      </td>
-    </tr>
-    <tr>
-      <td> Unavailable Credit Buyers</td>
-      <td>
-        <%amount = 0 %>
-        <% if @parcel.diamond_type == "Rough" %>
-          <% amount = @parcel.price.to_f %>
-        <% else %>
-          <% amount = @parcel.weight.to_f * @parcel.price.to_f%>
-        <% end %>
-        <%= get_number_of_customers(current_company, amount, 'unavailable')%>
-      </td>
-    </tr>
-    <tr>
-      <td> Demanded But No Credits</td>
-      <td>
-        <%#= get_count_no_credit(current_company)%>
-        <%= get_demanded_but_no_credit(current_company, @parcel.id)%>
-      </td>
+     <td>Demanded Companies</td>
+     <td><%= get_demanded_clients(@parcel, current_company).count %></td>
     </tr>
     <tr>
       <td> Comment</td>

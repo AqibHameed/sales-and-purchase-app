@@ -1,9 +1,13 @@
 <% if @proposal.new_record? %>
   <% price = @parcel.price %>
   <% credit =  @parcel.credit_period %>
+  <% percent =  @parcel.percent %>
+  <% total_value = @parcel.total_value %>
 <% else %>
   <% price = @proposal.price %>
   <% credit =  @proposal.credit %>
+  <% percent =  @proposal.percent %>
+  <% total_value =  @proposal.total_value %>
 <% end %>
 <% if @proposal.errors.any? %>
   <div id="error_explanation">
@@ -15,10 +19,11 @@
     </ul>
   </div>
 <% end %>
+
 <div class="form-row">
-  <div class="label">Avg. price</div>
+  <div class="label">Percent:</div>
   <div class='field'>
-    <%=f.text_field :price, value: price, class: 'input' %>
+    <%=f.text_field :percent, value: percent, class: 'input' %>
   </div>
 </div>
 
@@ -30,7 +35,23 @@
 </div>
 
 <div class="form-row">
-  <div class="label">Notes</div>
+  <div class="label">Avg. price</div>
+  <div class='field'>
+    <%=f.text_field :price, value: price, class: 'input' %>
+  </div>
+</div>
+
+<div class="form-row">
+  <div class="label">Total price</div>
+  <div class='field'>
+    <%=f.text_field :total_value, value: total_value, class: 'input' %>
+  </div>
+</div>
+
+
+
+<div class="form-row">
+  <div class="label">Comments</div>
   <div class='field'>
     <%=f.text_area :notes, class: 'input' %>
   </div>

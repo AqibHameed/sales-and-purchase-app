@@ -16,7 +16,7 @@
     <th></th>
   </thead>
   <% parcels.each.with_index(1) do |parcel, i|%>
-    <% if check_parcel_visibility(parcel, current_company) %>
+    <% if check_parcel_visibility_for_my_parcels(parcel, current_company) %>
       <% if parcel.sold %>
         <tr style="background: #ccc;">
           <td class="td-mobile-count">
@@ -40,7 +40,7 @@
           <td><span class="table-head-in-td">Percent</span><%= (parcel.percent.nil? || parcel.percent.blank?) ? 'N/A' : parcel.percent %></td>
           <td class="td-mobile-open"><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
           <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
-           <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight %></td>
+           <td><span class="table-head-in-td">Price</span><%= parcel.total_value %><%#= parcel.price*parcel.weight %></td>
           <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
           <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
           <td><%=parcel.demand_count(parcel, current_company, false)%></td>
@@ -72,7 +72,7 @@
           <td><span class="table-head-in-td">Percent</span><%= (parcel.percent.nil? || parcel.percent.blank?) ? 'N/A' : parcel.percent %></td>
           <td><span class="table-head-in-td">Avg Price</span><%= parcel.price.nil? ? 'N/A' : number_with_precision(parcel.price, precision: 2) %></td>
           <td><span class="table-head-in-td">Sight</span><%= (parcel.sight.nil? || parcel.sight.blank?) ? 'N/A' : parcel.sight %></td>
-          <td><span class="table-head-in-td">Price</span><%= parcel.price*parcel.weight rescue 0 %></td>
+          <td><span class="table-head-in-td">Price</span><%#= parcel.price*parcel.weight rescue 0 %><%= parcel.total_value %></td>
           <td><span class="table-head-in-td">Credit</span><%= parcel.credit_period %></td>
           <td><span class="table-head-in-td">UID</span><%= parcel.uid %></td>
           <td><%= link_to parcel.demand_count(parcel,current_company, false), demand_supplier_path(id: parcel.id, is_polished: false),data: {turbolinks: false} %></td>

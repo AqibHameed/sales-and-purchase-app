@@ -7,7 +7,7 @@
         <% if proposal.trading_parcel.anonymous %>
           <td>Anonymous</td>
         <% else %>
-          <td><%= proposal.try(:supplier).try(:name) %></td>
+          <td><%= proposal.try(:seller).try(:name) %></td>
         <% end %>
       </tr>
     <% else %>
@@ -16,6 +16,10 @@
         <td><%= proposal.try(:buyer).try(:name) %></td>
       </tr>
     <% end %>
+    <tr>
+      <td> Source</td>
+      <td><%= proposal.trading_parcel.try(:source) %></td>
+    </tr>
     <% unless proposal.try(:trading_parcel).try(:source) == 'POLISHED' %>
       <tr>
         <td> Description </td>
@@ -23,36 +27,63 @@
       </tr>
     <% end %>
     <tr>
-      <td> Comment by Seller </td>
-      <td><%= proposal.trading_parcel.try(:comment) %><%=link_to "Size info", 'javascript:void(0)', class: 'pull-right size_info', "data-id" => proposal.trading_parcel.try(:id) %></td>
+      <td> Sight</td>
+      <td><%= proposal.trading_parcel.try(:sight) %></td>
+    </tr>
+    <tr>
+      <td> No of stones:</td>
+      <td><%= proposal.trading_parcel.try(:no_of_stones) %></td>
     </tr>
     <tr>
       <td> Carats </td>
-      <td><%= proposal.trading_parcel.weight.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.weight, precision: 2) %></td>
+      <td class="carats"><%= proposal.trading_parcel.weight.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.weight, precision: 2) %></td>
     </tr>
     <tr>
-      <td> List Price </td>
-      <td><%= proposal.trading_parcel.price.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.price, precision: 2) %></td>
+      <td> Cost </td>
+      <td><%= proposal.trading_parcel.cost.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.cost, precision: 2) %></td>
+    </tr>
+
+    <tr>
+      <td> Comment by Seller </td>
+      <td><%= proposal.trading_parcel.try(:comment) %><%=link_to "Size info", 'javascript:void(0)', class: 'pull-right size_info', "data-id" => proposal.trading_parcel.try(:id) %></td>
     </tr>
     <tr>
       <td> List Credit </td>
       <td><%= proposal.trading_parcel.credit_period.nil? ? 'N/A' : proposal.trading_parcel.credit_period %></td>
     </tr>
     <tr>
-      <td> Offer Price </td>
-      <td><%= proposal.price.nil? ? 'N/A' : proposal.price %></td>
+      <td> List Discount </td>
+      <td><%= proposal.trading_parcel.box_value.nil? ? 'N/A' : proposal.trading_parcel.box_value %></td>
     </tr>
+    <tr>
+      <td> List Percent </td>
+      <td><%= proposal.trading_parcel.percent.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.percent, precision: 2) %></td>
+    </tr>
+
+    <tr>
+      <td> List Avg. Price </td>
+      <td><%= proposal.trading_parcel.price.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.price, precision: 2) %></td>
+    </tr>
+    <tr>
+      <td> List Total Price </td>
+      <td><%= proposal.trading_parcel.total_value.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.total_value, precision: 2) %></td>
+    </tr>
+
     <tr>
       <td> Offer Credit </td>
       <td><%= proposal.credit.nil? ? 'N/A' : proposal.credit %></td>
     </tr>
     <tr>
-      <td> Percent </td>
-      <td><%= proposal.trading_parcel.percent.nil? ? 'N/A' : proposal.trading_parcel.percent %>%</td>
+      <td> Offer Percent </td>
+      <td><%= proposal.percent.nil? ? 'N/A' : proposal.percent %></td>
     </tr>
     <tr>
-      <td> Total Price </td>
-      <td><%= proposal.trading_parcel.total_value.nil? ? 'N/A' : proposal.trading_parcel.total_value %></td>
+      <td> Offer Avg. Price </td>
+      <td><%= proposal.price.nil? ? 'N/A' : proposal.price %></td>
+    </tr>
+    <tr>
+      <td> Offer Total Price </td>
+      <td><%= proposal.total_value.nil? ? 'N/A' : proposal.total_value %></td>
     </tr>
 
     <tr>
@@ -61,19 +92,48 @@
     </tr>
   </table>
 </div>
+
+<div class="proposal-form hide">
+  <h3> Edit Proposal </h3>
+  <div class="clear10"></div>
+  <div class="form-wrapper">
+    <%= form_for @proposal do |f| %>
+      <%= render partial: 'proposals/form', locals: { f: f } %>
+      <% if current_company.id == @proposal.buyer_id %>
+        <% value = @proposal.seller_id %>
+      <% elsif current_company.id == @proposal.seller_id %>
+        <% value = @proposal.buyer_id %>
+      <% end %>
+      <%=f.hidden_field :action_for, value: value %>
+    <% end %>
+  </div>
+</div>
+
 <div class="clear10"></div>
 <% unless proposal.accepted? || proposal.rejected? %>
   <%= link_to 'Accept', "/proposals/#{proposal.id}/accept?check=true", class: 'btn-01 login_btn green accept-btn', method: :put, data: {turbolinks: false}, remote: true if current_company.id == proposal.try(:seller_id) %>
-  <%= link_to 'Reject', "/proposals/#{proposal.id}/reject", class: 'btn-01 login_btn red', method: :put, data: {turbolinks: false} if current_company.id == proposal.try(:seller_id) %>
-  <%= link_to 'Negotiate', "/proposals/#{proposal.id}/edit", class: 'btn-01 login_btn', data: {turbolinks: false} %>
+  <%= link_to 'Reject', "/proposals/#{proposal.id}/reject", class: 'btn-01 login_btn reject_btn red', method: :put, data: {turbolinks: false} if current_company.id == proposal.try(:seller_id) %>
+  <%#= link_to 'Negotiate', "", class: 'btn-01 login_btn negotiate_btn', data: {turbolinks: false} %>
+  <%= link_to 'Negotiate', 'javascript:void(0)', class: 'btn-01 login_btn negotiate_btn', data: {turbolinks: false} %>
 <%end%>
 <div class="size-info">
   <%@info = []%>
   <%= render partial: 'trading_parcels/size_info', collection: @info%>
 </div>
 <script type="text/javascript">
-// $(document).on('click', '.accept-btn', function(){
-//   $(this).addClass('disabled')
-// })
+$(document).on('click', '.negotiate_btn', function(){
+  var carat = parseFloat($('.carats').text());
+  var price = parseFloat($('#proposal_price').val());
+  $('#proposal_total_value').val(carat*price);
+  $('.proposal-form').removeClass('hide');
+  $(this).addClass('hide');
+  $('.accept-btn').addClass('hide');
+  $('.reject_btn').addClass('hide');
+})
+$(document).on('keyup', '#proposal_price', function(){
+  var price = parseFloat($(this).val());
+  var carat = parseFloat($('.carats').text());
+  $('#proposal_total_value').val(carat*price);
+})
 
 </script>

@@ -57,11 +57,12 @@ function calculate_percents(carat, cost, price){
 
 function showDiff(amount, last_sold) {
   if(last_sold == 0){
-    var color = 'red';
-    var type = 'High'
-    $('.difference').html(Math.abs(Math.round(100 * 100) / 100) + '% ' + type).css({
-      'color' : color
-    });
+    // var color = 'red';
+    // var type = 'High'
+    // $('.difference').html(Math.abs(Math.round(100 * 100) / 100) + '% ' + type).css({
+    //   'color' : color
+    // });
+    $('.difference').html('N/A');
   }else{
     var per_diff = 0
     per_diff = 100 - (amount / last_sold * 100)

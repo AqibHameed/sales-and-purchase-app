@@ -3,7 +3,7 @@ class Proposal < ApplicationRecord
   belongs_to :trading_parcel
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
-
+  has_many :messages
   enum status: [ :negotiated, :accepted, :rejected ]
 
   # validate  :credit_validation
@@ -41,7 +41,7 @@ class Proposal < ApplicationRecord
   # end
 
   ####### Not in use #######
-  
+
   # def price_validation
   #   supplier_price = trading_parcel.price
   #   unless supplier_price.nil?
