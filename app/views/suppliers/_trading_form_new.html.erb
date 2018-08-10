@@ -77,6 +77,12 @@
       formatSelection: add_icons_to_select
     });
     $('#trading_parcel_my_transaction_attributes_created_at').datepicker({format: 'dd/mm/yyyy'});
+
+    $(".parcel-date-picker").datepicker( {
+      format: "mm/yy",
+      viewMode: "months",
+      minViewMode: "months"
+    });
   })
 
   function addCaratField(type) {
