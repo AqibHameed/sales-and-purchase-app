@@ -138,6 +138,13 @@ module Api
           respose_hash
         end
       end
+
+      def live_demands
+        ids = current_company.block_users
+        @normal_demands = Demand.where.not(company_id: ids).order(created_at: :desc)
+        @polished_demands = PolishedDemand.where.not(company_id: ids).order(created_at: :desc)
+        render json: { success: true, live_demands: { rough: @normal_demands, polished: @polished_demands }, response_code: 200 }
+      end
     end
   end
 end

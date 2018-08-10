@@ -328,6 +328,7 @@ Rails.application.routes.draw do
           get :demand_suppliers
           get :parcels_list
           get :demand_description
+          get :live_demands
         end
       end
     end
