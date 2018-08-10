@@ -2,6 +2,11 @@
 <div class="table">
   <table class="table table-bordered table-striped table-responsive tablesorter">
     <% if current_company.id == proposal.try(:buyer_id) %>
+      <% if proposal.accepted? %>
+        <h5>The deal was accepted.</h5>
+      <% elsif proposal.rejected? %>
+        <h5>The deal was rejected.</h5>
+      <% end %>
       <tr>
         <td> Supplier </td>
         <% if proposal.trading_parcel.anonymous %>

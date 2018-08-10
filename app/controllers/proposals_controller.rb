@@ -39,6 +39,7 @@ class ProposalsController < ApplicationController
 
   def show
     @info = @proposal.trading_parcel.parcel_size_infos
+    @proposal = Proposal.where(id: params[:id]).first
   end
 
   def edit
@@ -65,6 +66,7 @@ class ProposalsController < ApplicationController
         check_credit_accept(@proposal)
       else
         accpet_proposal(@proposal)
+        Message.accept_proposal(@proposal, current_company)
       end
     end
   end
@@ -77,6 +79,7 @@ class ProposalsController < ApplicationController
         format.js { render js: "window.location = '/proposals'"}
         format.html { redirect_to trading_customers_path }
       end
+      Message.reject_proposal(@proposal, current_company)
     end
   end
 

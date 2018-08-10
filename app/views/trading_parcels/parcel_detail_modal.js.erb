@@ -15,6 +15,14 @@ $(document).on('keyup focusout','#proposal_price', function(){
   var price = parseFloat($('#proposal_price').val());
   calculate_percents(carat, cost, price)
 });
+$(document).on('keyup focusout','#proposal_total_value', function(){
+  var carat = parseFloat($('#carats').val());
+  var cost = parseFloat($('#cost').val());
+  var total = parseFloat($(this).val());
+  var price = total/carat;
+  $('#proposal_price').val(price);
+  calculate_percents(carat, cost, price)
+});
 
 function calculate_prices(carat, cost, percent, price){
   var avg_price = (percent/100)*cost + cost;

@@ -102,7 +102,14 @@ module Api
           per = i.percent.to_f
           @info << { size: size, percent: per }
         end
+        proposal = Proposal.where(buyer_id: current_company.id, trading_parcel_id: parcel.id).first
+        if proposal.present?
+          proposal_send = true
+        else
+          proposal_send = false
+        end
         respose_hash =  {
+          proposal_send: proposal_send,
           is_mine: is_mine,
           is_overdue: is_overdue,
           id: parcel.id.to_s,
@@ -123,11 +130,23 @@ module Api
           total_value: parcel.try(:total_value).to_f,
           size_info: @info
         }
+
         if category == "demanded"
           demand = Demand.where(description: parcel.description, company_id: current_company.id).first
           respose_hash.merge(demand_id: demand.id)
         else
           respose_hash
+        end
+      end
+
+      def live_demands
+        if current_company
+          ids = current_company.block_users
+          @normal_demands = Demand.where.not(company_id: ids).order(created_at: :desc)
+          @polished_demands = PolishedDemand.where.not(company_id: ids).order(created_at: :desc)
+          render json: { success: true, live_demands: { rough: @normal_demands, polished: @polished_demands }, response_code: 200 }
+        else
+          render json: { success: false, errors: "Not authenticated", response_code: 201 }
         end
       end
     end
