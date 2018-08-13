@@ -191,5 +191,9 @@
 
 <div class="buttons <%=hide_class%>">
   <%= f.link_to_add "Add Size", :parcel_size_infos, class: 'btn btn-sm btn-info add-size' %>
-  <%=f.submit 'Submit', class: 'btn btn-md btn-danger' %>
+  <% if direct_sell.present? %>
+    <%= f.submit 'Submit', class: "btn btn-md btn-danger disabled ", id: 'transaction_submit'%>
+  <% else %>
+    <%= f.submit 'Submit', class: "btn btn-md btn-danger " %>
+  <% end %>
 </div>

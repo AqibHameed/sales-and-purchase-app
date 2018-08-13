@@ -135,6 +135,7 @@
     text = "Manual transactions are not protected by IDT Credit Protection. Please be aware the safest way to transact is ask your Buyer to purchase your parcel from you. Should you choose to go ahead with a manual transaction, you will not be notified for this transaction whether the buyer is already late on any payment. By ticking the box, you are agreeing to forego IDT Credit Protection."
 
     $(".idt_terms_text").html('<div><input type="checkbox" value="true" id="read" name="read"><span class="idt_terms_text">'+ text +'</span></div>')
+    $('#transaction_submit').addClass('disabled');
     toggle_checkbox()
   });
 

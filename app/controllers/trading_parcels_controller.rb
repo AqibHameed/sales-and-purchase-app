@@ -134,8 +134,9 @@ class TradingParcelsController < ApplicationController
 
 
     registered_users = Company.where(id: params[:trading_parcel][:my_transaction_attributes][:buyer_id]).first.customers.count
-
-    if params[:check].present? && params[:check] == "true"
+    if transaction.paid == true
+      save_transaction(transaction, @parcel)
+    elsif params[:check].present? && params[:check] == "true"
       if registered_users < 1
         if params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today
           save_transaction(transaction, @parcel)
