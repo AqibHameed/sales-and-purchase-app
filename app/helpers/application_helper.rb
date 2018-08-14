@@ -534,4 +534,16 @@ module ApplicationHelper
     end
     return result
   end
+
+  def get_completed_transaction(company)
+    total_count = 0.to_i
+    @transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and paid = ?',company.id, company.id, true)
+    @transactions.each do |transaction|
+      if company.id == transaction.buyer_id && (get_status(transaction) == 'Completed')
+        total_count = total_count + 1
+      end
+    end
+    return total_count
+  end
+
 end
