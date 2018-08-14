@@ -165,7 +165,9 @@ class Api::V1::ApiController < ApplicationController
         last_name: c.last_name,
         email: c.email,
         company: c.company.try(:name),
-        chat_id: c.chat_id
+        chat_id: c.chat_id,
+        purchases_completed: get_completed_transaction(c.company),
+        suppliers_connected: supplier_connected(c.company, current_company)
       }
     end
     @data
