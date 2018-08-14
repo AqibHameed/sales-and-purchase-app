@@ -78,8 +78,8 @@ module Api
               registered_users = buyer.customers.count
               if transaction.paid == true
                 save_transaction(transaction, @parcel)
-              elsif params[:check].present? && params[:check] == "true"
-                save_transaction(transaction, @parcel)
+              elsif params[:available_market_overdue].present? && params[:available_market_overdue] == "true"
+                check_credit_limit(transaction, @parcel, params[:available_credit_limit])
               else
                 if registered_users < 1
                   if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today)
@@ -88,7 +88,7 @@ module Api
                     check_overdue_and_market_limit(transaction, @parcel)
                   end
                 else
-                  check_credit_limit(transaction, @parcel)
+                  check_credit_limit(transaction, @parcel, false)
                 end
               end
             else
@@ -212,19 +212,23 @@ module Api
         @data
       end
 
-      def check_credit_limit(transaction, parcel)
-        buyer = Company.where(id: transaction.buyer_id).first
-        available_credit_limit = get_available_credit_limit(buyer, current_company).to_f
-        credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
-        if credit_limit.nil?
-          new_limit = parcel.total_value
-        else
-          new_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
-        end
-        if available_credit_limit < parcel.total_value.to_f
-          render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{available_credit_limit} to #{new_limit}.  Do you want to continue ?" }
-        else
+      def check_credit_limit(transaction, parcel, cr_limit)
+        if cr_limit.present? && (cr_limit == "true")
           save_transaction(transaction, parcel)
+        else
+          buyer = Company.where(id: transaction.buyer_id).first
+          available_credit_limit = get_available_credit_limit(buyer, current_company).to_f
+          credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+          if credit_limit.nil?
+            new_limit = parcel.total_value
+          else
+            new_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
+          end
+          if available_credit_limit < parcel.total_value.to_f
+            render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{available_credit_limit} to #{new_limit}.  Do you want to continue ?" }
+          else
+            save_transaction(transaction, parcel)
+          end
         end
       end
 
@@ -234,9 +238,10 @@ module Api
         if market_limit < parcel.total_value.to_f || current_company.has_overdue_transaction_of_30_days(transaction.buyer_id)
           render json: { sucess: false, message: "This Company does not meet your risk parameters. Do you wish to cancel the transaction?" }
         else
-          check_credit_limit(transaction, parcel)
+          check_credit_limit(transaction, parcel, false)
         end
       end
+
     end
   end
 end
