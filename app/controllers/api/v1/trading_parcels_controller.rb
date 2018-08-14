@@ -73,21 +73,26 @@ module Api
             transaction = Transaction.new(buyer_id: params[:trading_parcel][:my_transaction_attributes][:buyer_id], seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
                                             price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                             created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
-            registered_users = Company.where(id: params[:trading_parcel][:my_transaction_attributes][:buyer_id]).first.customers.count
-            if transaction.paid == true
-              save_transaction(transaction, @parcel)
-            elsif params[:check].present? && params[:check] == "true"
-              save_transaction(transaction, @parcel)
-            else
-              if registered_users < 1
-                if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today)
-                  save_transaction(transaction, @parcel)
-                else
-                  check_overdue_and_market_limit(transaction, @parcel)
-                end
+            buyer =  Company.where(id: params[:trading_parcel][:my_transaction_attributes][:buyer_id]).first
+            if buyer.present?
+              registered_users = buyer.customers.count
+              if transaction.paid == true
+                save_transaction(transaction, @parcel)
+              elsif params[:check].present? && params[:check] == "true"
+                save_transaction(transaction, @parcel)
               else
-                check_credit_limit(transaction, @parcel)
+                if registered_users < 1
+                  if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today)
+                    save_transaction(transaction, @parcel)
+                  else
+                    check_overdue_and_market_limit(transaction, @parcel)
+                  end
+                else
+                  check_credit_limit(transaction, @parcel)
+                end
               end
+            else
+              render json: { success: false, message: "Buyer does not present" }
             end
           else
             render json: { success: false, errors: @parcel.errors.full_messages }
