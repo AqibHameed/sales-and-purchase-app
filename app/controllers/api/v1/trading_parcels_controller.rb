@@ -1,7 +1,7 @@
 module Api
   module V1
     class TradingParcelsController <ApiController
-      skip_before_action :verify_authenticity_token, only: [:create, :update ]
+      skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell]
 
       def create
         if current_company
@@ -61,10 +61,74 @@ module Api
         end
       end
 
+      def direct_sell
+        if current_customer
+          @parcel = TradingParcel.new(trading_parcel_params)
+          @parcel.company_id = current_company.id
+          @parcel.customer_id = current_customer.id
+          @parcel.weight = params[:trading_parcel][:carats]
+          @parcel.box_value = params[:trading_parcel][:discount]
+          @parcel.sold = true
+          if @parcel.save
+            transaction = Transaction.new(buyer_id: params[:trading_parcel][:my_transaction_attributes][:buyer_id], seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
+                                            price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
+                                            created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
+            registered_users = Company.where(id: params[:trading_parcel][:my_transaction_attributes][:buyer_id]).first.customers.count
+            if transaction.paid == true
+              save_transaction(transaction, @parcel)
+            elsif params[:check].present? && params[:check] == "true"
+              save_transaction(transaction, @parcel)
+            else
+              if registered_users < 1
+                if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today)
+                  save_transaction(transaction, @parcel)
+                else
+                  check_overdue_and_market_limit(transaction, @parcel)
+                end
+              else
+                check_credit_limit(transaction, @parcel)
+              end
+            end
+          else
+            render json: { success: false, errors: @parcel.errors.full_messages }
+          end
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+      def save_transaction(transaction, parcel)
+        available_credit_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
+        if transaction.save
+          transaction.set_due_date
+          transaction.generate_and_add_uid
+          ## set limit ##
+          total_price = parcel.total_value
+          if available_credit_limit < total_price
+            credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+            if credit_limit.nil?
+              CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
+            else
+              new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
+              credit_limit.update_attributes(credit_limit: new_limit)
+            end
+          end
+          parcel.update_attributes(sold: true)
+          render json: { success: true, notice: 'Transaction added successfully'}
+        else
+          render json: { success: false, errors: transaction.errors.full_messages }
+        end
+      end
+
+
       private
       def parcel_params
         params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value,
                                               parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
+      end
+
+      def trading_parcel_params
+        params.require(:trading_parcel).permit(:description, :source, :sight, :cost, :no_of_stones, :percent, :credit_period, :price, :total_value)
       end
 
       def parcel_data(parcel)
@@ -141,6 +205,32 @@ module Api
           @data << { id: parcel.id.to_s, description: parcel.description, total_value: total_value }
         end
         @data
+      end
+
+      def check_credit_limit(transaction, parcel)
+        buyer = Company.where(id: transaction.buyer_id).first
+        available_credit_limit = get_available_credit_limit(buyer, current_company).to_f
+        credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+        if credit_limit.nil?
+          new_limit = parcel.total_value
+        else
+          new_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
+        end
+        if available_credit_limit < parcel.total_value.to_f
+          render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{available_credit_limit} to #{new_limit}.  Do you want to continue ?" }
+        else
+          save_transaction(transaction, parcel)
+        end
+      end
+
+      def check_overdue_and_market_limit(transaction, parcel)
+        buyer = Company.where(id: transaction.buyer_id).first
+        market_limit = get_market_limit(buyer, current_company).to_f
+        if market_limit < parcel.total_value.to_f || current_company.has_overdue_transaction_of_30_days(transaction.buyer_id)
+          render json: { sucess: false, message: "This Company does not meet your risk parameters. Do you wish to cancel the transaction?" }
+        else
+          check_credit_limit(transaction, parcel)
+        end
       end
     end
   end

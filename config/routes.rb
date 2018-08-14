@@ -315,7 +315,11 @@ Rails.application.routes.draw do
           post :negotiate
         end
       end
-      resources :trading_parcels
+      resources :trading_parcels do
+        collection do
+          post :direct_sell
+        end
+      end
       resources :companies_groups
       get '/filter_data', to: 'api#filter_data'
       post '/device_token', to: 'api#device_token'
