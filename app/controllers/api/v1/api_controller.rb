@@ -1,6 +1,6 @@
 class Api::V1::ApiController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:device_token, :supplier_notification, :email_attachment, :update_chat_id]
-  before_action :current_customer, only: [:device_token, :supplier_notification, :update_chat_id]
+  before_action :current_customer, only: [:device_token, :supplier_notification, :update_chat_id, :customer_list]
   helper_method :current_company
 
   include ActionView::Helpers::NumberHelper
