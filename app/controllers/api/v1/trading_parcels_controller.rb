@@ -158,7 +158,7 @@ module Api
         end
         @info = []
         parcel.parcel_size_infos.each do |i|
-          size = i.size.to_f
+          size = i.size
           per = i.percent.to_f
           @info << { size: size, percent: per }
         end
