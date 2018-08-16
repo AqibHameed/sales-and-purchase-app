@@ -11,6 +11,8 @@ class Api::V1::RegistrationsController < ActionController::Base
     # customer = Customer.new(customer_params)
     if customer.save
       customer.ensure_authentication_token
+      mobile_no = '+'+params[:registration][:country_code]+' '+params[:registration][:mobile_no]
+      customer.mobile_no = mobile_no
       customer.save!
       response.headers['Authorization'] = customer.authentication_token
       token = customer.generate_jwt_token

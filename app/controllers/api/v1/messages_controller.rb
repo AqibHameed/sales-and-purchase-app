@@ -12,7 +12,8 @@ module Api
             @all_messages.each do |message|
               sender = Company.where(id: message.sender_id).first
               @data = {
-                id: message.proposal_id,
+                id: message.id,
+                proposal_id: message.proposal_id,
                 sender: sender.name,
                 receiver: current_company.name,
                 message: message.message,
