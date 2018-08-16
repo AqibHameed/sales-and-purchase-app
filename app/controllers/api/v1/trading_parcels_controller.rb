@@ -207,7 +207,7 @@ module Api
         @data = []
         parcels.each do |parcel|
           total_value = parcel.total_value.nil? ? nil : '%.2f' % parcel.total_value
-          @data << { id: parcel.id.to_s, description: parcel.description, total_value: total_value }
+          @data << { id: parcel.id.to_s, source: parcel.source, description: parcel.description, total_value: total_value }
         end
         @data
       end

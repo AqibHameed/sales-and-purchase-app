@@ -280,6 +280,7 @@ Rails.application.routes.draw do
       get '/check_company', to: 'companies#check_company'
       get '/countries_list', to: 'companies#country_list'
       get '/companies_list', to: 'companies#companies_list'
+      get '/history', to: 'companies#history'
       resources :tenders do
         collection do
           get :upcoming
