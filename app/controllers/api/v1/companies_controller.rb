@@ -57,6 +57,36 @@ class Api::V1::CompaniesController < ApplicationController
     render json: {errors: 'Not found', response_code: 201 }, status: 404
   end
 
+  def history
+    if current_company
+      history = []
+      @pending_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ?',current_company.id, current_company.id, Date.today, false)
+      @overdue_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ?',current_company.id, current_company.id, Date.today, false)
+      @completed_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and paid = ?',current_company.id, current_company.id, true)
+
+      @polished_pending_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.today, false, 'Polished')
+      @polished_overdue_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.today, false, 'Polished')
+      @polished_completed_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and paid = ? and diamond_type = ?',current_company.id, current_company.id, true, 'Polished')
+      rough = {
+        pending_transaction: @pending_transaction,
+        overdue_transaction: @overdue_transaction,
+        completed_transaction: @completed_transaction
+      }
+      polished = {
+        pending_transaction: @polished_pending_transactions,
+        overdue_transaction: @polished_overdue_transactions,
+        completed_transaction: @polished_completed_transactions
+      }
+      history = {
+        rough: rough,
+        polished: polished
+      }
+      render :json => {:success => true, :history=> history, response_code: 200 }
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }
+    end
+  end
+
   protected
 
   def current_company
