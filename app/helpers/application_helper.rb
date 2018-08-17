@@ -457,6 +457,16 @@ module ApplicationHelper
     Company.where.not(id: current_company.id, is_broker: true).map{|comapny| [comapny.name, comapny.id]}
   end
 
+  def all_companies_for_group(current_company, id)
+    if id.present?
+      group_ids = CompaniesGroup.where.not(id: id).where(seller_id: current_company.id).pluck(:company_id)
+    else
+      group_ids = CompaniesGroup.where(seller_id: current_company.id).pluck(:company_id)
+    end
+    group_ids << current_company.id
+    Company.where("is_broker != ? AND id NOT IN (?) ", true, group_ids.flatten).map{|comapny| [comapny.name, comapny.id]}
+  end
+
   def list_of_customers(current_customer)
     # customer = Customer.where("id != ? OR id != ? OR parent_id != ? ", current_customer.parent_id , current_customer.id, current_customer.id)
     # array = []
@@ -544,6 +554,56 @@ module ApplicationHelper
       end
     end
     return total_count
+  end
+
+  def get_market_limit_for_group(buyer, seller)
+    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, seller.id, Date.today, false, true)
+    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, seller.id, Date.today, false, true)
+    @amount = []
+    pendings.each do |t|
+      @amount << t.remaining_amount
+    end
+    overdues.each do |o|
+      @amount << o.remaining_amount
+    end
+    pending_amt = @amount.sum
+    number_with_precision(pending_amt, precision: 2)
+  end
+
+  def check_for_group_market_limit(buyer,seller)
+    total_market_limit = 0.0
+    @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).first
+    if @group.present?
+      all_members = @group.company_id
+      all_members.each do |member|
+        company = Company.where(id: member).first
+        market_limit = get_market_limit_for_group(company, seller)
+        total_market_limit = total_market_limit + market_limit.to_f
+      end
+      if @group.group_market_limit > total_market_limit
+        return false
+      else
+        return true
+      end
+    else
+      return false
+    end
+  end
+
+  def check_for_group_overdue_limit(buyer, seller)
+    @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).first
+    if @group.present?
+      days_limit = @group.group_overdue_limit
+      date = Date.today - days_limit.days
+      all_members = @group.company_id
+      if Transaction.where("buyer_id IN (?) AND due_date < ? AND paid = ?", all_members, date, false).present?
+        return true
+      else
+        return false
+      end
+    else
+      return false
+    end
   end
 
 end

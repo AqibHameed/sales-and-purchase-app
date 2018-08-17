@@ -9,7 +9,23 @@
   <div class="form-row">
     <h5>Select Companies:</h5>
     <div class='field'>
-      <%= f.select :company_id, options_for_select(all_companies(current_company), f.object.company_id), { }, { class: 'selected-customer form-control select2', multiple: true, style: 'width: 500px;' }%>
+      <% if @companies_group.present? %>
+        <%= f.select :company_id, options_for_select(all_companies_for_group(current_company, @companies_group.id), f.object.company_id), { }, { class: 'selected-customer form-control select2', multiple: true, style: 'width: 500px;' }%>
+      <% else %>
+        <%= f.select :company_id, options_for_select(all_companies_for_group(current_company, nil), f.object.company_id), { }, { class: 'selected-customer form-control select2', multiple: true, style: 'width: 500px;' }%>
+      <% end %>
+    </div>
+  </div>
+  <div class="form-row">
+    <h5>Group Market Limit:</h5>
+    <div class='field'>
+       <%=f.text_field :group_market_limit, class: 'form-control', placeholder: "Enter Group Market Limit", required: true, style: 'width: 500px;' %>
+    </div>
+  </div>
+  <div class="form-row">
+    <h5>Group Overdue Limit:</h5>
+    <div class='field'>
+      <%=f.text_field :group_overdue_limit, class: 'form-control', placeholder: "Enter Group Overdue Limit", required: true, style: 'width: 500px;' %>
     </div>
   </div>
   <div class="form-row">
