@@ -18,16 +18,18 @@
       <div class=" panel-collapse collapse">
         <div class="panel-body">
           <div class="col-md-12">
+            <h5>Group Market Limit: <%= group.group_market_limit %></h5>
+            <h5>Group Overdue Limit: <%= group.group_overdue_limit %></h5>
             <h4>Companies</h4>
             <div class="clear10"></div>
             <table class="table table-bordered table-responsive">
               <thead>
                 <tr>
-                  <th>Company Name</th>
-                  <th>Credit Limit</th>
-                  <th>Overdue Limit</th>
-                  <th>Market Limit</th>
-                  <th>Available Limit</th>
+                  <th colspan="5">Company Name</th>
+                  <!-- <th>Credit Limit</th> -->
+                  <!-- <th>Overdue Limit</th> -->
+                  <!-- <th>Market Limit</th> -->
+                  <!-- <th>Available Limit</th> -->
                   <th></th>
                 </tr>
               </thead>
@@ -36,11 +38,11 @@
                   <%- company = get_company(c) %>
                   <% unless company.nil? %>
                     <tr>
-                      <td><%= company.name %></td>
-                      <td><%= number_to_currency(get_credit_limit(company, current_company)) %></td>
-                      <td><%= get_days_limit(company, current_company) %></td>
-                      <td><%= get_market_limit(company, current_company) %></td>
-                      <td><%= number_to_currency(get_available_credit_limit(company, current_company)) %></td>
+                      <td colspan="5"><%= company.name %></td>
+                      <!-- <td><%#= number_to_currency(get_credit_limit(company, current_company)) %></td>
+                      <td><%#= get_days_limit(company, current_company) %></td>
+                      <td><%#= get_market_limit(company, current_company) %></td>
+                      <td><%#= number_to_currency(get_available_credit_limit(company, current_company)) %></td> -->
                       <td>
                       <%= link_to delete_group_companies_groups_path(id: company.id, group_id: group.id), data: {confirm: 'Are you sure ?', turbolinks: false} do %>
                         <%= image_tag("/assets/wrong.png", width: "15", class: 'image') %>

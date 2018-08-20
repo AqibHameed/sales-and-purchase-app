@@ -45,7 +45,7 @@
     </tr>
     <tr>
       <td> Cost </td>
-      <td><%= proposal.trading_parcel.cost.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.cost, precision: 2) %></td>
+      <td class="cost"><%= proposal.trading_parcel.cost.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.cost, precision: 2) %></td>
     </tr>
 
     <tr>
@@ -135,10 +135,58 @@ $(document).on('click', '.negotiate_btn', function(){
   $('.accept-btn').addClass('hide');
   $('.reject_btn').addClass('hide');
 })
-$(document).on('keyup', '#proposal_price', function(){
-  var price = parseFloat($(this).val());
+
+$(document).on('keyup focusout','#proposal_percent', function(){
   var carat = parseFloat($('.carats').text());
-  $('#proposal_total_value').val(carat*price);
-})
+  var cost = parseFloat($('.cost').text());
+  var price = parseFloat($('#proposal_price').val());
+  var percent = parseFloat($('#proposal_percent').val());
+  calculate_prices(carat, cost, percent, price)
+});
+
+$(document).on('keyup focusout','#proposal_price', function(){
+  var carat = parseFloat($('.carats').text());
+  var cost = parseFloat($('.cost').text());
+  var price = parseFloat($('#proposal_price').val());
+  calculate_percents(carat, cost, price)
+});
+$(document).on('keyup focusout','#proposal_total_value', function(){
+  var carat = parseFloat($('.carats').text());
+  var cost = parseFloat($('.cost').text());
+  var total = parseFloat($(this).val());
+  var price = total/carat;
+  $('#proposal_price').val(price);
+  calculate_percents(carat, cost, price)
+});
+
+function calculate_prices(carat, cost, percent, price){
+  var avg_price = (percent/100)*cost + cost;
+  var amount = carat*avg_price;
+  if (isNaN(avg_price)){
+    $('#proposal_price').val('')
+  }else{
+    $('#proposal_price').val(avg_price)
+  }
+  if(isNaN(amount)){
+    $('#proposal_total_value').val('')
+  }else{
+    $('#proposal_total_value').val(amount)
+  }
+}
+function calculate_percents(carat, cost, price){
+  var percent = ((price - cost) * 100)/cost;
+  var amount = carat*price;
+  if (isNaN(percent)){
+    $('#proposal_percent').val('')
+  }else{
+    $('#proposal_percent').val(percent)
+  }
+  if(isNaN(amount)){
+    $('#proposal_total_value').val('')
+  }else{
+    $('#proposal_total_value').val(amount)
+  }
+}
+
 
 </script>
