@@ -110,7 +110,9 @@ module Api
           avg_price_offered: proposal.price,
           total_price_offered: proposal.total_value,
           credit_offered: proposal.credit,
-          comment: proposal.trading_parcel.comment
+          comment: proposal.trading_parcel.comment,
+          buyer_comment: proposal.buyer_comment,
+          seller_comment: proposal.notes
         }
       end
 

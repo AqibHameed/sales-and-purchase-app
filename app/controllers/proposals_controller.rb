@@ -155,6 +155,6 @@ class ProposalsController < ApplicationController
   end
 
   def proposal_params
-    params.require(:proposal).permit(:buyer_id, :seller_id, :credit, :price, :action_for, :trading_parcel_id, :notes, :total_value, :percent)
+    params.require(:proposal).permit(:buyer_comment, :buyer_id, :seller_id, :credit, :price, :action_for, :trading_parcel_id, :notes, :total_value, :percent)
   end
 end

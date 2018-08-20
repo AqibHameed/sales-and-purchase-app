@@ -49,7 +49,7 @@
     </tr>
 
     <tr>
-      <td> Comment by Seller </td>
+      <td> Comment </td>
       <td><%= proposal.trading_parcel.try(:comment) %><%=link_to "Size info", 'javascript:void(0)', class: 'pull-right size_info', "data-id" => proposal.trading_parcel.try(:id) %></td>
     </tr>
     <tr>
@@ -90,11 +90,17 @@
       <td> Offer Total Price </td>
       <td><%= proposal.total_value.nil? ? 'N/A' : proposal.total_value %></td>
     </tr>
-
-    <tr>
-      <td> Notes </td>
-      <td><%= proposal.notes.nil? ? 'N/A' : proposal.notes %></td>
-    </tr>
+    <% if current_company.id == proposal.seller_id %>
+      <tr>
+        <td> Buyer Comment </td>
+        <td><%= proposal.buyer_comment.nil? ? 'N/A' : proposal.buyer_comment %></td>
+      </tr>
+    <% elsif current_company.id == proposal.buyer_id %>
+      <tr>
+        <td> Seller Comment </td>
+        <td><%= proposal.notes.nil? ? 'N/A' : proposal.notes %></td>
+      </tr>
+    <% end %>
   </table>
 </div>
 
