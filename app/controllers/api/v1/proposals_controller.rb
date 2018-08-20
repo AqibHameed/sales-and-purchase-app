@@ -93,6 +93,13 @@ module Api
       end
 
       def get_proposal_details(proposal)
+        if proposal.status == 'accepted'
+          status = 'accepted'
+        elsif proposal.status == 'rejected'
+          status = 'rejected'
+        else
+          status = nil
+        end
         @data = {
           supplier_name: proposal.seller.name,
           source: proposal.trading_parcel.source,
@@ -112,7 +119,8 @@ module Api
           credit_offered: proposal.credit,
           comment: proposal.trading_parcel.comment,
           buyer_comment: proposal.buyer_comment,
-          seller_comment: proposal.notes
+          seller_comment: proposal.notes,
+          status: status
         }
       end
 
