@@ -1,6 +1,6 @@
 class ProposalsController < ApplicationController
   before_action :authenticate_customer!
-  before_action :set_proposal, only: [ :show, :edit, :delete, :update, :accept, :reject, :check_authenticate_person]
+  before_action :set_proposal, only: [ :buyer_accept, :buyer_reject, :show, :edit, :delete, :update, :accept, :reject, :check_authenticate_person]
   before_action :check_authenticate_person, only: [:edit]
 
   include ActionView::Helpers::NumberHelper
@@ -81,6 +81,16 @@ class ProposalsController < ApplicationController
       end
       Message.reject_proposal(@proposal, current_company)
     end
+  end
+
+  def buyer_accept
+    Message.buyer_accept_proposal(@proposal, current_company)
+    redirect_to trading_customers_path
+  end
+
+  def buyer_reject
+    Message.buyer_reject_proposal(@proposal, current_company)
+    redirect_to trading_customers_path
   end
 
   def paid

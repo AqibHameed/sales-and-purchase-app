@@ -223,6 +223,8 @@ Rails.application.routes.draw do
       put :accept
       put :reject
       put :paid
+      put :buyer_accept
+      put :buyer_reject
     end
   end
   resources :brokers, only: [:index] do

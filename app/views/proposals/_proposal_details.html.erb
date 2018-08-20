@@ -122,6 +122,10 @@
 
 <div class="clear10"></div>
 <% unless proposal.accepted? || proposal.rejected? %>
+  <% if proposal.buyer_id == current_company.id %>
+    <%= link_to 'Accept', buyer_accept_proposal_path(proposal), class: 'btn-01 login_btn green buyer-accept-btn', method: :put, data: {turbolinks: false}%>
+    <%= link_to 'Reject', buyer_reject_proposal_path(proposal), class: 'btn-01 login_btn buyer-reject_btn red', method: :put, data: {turbolinks: false} %>
+  <% end %>
   <%= link_to 'Accept', "/proposals/#{proposal.id}/accept?check=true", class: 'btn-01 login_btn green accept-btn', method: :put, data: {turbolinks: false}, remote: true if current_company.id == proposal.try(:seller_id) %>
   <%= link_to 'Reject', "/proposals/#{proposal.id}/reject", class: 'btn-01 login_btn reject_btn red', method: :put, data: {turbolinks: false} if current_company.id == proposal.try(:seller_id) %>
   <%#= link_to 'Negotiate', "", class: 'btn-01 login_btn negotiate_btn', data: {turbolinks: false} %>
