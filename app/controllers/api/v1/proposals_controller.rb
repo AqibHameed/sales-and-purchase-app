@@ -10,6 +10,9 @@ module Api
             proposal = Proposal.new(proposal_params)
             proposal.buyer_id = current_company.id
             proposal.seller_id = parcel.company_id
+            proposal.notes = parcel.comment
+            proposal.action_for = parcel.company_id
+            proposal.buyer_comment = params[:comment]
             if proposal.save
               Message.create_new(proposal)
               render json: { success: true, message: 'Proposal Submitted Successfully' }
@@ -28,7 +31,12 @@ module Api
         if current_company
           proposal = Proposal.where(id: params[:id]).first
           if proposal.present?
-            get_proposal_details(proposal)
+            if proposal.action_for == proposal.buyer_id
+              company = Company.where(id: proposal.seller_id).first
+            else
+              company = Company.where(id: proposal.buyer_id).first
+            end
+            get_proposal_details(proposal, company.name)
             render :json => {:success => true, :proposal=> @data, response_code: 200 }
           else
             render :json => {:success => false, :message=> 'Proposal does not exists for this id.', response_code: 201 }
@@ -67,14 +75,25 @@ module Api
         if current_company
           proposal = Proposal.where(id: params[:id]).first
           if proposal.present?
-            if proposal.update_attributes(update_params)
-              get_proposal_details(proposal)
-              Message.create_new_negotiate(proposal, current_company)
-              render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 201 }
+            if current_company.id == proposal.buyer_id
+              sender_name = proposal.buyer.name
+              proposal.update_attributes(update_params)
+              proposal.buyer_comment = params[:comment]
+              proposal.action_for = proposal.seller_id
+              proposal.save
             else
-              error = proposal.errors.full_messages.first
-              render :json => {:success => false, :message=> '#{error}', response_code: 201 }
+              sender_name = proposal.seller.name
+              proposal.seller_price = params[:price]
+              proposal.seller_credit = params[:credit]
+              proposal.seller_total_value = params[:total_value]
+              proposal.seller_percent = params[:percent]
+              proposal.notes = params[:comment]
+              proposal.action_for = proposal.buyer_id
+              proposal.save
             end
+            get_proposal_details(proposal,sender_name)
+            Message.create_new_negotiate(proposal, current_company)
+            render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 201 }
           else
             render :json => {:success => false, :message=> 'Proposal does not exists for this id.', response_code: 201 }
           end
@@ -85,15 +104,37 @@ module Api
 
       private
       def proposal_params
-        params.permit(:buyer_id, :seller_id, :credit, :price, :action_for, :trading_parcel_id, :notes)
+        params.permit(:buyer_id, :seller_id, :credit, :price, :trading_parcel_id)
       end
 
       def update_params
-        params.permit(:price, :credit, :notes, :total_value, :percent)
+        params.permit(:price, :credit, :total_value, :percent)
       end
 
-      def get_proposal_details(proposal)
+      def get_proposal_details(proposal,sender_name)
+        if proposal.status == 'accepted'
+          status = 'accepted'
+        elsif proposal.status == 'rejected'
+          status = 'rejected'
+        else
+          status = nil
+        end
+        buyer_offers = {
+          percent: proposal.percent,
+          avg_price: proposal.price,
+          total_price: proposal.total_value,
+          credit: proposal.credit,
+          buyer_comment: proposal.buyer_comment
+        }
+        seller_offers= {
+          percent: proposal.seller_percent,
+          avg_price: proposal.seller_price,
+          total_price: proposal.seller_total_value,
+          credit: proposal.seller_credit,
+          seller_comment: proposal.notes
+        }
         @data = {
+          sender_name: sender_name,
           supplier_name: proposal.seller.name,
           source: proposal.trading_parcel.source,
           description: proposal.trading_parcel.description,
@@ -101,16 +142,15 @@ module Api
           no_of_stones: proposal.trading_parcel.no_of_stones,
           carats: proposal.trading_parcel.weight,
           cost: proposal.trading_parcel.cost,
+          comment: proposal.trading_parcel.comment,
           list_percentage: proposal.trading_parcel.percent,
           list_avg_price: proposal.trading_parcel.price,
           list_total_price: proposal.trading_parcel.total_value,
           list_credit: proposal.trading_parcel.credit_period,
           list_discount: proposal.trading_parcel.box_value,
-          percent_offered: proposal.percent,
-          avg_price_offered: proposal.price,
-          total_price_offered: proposal.total_value,
-          credit_offered: proposal.credit,
-          comment: proposal.trading_parcel.comment
+          status: status,
+          seller_negotiation: seller_offers,
+          buyer_negotiation: buyer_offers
         }
       end
 
