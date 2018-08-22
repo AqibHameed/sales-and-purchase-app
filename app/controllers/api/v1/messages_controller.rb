@@ -11,6 +11,19 @@ module Api
           if @all_messages.present?
             @all_messages.each do |message|
               sender = Company.where(id: message.sender_id).first
+              if message.proposal.present?
+                if message.proposal.status == 'accepted'
+                  status = 'accepted'
+                elsif message.proposal.status == 'rejected'
+                  status = 'rejected'
+                elsif message.proposal.status == 'negotiated'
+                  status = 'negotiated'
+                else
+                  status = nil
+                end
+              else
+                status = nil
+              end
               @data = {
                 id: message.id,
                 proposal_id: message.proposal_id,
@@ -20,7 +33,9 @@ module Api
                 message_type: message.message_type,
                 subject: message.subject,
                 created_at: message.created_at,
-                updated_at: message.updated_at
+                updated_at: message.updated_at,
+                date: message.created_at.strftime("%d %B %Y"),
+                status: status
               }
               @messages << @data
             end
