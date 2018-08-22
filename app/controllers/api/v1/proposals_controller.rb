@@ -104,7 +104,7 @@ module Api
 
       private
       def proposal_params
-        params.permit(:buyer_id, :seller_id, :credit, :price, :trading_parcel_id)
+        params.permit(:buyer_id, :seller_id, :credit, :price, :percent, :total_value, :trading_parcel_id)
       end
 
       def update_params
