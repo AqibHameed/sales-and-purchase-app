@@ -141,8 +141,17 @@ module Api
         # not_enough_available_customers = get_unavailable_buyers(parcel, current_customer)
         # demanded_but_not_available = get_demanded_but_not_available_buyers(parcel, current_customer)
         demanded_clients = []
+        users = []
         all_demanded_clients = get_demanded_clients(parcel, current_company)
         all_demanded_clients.each do |client|
+          client.customers.each do |customer|
+            details = {
+              user_id: customer.id ,
+              first_name: customer.first_name,
+              last_name: customer.last_name
+            }
+            users << details
+          end
           @data = {
             id: client.id,
             name: client.name,
@@ -152,7 +161,8 @@ module Api
             updated_at: client.updated_at,
             is_anonymous: client.is_anonymous,
             add_polished: client.add_polished,
-            is_broker: client.is_broker
+            is_broker: client.is_broker,
+            users: users
           }
           demanded_clients << @data
         end
