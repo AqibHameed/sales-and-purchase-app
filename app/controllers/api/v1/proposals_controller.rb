@@ -78,11 +78,16 @@ module Api
             if current_company.id == proposal.buyer_id
               sender_name = proposal.buyer.name
               proposal.update_attributes(update_params)
+              proposal.buyer_price = params[:price]
+              proposal.buyer_credit = params[:credit]
+              proposal.buyer_total_value = params[:total_value]
+              proposal.buyer_percent = params[:percent]
               proposal.buyer_comment = params[:comment]
               proposal.action_for = proposal.seller_id
               proposal.save
             else
               sender_name = proposal.seller.name
+              proposal.update_attributes(update_params)
               proposal.seller_price = params[:price]
               proposal.seller_credit = params[:credit]
               proposal.seller_total_value = params[:total_value]
@@ -91,6 +96,8 @@ module Api
               proposal.action_for = proposal.buyer_id
               proposal.save
             end
+            proposal.negotiated = true
+            proposal.save
             get_proposal_details(proposal,sender_name)
             Message.create_new_negotiate(proposal, current_company)
             render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 201 }
@@ -120,10 +127,10 @@ module Api
           status = nil
         end
         buyer_offers = {
-          percent: proposal.percent,
-          avg_price: proposal.price,
-          total_price: proposal.total_value,
-          credit: proposal.credit,
+          percent: proposal.buyer_percent,
+          avg_price: proposal.buyer_price,
+          total_price: proposal.buyer_total_value,
+          credit: proposal.buyer_credit,
           buyer_comment: proposal.buyer_comment
         }
         seller_offers= {
@@ -148,10 +155,21 @@ module Api
           list_total_price: proposal.trading_parcel.total_value,
           list_credit: proposal.trading_parcel.credit_period,
           list_discount: proposal.trading_parcel.box_value,
-          status: status,
-          seller_negotiation: seller_offers,
-          buyer_negotiation: buyer_offers
+          offered_percentage: proposal.percent,
+          offered_price: proposal.price,
+          offered_total_value: proposal.total_value,
+          offered_credit: proposal.credit,
+          status: status
         }
+        if proposal.negotiated == true
+          if current_company.id == proposal.seller_id
+            @data.merge!(negotiated: buyer_offers)
+          else current_company.id == proposal.buyer_id
+            @data.merge!(negotiated: seller_offers)
+          end
+        else
+          @data.merge!(negotiated: nil)
+        end
       end
 
       def accpet_proposal(proposal)
