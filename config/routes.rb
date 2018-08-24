@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       post :approve
       post :remove
       get :polished_demand
+      get :faq
       post '/polished_demand', to: 'customers#create_polished_demand'
     end
     member do

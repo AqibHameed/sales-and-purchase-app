@@ -70,3 +70,5 @@ gem 'kaminari'
 gem 'jbuilder'#, '~> 2.2.4'
 gem 'meta_request'
 gem 'bootstrap-datepicker-rails'
+gem 'firebase'
+gem "google-cloud-firestore"

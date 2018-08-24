@@ -68,7 +68,13 @@ module Api
               company = get_company(c)
               list << {
                 id: company.id.to_s,
-                name: company.name
+                name: company.name,
+                total_limit: get_credit_limit(company, current_company),
+                used_limit: get_used_credit_limit(company, current_company),
+                available_limit: get_available_credit_limit(company, current_company),
+                overdue_limit: get_days_limit(company, current_company),
+                market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
+                supplier_connected: supplier_connected(company, current_company).to_s
               }
             end
             @data << {
@@ -85,7 +91,13 @@ module Api
               company = get_company(c)
               @data << {
                 id: company.id.to_s,
-                name: company.name
+                name: company.name,
+                total_limit: get_credit_limit(company, current_company),
+                used_limit: get_used_credit_limit(company, current_company),
+                available_limit: get_available_credit_limit(company, current_company),
+                overdue_limit: get_days_limit(company, current_company),
+                market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
+                supplier_connected: supplier_connected(company, current_company).to_s
               }
             end
           end
