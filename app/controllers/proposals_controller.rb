@@ -1,6 +1,6 @@
 class ProposalsController < ApplicationController
   before_action :authenticate_customer!
-  before_action :set_proposal, only: [ :show, :edit, :delete, :update, :accept, :reject, :check_authenticate_person]
+  before_action :set_proposal, only: [ :buyer_accept, :buyer_reject, :show, :edit, :delete, :update, :accept, :reject, :check_authenticate_person]
   before_action :check_authenticate_person, only: [:edit]
 
   include ActionView::Helpers::NumberHelper
@@ -39,6 +39,7 @@ class ProposalsController < ApplicationController
 
   def show
     @info = @proposal.trading_parcel.parcel_size_infos
+    @proposal = Proposal.where(id: params[:id]).first
   end
 
   def edit
@@ -65,6 +66,7 @@ class ProposalsController < ApplicationController
         check_credit_accept(@proposal)
       else
         accpet_proposal(@proposal)
+        Message.accept_proposal(@proposal, current_company)
       end
     end
   end
@@ -77,7 +79,18 @@ class ProposalsController < ApplicationController
         format.js { render js: "window.location = '/proposals'"}
         format.html { redirect_to trading_customers_path }
       end
+      Message.reject_proposal(@proposal, current_company)
     end
+  end
+
+  def buyer_accept
+    Message.buyer_accept_proposal(@proposal, current_company)
+    redirect_to trading_customers_path
+  end
+
+  def buyer_reject
+    Message.buyer_reject_proposal(@proposal, current_company)
+    redirect_to trading_customers_path
   end
 
   def paid
@@ -152,6 +165,6 @@ class ProposalsController < ApplicationController
   end
 
   def proposal_params
-    params.require(:proposal).permit(:buyer_id, :seller_id, :credit, :price, :action_for, :trading_parcel_id, :notes, :total_value, :percent)
+    params.require(:proposal).permit(:buyer_comment, :buyer_id, :seller_id, :credit, :price, :action_for, :trading_parcel_id, :notes, :total_value, :percent)
   end
 end

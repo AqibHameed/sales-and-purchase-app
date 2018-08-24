@@ -56,6 +56,10 @@ class CustomersController < ApplicationController
    @company = Company.new
   end
 
+  def faq
+
+  end
+
   def save_invite
    @company = Company.new(company_params)
    if @company.save

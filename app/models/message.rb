@@ -40,4 +40,22 @@ class Message < ApplicationRecord
     Message.create(subject: "You have a new credit request", message: @message, sender_id: current_company.id, receiver_id: current_company.parent_id, message_type: "Credit Request")
   end
 
+  def self.accept_proposal(proposal, current_company)
+    @message = "The deal is accepted."
+    Message.create(subject: "Your proposal is accepted.", message: @message, sender_id: proposal.seller_id , receiver_id: proposal.buyer_id, message_type: "Proposal", proposal_id: proposal.id)
+  end
+
+  def self.reject_proposal(proposal, current_company)
+    @message = "The deal is rejected."
+    Message.create(subject: "Your proposal is rejected.", message: @message, sender_id: proposal.seller_id , receiver_id: proposal.buyer_id, message_type: "Proposal", proposal_id: proposal.id)
+  end
+
+  def self.buyer_accept_proposal(proposal, current_company)
+    Message.create(subject: "Buyer accepted your negotiated proposal.", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.seller_id, message_type: "Proposal", proposal_id: proposal.id)
+  end
+
+  def self.buyer_reject_proposal(proposal, current_company)
+    Message.create(subject: "Buyer rejected your negotiated proposal.", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.seller_id, message_type: "Proposal", proposal_id: proposal.id)
+  end
+
 end

@@ -9,6 +9,7 @@
       <th>Available Limit</th>
       <th>Overdue Limit</th>
       <th>Market Limit</th>
+      <th>Purchases Completed</th>
       <th>Suppliers Connected</th>
       <th>Block</th>
     </thead>
@@ -67,6 +68,11 @@
             <span class="market-limit-error-message" style="color: red;"></span>
           </a>
         </td>
+        <td>
+          <span class="table-head-in-td">Purchases Completed</span>
+          <%= get_completed_transaction(company) %>
+        </td>
+
         <td><span class="table-head-in-td">Suppliers Connected</span><%= supplier_connected(company, current_company)%></td>
         <% if company.is_blocked_by_supplier(current_company.id) %>
           <td><span class="table-head-in-td">Block</span><%= image_tag("/assets/right.jpg", width: "35", class: 'image_approve', 'data-id'=> company.id) %><span class='hide'><%= 1 %></span></td>

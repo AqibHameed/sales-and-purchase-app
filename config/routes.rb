@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       post :approve
       post :remove
       get :polished_demand
+      get :faq
       post '/polished_demand', to: 'customers#create_polished_demand'
     end
     member do
@@ -223,6 +224,8 @@ Rails.application.routes.draw do
       put :accept
       put :reject
       put :paid
+      put :buyer_accept
+      put :buyer_reject
     end
   end
   resources :brokers, only: [:index] do

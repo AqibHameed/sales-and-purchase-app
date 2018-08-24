@@ -9,7 +9,6 @@
       <th>Cut</th>
       <th>FL</th>
       <th>Lab</th>
-      <th>Carat</th>
       <th>Credit</th>
       <th>Avg. Price</th>
       <th>Total $</th>
@@ -65,10 +64,10 @@
             <span class="table-head-in-td">Lab</span>
             <%= transaction.trading_parcel.lab.nil? ? 'N/A' : transaction.trading_parcel.lab %>
           </td>
-          <td>
+          <!-- <td>
             <span class="table-head-in-td">Carat</span>
-            <%= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %>
-          </td>
+            <%#= number_with_precision(transaction.trading_parcel.weight, precision: 2) rescue 'N/A'  %>
+          </td> -->
           <td>
             <span class="table-head-in-td">Credit</span>
             <%= transaction.credit rescue 'N/A' %>

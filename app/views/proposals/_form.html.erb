@@ -49,13 +49,21 @@
 </div>
 
 
-
-<div class="form-row">
-  <div class="label">Comments</div>
-  <div class='field'>
-    <%=f.text_area :notes, class: 'input' %>
+<% if current_company.id == @proposal.seller_id %>
+  <div class="form-row">
+    <div class="label">Comments</div>
+    <div class='field'>
+      <%=f.text_area :notes, class: 'input' %>
+    </div>
   </div>
-</div>
+<% else %>
+  <div class="form-row">
+    <div class="label">Comments</div>
+    <div class='field'>
+      <%=f.text_area :buyer_comment, class: 'input' %>
+    </div>
+  </div>
+<% end %>
 
  <div class="form-row">
   <div class="label"></div>

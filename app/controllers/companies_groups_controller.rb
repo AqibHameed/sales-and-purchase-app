@@ -59,8 +59,7 @@ class CompaniesGroupsController < ApplicationController
   end
 
   private
-
     def companies_groups_params
-      params.require(:companies_group).permit(:group_name, :seller_id, :company_id => [])
+      params.require(:companies_group).permit(:group_name, :seller_id, :group_market_limit, :group_overdue_limit, :company_id => [])
     end
 end
