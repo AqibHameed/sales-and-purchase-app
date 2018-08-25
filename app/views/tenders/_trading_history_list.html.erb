@@ -9,6 +9,7 @@
       <th>Box Value</th>
       <th>Sight</th>
       <th>Avg. Price</th>
+      <th>Total $</th>
       <th>Credit</th>
       <th>Activity</th>
       <th>Counterparty</th>
@@ -16,14 +17,14 @@
       <th>Invoice Date</th>
       <th>Confirm Status</th>
       <th>Transaction Detail</th>
-      <th>View Invoice</th>
+      <!-- <th>View Invoice</th> -->
     </tr>
   </thead>
   <tbody>
     <% transactions.each.with_index(1) do |transaction, i| %>
       <% if get_status(transaction) == 'Overdue' %>
-        <% color = 'bg-red' %>
-        <% link = 'white' %>
+        <% color = 'bg-normal' %>
+        <% link = '' %>
       <% else %>
          <% color = 'bg-normal' %>
          <% link = '' %>
@@ -61,7 +62,10 @@
           <span class="table-head-in-td">Sight</span><%= transaction.trading_parcel.sight rescue 'N/A' %>
         </td>
         <td>
-          <span class="table-head-in-td">Avg. Price</span><%= transaction.price rescue 'N/A' %>
+          <span class="table-head-in-td">Avg. Price</span><%= number_to_currency(transaction.price) rescue 'N/A' %>
+        </td>
+        <td>
+          <span class="table-head-in-td">Total Price</span><%= number_to_currency(transaction.total_amount) rescue 'N/A' %>
         </td>
         <td>
           <span class="table-head-in-td">Credit</span><%= transaction.credit rescue 'N/A' %>
@@ -94,13 +98,13 @@
         <td>
           <%=link_to 'view' , transaction_path(transaction), data: {turbolinks: false}, class: link %>
         </td>
-        <% if current_company.id == transaction.seller_id %>
-          <td>
-            <%=link_to 'Invoice' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %>
-          </td>
-        <%else%>
-          <td></td>
-        <% end %>
+        <%# if current_company.id == transaction.seller_id %>
+          <!-- <td>
+            <%#=link_to 'Invoice' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %>
+          </td> -->
+        <%#else%>
+          <!-- <td></td> -->
+        <%# end %>
       </tr>
       <% end %>
   </tbody>

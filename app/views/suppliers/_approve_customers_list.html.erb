@@ -58,7 +58,7 @@
         <td class="market_limit">
           <span class="table-head-in-td">Market Limit</span>
           <a href="javascript:void(0)" class="given_market_limit" id='market_limit_edit'>
-            <%= get_market_limit_from_credit_limit_table(company, current_company)%>
+            <%= number_to_currency(get_market_limit_from_credit_limit_table(company, current_company)) %>
             <i class="fa fa-edit pull-right" id='market_limit_edit'></i>
           </a>
           <a href="javascript:void(0)" class="edit_market_limit hide">

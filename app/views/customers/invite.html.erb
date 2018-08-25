@@ -25,7 +25,8 @@
     <div class="form-row">
       <div class="label">Country: </div>
       <div class="field demand_desc">
-        <%= f.text_field :county, { class: 'input' }%>
+        <%#= f.text_field :county, { class: 'input' }%>
+        <%= f.country_select :county, { format: :with_data_attrs } ,class: 'input'%>
       </div>
     </div>
      <div class="form-row">

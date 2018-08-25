@@ -18,14 +18,13 @@
       <th>Invoice Date</th>
       <th>Confirm Status</th>
       <th>Transaction Detail</th>
-      <th>View Invoice</th>
     </tr>
   </thead>
   <tbody>
     <% transactions.each.with_index(1) do |transaction, i| %>
       <% if get_status(transaction) == 'Overdue' %>
-        <% color = 'bg-red' %>
-        <% link = 'white' %>
+        <% color = 'bg-normal' %>
+        <% link = '' %>
       <% else %>
          <% color = 'bg-normal' %>
          <% link = '' %>
@@ -74,11 +73,11 @@
           </td>
           <td>
             <span class="table-head-in-td">Avg. Price</span>
-            <%= transaction.trading_parcel.price.nil? ? 'N/A' : transaction.trading_parcel.price %>
+            <%= transaction.trading_parcel.price.nil? ? 'N/A' : number_to_currency(transaction.trading_parcel.price) %>
           </td>
           <td>
             <span class="table-head-in-td">Total/Box Value:</span>
-            <%= transaction.trading_parcel.total_value.nil? ? 'N/A' : transaction.trading_parcel.total_value %>
+            <%= transaction.trading_parcel.total_value.nil? ? 'N/A' : number_to_currency(transaction.trading_parcel.total_value) %>
           </td>
           <% if current_company.id == transaction.buyer_id %>
             <td>Bought</td>
@@ -108,13 +107,6 @@
           <td>
             <%=link_to 'view' , transaction_path(transaction), data: {turbolinks: false}, class: link %>
           </td>
-          <% if current_company.id == transaction.seller_id %>
-            <td>
-              <%=link_to 'Invoice' , edit_transaction_path(transaction), data: {turbolinks: false}, class: link %>
-            </td>
-          <%else%>
-            <td></td>
-          <% end %>
         <% end %>
       </tr>
     <%end%>

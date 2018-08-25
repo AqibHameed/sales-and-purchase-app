@@ -19,9 +19,9 @@
         <td><%= parcel.weight %></td>
         <td><%= parcel.cost %></td>
         <td><%= parcel.percent %></td>
-        <td><%= parcel.price %></td>
+        <td><%= number_to_currency(parcel.price) %></td>
         <td><%= parcel.sight %></td>
-        <td><%= parcel.total_value %></td>
+        <td><%= number_to_currency(parcel.total_value) %></td>
         <td><%= parcel.credit_period %></td>
         <td><%= parcel.company.try(:name) %></td>
         <td><%= parcel.uid %></td>

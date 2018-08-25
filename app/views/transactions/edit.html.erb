@@ -1,6 +1,6 @@
 <%= stylesheet_link_tag "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" %>
 <%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.js" %>
-<h3>Edit Transaction </h3>
+<h3>Add Invoice Details </h3>
 
 <div class="transaction-form">
   <div class="clear10"></div>
@@ -55,7 +55,7 @@
           </div>
         </div> -->
         <div class="form-row">
-          <div class="label">Credit:</div>
+          <div class="label">Credit (Days):</div>
           <div class='field'>
             <%=f.text_field :total_amount, value: @transaction.credit,  class: 'input disabled' %>
           </div>

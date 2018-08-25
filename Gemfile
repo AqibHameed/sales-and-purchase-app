@@ -51,7 +51,7 @@ gem 'protected_attributes_continued'
 gem 'turbolinks', '~> 5.0.0'
 gem 'rubocop', require: false
 gem 'puma',  '3.6.2'
-gem 'country_select', git: 'https://github.com/alibabajan/country_select.git'
+gem 'country_select', require: 'country_select_without_sort_alphabetical'
 gem 'jquery-datatables-rails', '~> 3.4.0'
 gem 'fcm'
 gem 'figaro'

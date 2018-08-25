@@ -81,11 +81,11 @@
         </td>
         <td>
           <span class="table-head-in-td">Avg. Price</span>
-          <%= parcel.price.nil? ? 'N/A' : parcel.price %>
+          <%= parcel.price.nil? ? 'N/A' : number_to_currency(parcel.price) %>
         </td>
         <td>
           <span class="table-head-in-td">Total/Box Value:</span>
-          <%= parcel.total_value.nil? ? 'N/A' : parcel.total_value %>
+          <%= parcel.total_value.nil? ? 'N/A' : number_to_currency(parcel.total_value) %>
         </td>
         <td>
           <span class="table-head-in-td">Demand:</span>
