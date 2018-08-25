@@ -1,5 +1,6 @@
 class RegistrationsController < Devise::RegistrationsController
-
+  layout false
+  
   def create
     # company = Company.where(name: sign_up_params[:company_name]).first_or_create
     company = Company.find(sign_up_params[:company_id]) if sign_up_params[:company_id].present?
@@ -45,10 +46,14 @@ class RegistrationsController < Devise::RegistrationsController
 
   def after_sign_up_path_for(resource)
     # '/customers/'+resource.id.to_s+'/add_company'
-    trading_customers_path
+    root_path
   end
 
   def after_signup_when_requested(resource)
+    login_path
+  end
+
+  def after_inactive_sign_up_path_for(resource)
     login_path
   end
 end

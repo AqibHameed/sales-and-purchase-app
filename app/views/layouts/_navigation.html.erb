@@ -47,9 +47,6 @@
             <li>
               <%= link_to 'Invite', invite_customers_path , data: { turbolinks: false } %>
             </li>
-            <li>
-              <%= link_to 'FAQ', faq_customers_path , data: { turbolinks: false } %>
-            </li>
             <!-- <li><%#= link_to 'Invite',  '#' , data: { turbolinks: false } %></li> -->
             <%# if current_customer.parent_id.nil? %>
             <%# else %>
@@ -64,13 +61,12 @@
               <%#= link_to 'Live Demands', '/live_demands', data: { turbolinks: false } %>
             </li> -->
           <% end %>
+        <% else %>
+          <li class="first broker_home">
+            <%= link_to 'Home', dashboard_brokers_path, :class => 'home', data: { turbolinks: false } %>
+          </li>
         <% end %>
-          <!-- <li><%#= link_to 'Inbox', messages_path, data: { turbolinks: false } %></li> -->
-          <!-- <li><%#= link_to 'Inventory', suppliers_path, data: { turbolinks: false } %></li> -->
-          <!-- <li><%#= link_to 'Trade', trading_suppliers_path, data: { turbolinks: false } %></li> -->
-          <!-- <li>
-          <a href="#">Reports</a>
-          </li> -->
+          
         <% if current_admin %>
           <!-- <li>
             <%#= link_to 'Calendar', calendar_tenders_path, data: { turbolinks: false } %>
@@ -94,7 +90,6 @@
             <%= link_to 'Company List', add_company_list_suppliers_path, data: { turbolinks: false } %>
           </li>
         <% end %>
-        <%# end %>
       </ul>
     </nav>
   </div>

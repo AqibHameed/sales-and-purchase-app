@@ -3,13 +3,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <%= stylesheet_link_tag "application" %>
 <%= javascript_include_tag 'application' %>
-<title>Dialuck</title>
+<title>SafeTrade</title>
 </head>
 <body>
+<%= render :partial => "layouts/unauthenticate_navigation" %>
 <div class="wrapper login-page">
     <div class="center">
-    <center><%= image_tag "original.jpg", width: '35%' %>
-    <h1 style="font-size: 40px;">Clarity</h1>
+    <center><%= image_tag "web_logo.png", width: '35%' %>
+    <!-- <h1 style="font-size: 40px;">Clarity</h1> -->
     </center></div>
     <div class="clear10"></div>
     <div class="login-box">
@@ -46,7 +47,7 @@
       <% end %>
       <div class="clear20"></div>
       <div>
-        <%= link_to "Forgot Password ?", "customers/password/new", :class=> "forgot_password" %>
+        <%= link_to "Forgot Password?", "customers/password/new", :class=> "forgot_password" %>
         <%= link_to "Login as different User", login_path(:key => "d_user"), :class=> "diff_user" if cookies[:c_user] %>
         <!-- <a href="tender-dashboard.html" class="btn-02">Login</a> -->
       </div>

@@ -1,37 +1,38 @@
-
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<%= stylesheet_link_tag "application" %>
+<%= javascript_include_tag 'application' %>
+<title>SafeTrade</title>
+</head>
+<body>
+<%= render :partial => "layouts/unauthenticate_navigation" %>
 <div class="wrapper">
-	<h6>Welcome to Tender Program</h6>
-	<div class="sub-heading">
-		<p>
-			By
-		</p>
-		<p>
-			Dialuck Trading Pvt. Ltd.
-		</p>
-	</div>
-	<div class="clear20"></div>
-	<div class="clear20"></div>
-	<div class="heading">
-		Forgot Password
-	</div>
-	<div class="clear20"></div>
-	<div class="login-box">
-		<p style="color:red; font-size:13px;" class='error_msg'></p>
-		<p class=clear10></p>
+  <h6>Welcome to Safetrade</h6>
+  <div class="clear20"></div>
+  <div class="clear20"></div>
+  <div class="heading">
+    Forgot Password
+  </div>
+  <div class="clear20"></div>
+  <div class="login-box">
+    <p style="color:red; font-size:13px;" class='error_msg'></p>
+    <p class=clear10></p>
 
-		<%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f| %>
-		<%= devise_error_messages! %>
+    <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f| %>
+    <%= devise_error_messages! %>
 
-		<div class="label">
-			Email
-		</div>
-		<div class="field">
-			<%= f.email_field :email, :autofocus => true %>
-		</div>
-		<div class="clear10"></div>
-		<div>
-			<%= f.submit "Send me reset password instructions", :class => "btn-02" %>
-		</div>
-		<% end %>
-	</div>
+    <div class="label">
+      Email
+    </div>
+    <div class="field">
+      <%= f.email_field :email, :autofocus => true %>
+    </div>
+    <div class="clear10"></div>
+    <div>
+      <%= f.submit "Send me reset password instructions", :class => "btn btn-danger" %>
+    </div>
+    <% end %>
+  </div>
 </div>
+</body>

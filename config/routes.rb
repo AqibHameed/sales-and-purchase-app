@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get '/change_system_price', to: 'tenders#update_system_price'
   get '/can_update', to: 'tenders#round_updated'
   get '/get_timer', to: 'tenders#timer_value'
+  get '/faq', to: 'home#faq'
 
   get '/chat', to: 'chats#index'
   get '/video_chat', to: 'chat_vidoes#index'
@@ -119,7 +120,6 @@ Rails.application.routes.draw do
       post :approve
       post :remove
       get :polished_demand
-      get :faq
       post '/polished_demand', to: 'customers#create_polished_demand'
     end
     member do

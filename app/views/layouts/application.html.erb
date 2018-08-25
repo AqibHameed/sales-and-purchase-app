@@ -13,7 +13,11 @@
   </head>
   <body>
     <div class='wrapper <%=  ' calculator-page' if controller.controller_name == 'calculator'%>'>
-      <%= render :partial => "layouts/navigation" if current_customer or current_admin %>
+      <% if current_customer or current_admin %>
+        <%= render :partial => "layouts/navigation"  %>
+      <% else %>
+        <%#= render :partial => "layouts/unauthenticate_navigation" %>
+      <% end %>
       <div class="clear20"></div>
       <%= render partial:  'layouts/supplier/flash' %>
       <div class='container'>
