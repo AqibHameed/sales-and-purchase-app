@@ -12,7 +12,7 @@ class Company < ApplicationRecord
   has_many :company_group_seller, :foreign_key => "seller_id", :class_name => "CompaniesGroup", dependent: :destroy
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
-  after_create :add_dummy_data
+  # after_create :add_dummy_data
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
   def self.import(file)
@@ -361,11 +361,16 @@ class Company < ApplicationRecord
   end
 
   def add_dummy_data
+    # Add Dummy Companies
+    dummy_co_1 = Company.where(name: 'Dummy co. 1', county: 'India').first_or_create
+    dummy_co_2 = Company.where(name: 'Dummy co. 2', county: 'India').first_or_create
+    dummy_co_3 = Company.where(name: 'Dummy co. 3', county: 'India').first_or_create
+
     rough_parcel1 = {
       company_id: id,
       credit_period: 30,
       diamond_type: 'Rough',
-      description: '-3+1 R.O.M',
+      description: 'Dummy Parcel for Demo - Please Delete',
       weight: 10,
       price: 10,
       source: 'OutSide Goods',
@@ -374,7 +379,7 @@ class Company < ApplicationRecord
       box_value: '12',
       sight: '07/18',
       percent: 0,
-      comment: 'Demo Parcel1',
+      comment: 'This is a Demo Parcel',
       total_value: 100,
       sale_demanded: true
     }
@@ -382,7 +387,7 @@ class Company < ApplicationRecord
       company_id: id,
       credit_period: 30,
       diamond_type: 'Rough',
-      description: '-3GR REJN',
+      description: 'Dummy Parcel for Demo - Please Delete',
       weight: 10,
       price: 10,
       source: 'OutSide Goods',
@@ -391,22 +396,16 @@ class Company < ApplicationRecord
       box_value: '12',
       sight: '07/18',
       percent: 0,
-      comment: 'Demo Parcel2',
+      comment: 'This is a Demo Parcel',
       total_value: 100,
-      sale_demanded: true
+      sale_demanded: true,
+      sold: true
     }
     trading_parcel1 = TradingParcel.new(rough_parcel1)
     trading_parcel1.save(:validate => false)
     trading_parcel2 = TradingParcel.new(rough_parcel2)
     trading_parcel2.save(:validate => false)
 
-    # parcel_size_infos = {
-    #   size: 'small',
-    #   percent: '10',
-    #   trading_parcel_id: rough_parcel.id
-    # }
-    # parcel_size = ParcelSizeInfo.new(parcel_size_infos)
-    # parcel_size.save(:validate => false)
     polished_parcel = {
       no_of_stones: 0,
       weight: 10,
@@ -419,7 +418,7 @@ class Company < ApplicationRecord
       diamond_type: 'Polished',
       sale_demanded: true,
       percent: 0,
-      comment: 'Polished Parcel',
+      comment: 'This is DUmmy Polished Parcel',
       total_value: 240,
       shape: 'Round',
       color: 'M',
@@ -434,40 +433,23 @@ class Company < ApplicationRecord
     }
     trading_parcel3 = TradingParcel.new(polished_parcel)
     trading_parcel3.save(:validate => false)
-    # polish_parcel_size_infos = {
-    #   size: 'small',
-    #   percent: '10',
-    #   trading_parcel_id: trading_parcel2.id
-    # }
-    # polish_parcel_size = ParcelSizeInfo.new(polish_parcel_size_infos)
-    # polish_parcel_size.save(:validate => false)
-    demand1 = {
-        description: '-3+1 R.O.M',
-        demand_supplier_id: 3,
-        block: 0,
-        deleted: 0,
-        company_id: id
+
+    demand1 = { description: 'Dummy Parcel for Demo - Please Delete', demand_supplier_id:1, block: 0,
+        deleted: 0, company_id: id
       }
     demand2 = {
-        description: '-3GR REJN',
-        demand_supplier_id: 3,
-        block: 0,
-        deleted: 0,
+        description: 'Dummy Parcel for Demo - Please Delete',
+        demand_supplier_id: 2, block: 0, deleted: 0,
         company_id: id
       }
     demand3 = {
-        description: '5-10 Cts BLK CLIV WHITE',
-        demand_supplier_id: 2,
-        block: 0,
-        deleted: 0,
+        description: 'Dummy Parcel for Demo - Please Delete', demand_supplier_id: 3, block: 0, deleted: 0,
         company_id: id
       }
     Demand.create(demand1)
     Demand.create(demand2)
     Demand.create(demand3)
-    dummy_co_1 = Company.where(name: 'Dummy Co 1').first
-    dummy_co_2 = Company.where(name: 'Dummy Co 2').first
-    dummy_co_3 = Company.where(name: 'Dummy Co 3').first
+
     transaction1 =
       {
         seller_id: id,
@@ -481,8 +463,7 @@ class Company < ApplicationRecord
         buyer_confirmed: 1,
         diamond_type: 'Rough',
         description: trading_parcel2.description,
-        remaining_amount: 1190,
-        total_amount: 1190
+        created_at: Time.now
       }
     transaction2 = {
         seller_id: id,
@@ -494,11 +475,12 @@ class Company < ApplicationRecord
         credit: 30,
         paid: 0,
         buyer_confirmed: 1,
-        diamond_type: 'Rough'
-      }
+        diamond_type: 'Rough',
+        created_at: Time.now
+    }
     transaction3 =  {
       seller_id: id,
-      buyer_id: dummy_co_2.id,
+      buyer_id: dummy_co_1.id,
       trading_parcel_id: trading_parcel2.id,
       due_date: Date.today + (trading_parcel2.credit_period).days,
       price: 10,
@@ -506,14 +488,15 @@ class Company < ApplicationRecord
       credit: 30,
       paid: 1,
       buyer_confirmed: 1,
-      diamond_type: 'Rough'
+      diamond_type: 'Rough',
+      created_at: Time.now
     }
     Transaction.create(transaction1)
     Transaction.create(transaction2)
     Transaction.create(transaction3)
     # CompaniesGroup.new
     company_group = {
-      group_name: 'Test',
+      group_name: 'Dummy Group',
       seller_id: id,
       company_id: [dummy_co_1.id, dummy_co_2.id],
       group_market_limit: 200,
@@ -521,7 +504,7 @@ class Company < ApplicationRecord
     }
     CompaniesGroup.create(company_group)
     CreditLimit.create(buyer_id: dummy_co_3.id, seller_id: id, credit_limit: 300)
-    DaysLimit.create(buyer_id: dummy_co_3.id, seller_id: id, days_limit: 30)
+    DaysLimit.create(buyer_id: dummy_co_3.id, seller_id: id, days_limit: 25)
   end
 
   def get_buyer_score
@@ -535,7 +518,6 @@ class Company < ApplicationRecord
   ##### End of Credit Scores #####
 
   rails_admin do
-
     edit do
       field :name
       field :city

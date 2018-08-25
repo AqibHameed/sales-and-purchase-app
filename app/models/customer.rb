@@ -57,12 +57,14 @@ class Customer < ApplicationRecord
   accepts_nested_attributes_for :credit_requests, :allow_destroy => true
 
   def check_for_confirmation
+    owner = company.get_owner
     if company.customers.count > 1
       self.skip_confirmation!
       self.is_requested = true
       self.save(validate: false)
-      owner = company.get_owner
       CustomerMailer.request_access_mail(owner).deliver  rescue logger.info "Error sending email"
+    else
+      company.add_dummy_data
     end
   end
 
