@@ -483,6 +483,12 @@ module ApplicationHelper
     customer.map{|customer| [customer.company, customer.id]}
   end
 
+  def list_of_companies_for_credit(current_company)
+    companies_groups = CompaniesGroup.where(seller_id: current_company.id)
+    excepted_companies_id = companies_groups.map(&:company_id).flatten.uniq
+    Company.where.not(id: current_company.id, is_broker: true, id: excepted_companies_id).map{|comapny| [comapny.name, comapny.id]}
+  end
+
   def get_company(c)
     return Company.where(id: c).first
   end

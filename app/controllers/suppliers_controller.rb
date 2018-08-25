@@ -96,22 +96,47 @@ class SuppliersController < ApplicationController
   end
 
   def credit
-    @companies_groups = CompaniesGroup.where("companies_groups.seller_id = ?", current_company.id)
+    @companies_groups = CompaniesGroup.where(seller_id: current_company.id)
     excepted_companies_id = @companies_groups.map(&:company_id).flatten.uniq
-    @group_names = []
-    if params[:letter].present?
-      # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
-      @companies = Company.where('companies.name LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_company.id)
-    else
-      # @companies = Company.where.not(id: current_company.id)
-      @star_companies = CreditLimit.where(seller_id: current_company.id, star: true).map{|c| c.buyer}
-      @custs = Company.where.not(id: current_company.id, is_broker: true) #.page
-      @companies = @star_companies + @custs
-      @companies = @companies.uniq
-      @companies = @companies.delete_if {|company| excepted_companies_id.include?(company.id.to_s) }
-      # @companies = Company.all
-    end
+    @credit_limits = CreditLimit.where(seller_id: current_company.id).where.not(buyer_id: excepted_companies_id)
+    # @group_names = []
+    # if params[:letter].present?
+    #   # @customers = Customer.where('lower(company) LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_customer.id)
+    #   @companies = Company.where('companies.name LIKE ?', "#{params[:letter].downcase}%").where.not(id: current_company.id)
+    # else
+    #   # @companies = Company.where.not(id: current_company.id)
+    #   @star_companies = CreditLimit.where(seller_id: current_company.id, star: true).map{|c| c.buyer}
+    #   @custs = Company.where.not(id: current_company.id, is_broker: true) #.page
+    #   @companies = @star_companies + @custs
+    #   @companies = @companies.uniq
+    #   @companies = @companies.delete_if {|company| excepted_companies_id.include?(company.id.to_s) }
+    #   # @companies = Company.all
+    # end
     # @type = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
+  end
+
+  def add_limit
+    @credit_limit = CreditLimit.new
+  end
+
+  def save_add_limit
+    buyers = params[:credit_limit][:buyer_id].reject { |c| c.empty? }
+    buyers.each do |buyer|
+      cl = CreditLimit.where(buyer_id: buyer, seller_id: current_company.id).first
+      if cl.nil?
+        cl = CreditLimit.new
+        cl.buyer_id = buyer
+        cl.seller_id = current_company.id
+        cl.credit_limit = params[:credit_limit][:credit_limit]
+        cl.market_limit = params[:credit_limit][:market_limit]
+        cl.save
+      else
+        cl.credit_limit = params[:credit_limit][:credit_limit]
+        cl.market_limit = params[:credit_limit][:market_limit]
+        cl.save
+      end
+    end
+    redirect_to credit_suppliers_path
   end
 
   def credit_request
@@ -134,7 +159,6 @@ class SuppliersController < ApplicationController
 
   def confirm_request
     @confirm_requests = CreditRequest.where(parent_id: current_customer.id, approve: false)
-
   end
 
   def show_request
@@ -193,7 +217,6 @@ class SuppliersController < ApplicationController
      redirect_to confirm_request_suppliers_path
    end
   end
-
 
   def change_limits
     cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_initialize

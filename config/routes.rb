@@ -187,6 +187,8 @@ Rails.application.routes.draw do
       get :add_company_list
       post :upload_company_list
       get :important
+      post '/add_limit', to: 'suppliers#save_add_limit'
+      get :add_limit
     end
   end
   resources :messages

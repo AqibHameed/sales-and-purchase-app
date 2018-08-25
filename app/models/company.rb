@@ -503,8 +503,8 @@ class Company < ApplicationRecord
       group_overdue_limit: 300
     }
     CompaniesGroup.create(company_group)
-    CreditLimit.create(buyer_id: dummy_co_3.id, seller_id: id, credit_limit: 300)
-    DaysLimit.create(buyer_id: dummy_co_3.id, seller_id: id, days_limit: 25)
+    CreditLimit.where(buyer_id: dummy_co_3.id, seller_id: id, credit_limit: 300).first_or_create
+    DaysLimit.where(buyer_id: dummy_co_3.id, seller_id: id, days_limit: 25).first_or_create
   end
 
   def get_buyer_score

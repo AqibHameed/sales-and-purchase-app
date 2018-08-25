@@ -1,0 +1,46 @@
+<h3>Add Credit Limit</h3>
+<div class="clear10"></div>
+<div class="form">
+  <%= form_for(@credit_limit, url: add_limit_suppliers_path, :method => "post", html: {class: 'form-horizontal'}) do |f|%>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Buyers:</label>
+      <div class="col-sm-10">
+        <%= f.select :buyer_id, options_for_select(list_of_companies_for_credit(current_company)), { :prompt => "Please select"}, { :multiple => true, :size => 5 } %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Credit Limit:</label>
+      <div class="col-sm-10">
+        <%= f.number_field :credit_limit, class: 'form-control', min: 1 %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Market Limit::</label>
+      <div class="col-sm-10">
+        <%=f.number_field :market_limit, class: 'form-control', min: 1 %>
+      </div>
+    </div>
+    <div class="clear10"></div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%= f.submit "Add", class: 'login-btn btn-02' %>
+      </div>
+    </div>
+  <% end %>
+</div>
+<div class="clear10"></div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#credit_limit_buyer_id').select2({
+      multiple: true
+    })
+  })
+</script>
+<style>
+  .form-group .select2-container {
+    width: 100% !important;
+  }
+</style>
