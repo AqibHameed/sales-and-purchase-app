@@ -131,14 +131,14 @@ module Api
           avg_price: proposal.buyer_price,
           total_price: proposal.buyer_total_value,
           credit: proposal.buyer_credit,
-          buyer_comment: proposal.buyer_comment
+          negotiated_comment: proposal.buyer_comment
         }
         seller_offers= {
           percent: proposal.seller_percent,
           avg_price: proposal.seller_price,
           total_price: proposal.seller_total_value,
           credit: proposal.seller_credit,
-          seller_comment: proposal.notes
+          negotiated_comment: proposal.notes
         }
         @data = {
           status: status,
@@ -150,12 +150,12 @@ module Api
           no_of_stones: proposal.trading_parcel.no_of_stones,
           carats: proposal.trading_parcel.weight,
           cost: proposal.trading_parcel.cost,
-          comment: proposal.trading_parcel.comment,
           list_percentage: proposal.trading_parcel.percent,
           list_avg_price: proposal.trading_parcel.price,
           list_total_price: proposal.trading_parcel.total_value,
           list_credit: proposal.trading_parcel.credit_period,
-          list_discount: proposal.trading_parcel.box_value
+          list_discount: proposal.trading_parcel.box_value,
+          list_comment: proposal.trading_parcel.comment
         }
         if proposal.negotiated == true
           if current_company.id == proposal.seller_id
@@ -163,7 +163,8 @@ module Api
               offered_percentage: proposal.buyer_percent,
               offered_price: proposal.buyer_price,
               offered_total_value: proposal.buyer_total_value,
-              offered_credit: proposal.buyer_credit
+              offered_credit: proposal.buyer_credit,
+              offered_comment: proposal.buyer_comment
             }
             @data.merge!(buyer_last_negotiated)
             @data.merge!(negotiated: seller_offers)
@@ -172,7 +173,8 @@ module Api
               offered_percentage: proposal.seller_percent,
               offered_price: proposal.seller_price,
               offered_total_value: proposal.seller_total_value,
-              offered_credit: proposal.seller_credit
+              offered_credit: proposal.seller_credit,
+              offered_comment: proposal.notes
             }
             @data.merge!(seller_last_negotiated)
             @data.merge!(negotiated: buyer_offers)
@@ -183,6 +185,7 @@ module Api
           offered_price: proposal.price,
           offered_total_value: proposal.total_value,
           offered_credit: proposal.credit,
+          offered_comment: proposal.buyer_comment,
           negotiated: nil
           }
           @data.merge!(offered)
