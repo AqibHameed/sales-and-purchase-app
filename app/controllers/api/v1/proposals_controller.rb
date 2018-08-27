@@ -141,6 +141,7 @@ module Api
           seller_comment: proposal.notes
         }
         @data = {
+          status: status,
           sender_name: sender_name,
           supplier_name: proposal.seller.name,
           source: proposal.trading_parcel.source,
@@ -154,21 +155,37 @@ module Api
           list_avg_price: proposal.trading_parcel.price,
           list_total_price: proposal.trading_parcel.total_value,
           list_credit: proposal.trading_parcel.credit_period,
-          list_discount: proposal.trading_parcel.box_value,
+          list_discount: proposal.trading_parcel.box_value
+        }
+        if proposal.negotiated == true
+          if current_company.id == proposal.seller_id
+            buyer_last_negotiated = {
+              offered_percentage: proposal.buyer_percent,
+              offered_price: proposal.buyer_price,
+              offered_total_value: proposal.buyer_total_value,
+              offered_credit: proposal.buyer_credit
+            }
+            @data.merge!(buyer_last_negotiated)
+            @data.merge!(negotiated: seller_offers)
+          else current_company.id == proposal.buyer_id
+            seller_last_negotiated = {
+              offered_percentage: proposal.seller_percent,
+              offered_price: proposal.seller_price,
+              offered_total_value: proposal.seller_total_value,
+              offered_credit: proposal.seller_credit
+            }
+            @data.merge!(seller_last_negotiated)
+            @data.merge!(negotiated: buyer_offers)
+          end
+        else
+          offered = {
           offered_percentage: proposal.percent,
           offered_price: proposal.price,
           offered_total_value: proposal.total_value,
           offered_credit: proposal.credit,
-          status: status
-        }
-        if proposal.negotiated == true
-          if current_company.id == proposal.seller_id
-            @data.merge!(negotiated: buyer_offers)
-          else current_company.id == proposal.buyer_id
-            @data.merge!(negotiated: seller_offers)
-          end
-        else
-          @data.merge!(negotiated: nil)
+          negotiated: nil
+          }
+          @data.merge!(offered)
         end
       end
 

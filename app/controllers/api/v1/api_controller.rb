@@ -165,9 +165,7 @@ class Api::V1::ApiController < ApplicationController
         last_name: c.last_name,
         email: c.email,
         company: c.company.try(:name),
-        chat_id: c.chat_id,
-        purchases_completed: get_completed_transaction(c.company),
-        suppliers_connected: supplier_connected(c.company, current_company)
+        chat_id: c.chat_id
       }
     end
     @data
@@ -182,7 +180,9 @@ class Api::V1::ApiController < ApplicationController
         city: c.city,
         country: c.county,
         created_at: c.created_at,
-        updated_at: c.updated_at
+        updated_at: c.updated_at,
+        purchases_completed: get_completed_transaction(c),
+        suppliers_connected: supplier_connected(c, current_company)
       }
     end
     @data
