@@ -1,6 +1,6 @@
 class CompaniesGroupsController < ApplicationController
   before_action :authenticate_customer!
-  
+
   # before_action :check_compaines_group_customers, only: [:create]
 
   def index
@@ -13,12 +13,11 @@ class CompaniesGroupsController < ApplicationController
   def create
     companies_groups_params[:company_id] = params[:companies_group][:company_id].reject!{|a| a== "" }
     @companies_group = CompaniesGroup.new(companies_groups_params)
-    if @companies_group.save!
+    if @companies_group.save
       flash[:notice] = "Group created successfully."
       redirect_to credit_suppliers_path(group: true)
     else
-      flash[:alert] = "Something went wrong. Please try again"
-      redirect_to new_companies_group_path(group: true)
+      render "new"
     end
   end
 

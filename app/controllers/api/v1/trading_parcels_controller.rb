@@ -1,7 +1,7 @@
 module Api
   module V1
     class TradingParcelsController <ApiController
-      skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell]
+      skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy]
 
       def create
         if current_company
@@ -58,6 +58,19 @@ module Api
           render json: { success: true, parcels: list_parcel_data(parcels), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+      def destroy
+        @parcel = TradingParcel.where(id: params[:id]).first
+        if @parcel.present?
+          if @parcel.destroy
+            render json: { success: true, message: "This parcel is deleted successfully." }
+          else
+            render json: { errors: @parcel.errors.full_messages }
+          end
+        else
+          render json: { errors: 'Parcel does not exist.' }
         end
       end
 

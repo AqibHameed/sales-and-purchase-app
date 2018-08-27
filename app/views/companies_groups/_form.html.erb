@@ -1,5 +1,10 @@
 <%= form_for @companies_group, html: { class: 'form-horizontal'} do |f| %>
   <div class="form-row">
+   <ul>
+      <% @companies_group.errors.full_messages.each do |msg| %>
+        <li class="text-danger"><%= msg %></li>
+      <% end %>
+   </ul>
    <h5>Group Name:</h5>
     <div class='field'>
       <%=f.text_field :group_name, class: 'form-control', placeholder: "Enter Group Name", required: true, style: 'width: 500px;' %>
@@ -19,13 +24,13 @@
   <div class="form-row">
     <h5>Group Market Limit:</h5>
     <div class='field'>
-       <%=f.text_field :group_market_limit, class: 'form-control', placeholder: "Enter Group Market Limit", required: true, style: 'width: 500px;' %>
+       <%=f.text_field :group_market_limit, class: 'form-control', placeholder: "Enter Group Market Limit", style: 'width: 500px;' %>
     </div>
   </div>
   <div class="form-row">
     <h5>Group Overdue Limit:</h5>
     <div class='field'>
-      <%=f.text_field :group_overdue_limit, class: 'form-control', placeholder: "Enter Group Overdue Limit", required: true, style: 'width: 500px;' %>
+      <%=f.text_field :group_overdue_limit, class: 'form-control', placeholder: "Enter Group Overdue Limit", style: 'width: 500px;' %>
     </div>
   </div>
   <div class="form-row">

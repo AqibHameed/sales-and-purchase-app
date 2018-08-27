@@ -41,7 +41,7 @@ module Api
             end
             render :json => {:success => true, :messages=> @messages, response_code: 200 }
           else
-            render :json => {:success => false, :message=> 'Message does not exists.', response_code: 201 }
+            render :json => {:success => true, :messages=> @messages, response_code: 201 }
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }

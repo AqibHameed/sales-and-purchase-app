@@ -85,28 +85,32 @@
     user_id = $(this).parent('.edit_field').find('#limit').data('id')
     user_name = $(this).parents('tr').find('td.customer_name').find('div.c_n').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
     old_limit = $(this).parents('td').find('#credit_edit').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
-    var r = confirm('You have changed '+ user_name +' Credit Limit from '+old_limit+' to $' + value);
-    if (r == true) {
-      $.ajax({
-        url: '<%=change_credit_limit_path %>',
-        method: 'get',
-        dataType: 'json',
-        data: {limit: value, buyer_id: user_id},
-        success:function(data){
-          if (data.errors){
-            $(self).parents('tr').find('span.error-message').text(data.message)
-          } else {
-            $(self).parents('tr').find('span.error-message').text('')
-            window.location.reload()
-          }
-          // $(self).parents('tr').find('td.credit_limit').removeClass('hide')
-          // $(self).parents('tr').find('td.edit_field').addClass('hide')
-          // $(self).parents('tr').find('td.credit_limit').html('<a href="#" class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></a><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')
-          // $(self).parent('.edit_field').find('#limit').val('')
-        }
-      })
+    if (value == '') {
+      alert("Total Limit Can't be blank")
     } else {
+      var r = confirm('You have changed '+ user_name +' Credit Limit from '+old_limit+' to $' + value);
+      if (r == true) {
+        $.ajax({
+          url: '<%=change_credit_limit_path %>',
+          method: 'get',
+          dataType: 'json',
+          data: {limit: value, buyer_id: user_id},
+          success:function(data){
+            if (data.errors){
+              $(self).parents('tr').find('span.error-message').text(data.message)
+            } else {
+              $(self).parents('tr').find('span.error-message').text('')
+              window.location.reload()
+            }
+            // $(self).parents('tr').find('td.credit_limit').removeClass('hide')
+            // $(self).parents('tr').find('td.edit_field').addClass('hide')
+            // $(self).parents('tr').find('td.credit_limit').html('<a href="#" class="given_limit">'+ data.value +'<i class="fa fa-edit pull-right" id="credit_edit"></i></a><span class="edit_field hide"><input name="limit" id="limit" value="" data-id="'+ user_id +'" placeholder="Enter credit limit" type="text"><i class="fa fa-check-square-o save_btn_2"></i></span>')
+            // $(self).parent('.edit_field').find('#limit').val('')
+          }
+        })
+      } else {
 
+      }
     }
   })
 
@@ -116,21 +120,25 @@
     user_id = $(this).parent('.edit_days').find('#days_limit').data('id')
     user_name = $(this).parents('tr').find('td.customer_name').find('div.c_n').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
     old_limit = $(this).parents('td').find('#days_edit').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
-    var r = confirm("You have added "+ user_name +" Overdue Limit "+old_limit+" by " + value + ' days');
-    if (r == true) {
-     $.ajax({
-        url: '<%=change_days_limit_path %>',
-        method: 'get',
-        dataType: 'json',
-        data: {limit: value, buyer_id: user_id},
-        success:function(data){
-          $(self).parents('tr').find('td.days_limit').removeClass('hide')
-          $(self).parents('tr').find('td.edit_days').addClass('hide')
-          $(self).parents('tr').find('td.days_limit').html('<a href="#" class="given_days">'+ data.value +'<i class="fa fa-edit pull-right" id="days_edit"></i></a><a href="#" class="edit_days hide"><input name="days_limit" id="days_limit" value="" data-id="'+ user_id +'" placeholder="Enter days limit" type="text"><i class="fa fa-check-square-o save_date_btn"></i></a>')
-          $(self).parent('.edit_field').find('#limit').val('')
-        }
-      })
-   }
+    if (value == '') {
+      alert("Overdue Limit Can't be blank")
+    } else {
+      var r = confirm("You have added "+ user_name +" Overdue Limit "+old_limit+" by " + value + ' days');
+      if (r == true) {
+       $.ajax({
+          url: '<%=change_days_limit_path %>',
+          method: 'get',
+          dataType: 'json',
+          data: {limit: value, buyer_id: user_id},
+          success:function(data){
+            $(self).parents('tr').find('td.days_limit').removeClass('hide')
+            $(self).parents('tr').find('td.edit_days').addClass('hide')
+            $(self).parents('tr').find('td.days_limit').html('<a href="#" class="given_days">'+ data.value +'<i class="fa fa-edit pull-right" id="days_edit"></i></a><a href="#" class="edit_days hide"><input name="days_limit" id="days_limit" value="" data-id="'+ user_id +'" placeholder="Enter days limit" type="text"><i class="fa fa-check-square-o save_date_btn"></i></a>')
+            $(self).parent('.edit_field').find('#limit').val('')
+          }
+        })
+      }
+    }
   })
 
   $(document).on('click', '.save_market_limit_btn', function(){
@@ -139,22 +147,26 @@
     user_id = $(this).parent('.edit_market_limit').find('#market_limit').data('id')
     user_name = $(this).parents('tr').find('td.customer_name').find('div.c_n').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
     old_limit = $(this).parents('td').find('#market_limit_edit').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
-    var r = confirm("You have changed "+ user_name +" Market Limit from "+old_limit+" to $" + value);
-    if (r == true) {
-      $.ajax({
-        url: '<%=change_market_limit_path %>',
-        method: 'get',
-        dataType: 'json',
-        data: {market_limit: value, buyer_id: user_id},
-        success:function(data){
-          if (data.errors){
-            $(self).parents('tr').find('span.market-limit-error-message').text(data.message)
-          } else {
-            $(self).parents('tr').find('span.market-limit-error-message').text('')
-            window.location.reload()
+    if (value == '') {
+      alert("Market Limit Can't be blank")
+    } else {
+      var r = confirm("You have changed "+ user_name +" Market Limit from "+old_limit+" to $" + value);
+      if (r == true) {
+        $.ajax({
+          url: '<%=change_market_limit_path %>',
+          method: 'get',
+          dataType: 'json',
+          data: {market_limit: value, buyer_id: user_id},
+          success:function(data){
+            if (data.errors){
+              $(self).parents('tr').find('span.market-limit-error-message').text(data.message)
+            } else {
+              $(self).parents('tr').find('span.market-limit-error-message').text('')
+              window.location.reload()
+            }
           }
-        }
-      })
+        })
+      }
     }
   })
   $('#creditList').DataTable({
