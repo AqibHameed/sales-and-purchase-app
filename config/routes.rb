@@ -303,6 +303,11 @@ Rails.application.routes.draw do
           post :upload
         end
       end
+      resources :transactions do
+        collection do
+          post :make_payment
+        end
+      end
       resources :limits do
         collection do
           post :add_credit_limit

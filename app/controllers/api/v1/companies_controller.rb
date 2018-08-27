@@ -3,6 +3,10 @@ class Api::V1::CompaniesController < ApplicationController
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
 
+  include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TextHelper
+  include ApplicationHelper
+
   def list_company
     @array =[]
     current_customer.companies.each do |company|
@@ -60,22 +64,74 @@ class Api::V1::CompaniesController < ApplicationController
   def history
     if current_company
       history = []
-      @pending_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ?',current_company.id, current_company.id, Date.today, false)
-      @overdue_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ?',current_company.id, current_company.id, Date.today, false)
-      @completed_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and paid = ?',current_company.id, current_company.id, true)
-
-      @polished_pending_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.today, false, 'Polished')
-      @polished_overdue_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.today, false, 'Polished')
-      @polished_completed_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and paid = ? and diamond_type = ?',current_company.id, current_company.id, true, 'Polished')
+      all_rough_pend_transactions = []
+      all_rough_over_transactions = []
+      all_rough_comp_transactions = []
+      polish_pending_transactions = []
+      polish_overdue_transactions = []
+      polish_completed_transactions = []
+      @all_transaction = Transaction.includes(:trading_parcel)
+      @all_transaction.each do |t|
+        data = {
+          id: t.id,
+          buyer_id: t.buyer_id,
+          seller_id: t.seller_id,
+          trading_parcel_id: t.trading_parcel_id,
+          due_date: t.due_date,
+          price: t.price,
+          credit: t.credit,
+          paid: t.paid,
+          created_at: t.created_at,
+          updated_at: t.updated_at,
+          buyer_confirmed: t.buyer_confirmed,
+          reject_reason: t.reject_reason,
+          reject_date: t.reject_date,
+          transaction_type: t.transaction_type,
+          remaining_amount: t.remaining_amount,
+          transaction_uid: t.transaction_uid,
+          diamond_type: t.diamond_type,
+          total_amount: t.total_amount,
+          invoice_no: t.invoice_no,
+          ready_for_buyer: t.ready_for_buyer,
+          description: t.description,
+          activity: t.seller.try(:name),
+          counter_party: t.buyer.try(:name),
+          payment_status: get_status(t),
+          shape:  t.trading_parcel.present? ? (t.trading_parcel.shape.present? ? t.trading_parcel.shape : 'N/A') : 'N/A'
+        }
+        if (t.buyer_id == current_company.id  || t.seller_id == current_company.id) && (t.paid == false)
+          if t.due_date.present?
+            if (t.due_date > Date.today)
+              if t.diamond_type == 'Polished'
+                polish_pending_transactions << data
+              else
+                all_rough_pend_transactions << data
+              end
+            else
+              if t.diamond_type == 'Polished'
+                polish_overdue_transactions << data
+              else
+                all_rough_over_transactions << data
+              end
+            end
+          end
+        else
+          if t.diamond_type == 'Polished'
+            polish_completed_transactions << data
+          else
+            all_rough_comp_transactions << data
+          end
+        end
+      end
       rough = {
-        pending_transaction: @pending_transaction,
-        overdue_transaction: @overdue_transaction,
-        completed_transaction: @completed_transaction
+        pending_transaction: all_rough_pend_transactions,
+        overdue_transaction: all_rough_over_transactions,
+        completed_transaction: all_rough_comp_transactions
       }
       polished = {
-        pending_transaction: @polished_pending_transactions,
-        overdue_transaction: @polished_overdue_transactions,
-        completed_transaction: @polished_completed_transactions
+        pending_transaction: polish_pending_transactions,
+        overdue_transaction: polish_overdue_transactions,
+        completed_transaction: polish_completed_transactions
       }
       history = {
         rough: rough,
