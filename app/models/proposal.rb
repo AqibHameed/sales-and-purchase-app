@@ -4,7 +4,18 @@ class Proposal < ApplicationRecord
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
   has_many :messages
+  after_create :set_buyer_offers
+
+
   enum status: [ :negotiated, :accepted, :rejected ]
+
+  def set_buyer_offers
+    self.buyer_percent = self.percent
+    self.buyer_price = self.price
+    self.buyer_total_value = self.total_value
+    self.buyer_credit = self.credit
+    self.save
+  end
 
   # validate  :credit_validation
 
