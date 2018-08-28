@@ -64,7 +64,7 @@ class Customer < ApplicationRecord
       self.save(validate: false)
       CustomerMailer.request_access_mail(owner).deliver  rescue logger.info "Error sending email"
     else
-      company.add_dummy_data
+      # company.add_dummy_data
     end
   end
 

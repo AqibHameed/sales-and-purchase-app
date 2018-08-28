@@ -12,7 +12,7 @@ class Company < ApplicationRecord
   has_many :company_group_seller, :foreign_key => "seller_id", :class_name => "CompaniesGroup", dependent: :destroy
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
-  # after_create :add_dummy_data
+  after_create :add_dummy_data
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
   def self.import(file)
@@ -214,7 +214,6 @@ class Company < ApplicationRecord
       if seller_late_amount.positive?
         scores['fourth']['total'] = ((seller_amount_and_score.to_f / seller_late_amount.to_f) * 0.25).round(2)
       end
-
       scores['total'] = 1 - scores['first']['total'] + scores['second']['total'] + scores['third']['total'] + scores['fourth']['total']
     end
 
@@ -418,7 +417,7 @@ class Company < ApplicationRecord
       diamond_type: 'Polished',
       sale_demanded: true,
       percent: 0,
-      comment: 'This is DUmmy Polished Parcel',
+      comment: 'This is Dummy Polished Parcel',
       total_value: 240,
       shape: 'Round',
       color: 'M',
@@ -505,6 +504,7 @@ class Company < ApplicationRecord
     CompaniesGroup.create(company_group)
     CreditLimit.where(buyer_id: dummy_co_3.id, seller_id: id, credit_limit: 300).first_or_create
     DaysLimit.where(buyer_id: dummy_co_3.id, seller_id: id, days_limit: 25).first_or_create
+    return 0
   end
 
   def get_buyer_score

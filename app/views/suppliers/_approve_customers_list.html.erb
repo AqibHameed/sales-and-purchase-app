@@ -14,7 +14,11 @@
       <th>Block</th>
     </thead>
     <% companies.each.with_index(1) do |c, i|%>
-      <% company = c.buyer %>
+      <% if c.class.name == "Company" %>
+        <% company = c %>
+      <% else %>
+        <% company = c.buyer %>
+      <% end %>
       <tr>
       <td><span class="table-head-in-td">Imp</span>
         <%= link_to important_suppliers_path(id: company.id), remote: true do %>

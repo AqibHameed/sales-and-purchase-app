@@ -1,34 +1,34 @@
 class CustomerMailer < ApplicationMailer
-  default from: "ClarityNetwork <admin@dialuck.net>"
+  default from: "SafeTrade Team <contact@safetrade.ai>"
 
   def remove_broker_mail(request)
     @request = request
     broker = @request.try(:broker).try(:customers).try(:first).try(:email)
-    mail(:to => broker, :subject => '[ClarityNetwork] Broker Remove' )
+    mail(:to => broker, :subject => '[SafeTrade] Broker Remove' )
   end
 
   def broker_invite_email(broker_invite)
   	@details = broker_invite
-  	mail(:to => @details.email, :subject => '[ClarityNetwork] Invitation to join Dialuck' )
+  	mail(:to => @details.email, :subject => '[SafeTrade] Invitation to join Dialuck' )
   end
 
   def approve_access(customer)
     @customer = customer
-    mail(:to => @customer.email, :subject => '[ClarityNetwork] Your access request is approved')
+    mail(:to => @customer.email, :subject => '[SafeTrade] Your access request is approved')
   end
 
   def remove_access(customer)
     @customer = customer
-    mail(:to => @customer.email, :subject => '[ClarityNetwork] Your access is removed ')
+    mail(:to => @customer.email, :subject => '[SafeTrade] Your access is removed ')
   end
 
   def request_access_mail(customer)
     @customer = customer
-    mail(:to => @customer.email, :subject => '[ClarityNetwork] You have a new access request ')
+    mail(:to => @customer.email, :subject => '[SafeTrade] You have a new access request ')
   end
 
   def send_invitation(email)
     @email = email
-    mail(:to => email, :subject => '[ClarityNetwork] You have a invitation ')
+    mail(:to => email, :subject => '[SafeTrade] You have a invitation ')
   end
 end
