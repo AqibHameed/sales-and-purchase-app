@@ -9,7 +9,7 @@ class CustomerMailer < ApplicationMailer
 
   def broker_invite_email(broker_invite)
   	@details = broker_invite
-  	mail(:to => @details.email, :subject => '[SafeTrade] Invitation to join Dialuck' )
+  	mail(:to => @details.email, :subject => '[SafeTrade] Invitation to join SafeTrade' )
   end
 
   def approve_access(customer)

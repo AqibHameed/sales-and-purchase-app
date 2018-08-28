@@ -7,4 +7,4 @@ Your bids for, <strong><%= @tender.name %></strong> are successfully confirmed.
 To view the details, <%= link_to 'Click here.', tender_url(@tender) %>
 <br><br>
 Thanks & Regards,<br>
-Dialuck Team.
+SafeTrade Team.
