@@ -70,18 +70,20 @@ class Api::V1::CompaniesController < ApplicationController
       polish_pending_transactions = []
       polish_overdue_transactions = []
       polish_completed_transactions = []
-      @all_transaction = Transaction.includes(:trading_parcel)
-      @all_transaction.each do |t|
+      @all_rough_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished')
+      @all_polished_transaction = Transaction.includes(:trading_parcel).where(diamond_type: 'Polished')
+      @all_rough_transaction.each do |t|
         data = {
           id: t.id,
           buyer_id: t.buyer_id,
           seller_id: t.seller_id,
           trading_parcel_id: t.trading_parcel_id,
           due_date: t.due_date,
-          price: t.price,
+          avg_price: t.price,
           credit: t.credit,
           paid: t.paid,
           created_at: t.created_at,
+          invoice_date: t.created_at.strftime("%B, %d %Y"),
           updated_at: t.updated_at,
           buyer_confirmed: t.buyer_confirmed,
           reject_reason: t.reject_reason,
@@ -93,34 +95,27 @@ class Api::V1::CompaniesController < ApplicationController
           total_amount: t.total_amount,
           invoice_no: t.invoice_no,
           ready_for_buyer: t.ready_for_buyer,
-          description: t.description,
-          activity: t.seller.try(:name),
+          description: get_description(t.trading_parcel),
+          activity: (current_company.id == t.buyer_id) ? 'Bought' : ((current_company.id == t.seller_id) ? 'Sold' : 'N/A'),
           counter_party: t.buyer.try(:name),
           payment_status: get_status(t),
-          shape:  t.trading_parcel.present? ? (t.trading_parcel.shape.present? ? t.trading_parcel.shape : 'N/A') : 'N/A'
+          no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
+          carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
+          cost: t.trading_parcel.present? ? t.trading_parcel.cost : 'N/A',
+          box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
+          sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
+          confirm_status: t.buyer_confirmed
         }
         if (t.buyer_id == current_company.id  || t.seller_id == current_company.id) && (t.paid == false)
           if t.due_date.present?
             if (t.due_date > Date.today)
-              if t.diamond_type == 'Polished'
-                polish_pending_transactions << data
-              else
-                all_rough_pend_transactions << data
-              end
+              all_rough_pend_transactions << data
             else
-              if t.diamond_type == 'Polished'
-                polish_overdue_transactions << data
-              else
-                all_rough_over_transactions << data
-              end
+              all_rough_over_transactions << data
             end
           end
         else
-          if t.diamond_type == 'Polished'
-            polish_completed_transactions << data
-          else
-            all_rough_comp_transactions << data
-          end
+          all_rough_comp_transactions << data
         end
       end
       rough = {
@@ -128,6 +123,47 @@ class Api::V1::CompaniesController < ApplicationController
         overdue_transaction: all_rough_over_transactions,
         completed_transaction: all_rough_comp_transactions
       }
+
+      @all_polished_transaction.each do |t|
+        data = {
+          id: t.id,
+          buyer_id: t.buyer_id,
+          seller_id: t.seller_id,
+          trading_parcel_id: t.trading_parcel_id,
+          due_date: t.due_date,
+          avg_price: t.price,
+          total_amount: t.total_amount,
+          credit: t.credit,
+          paid: t.paid,
+          created_at: t.created_at,
+          invoice_date: t.created_at.strftime("%B, %d %Y"),
+          updated_at: t.updated_at,
+          buyer_confirmed: t.buyer_confirmed,
+          shape:  t.trading_parcel.present? ? (t.trading_parcel.shape.present? ? t.trading_parcel.shape : 'N/A') : 'N/A',
+          size:  t.trading_parcel.present? ? (t.trading_parcel.weight.nil? ? 'N/A' : t.trading_parcel.weight) : 'N/A',
+          color: t.trading_parcel.present? ? (t.trading_parcel.color.nil? ? 'N/A' : t.trading_parcel.color) : 'N/A',
+          clarity: t.trading_parcel.present? ? (t.trading_parcel.clarity.nil? ? 'N/A' : t.trading_parcel.clarity) : 'N/A',
+          cut: t.trading_parcel.present? ? (t.trading_parcel.cut.nil? ? (t.trading_parcel.polish.nil? ? (t.trading_parcel.symmetry.nil? ? 'N/A' : t.trading_parcel.symmetry[0..1]) : t.trading_parcel.polish[0..1]) : t.trading_parcel.cut[0..1]) : 'N/A',
+          fluorescence: t.trading_parcel.present? ? (t.trading_parcel.fluorescence.nil? ? 'N/A' : t.trading_parcel.fluorescence) : 'N/A',
+          lab: t.trading_parcel.present? ? (t.trading_parcel.lab.nil? ? 'N/A' : t.trading_parcel.lab) : 'N/A',
+          activity: (current_company.id == t.buyer_id) ? 'Bought' : ((current_company.id == t.seller_id) ? 'Sold' : 'N/A'),
+          counter_party: t.buyer.try(:name),
+          payment_status: get_status(t),
+          invoice_date: t.created_at.strftime("%B, %d %Y"),
+          confirm_status: t.buyer_confirmed
+        }
+        if (t.buyer_id == current_company.id  || t.seller_id == current_company.id) && (t.paid == false)
+          if t.due_date.present?
+            if (t.due_date > Date.today)
+              polish_pending_transactions << data
+            else
+              polish_overdue_transactions << data
+            end
+          end
+        else
+          polish_completed_transactions << data
+        end
+      end
       polished = {
         pending_transaction: polish_pending_transactions,
         overdue_transaction: polish_overdue_transactions,
