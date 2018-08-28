@@ -22,9 +22,8 @@
         <p><%=link_to 'Total Credit Given', credit_given_list_suppliers_path, data: {turbolinks: false}  %>: <%= number_to_currency(overall_credit_given(current_company)) %></p>
         <p><%=link_to 'Add Limit', add_limit_suppliers_path, data: {turbolinks: false}, class: 'btn btn-sm btn-danger' %></p>
         <div class="approve_list">
-          <%= render 'approve_customers_list', credit_limits: @credit_limits %>
+          <%= render 'approve_customers_list', companies: @credit_limits %>
         </div>
-
       </div>
     </div>
     <div id="sectionB" class="tab-pane fade">

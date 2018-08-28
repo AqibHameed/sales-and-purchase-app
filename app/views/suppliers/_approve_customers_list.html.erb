@@ -13,8 +13,8 @@
       <th>Suppliers Connected</th>
       <th>Block</th>
     </thead>
-    <% credit_limits.each.with_index(1) do |credit_limit, i|%>
-      <% company = credit_limit.buyer %>
+    <% companies.each.with_index(1) do |c, i|%>
+      <% company = c.buyer %>
       <tr>
       <td><span class="table-head-in-td">Imp</span>
         <%= link_to important_suppliers_path(id: company.id), remote: true do %>
