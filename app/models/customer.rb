@@ -49,8 +49,8 @@ class Customer < ApplicationRecord
 
   # send_account_creation_mail
   after_create :add_user_to_tenders, :assign_role_to_customer, :firebase_user, :check_for_confirmation
-  after_update :firebase_user
-  after_destroy :delete_firebase_user
+  # after_update :firebase_user
+  # after_destroy :delete_firebase_user
   after_invitation_accepted :set_roles_to_customer
 
   has_attached_file :certificate
