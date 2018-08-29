@@ -89,7 +89,7 @@ class Api::V1::CompaniesController < ApplicationController
           reject_reason: t.reject_reason,
           reject_date: t.reject_date,
           transaction_type: t.transaction_type,
-          remaining_amount: t.remaining_amount,
+          amount_to_be_paid: t.remaining_amount,
           transaction_uid: t.transaction_uid,
           diamond_type: t.diamond_type,
           total_amount: t.total_amount,
@@ -104,6 +104,7 @@ class Api::V1::CompaniesController < ApplicationController
           cost: t.trading_parcel.present? ? t.trading_parcel.cost : 'N/A',
           box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
           sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
+          comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
           confirm_status: t.buyer_confirmed
         }
         if (t.buyer_id == current_company.id  || t.seller_id == current_company.id) && (t.paid == false)
@@ -150,6 +151,14 @@ class Api::V1::CompaniesController < ApplicationController
           counter_party: t.buyer.try(:name),
           payment_status: get_status(t),
           invoice_date: t.created_at.strftime("%B, %d %Y"),
+          description: get_description(t.trading_parcel),
+          no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
+          carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
+          cost: t.trading_parcel.present? ? t.trading_parcel.cost : 'N/A',
+          box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
+          sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
+          amount_to_be_paid: t.remaining_amount,
+          comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
           confirm_status: t.buyer_confirmed
         }
         if (t.buyer_id == current_company.id  || t.seller_id == current_company.id) && (t.paid == false)
