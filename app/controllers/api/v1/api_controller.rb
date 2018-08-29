@@ -174,6 +174,7 @@ class Api::V1::ApiController < ApplicationController
   def companies_data(companies)
     @data = []
     companies.each do |c|
+      status = c.customers.present?
       @data << {
         id: c.id.to_s,
         name: c.name,
@@ -182,7 +183,8 @@ class Api::V1::ApiController < ApplicationController
         created_at: c.created_at,
         updated_at: c.updated_at,
         purchases_completed: get_completed_transaction(c),
-        suppliers_connected: supplier_connected(c, current_company)
+        suppliers_connected: supplier_connected(c, current_company),
+        status: status
       }
     end
     @data
