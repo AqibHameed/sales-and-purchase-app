@@ -49,6 +49,8 @@ class Customer < ApplicationRecord
 
   # send_account_creation_mail
   after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user, :check_for_confirmation
+  after_update :update_firebase_user
+  after_destroy :delete_firebase_user
   after_invitation_accepted :set_roles_to_customer
 
   has_attached_file :certificate
@@ -177,14 +179,52 @@ class Customer < ApplicationRecord
     end
   end
 
+  # def create_firebase_user
+  #   begin
+  #     response = RestClient.post 'https://us-central1-buddy-6305d.cloudfunctions.net/createFirUser?key=0115aaf701379d933d26d3d6512df9ff2df35a7f', { id: id, email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no, address: '', city: '', postal_code: '' }.to_json, {content_type: :json}
+  #     data = JSON.parse(response)
+  #     self.update_attributes(firebase_uid: data["user"]["uid"])
+  #   rescue RestClient::ExceptionWithResponse => e
+  #     puts e.response
+  #   end
+  # end
+
   def create_firebase_user
-    begin
-      response = RestClient.post 'https://us-central1-buddy-6305d.cloudfunctions.net/createFirUser?key=0115aaf701379d933d26d3d6512df9ff2df35a7f', { id: id, email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no, address: '', city: '', postal_code: '' }.to_json, {content_type: :json}
-      data = JSON.parse(response)
-      self.update_attributes(firebase_uid: data["user"]["uid"])
-    rescue RestClient::ExceptionWithResponse => e
-      puts e.response
-    end
+    require "google/cloud/firestore"
+    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d'
+    doc_ref = firestore.doc "users/#{id}"
+    doc_ref.set({
+      id: id,
+      authentication_token: authentication_token,
+      first_name: first_name,
+      last_name: last_name,
+      company:  self.company.name,
+      chat_id: chat_id,
+      mobile_no: mobile_no,
+      created_at: created_at,
+      updated_at: updated_at,
+      email: email
+    })
+    return 0
+  end
+
+  def update_firebase_user
+    require "google/cloud/firestore"
+    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d'
+    user = firestore.doc "users/#{id}"
+    user.update({first_name: first_name});
+    user.update({last_name: last_name});
+    user.update({company: company.name});
+    user.update({chat_id: chat_id});
+    user.update({mobile_no: mobile_no});
+    user.update({updated_at: updated_at});
+  end
+
+  def delete_firebase_user
+    require "google/cloud/firestore"
+    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d'
+    user = firestore.doc "users/#{id}"
+    user.delete
   end
 
   ### callbacks ###
