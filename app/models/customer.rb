@@ -48,8 +48,8 @@ class Customer < ApplicationRecord
   validates :role, :presence => true, on: :create
 
   # send_account_creation_mail
-  after_create :add_user_to_tenders, :assign_role_to_customer, :create_firebase_user, :check_for_confirmation
-  after_update :update_firebase_user
+  after_create :add_user_to_tenders, :assign_role_to_customer, :firebase_user, :check_for_confirmation
+  after_update :firebase_user
   after_destroy :delete_firebase_user
   after_invitation_accepted :set_roles_to_customer
 
@@ -189,7 +189,7 @@ class Customer < ApplicationRecord
   #   end
   # end
 
-  def create_firebase_user
+  def firebase_user
     require "google/cloud/firestore"
     firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d'
     doc_ref = firestore.doc "users/#{id}"
@@ -206,18 +206,6 @@ class Customer < ApplicationRecord
       email: email
     })
     return 0
-  end
-
-  def update_firebase_user
-    require "google/cloud/firestore"
-    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d'
-    user = firestore.doc "users/#{id}"
-    user.update({first_name: first_name});
-    user.update({last_name: last_name});
-    user.update({company: company.name});
-    user.update({chat_id: chat_id});
-    user.update({mobile_no: mobile_no});
-    user.update({updated_at: updated_at});
   end
 
   def delete_firebase_user
