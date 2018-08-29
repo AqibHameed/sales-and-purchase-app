@@ -49,8 +49,8 @@ class Customer < ApplicationRecord
 
   # send_account_creation_mail
   after_create :add_user_to_tenders, :assign_role_to_customer, :firebase_user, :check_for_confirmation
-  # after_update :firebase_user
-  # after_destroy :delete_firebase_user
+  after_update :firebase_user
+  after_destroy :delete_firebase_user
   after_invitation_accepted :set_roles_to_customer
 
   has_attached_file :certificate
@@ -191,7 +191,7 @@ class Customer < ApplicationRecord
 
   def firebase_user
     require "google/cloud/firestore"
-    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d'
+    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d', credentials: 'google_firebase_keys.json'
     doc_ref = firestore.doc "users/#{id}"
     doc_ref.set({
       id: id,
@@ -210,7 +210,7 @@ class Customer < ApplicationRecord
 
   def delete_firebase_user
     require "google/cloud/firestore"
-    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d'
+    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d', credentials: 'google_firebase_keys.json'
     user = firestore.doc "users/#{id}"
     user.delete
   end
