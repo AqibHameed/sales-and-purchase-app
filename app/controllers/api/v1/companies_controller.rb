@@ -70,7 +70,7 @@ class Api::V1::CompaniesController < ApplicationController
       polish_pending_transactions = []
       polish_overdue_transactions = []
       polish_completed_transactions = []
-      @all_rough_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type != ?', currrent_company.id, current_company.id, 'Polished')
+      @all_rough_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type != ?', current_company.id, current_company.id, 'Polished')
       @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ?', current_company.id, current_company.id, 'Polished')
       @all_rough_transaction.each do |t|
         data = {
