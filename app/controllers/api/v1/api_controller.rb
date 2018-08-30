@@ -183,7 +183,7 @@ class Api::V1::ApiController < ApplicationController
         created_at: c.created_at,
         updated_at: c.updated_at,
         purchases_completed: get_completed_transaction(c),
-        suppliers_connected: supplier_connected(c.id),
+        suppliers_connected: get_supplier_connected(c.id),
         status: status
       }
     end
@@ -194,7 +194,7 @@ class Api::V1::ApiController < ApplicationController
     params.require(:email_attachment).permit(:file,:tender_id)
   end
 
-  def supplier_connected(buyer)
+  def get_supplier_connected(buyer)
     count = CreditLimit.where("buyer_id =?", buyer).count
   end
 
