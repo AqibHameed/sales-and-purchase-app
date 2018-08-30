@@ -70,8 +70,8 @@ class Api::V1::CompaniesController < ApplicationController
       polish_pending_transactions = []
       polish_overdue_transactions = []
       polish_completed_transactions = []
-      @all_rough_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished')
-      @all_polished_transaction = Transaction.includes(:trading_parcel).where(diamond_type: 'Polished')
+      @all_rough_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type != ?', currrent_company.id, current_company.id, 'Polished')
+      @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ?', current_company.id, current_company.id, 'Polished')
       @all_rough_transaction.each do |t|
         data = {
           id: t.id,
@@ -107,7 +107,7 @@ class Api::V1::CompaniesController < ApplicationController
           comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
           confirm_status: t.buyer_confirmed
         }
-        if (t.buyer_id == current_company.id  || t.seller_id == current_company.id) && (t.paid == false)
+        if t.paid == false
           if t.due_date.present?
             if (t.due_date > Date.today)
               all_rough_pend_transactions << data
@@ -161,7 +161,7 @@ class Api::V1::CompaniesController < ApplicationController
           comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
           confirm_status: t.buyer_confirmed
         }
-        if (t.buyer_id == current_company.id  || t.seller_id == current_company.id) && (t.paid == false)
+        if t.paid == false
           if t.due_date.present?
             if (t.due_date > Date.today)
               polish_pending_transactions << data
