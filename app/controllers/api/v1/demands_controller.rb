@@ -141,14 +141,24 @@ module Api
 
       def live_demands
         if current_company
+          required_demands = []
           ids = current_company.block_users
-          @normal_demands = Demand.where.not(company_id: ids).order(created_at: :desc)
-          @polished_demands = PolishedDemand.where.not(company_id: ids).order(created_at: :desc)
-          render json: { success: true, live_demands: { rough: @normal_demands, polished: @polished_demands }, response_code: 200 }
+          @normal_demands = Demand.where('created_at > ?', 30.days.ago).where.not(company_id: ids).order(created_at: :desc)
+          @polished_demands = PolishedDemand.where('created_at > ?', 30.days.ago).where.not(company_id: ids).order(created_at: :desc)
+          @normal_demands.group_by(&:description).each do |description, parcels|
+            data = {
+              description: description,
+              no_of_demands: parcels.count,
+              date: get_last_demand_date(parcels)
+            }
+            required_demands << data
+          end
+          render json: { success: true, live_demands: { rough: required_demands, polished: @polished_demands }, response_code: 200 }
         else
           render json: { success: false, errors: "Not authenticated", response_code: 201 }
         end
       end
+
     end
   end
 end

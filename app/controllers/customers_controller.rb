@@ -369,8 +369,8 @@ class CustomersController < ApplicationController
 
   def live_demands
     ids = current_company.block_users
-    @normal_demands = Demand.where.not(company_id: ids).order(created_at: :desc)
-    @polished_demands = PolishedDemand.where.not(company_id: ids).order(created_at: :desc)
+    @normal_demands = Demand.where('created_at > ?', 30.days.ago).where.not(company_id: ids).order(created_at: :desc)
+    @polished_demands = PolishedDemand.where('created_at > ?', 30.days.ago).where.not(company_id: ids).order(created_at: :desc)
   end
 
   private

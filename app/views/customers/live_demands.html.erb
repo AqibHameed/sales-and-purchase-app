@@ -5,11 +5,16 @@
     <div class="table no-padding">
       <table id="tenderList" class="table table-bordered table-responsive tablesorter">
         <thead class="thead-desktop">
-          <th>Description</th>
+          <th colspan="4">Description</th>
+          <th>Demands</th>
+          <th></th>
         </thead>
-        <% @normal_demands.each do |demand| %>
+        <%# @normal_demands.each do |demand| %>
+        <% @normal_demands.group_by(&:description).each do |description, parcels| %>
           <tr>
-            <td><%= demand.description %></td>
+            <td colspan="4"><%= description %></td>
+            <td><%= parcels.count %></td>
+            <td><%= get_last_demand_date(parcels) %></td>
           </tr>
         <% end %>
       </table>

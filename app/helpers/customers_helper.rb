@@ -52,4 +52,13 @@ module CustomersHelper
     avg = total/count rescue 0
     number_with_precision(avg, precision: 2)
   end
+
+  def get_last_demand_date(parcels)
+    ids = []
+    parcels.each do |p|
+     ids << p.id
+    end
+    last = Demand.order("created_at DESC").where(:id => ids).first
+    return last.created_at.strftime("%B, %d %Y")
+  end
 end

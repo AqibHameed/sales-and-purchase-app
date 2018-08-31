@@ -345,7 +345,6 @@ class Company < ApplicationRecord
         'my_business_amount' => 0,
         'total' => 0
     }
-
     result['my_business_amount'] = Transaction.total_transaction(self.id).sum(:total_amount)
     result['company_name'] = Company.find(company_id).name
     if result['my_business_amount'].positive?
@@ -354,8 +353,6 @@ class Company < ApplicationRecord
 
       result['total'] = ( (result['company_business_amount_as_seller'] + result['company_business_amount_as_buyer']) / result['my_business_amount'] ).round(2)
     end
-
-
     return result
   end
 
@@ -369,7 +366,7 @@ class Company < ApplicationRecord
       company_id: id,
       credit_period: 30,
       diamond_type: 'Rough',
-      description: 'Dummy Parcel for Demo - Please Delete',
+      description: 'Dummy Parcel for Demo',
       weight: 10,
       price: 10,
       source: 'OutSide Goods',
@@ -386,7 +383,7 @@ class Company < ApplicationRecord
       company_id: id,
       credit_period: 30,
       diamond_type: 'Rough',
-      description: 'Dummy Parcel for Demo - Please Delete',
+      description: 'Dummy Parcel for Demo',
       weight: 10,
       price: 10,
       source: 'OutSide Goods',
@@ -433,16 +430,16 @@ class Company < ApplicationRecord
     trading_parcel3 = TradingParcel.new(polished_parcel)
     trading_parcel3.save(:validate => false)
 
-    demand1 = { description: 'Dummy Parcel for Demo - Please Delete', demand_supplier_id:1, block: 0,
+    demand1 = { description: 'Dummy Parcel for Demo ', demand_supplier_id:1, block: 0,
         deleted: 0, company_id: id
       }
     demand2 = {
-        description: 'Dummy Parcel for Demo - Please Delete',
+        description: 'Dummy Parcel for Demo ',
         demand_supplier_id: 2, block: 0, deleted: 0,
         company_id: id
       }
     demand3 = {
-        description: 'Dummy Parcel for Demo - Please Delete', demand_supplier_id: 3, block: 0, deleted: 0,
+        description: 'Dummy Parcel for Demo ', demand_supplier_id: 3, block: 0, deleted: 0,
         company_id: id
       }
     Demand.create(demand1)

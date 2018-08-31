@@ -113,8 +113,12 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def customer_list
-    customers = Customer.all
-    render json: { customers: customers_data(customers), response_code: 200 }
+    if current_customer
+      customers = Customer.all
+      render json: { customers: get_customers_data(customers, current_customer), response_code: 200 }
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
+    end
   end
 
   def company_list
@@ -130,6 +134,44 @@ class Api::V1::ApiController < ApplicationController
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
+  end
+
+  def set_pagination(name, options = {})
+    results = instance_variable_get("@#{name}")
+    page = {}
+    pagination = {}
+    if results.current_page <= results.total_pages
+      request_params = request.query_parameters
+      url_without_params = request.original_url.slice(0..(request.original_url.index("?")-1)) unless request_params.empty?
+      url_without_params ||= request.original_url
+      page[:first] = 1 if results.total_pages > 1 && !results.first_page?
+      page[:last]  = results.total_pages  if results.total_pages > 1 && !results.last_page?
+      page[:next]  = results.current_page + 1 unless results.last_page?
+      page[:prev]  = results.current_page - 1 unless results.first_page?
+      page.each do |k, v|
+        page[k] = "#{url_without_params}?page=#{v}#{url_params}"
+      end
+      pagination = {
+        total_pages: results.total_pages,
+        is_first_page: results.first_page?,
+        is_last_page: results.last_page?,
+        first_page: page[:first].present? ? page[:first] : false,
+        last_page: page[:last].present? ? page[:last] : false,
+        prev_page: page[:prev].present? ? page[:prev] : false,
+        next_page: page[:next].present? ? page[:next] : false,
+        current_page: results.current_page
+      }
+    end
+  end
+
+  def url_params
+    url = request.url
+    uri = URI(url)
+    params = CGI.parse(uri.query || "")
+    params.delete('page')
+    uri.query = URI.encode_www_form(params)
+    query = ''
+    query = '&'+uri.query unless uri.query.blank?
   end
 
   protected
@@ -156,17 +198,19 @@ class Api::V1::ApiController < ApplicationController
     @data
   end
 
-  def customers_data(customers)
+  def get_customers_data(customers, current_customer)
     @data = []
     customers.each do |c|
-      @data << {
-        id: c.id,
-        first_name: c.first_name,
-        last_name: c.last_name,
-        email: c.email,
-        company: c.company.try(:name),
-        chat_id: c.chat_id
-      }
+      unless c.id == current_customer.id
+        @data << {
+          id: c.id,
+          first_name: c.first_name,
+          last_name: c.last_name,
+          email: c.email,
+          company: c.company.try(:name),
+          chat_id: c.chat_id
+        }
+      end
     end
     @data
   end

@@ -157,7 +157,8 @@ module Api
                 end
               end
             end
-            render json: { success: true, limits: @data, response_code: 200  }
+            @companies = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])
+            render json: { success: true, pagination: set_pagination(:companies), limits: @companies, response_code: 200  }
           end
         else
           render json: { success: false, errors: "You have to login first!!", response_code: 201 }

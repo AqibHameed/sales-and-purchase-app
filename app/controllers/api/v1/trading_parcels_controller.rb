@@ -264,7 +264,6 @@ module Api
           check_credit_limit(transaction, parcel, false)
         end
       end
-
     end
   end
 end
