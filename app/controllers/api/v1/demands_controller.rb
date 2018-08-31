@@ -68,7 +68,9 @@ module Api
         if current_company
           @demanded = []
           @others = []
-          parcels = TradingParcel.where(sold: false)
+          # Not showing Polished now
+          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished')
+          # parcels = TradingParcel.where(sold: false)
           required_parcels = []
           parcels.each do |parcel|
             if check_parcel_visibility(parcel, current_company)

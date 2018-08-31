@@ -207,7 +207,8 @@ class CustomersController < ApplicationController
         parcels = TradingParcel.where(sold: false).where("trading_parcels.source = ?", params[:demand][:demand_supplier_id])
       end
     else
-      parcels = TradingParcel.where(sold: false) #.page(params[:page]).per(25)
+      # Not showing Polished now
+      parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished') #.page(params[:page]).per(25)
     end
     required_parcels = []
     dtc_parcels = []
@@ -219,8 +220,8 @@ class CustomersController < ApplicationController
       if check_parcel_visibility(parcel, current_company)
         if parcel.source == 'OUTSIDE GOODS'
            outside_parcels << parcel
-        elsif parcel.source == 'POLISHED'
-           polished_parcels << parcel
+        # elsif parcel.source == 'POLISHED'
+        #    polished_parcels << parcel
         elsif parcel.source == 'RUSSIAN'
            russian_parcels << parcel
         elsif parcel.source == 'SOMETHING SPECIAL'
