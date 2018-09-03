@@ -152,14 +152,10 @@ class Api::V1::ApiController < ApplicationController
         page[k] = "#{url_without_params}?page=#{v}#{url_params}"
       end
       pagination = {
-        total_pages: results.total_pages,
-        is_first_page: results.first_page?,
-        is_last_page: results.last_page?,
-        first_page: page[:first].present? ? page[:first] : false,
-        last_page: page[:last].present? ? page[:last] : false,
-        prev_page: page[:prev].present? ? page[:prev] : false,
-        next_page: page[:next].present? ? page[:next] : false,
-        current_page: results.current_page
+        total_pages: results.total_pages.to_s,
+        prev_page: page[:prev].present? ? page[:prev].to_s : nil,
+        next_page: page[:next].present? ? page[:next].to_s : nil,
+        current_page: results.current_page.to_s
       }
     end
   end
