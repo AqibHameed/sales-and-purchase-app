@@ -32,6 +32,12 @@ class HomeController < ApplicationController
   def faq
   end
 
+  def privacy_policy
+  end
+
+  def tos
+  end
+
   def verified_unverified
     customer = Customer.where(id: params[:id]).first
     if customer.present?

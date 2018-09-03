@@ -59,6 +59,6 @@ module CustomersHelper
      ids << p.id
     end
     last = Demand.order("created_at DESC").where(:id => ids).first
-    return last.created_at.strftime("%B, %d %Y")
+    return last.created_at
   end
 end

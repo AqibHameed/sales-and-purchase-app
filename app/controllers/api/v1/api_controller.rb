@@ -122,8 +122,14 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def company_list
-    companies = Company.all
-    render json: { companies: companies_data(companies), response_code: 200 }
+    # @companies = Company.all
+    if params[:name].present?
+      company = Company.where('name LIKE ?', "%#{params[:name]}%")
+    else
+      company = Company.all
+    end
+    @companies = company.page(params[:page]).per(params[:count])
+    render json: { pagination: set_pagination(:companies), companies: companies_data(@companies), response_code: 200 }
   end
 
   def update_chat_id
@@ -152,10 +158,10 @@ class Api::V1::ApiController < ApplicationController
         page[k] = "#{url_without_params}?page=#{v}#{url_params}"
       end
       pagination = {
-        total_pages: results.total_pages.to_s,
+        total_pages: results.total_pages,
         prev_page: page[:prev].present? ? page[:prev].to_s : nil,
         next_page: page[:next].present? ? page[:next].to_s : nil,
-        current_page: results.current_page.to_s
+        current_page: results.current_page
       }
     end
   end

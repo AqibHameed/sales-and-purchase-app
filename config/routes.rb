@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   get '/can_update', to: 'tenders#round_updated'
   get '/get_timer', to: 'tenders#timer_value'
   get '/faq', to: 'home#faq'
+  get '/privacy_policy', to: 'home#privacy_policy'
+  get '/tos', to: 'home#tos'
 
   get '/chat', to: 'chats#index'
   get '/video_chat', to: 'chat_vidoes#index'
