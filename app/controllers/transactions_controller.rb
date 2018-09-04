@@ -65,6 +65,17 @@ class TransactionsController < ApplicationController
     end
   end
 
+  def reject
+    @transaction = Transaction.find(params[:id])
+    @transaction.buyer_reject = true
+    if @transaction.save
+      TenderMailer.buyer_reject_transaction(@transaction).deliver
+      redirect_to trading_history_path, notice: 'Transaction rejected successfully'
+    else
+      redirect_to trading_history_path, notice: 'Not rejected now. Please try again.'
+    end
+  end
+
   def show
     @transaction = Transaction.find(params[:id])
     @payment = PartialPayment.new

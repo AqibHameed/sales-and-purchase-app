@@ -88,9 +88,12 @@
         </td>
         <% if transaction.buyer_confirmed %>
           <td>Confirmed</td>
-        <% elsif current_company.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && get_status(transaction) != 'Completed' %>
+        <% elsif transaction.buyer_reject %>
+          <td>Rejected</td>
+        <% elsif current_company.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && get_status(transaction) != 'Completed' && !transaction.buyer_reject %>
           <td>
             <%=link_to 'Confirm', confirm_transaction_path(transaction), data: {turbolinks: false}, class: link %>
+            <%=link_to 'Reject', reject_transaction_path(transaction), data: {turbolinks: false}, class: link %>
           </td>
         <% else %>
           <td></td>

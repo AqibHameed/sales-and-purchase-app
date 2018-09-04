@@ -79,4 +79,9 @@ class TenderMailer < ApplicationMailer
     @payment = payment
     mail(:to => @transaction.buyer.email, :subject => '[SafeTrade] Payment is received' )
   end
+
+  def buyer_reject_transaction(transaction)
+    @transaction = transaction
+    mail(:to => @transaction.trading_parcel.customer.email, :subject => '[SafeTrade] Buyer rejected your direct sell.' )
+  end
 end

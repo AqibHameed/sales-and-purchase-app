@@ -47,7 +47,7 @@
     </tr>
   </table>
   <div class="clear20"></div>
-  <% if current_user.id == @transaction.buyer_id && @transaction.transaction_type == 'manual' && !@transaction.buyer_confirmed && get_status(@transaction) != 'Completed' %>
+  <% if current_user.id == @transaction.buyer_id && @transaction.transaction_type == 'manual' && !@transaction.buyer_confirmed && !@transaction.buyer_reject && get_status(@transaction) != 'Completed' %>
     <%=link_to 'Confirm', confirm_transaction_path(@transaction), data: {turbolinks: false}, class: 'login-btn btn-02' %>
   <% end %>
   <div class="clear20"></div>
@@ -129,7 +129,7 @@
       e.preventDefault();
       $('#show_form').toggleClass('hide')
     });
-    
+
     $('.full_payment').click(function(e){
       e.preventDefault();
       $('.input-1').val('<%=@transaction.remaining_amount%>')
