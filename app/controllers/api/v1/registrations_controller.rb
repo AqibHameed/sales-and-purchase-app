@@ -18,12 +18,12 @@ class Api::V1::RegistrationsController < ActionController::Base
       token = customer.generate_jwt_token
       if customer.confirmed?
         if customer.is_requested
-          render :json => { success: true, message: 'A request has been to sent to your company admin for approval. You can access your account after approval', response_code: 200 }
+          render :json => { success: true, message: 'A request has been to sent to your company admin for approval. You can access your account after approval', customer: customer_data(customer, token), response_code: 200 }
         else
           render :json => { success: true, customer: customer_data(customer, token), response_code: 200 }
         end
       else
-        render :json => { success: true, message: 'An email has been sent to your email. Please verify the email.', response_code: 200 }
+        render :json => { success: true, message: 'An email has been sent to your email. Please verify the email.', customer: customer_data(customer, token), response_code: 200 }
       end
     else
       # check_company.destroy unless check_company.try(:customers).present?
