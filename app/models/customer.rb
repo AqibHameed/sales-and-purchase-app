@@ -48,8 +48,7 @@ class Customer < ApplicationRecord
   validates :role, :presence => true, on: :create
 
   # send_account_creation_mail
-  after_create :add_user_to_tenders, :assign_role_to_customer, :firebase_user, :check_for_confirmation
-  after_update :firebase_user
+  after_create :add_user_to_tenders, :create_firebase_user, :assign_role_to_customer, :check_for_confirmation
   after_destroy :delete_firebase_user
   after_invitation_accepted :set_roles_to_customer
 
@@ -179,40 +178,23 @@ class Customer < ApplicationRecord
     end
   end
 
-  # def create_firebase_user
-  #   begin
-  #     response = RestClient.post 'https://us-central1-buddy-6305d.cloudfunctions.net/createFirUser?key=0115aaf701379d933d26d3d6512df9ff2df35a7f', { id: id, email: email, first_name: first_name, last_name: last_name, company: company, mobile_no: mobile_no, password: mobile_no, address: '', city: '', postal_code: '' }.to_json, {content_type: :json}
-  #     data = JSON.parse(response)
-  #     self.update_attributes(firebase_uid: data["user"]["uid"])
-  #   rescue RestClient::ExceptionWithResponse => e
-  #     puts e.response
-  #   end
-  # end
-
-  def firebase_user
-    require "google/cloud/firestore"
-    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d', credentials: 'google_firebase_keys.json'
-    doc_ref = firestore.doc "users/#{id}"
-    doc_ref.set({
-      id: id,
-      authentication_token: authentication_token,
-      first_name: first_name,
-      last_name: last_name,
-      company:  self.company.name,
-      chat_id: chat_id,
-      mobile_no: mobile_no,
-      created_at: created_at,
-      updated_at: updated_at,
-      email: email
-    })
-    return 0
+  def create_firebase_user
+    begin
+      response = RestClient.post 'https://buddy-6305d.firebaseapp.com/addUsers?key=0115aaf701379d933d26d3d6512df9ff2df35a7f', [{ userUid: id.to_s, email: email.to_s, first_name: first_name.to_s, last_name: last_name.to_s, company: self.company.name.to_s, mobile_no: mobile_no.to_s, address: address.to_s, city: city.to_s, postal_code: postal_code.to_s}].to_json, {content_type: :json}
+      data = JSON.parse(response)
+      # self.update_attributes(firebase_uid: data["user"]["uid"])
+    rescue RestClient::ExceptionWithResponse => e
+      puts e.response
+    end
   end
 
   def delete_firebase_user
-    require "google/cloud/firestore"
-    firestore = Google::Cloud::Firestore.new project_id: 'buddy-6305d', credentials: 'google_firebase_keys.json'
-    user = firestore.doc "users/#{id}"
-    user.delete
+    begin
+      response = RestClient.delete 'https://buddy-6305d.firebaseapp.com/deleteUser?key=0115aaf701379d933d26d3d6512df9ff2df35a7f&uid='+id.to_s
+      data = JSON.parse(response)
+    rescue RestClient::ExceptionWithResponse => e
+      puts e.response
+    end
   end
 
   ### callbacks ###
