@@ -95,7 +95,7 @@ module Api
                 check_credit_limit(transaction, @parcel, params[:available_credit_limit])
               else
                 if registered_users < 1
-                  if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today)
+                  if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && ((params[:trading_parcel][:my_transaction_attributes][:created_at].to_date + @parcel.try(:credit_period).days) < Date.today)
                     save_transaction(transaction, @parcel)
                   else
                     check_overdue_and_market_limit(transaction, @parcel)

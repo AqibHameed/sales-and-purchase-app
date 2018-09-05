@@ -29,7 +29,8 @@ class Api::V1::SessionsController < Devise::SessionsController
   end
 
   def customer_by_token
-    customer = Customer.where(authentication_token: params[:authentication_token]).first
+    token = request.headers['Authorization']
+    customer = Customer.where(authentication_token: token).first
     if customer.present?
       render :json => { customer: customer_data(customer, nil), response_code: 200 }
     else
