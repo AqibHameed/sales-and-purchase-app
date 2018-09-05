@@ -1,5 +1,5 @@
 class Api::V1::SessionsController < Devise::SessionsController
-  before_action :ensure_params_exist, except: [:destroy]
+  before_action :ensure_params_exist, except: [:destroy, :customer_by_token]
   skip_before_action :verify_authenticity_token
 
   def create
@@ -26,6 +26,15 @@ class Api::V1::SessionsController < Devise::SessionsController
       return
     end
     invalid_login_attempt
+  end
+
+  def customer_by_token
+    customer = Customer.where(authentication_token: params[:authentication_token]).first
+    if customer.present?
+      render :json => { customer: customer_data(customer, nil), response_code: 200 }
+    else
+      render :json => { success: false, message: 'Customer does not exist for this token.', response_code: 201 }
+    end
   end
 
   def destroy

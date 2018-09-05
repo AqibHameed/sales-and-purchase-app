@@ -267,6 +267,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       devise_scope :customer do
         post :log_in, to: 'sessions#create'
+        get :get_customer, to: 'sessions#customer_by_token'
         delete :log_out, to: 'sessions#destroy'
         post :signup, to: 'registrations#create'
         post :company_limits, to: 'companies#list_company'
