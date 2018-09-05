@@ -38,6 +38,26 @@ class Api::V1::CompaniesController < ApplicationController
     end
   end
 
+  def reset_limits
+    if current_company
+      company = Company.where(id: params[:company_id]).first
+      if company.present?
+        credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
+        days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
+        credit_limit.credit_limit = 0
+        credit_limit.market_limit = 0
+        credit_limit.save
+        days_limit.days_limit = 30
+        days_limit.save
+        render json: { success: true, message: "Limits are reset successfully", response_code: 200 }
+      else
+        render json: { errors: "Company does not exist for this id.", response_code: 201 }
+      end
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }
+    end
+  end
+
   def check_company
     company = Company.where(name: params[:company_name]).present?
     render json: { request_acess: company, signup: !company }
