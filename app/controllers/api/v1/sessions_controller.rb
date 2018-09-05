@@ -31,8 +31,9 @@ class Api::V1::SessionsController < Devise::SessionsController
   def customer_by_token
     token = request.headers['Authorization']
     customer = Customer.where(authentication_token: token).first
+    jwt_token = customer.generate_jwt_token
     if customer.present?
-      render :json => { customer: customer_data(customer, nil), response_code: 200 }
+      render :json => { customer: customer_data(customer, jwt_token), response_code: 200 }
     else
       render :json => { success: false, message: 'Customer does not exist for this token.', response_code: 201 }
     end
@@ -53,21 +54,21 @@ class Api::V1::SessionsController < Devise::SessionsController
   protected
   def customer_data(customer, token)
     {
-      id: customer.id, 
-      email:  customer.email, 
-      created_at: customer.created_at, 
-      updated_at: customer.updated_at, 
-      first_name: customer.first_name, 
-      last_name: customer.last_name, 
-      city: customer.city, 
-      address: customer.address, 
-      postal_code: customer.postal_code, 
-      phone: customer.phone, 
-      status: customer.status, 
-      company: customer.company.try(:name), 
-      company_address: customer.company_address, 
-      phone_2: customer.phone_2, 
-      mobile_no: customer.mobile_no, 
+      id: customer.id,
+      email:  customer.email,
+      created_at: customer.created_at,
+      updated_at: customer.updated_at,
+      first_name: customer.first_name,
+      last_name: customer.last_name,
+      city: customer.city,
+      address: customer.address,
+      postal_code: customer.postal_code,
+      phone: customer.phone,
+      status: customer.status,
+      company: customer.company.try(:name),
+      company_address: customer.company_address,
+      phone_2: customer.phone_2,
+      mobile_no: customer.mobile_no,
       authentication_token: customer.authentication_token,
       chat_id: customer.chat_id,
       token: token
