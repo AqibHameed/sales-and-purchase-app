@@ -248,6 +248,7 @@ module Api
             new_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
           end
           if available_credit_limit < parcel.total_value.to_f
+            parcel.destroy
             render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{available_credit_limit} to #{new_limit}.  Do you want to continue ?" }
           else
             save_transaction(transaction, parcel)
@@ -259,6 +260,7 @@ module Api
         buyer = Company.where(id: transaction.buyer_id).first
         market_limit = get_market_limit(buyer, current_company).to_f
         if market_limit < parcel.total_value.to_f || current_company.has_overdue_transaction_of_30_days(transaction.buyer_id)
+          parcel.destroy
           render json: { sucess: false, message: "This Company does not meet your risk parameters. Do you wish to cancel the transaction?" }
         else
           check_credit_limit(transaction, parcel, false)
