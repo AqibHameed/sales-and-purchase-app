@@ -91,11 +91,11 @@ module Api
               registered_users = buyer.customers.count
               if transaction.paid == true
                 save_transaction(transaction, @parcel)
-              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == "true"
+              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == true
                 save_transaction(transaction, @parcel)
-              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == "false"
-              elsif params[:available_market_limit].present? && params[:available_market_limit] == "false"
-              elsif params[:available_market_limit].present? && params[:available_market_limit] == "true"
+              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == false
+              elsif params[:available_market_limit].present? && params[:available_market_limit] == false
+              elsif params[:available_market_limit].present? && params[:available_market_limit] == true
                 check_credit_limit(transaction, @parcel)
               else
                 if registered_users < 1
