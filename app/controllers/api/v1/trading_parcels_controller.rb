@@ -91,8 +91,12 @@ module Api
               registered_users = buyer.customers.count
               if transaction.paid == true
                 save_transaction(transaction, @parcel)
-              elsif params[:available_market_overdue].present? && params[:available_market_overdue] == "true"
-                check_credit_limit(transaction, @parcel, params[:available_credit_limit])
+              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == "true"
+                save_transaction(transaction, @parcel)
+              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == "false"
+              elsif params[:available_market_limit].present? && params[:available_market_limit] == "false"
+              elsif params[:available_market_limit].present? && params[:available_market_limit] == "true"
+                check_credit_limit(transaction, @parcel)
               else
                 if registered_users < 1
                   if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && ((params[:trading_parcel][:my_transaction_attributes][:created_at].to_date + @parcel.try(:credit_period).days) < Date.today)
@@ -101,7 +105,7 @@ module Api
                     check_overdue_and_market_limit(transaction, @parcel)
                   end
                 else
-                  check_credit_limit(transaction, @parcel, false)
+                  check_credit_limit(transaction, @parcel)
                 end
               end
             else
@@ -235,24 +239,20 @@ module Api
         @data
       end
 
-      def check_credit_limit(transaction, parcel, cr_limit)
-        if cr_limit.present? && (cr_limit == "true")
-          save_transaction(transaction, parcel)
+      def check_credit_limit(transaction, parcel)
+        buyer = Company.where(id: transaction.buyer_id).first
+        available_credit_limit = get_available_credit_limit(buyer, current_company).to_f
+        credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+        if credit_limit.nil?
+          new_limit = parcel.total_value
         else
-          buyer = Company.where(id: transaction.buyer_id).first
-          available_credit_limit = get_available_credit_limit(buyer, current_company).to_f
-          credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
-          if credit_limit.nil?
-            new_limit = parcel.total_value
-          else
-            new_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
-          end
-          if available_credit_limit < parcel.total_value.to_f
-            parcel.destroy
-            render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{available_credit_limit} to #{new_limit}.  Do you want to continue ?" }
-          else
-            save_transaction(transaction, parcel)
-          end
+          new_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
+        end
+        if available_credit_limit < parcel.total_value.to_f
+          parcel.destroy
+          render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{available_credit_limit} to #{new_limit}.  Do you want to continue ?" }
+        else
+          save_transaction(transaction, parcel)
         end
       end
 
