@@ -27,6 +27,7 @@ class TradingParcelsController < ApplicationController
     end
 
     if @parcel.save && check_broker
+      @parcel.send_mail_to_demanded
       flash[:notice] = "Parcel created successfully"
       respond_to do |format|
         format.js {render :js => "window.location.href='"+single_parcel_supplier_path(@parcel)+"'"}

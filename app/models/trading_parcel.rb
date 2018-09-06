@@ -14,7 +14,7 @@ class TradingParcel < ApplicationRecord
   # validates :price, :credit_period, :weight, :total_value, numericality: true, allow_blank: true, unless: :diamond_type_is_polish?
 
   after_initialize :set_default_demand
-  after_create :generate_and_add_uid, :send_mail_to_demanded, :replace_nil_value
+  after_create :generate_and_add_uid, :replace_nil_value
   after_update :set_sale_none_when_all_none, :replace_nil_value
 
   accepts_nested_attributes_for :my_transaction
@@ -61,6 +61,8 @@ class TradingParcel < ApplicationRecord
   def generate_and_add_uid
     uid = SecureRandom.hex(4)
     self.uid = uid
+    diamond_type = ((source == 'DTC' || source == 'RUSSIAN') ? 'Sight' : ((source == 'SOMETHING SPECIAL' || source == 'OUTSIDE GOODS') ? 'Rough' : ((source == 'POLISHED') ? 'Polished' : 'N/A')))
+    self.diamond_type = diamond_type
     self.save(validate: false)
   end
 
