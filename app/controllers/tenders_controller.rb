@@ -330,9 +330,9 @@ class TendersController < ApplicationController
   end
 
   def trading_history
-    @pending_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ?',current_company.id, current_company.id, Date.today, false)
-    @overdue_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ?',current_company.id, current_company.id, Date.today, false)
-    @completed_transaction = Transaction.includes(:trading_parcel).where.not(diamond_type: 'Polished').where('(buyer_id = ? or seller_id = ?) and paid = ?',current_company.id, current_company.id, true)
+    @pending_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ?',current_company.id, current_company.id, Date.today, false)
+    @overdue_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ?',current_company.id, current_company.id, Date.today, false)
+    @completed_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) and paid = ?',current_company.id, current_company.id, true)
   end
 
   def polished_trading_history

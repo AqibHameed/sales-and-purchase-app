@@ -97,7 +97,7 @@
           </td>
           <% if transaction.buyer_confirmed %>
             <td>Confirmed</td>
-          <% if transaction.buyer_reject %>
+          <% elsif transaction.buyer_reject %>
             <td>Rejected</td>
           <% elsif current_company.id == transaction.buyer_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && !transaction.buyer.reject && get_status(transaction) != 'Completed' %>
             <td>
