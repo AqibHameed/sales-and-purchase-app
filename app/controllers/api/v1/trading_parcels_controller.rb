@@ -263,7 +263,7 @@ module Api
           parcel.destroy
           render json: { sucess: false, message: "This Company does not meet your risk parameters. Do you wish to cancel the transaction?" }
         else
-          check_credit_limit(transaction, parcel, false)
+          check_credit_limit(transaction, parcel)
         end
       end
     end
