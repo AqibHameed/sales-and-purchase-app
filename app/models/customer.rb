@@ -48,7 +48,8 @@ class Customer < ApplicationRecord
   validates :role, :presence => true, on: :create
 
   # send_account_creation_mail
-  after_create :add_user_to_tenders, :create_firebase_user, :assign_role_to_customer, :check_for_confirmation
+  # Callback add_user_to_tenders
+  after_create :create_firebase_user, :assign_role_to_customer, :check_for_confirmation
   after_destroy :delete_firebase_user
   after_invitation_accepted :set_roles_to_customer
 

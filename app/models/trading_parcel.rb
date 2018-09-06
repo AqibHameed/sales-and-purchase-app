@@ -80,7 +80,9 @@ class TradingParcel < ApplicationRecord
   def send_mail_to_demanded
     demands = Demand.where.not(company_id: company_id).where(description: self.try(:description)).map{|e| e.company.try(:customers).map(&:email)}.flatten.uniq
     unless demands.blank?
-       TenderMailer.parcel_up_email(self, demands).deliver rescue logger.info "Error sending email"
+      demands.each do |demand|
+        TenderMailer.parcel_up_email(self, demand).deliver rescue logger.info "Error sending email"
+      end
     end
   end
 
