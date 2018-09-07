@@ -69,7 +69,7 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def companies_list
-    companies = Company.where(county: params[:country])
+    companies = Company.where(country: params[:country]).page(params[:page]).per(params[:per])
     render json: { success: true, companies: companies.as_json(only: [:id, :name, :county]) }
   end
 
