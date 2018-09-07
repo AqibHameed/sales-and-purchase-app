@@ -244,4 +244,9 @@ class Api::V1::ApiController < ApplicationController
     count = CreditLimit.where("buyer_id =?", buyer).count
   end
 
+  def get_completed_transaction(company)
+    @transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and paid = ?',company.id, company.id, true)
+    return @transactions.count
+  end
+
 end
