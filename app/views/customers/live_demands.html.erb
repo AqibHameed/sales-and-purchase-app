@@ -14,7 +14,7 @@
           <tr>
             <td colspan="4"><%= description %></td>
             <td><%= parcels.count %></td>
-            <td><%= get_last_demand_date(parcels) %></td>
+            <td><%= get_last_demand_date(parcels).strftime("%B, %d %Y") %></td>
           </tr>
         <% end %>
       </table>

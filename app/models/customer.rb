@@ -49,8 +49,9 @@ class Customer < ApplicationRecord
 
   # send_account_creation_mail
   # Callback add_user_to_tenders
-  after_create :create_firebase_user, :assign_role_to_customer, :check_for_confirmation
+  after_create :create_update_firebase_user, :assign_role_to_customer, :check_for_confirmation
   after_destroy :delete_firebase_user
+  after_update :create_update_firebase_user
   after_invitation_accepted :set_roles_to_customer
 
   has_attached_file :certificate
@@ -179,7 +180,7 @@ class Customer < ApplicationRecord
     end
   end
 
-  def create_firebase_user
+  def create_update_firebase_user
     begin
       response = RestClient.post 'https://buddy-6305d.firebaseapp.com/addUsers?key=0115aaf701379d933d26d3d6512df9ff2df35a7f', [{ userUid: id.to_s, email: email.to_s, first_name: first_name.to_s, last_name: last_name.to_s, company: self.company.name.to_s, mobile_no: mobile_no.to_s, address: address.to_s, city: city.to_s, postal_code: postal_code.to_s}].to_json, {content_type: :json}
       data = JSON.parse(response)
