@@ -26,9 +26,20 @@ module Api
 
       def create
         if current_company
-          demand = Demand.new(company_id: current_company.id, demand_supplier_id: params[:demand_supplier_id], description: params[:description], block: false)
-          if demand.save
-            render json: { success: true, message: 'Demand created successfully.', demand: demand }
+          array = []
+          descriptions = params[:description]
+          descriptions.each do |d|
+            data = {
+              company_id: current_company.id,
+              demand_supplier_id: params[:demand_supplier_id],
+              description: d,
+              block: false
+            }
+            array << data
+          end
+          demands = Demand.create(array)
+          if demands.present? 
+            render json: { success: true, message: 'Demand created successfully.', demands: demands }
           else
             render json: { success: false, message: demand.errors.full_messages.first }
           end

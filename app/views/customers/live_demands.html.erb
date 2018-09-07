@@ -7,14 +7,13 @@
         <thead class="thead-desktop">
           <th colspan="4">Description</th>
           <th>Demands</th>
-          <th></th>
         </thead>
         <%# @normal_demands.each do |demand| %>
         <% @normal_demands.group_by(&:description).each do |description, parcels| %>
           <tr>
             <td colspan="4"><%= description %></td>
             <td><%= parcels.count %></td>
-            <td><%= get_last_demand_date(parcels).strftime("%B, %d %Y") %></td>
+            <!-- <td><%#= get_last_demand_date(parcels).strftime("%B, %d %Y") %></td> -->
           </tr>
         <% end %>
       </table>
