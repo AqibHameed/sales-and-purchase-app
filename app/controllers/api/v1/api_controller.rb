@@ -122,13 +122,8 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def company_list
-    # @companies = Company.all
-    if params[:name].present?
-      company = Company.where('name LIKE ?', "%#{params[:name]}%")
-    else
-      company = Company.all
-    end
-    @companies = company.page(params[:page]).per(params[:count])
+    @companies = params[:name].present? ? Company.where('name LIKE ?', "%#{params[:name]}%") : Company.all
+    @companies = @companies.page(params[:page]).per(params[:count])
     render json: { pagination: set_pagination(:companies), companies: companies_data(@companies), response_code: 200 }
   end
 
@@ -225,7 +220,7 @@ class Api::V1::ApiController < ApplicationController
         id: c.id.to_s,
         name: c.name,
         city: c.city,
-        country: c.county,
+        country: c.country,
         created_at: c.created_at,
         updated_at: c.updated_at,
         purchases_completed: get_completed_transaction(c),
