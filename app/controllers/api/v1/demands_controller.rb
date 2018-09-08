@@ -152,7 +152,7 @@ module Api
             data = {
               description: description,
               no_of_demands: parcels.count,
-              date: get_last_demand_date(parcels).strftime("%B,%d %Y")
+              date: get_last_demand_date(parcels).strftime("%FT%T%:z")
             }
             required_rough_demands << data
           end
@@ -176,8 +176,8 @@ module Api
               lab: p.lab,
               city: p.city,
               country: p.country,
-              created_at: p.created_at.strftime("%B,%d %Y"),
-              updated_at: p.updated_at.strftime("%B,%d %Y"),
+              created_at: p.created_at.strftime("%FT%T%:z"),
+              updated_at: p.updated_at.strftime("%FT%T%:z"),
               weight_to: p.weight_to,
               color_to: p.color_to,
               clarity_to: p.clarity_to,
