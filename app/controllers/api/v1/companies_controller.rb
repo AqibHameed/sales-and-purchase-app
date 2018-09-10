@@ -83,11 +83,7 @@ class Api::V1::CompaniesController < ApplicationController
 
   def invite
     if current_company
-      company_params = {
-        name: params[:company],
-        county: params[:country]
-      }
-      company = Company.new(company_params)
+      company = Company.new(name: params[:company], county: params[:country])
       if company.save
         CustomerMailer.send_invitation(params[:email]).deliver
         render json: { success: true, message: " Company is invited successfully", response_code: 200 }
