@@ -114,21 +114,24 @@ class Api::V1::ApiController < ApplicationController
 
   def customer_list
     if current_customer
-      customers = Customer.all
-      render json: { customers: get_customers_data(customers, current_customer), response_code: 200 }
+      if params[:first_name].present? or params[:last_name].present?
+        @customers = params[:first_name].present? ? Customer.where('first_name LIKE ?', "%#{params[:first_name]}%") : Customer.all
+        @customers = @customers.where('last_name LIKE ?', "%#{params[:last_name]}%") if params[:last_name].present?
+      elsif params[:name].present?
+        @customers = Customer.where('first_name LIKE ? or last_name LIKE ?', "%#{params[:name]}%", "%#{params[:name]}%")
+      end
+      
+      @customers = @customers.page(params[:page]).per(params[:count])
+      render json: { pagination: set_pagination(:customers), customers: get_customers_data(@customers, current_customer), response_code: 200 }
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
+    
   end
 
   def company_list
-    # @companies = Company.all
-    if params[:name].present?
-      company = Company.where('name LIKE ?', "%#{params[:name]}%")
-    else
-      company = Company.all
-    end
-    @companies = company.page(params[:page]).per(params[:count])
+    @companies = params[:name].present? ? Company.where('name LIKE ?', "%#{params[:name]}%") : Company.all
+    @companies = @companies.page(params[:page]).per(params[:count])
     render json: { pagination: set_pagination(:companies), companies: companies_data(@companies), response_code: 200 }
   end
 
@@ -225,7 +228,7 @@ class Api::V1::ApiController < ApplicationController
         id: c.id.to_s,
         name: c.name,
         city: c.city,
-        country: c.county,
+        country: c.country,
         created_at: c.created_at,
         updated_at: c.updated_at,
         purchases_completed: get_completed_transaction(c),
