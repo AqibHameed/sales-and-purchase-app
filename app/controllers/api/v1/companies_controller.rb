@@ -189,9 +189,9 @@ class Api::V1::CompaniesController < ApplicationController
         }
         if t.paid == false
           other = {
-            seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company),to_i,
+            seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
             buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
-            market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)) : get_market_limit_from_credit_limit_table(t.buyer, current_company)
+            market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
           }
           if t.due_date.present?
             data.merge!(other)
