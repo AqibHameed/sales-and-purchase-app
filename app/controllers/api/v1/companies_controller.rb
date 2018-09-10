@@ -81,6 +81,24 @@ class Api::V1::CompaniesController < ApplicationController
     render json: {errors: 'Not found', response_code: 201 }, status: 404
   end
 
+  def invite
+    if current_company
+      company_params = {
+        name: params[:company],
+        county: params[:country]
+      }
+      company = Company.new(company_params)
+      if company.save
+        CustomerMailer.send_invitation(params[:email]).deliver
+        render json: { success: true, message: " Company is invited successfully", response_code: 200 }
+      else
+        render json: { success: false, message: company.errors.full_messages }
+      end
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }
+    end
+  end
+
   def history
     if current_company
       history = []
