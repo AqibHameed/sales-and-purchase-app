@@ -154,7 +154,7 @@ module Api
           list_avg_price: proposal.trading_parcel.price,
           list_total_price: proposal.trading_parcel.total_value,
           list_credit: proposal.trading_parcel.credit_period,
-          list_discount: proposal.trading_parcel.box_value,
+          list_discount: proposal.trading_parcel.box_value.to_i,
           list_comment: proposal.trading_parcel.comment
         }
         if proposal.negotiated == true
