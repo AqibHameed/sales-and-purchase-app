@@ -120,6 +120,7 @@ module Api
       end
 
       def save_transaction(transaction, parcel)
+        buyer = Company.where(id: transaction.buyer_id).first
         available_credit_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
         if transaction.save
           transaction.set_due_date
