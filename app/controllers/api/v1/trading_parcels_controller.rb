@@ -99,7 +99,7 @@ module Api
                 check_credit_limit(transaction, @parcel)
               else
                 if registered_users < 1
-                  if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && ((params[:trading_parcel][:my_transaction_attributes][:created_at].to_date + @parcel.try(:credit_period).days) < Date.today)
+                  if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today)
                     save_transaction(transaction, @parcel)
                   else
                     check_overdue_and_market_limit(transaction, @parcel)
@@ -120,20 +120,27 @@ module Api
       end
 
       def save_transaction(transaction, parcel)
+        buyer = Company.where(id: transaction.buyer_id).first
         available_credit_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
         if transaction.save
           transaction.set_due_date
           transaction.generate_and_add_uid
           ## set limit ##
           total_price = parcel.total_value
+          credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
           if available_credit_limit < total_price
-            credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
             if credit_limit.nil?
               CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
             else
               new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
               credit_limit.update_attributes(credit_limit: new_limit)
             end
+          end
+          used = get_market_limit(buyer, current_company).to_f
+          market_limit =  get_market_limit_from_credit_limit_table(buyer, current_company).to_f
+          if total_price > market_limit
+            new_market_limit = total_price - (market_limit - used) + market_limit
+            credit_limit.update_attributes(market_limit: new_market_limit)
           end
           parcel.update_attributes(sold: true)
           render json: { success: true, notice: 'Transaction added successfully'}
@@ -243,6 +250,7 @@ module Api
         buyer = Company.where(id: transaction.buyer_id).first
         available_credit_limit = get_available_credit_limit(buyer, current_company).to_f
         credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+        used  =  get_used_credit_limit(buyer, current_company).to_f
         if credit_limit.nil?
           new_limit = parcel.total_value
         else
@@ -250,7 +258,7 @@ module Api
         end
         if available_credit_limit < parcel.total_value.to_f
           parcel.destroy
-          render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{available_credit_limit} to #{new_limit}.  Do you want to continue ?" }
+          render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{used} to #{new_limit}.  Do you want to continue ?" }
         else
           save_transaction(transaction, parcel)
         end
@@ -258,7 +266,7 @@ module Api
 
       def check_overdue_and_market_limit(transaction, parcel)
         buyer = Company.where(id: transaction.buyer_id).first
-        market_limit = get_market_limit(buyer, current_company).to_f
+        market_limit = get_market_limit_from_credit_limit_table(buyer, current_company).to_f
         if market_limit < parcel.total_value.to_f || current_company.has_overdue_transaction_of_30_days(transaction.buyer_id)
           parcel.destroy
           render json: { sucess: false, message: "This Company does not meet your risk parameters. Do you wish to cancel the transaction?" }
