@@ -131,9 +131,18 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def company_list
-    @companies = params[:name].present? ? Company.where('name LIKE ?', "%#{params[:name]}%") : Company.all
-    @companies = @companies.page(params[:page]).per(params[:count])
-    render json: { pagination: set_pagination(:companies), companies: companies_data(@companies), response_code: 200 }
+    # @companies = Company.all
+    if current_company
+      if params[:name].present?
+        company = Company.where('name LIKE ?', "%#{params[:name]}%")
+      else
+        company = Company.where.not(id: current_company.id)
+      end
+      @companies = company.page(params[:page]).per(params[:count])
+      render json: { pagination: set_pagination(:companies), companies: companies_data(@companies), response_code: 200 }
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
+    end
   end
 
   def update_chat_id
