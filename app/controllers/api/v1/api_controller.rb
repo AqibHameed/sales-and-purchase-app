@@ -127,7 +127,6 @@ class Api::V1::ApiController < ApplicationController
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
-    
   end
 
   def company_list

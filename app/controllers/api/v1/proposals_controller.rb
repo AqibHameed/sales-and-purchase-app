@@ -168,7 +168,6 @@ module Api
             }
             @data.merge!(buyer_last_negotiated)
             @data.merge!(negotiated: seller_offers)
-            @offered_price = proposal.buyer_price
           else current_company.id == proposal.buyer_id
             seller_last_negotiated = {
               offered_percentage: proposal.seller_percent,
@@ -179,7 +178,6 @@ module Api
             }
             @data.merge!(seller_last_negotiated)
             @data.merge!(negotiated: buyer_offers)
-            @offered_price = proposal.seller_price
           end
         else
           offered = {
@@ -191,10 +189,7 @@ module Api
           negotiated: nil
           }
           @data.merge!(offered)
-          @offered_price = proposal.price
         end
-        @offered_percent = ((@offered_price.to_f/proposal.trading_parcel.price.to_f)-1).to_f*100
-        @data.merge!(calculated_percent: @offered_percent.to_i)
       end
 
       def accpet_proposal(proposal)
