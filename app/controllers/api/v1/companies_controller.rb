@@ -95,6 +95,15 @@ class Api::V1::CompaniesController < ApplicationController
     end
   end
 
+  def send_feedback
+    if current_company
+      CustomerMailer.send_feedback(params[:star], params[:comment]).deliver
+      render json: { success: true, message: " Feedback is submitted successfully", response_code: 200 }
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }
+    end
+  end
+
   def history
     if current_company
       history = []
