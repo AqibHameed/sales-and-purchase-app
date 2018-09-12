@@ -144,7 +144,7 @@ module Api
             credit_limit.each do |c|
               if c.buyer.present?
                 group = CompaniesGroup.where('company_id LIKE ?', "%#{c.buyer.id}%").first
-                unless group.present?
+                unless group.present? || c.credit_limit == 0
                   @data << {
                   id: c.buyer.id.to_s,
                   name: c.buyer.try(:name),
