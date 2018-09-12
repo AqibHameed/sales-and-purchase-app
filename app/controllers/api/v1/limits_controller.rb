@@ -144,16 +144,18 @@ module Api
             credit_limit.each do |c|
               if c.buyer.present?
                 group = CompaniesGroup.where('company_id LIKE ?', "%#{c.buyer.id}%").first
-                unless group.present? || c.credit_limit == 0
-                  @data << {
-                  id: c.buyer.id.to_s,
-                  name: c.buyer.try(:name),
-                  total_limit: get_credit_limit(c.buyer, current_company),
-                  used_limit: get_used_credit_limit(c.buyer, current_company),
-                  available_limit: get_available_credit_limit(c.buyer, current_company),
-                  overdue_limit: get_days_limit(c.buyer, current_company),
-                  market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_company).to_s,
-                  supplier_connected: supplier_connected(c.buyer,current_company).to_s }
+                unless group.present?
+                  if c.credit_limit > 0 || c.market_limit > 0
+                    @data << {
+                    id: c.buyer.id.to_s,
+                    name: c.buyer.try(:name),
+                    total_limit: get_credit_limit(c.buyer, current_company),
+                    used_limit: get_used_credit_limit(c.buyer, current_company),
+                    available_limit: get_available_credit_limit(c.buyer, current_company),
+                    overdue_limit: get_days_limit(c.buyer, current_company),
+                    market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_company).to_s,
+                    supplier_connected: supplier_connected(c.buyer,current_company).to_s }
+                  end
                 end
               end
             end
