@@ -144,23 +144,16 @@ module Api
             @array = []
             credit_limit.each do |c|
               if c.buyer.present?
-                group = CompaniesGroup.where('company_id LIKE ?', "%#{c.buyer.id}%").first
-                unless group.present?
-                  if c.credit_limit > 0 || (!c.market_limit.nil? && c.market_limit > 0) 
-                    @array << c.buyer_id
-                  end
+                if c.credit_limit > 0 || (!c.market_limit.nil? && c.market_limit > 0) 
+                  @array << c.buyer_id
                 end
               end
             end
             days_limit = DaysLimit.where(seller_id: current_company.id)
             days_limit.each do |dl|
               if dl.buyer.present?
-                group = CompaniesGroup.where('company_id LIKE ?', "%#{dl.buyer.id}%").first
-                unless group.present?
-
-                  if  (dl.days_limit != 30) && dl.days_limit > 0
-                    @array << dl.buyer_id
-                  end
+                if  (dl.days_limit != 30) && dl.days_limit > 0
+                  @array << dl.buyer_id
                 end
               end
             end

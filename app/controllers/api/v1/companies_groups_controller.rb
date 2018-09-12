@@ -22,6 +22,7 @@ module Api
           companies_group.group_overdue_limit = params[:group_overdue_limit]
           companies_group.seller_id = current_company.id
           if companies_group.save
+            CompaniesGroup.remove_credit_limits(params[:company_id])
             render json: { success: true, message: 'Group created successfully', data: { id: companies_group.id.to_s, group_name: companies_group.group_name, companies: group_data(companies_group)}, response_code: 200 }
           else
             render json: { success: false, errors: companies_group.errors.full_messages, response_code: 201 }

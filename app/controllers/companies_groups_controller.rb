@@ -14,6 +14,7 @@ class CompaniesGroupsController < ApplicationController
     companies_groups_params[:company_id] = params[:companies_group][:company_id].reject!{|a| a== "" }
     @companies_group = CompaniesGroup.new(companies_groups_params)
     if @companies_group.save
+      CompaniesGroup.remove_credit_limits(companies_groups_params[:company_id])
       flash[:notice] = "Group created successfully."
       redirect_to credit_suppliers_path(group: true)
     else
@@ -29,6 +30,7 @@ class CompaniesGroupsController < ApplicationController
     companies_groups_params[:company_id] = params[:companies_group][:company_id].reject!{|a| a== "" }
     @companies_group = CompaniesGroup.find(params[:id])
     if @companies_group.update_attributes(companies_groups_params)
+      CompaniesGroup.remove_credit_limits(companies_groups_params[:company_id])
       flash[:notice] = "Group created successfully."
       redirect_to credit_suppliers_path(group: true)
     else
@@ -56,6 +58,7 @@ class CompaniesGroupsController < ApplicationController
     end
     redirect_to credit_suppliers_path(group: true)
   end
+
 
   private
     def companies_groups_params
