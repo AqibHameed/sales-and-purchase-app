@@ -36,10 +36,10 @@ module Api
                 created_at: message.created_at,
                 updated_at: message.updated_at,
                 date: message.created_at.strftime("%d %B %Y"),
-                description: proposal.present? ? proposal.trading_parcel.description : 'N/A',
+                description: proposal.present? ? (proposal.trading_parcel.present? ? proposal.trading_parcel.description : 'N/A') : 'N/A',
                 status: status
               }
-              if proposal.present?
+              if proposal.present? && proposal.trading_parcel.present? 
                 @offered_price = proposal.price.to_f
                 @offered_percent = ((@offered_price.to_f/proposal.trading_parcel.price.to_f)-1).to_f*100
                 @data.merge!(calculation: @offered_percent.to_i)
