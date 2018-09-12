@@ -145,7 +145,8 @@ module Api
               if c.buyer.present?
                 group = CompaniesGroup.where('company_id LIKE ?', "%#{c.buyer.id}%").first
                 unless group.present?
-                  if c.credit_limit > 0 || c.market_limit > 0
+                  dl = DaysLimit.where(buyer_id: c.buyer.id, seller_id: current_company.id).first
+                  if c.credit_limit > 0 || c.market_limit > 0 || (dl.present? && dl.days_limit != 30)
                     @data << {
                     id: c.buyer.id.to_s,
                     name: c.buyer.try(:name),
