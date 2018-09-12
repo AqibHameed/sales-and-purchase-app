@@ -7,7 +7,7 @@ class CompaniesGroup < ApplicationRecord
   belongs_to :companies_customer, class_name: 'Company', foreign_key: 'company_id', optional: true
 
 
-  def self.remove_credit_limits(companies)
+  def self.remove_credit_limits(companies, current_company)
     CreditLimit.where(buyer_id: companies, seller_id: current_company.id).destroy_all
   end
 end
