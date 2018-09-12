@@ -141,24 +141,40 @@ module Api
           else
             @data = []
             credit_limit = CreditLimit.where(seller_id: current_company.id)
+            @array = []
             credit_limit.each do |c|
               if c.buyer.present?
                 group = CompaniesGroup.where('company_id LIKE ?', "%#{c.buyer.id}%").first
                 unless group.present?
-                  dl = DaysLimit.where(buyer_id: c.buyer.id, seller_id: current_company.id).first
-                  if (c.credit_limit > 0 || (!c.market_limit.nil? && c.market_limit > 0) || (dl.present? && dl.days_limit != 30))
-                    @data << {
-                    id: c.buyer.id.to_s,
-                    name: c.buyer.try(:name),
-                    total_limit: get_credit_limit(c.buyer, current_company),
-                    used_limit: get_used_credit_limit(c.buyer, current_company),
-                    available_limit: get_available_credit_limit(c.buyer, current_company),
-                    overdue_limit: get_days_limit(c.buyer, current_company),
-                    market_limit: get_market_limit_from_credit_limit_table(c.buyer,current_company).to_s,
-                    supplier_connected: supplier_connected(c.buyer,current_company).to_s }
+                  if c.credit_limit > 0 || (!c.market_limit.nil? && c.market_limit > 0) 
+                    @array << c.buyer_id
                   end
                 end
               end
+            end
+            days_limit = DaysLimit.where(seller_id: current_company.id)
+            days_limit.each do |dl|
+              if dl.buyer.present?
+                group = CompaniesGroup.where('company_id LIKE ?', "%#{dl.buyer.id}%").first
+                unless group.present?
+
+                  if  (dl.days_limit != 30) && dl.days_limit > 0
+                    @array << dl.buyer_id
+                  end
+                end
+              end
+            end
+            companies = Company.where("id in (?)", @array.uniq)
+            companies.each do |c|
+                @data << {
+                      id: c.id.to_s,
+                      name: c.try(:name),
+                      total_limit: get_credit_limit(c, current_company),
+                      used_limit: get_used_credit_limit(c, current_company),
+                      available_limit: get_available_credit_limit(c, current_company),
+                      overdue_limit: get_days_limit(c, current_company),
+                      market_limit: get_market_limit_from_credit_limit_table(c,current_company).to_s,
+                      supplier_connected: supplier_connected(c,current_company).to_s }
             end
             @companies = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])
             render json: { success: true, pagination: set_pagination(:companies), limits: @companies, response_code: 200  }
