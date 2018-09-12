@@ -35,7 +35,7 @@ module Api
                 subject: message.subject,
                 created_at: message.created_at,
                 updated_at: message.updated_at,
-                date: message.created_at.strftime("%d %B %Y"),
+                date: message.created_at,
                 description: proposal.present? ? (proposal.trading_parcel.present? ? proposal.trading_parcel.description : 'N/A') : 'N/A',
                 status: status
               }
