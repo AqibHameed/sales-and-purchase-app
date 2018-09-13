@@ -159,20 +159,27 @@ class TradingParcelsController < ApplicationController
   end
 
   def save_transaction(transaction, parcel)
+    buyer = Company.where(id: transaction.buyer_id).first
     available_credit_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
     if transaction.save
       transaction.set_due_date
       transaction.generate_and_add_uid
       ## set limit ##
       total_price = parcel.total_value
+      credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
       if available_credit_limit < total_price
-        credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
         if credit_limit.nil?
           CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
         else
           new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
           credit_limit.update_attributes(credit_limit: new_limit)
         end
+      end
+      used = get_market_limit(buyer, current_company).to_f
+      market_limit =  get_market_limit_from_credit_limit_table(buyer, current_company).to_f
+      if total_price > market_limit
+        new_market_limit = total_price - (market_limit - used) + market_limit
+        credit_limit.update_attributes(market_limit: new_market_limit)
       end
       parcel.update_attributes(sold: true)
       redirect_to trading_customers_path, notice: 'Transaction added successfully'
@@ -276,9 +283,10 @@ class TradingParcelsController < ApplicationController
   def check_credit_limit(transaction, parcel)
     buyer = Company.where(id: transaction.buyer_id).first
     credit_limit = get_available_credit_limit(buyer, current_company).to_f
+    used  =  get_used_credit_limit(buyer, current_company).to_f
     if credit_limit < parcel.total_value.to_f
       respond_to do |format|
-        format.js { render 'save_direct_sell.js.erb', locals: {price: parcel.total_value, buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: parcel.id, available_credit_limit: credit_limit}}
+        format.js { render 'save_direct_sell.js.erb', locals: {price: parcel.total_value, buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: parcel.id, available_credit_limit: credit_limit, used_limit: used}}
       end
     else
       save_transaction(transaction, parcel)
@@ -287,7 +295,7 @@ class TradingParcelsController < ApplicationController
 
   def check_overdue_and_market_limit(transaction, parcel)
     buyer = Company.where(id: transaction.buyer_id).first
-    market_limit = get_market_limit(buyer, current_company).to_f
+    market_limit =  get_market_limit_from_credit_limit_table(buyer, current_company).to_f
     if market_limit < parcel.total_value.to_f || current_company.has_overdue_transaction_of_30_days(transaction.buyer_id)
       respond_to do |format|
         format.js { render 'check_market_overdue_limit.js.erb', locals: { buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: parcel.id }}
