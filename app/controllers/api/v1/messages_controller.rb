@@ -6,7 +6,8 @@ module Api
 
       def index
         if current_company
-          all_messages = Message.where(receiver_id: current_company.id)
+          from_ids = Company.where('name LIKE ?', "%#{params[:search]}%").ids
+          all_messages = Message.where(receiver_id: current_company.id, sender_id: from_ids)
           @messages = all_messages.page(params[:page]).per(params[:count])
           render json: { pagination: set_pagination(:messages), messages: messages_data(@messages), response_code: 200 }
         else
