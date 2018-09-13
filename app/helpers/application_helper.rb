@@ -530,9 +530,9 @@ module ApplicationHelper
     (current_company.try(:id) == parcel.try(:company_id)) ? parcel.try(:company).try(:name) : (parcel.try(:anonymous) && parcel.try(:company).try(:is_anonymous)) ? 'Anonymous' : parcel.try(:company).try(:name)
   end
 
-  def country_list
-    Company.all.map { |e| e.county }.compact.reject { |e| e.to_s == "" }.uniq
-  end
+  # def country_list
+  #   Company.all.map { |e| e.county }.compact.reject { |e| e.to_s == "" }.uniq
+  # end
 
 
   def self.update_scores
@@ -611,4 +611,22 @@ module ApplicationHelper
       return false
     end
   end
+
+  def country_list()
+    array = [
+     'India',
+     'U.A.E.',
+     'Belgium',
+     'Singapore',
+     'H.K.',
+     'China',
+     'South Africa',
+     'Botswana',
+     'Angola',
+     'U.S.A.',
+     'U.K.',
+     'Zimbabwe'
+    ]
+  end
+
 end

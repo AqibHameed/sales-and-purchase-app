@@ -31,4 +31,11 @@ class CustomerMailer < ApplicationMailer
     @email = email
     mail(:to => email, :subject => '[SafeTrade] You have a invitation ')
   end
+
+  def send_feedback(star, comment)
+    @email = 'contact@safetrade.ai'
+    @star = star
+    @comment = comment
+    mail(:to => @email, :subject => '[SafeTrade] You have a feedback')
+  end
 end

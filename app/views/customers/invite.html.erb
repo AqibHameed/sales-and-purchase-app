@@ -26,7 +26,8 @@
       <div class="label">Country: </div>
       <div class="field demand_desc">
         <%#= f.text_field :county, { class: 'input' }%>
-        <%= f.country_select :county, { format: :with_data_attrs } ,class: 'input'%>
+        <%#= f.country_select :county, { format: :with_data_attrs } ,class: 'input'%>
+        <%= select_tag "country", options_for_select(country_list), prompt: 'Please select', class: 'input form-control', style: "width: 330px;" %>
       </div>
     </div>
      <div class="form-row">

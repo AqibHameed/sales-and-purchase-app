@@ -291,6 +291,7 @@ Rails.application.routes.draw do
       get '/countries_list', to: 'companies#country_list'
       get '/companies_list', to: 'companies#companies_list'
       post '/invite', to: 'companies#invite'
+      post '/feedback', to: 'companies#send_feedback'
       get '/history', to: 'companies#history'
       resources :tenders do
         collection do
