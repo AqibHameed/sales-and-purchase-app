@@ -5,23 +5,27 @@ module Api
 
       def create
         if current_company
-          parcel = TradingParcel.where(id: params[:trading_parcel_id]).first
-          if parcel.present?
-            proposal = Proposal.new(proposal_params)
-            proposal.buyer_id = current_company.id
-            proposal.seller_id = parcel.company_id
-            proposal.notes = parcel.comment
-            proposal.action_for = parcel.company_id
-            proposal.buyer_comment = params[:comment]
-            if proposal.save
-              Message.create_new(proposal)
-              render json: { success: true, message: 'Proposal Submitted Successfully' }
+          parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
+            if parcel.present?
+              if current_company.is_blocked_by_supplier(parcel.try(:company_id))
+                render json: { success: false, message: 'You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.' }
+              else
+                proposal = Proposal.new(proposal_params)
+                proposal.buyer_id = current_company.id
+                proposal.seller_id = parcel.company_id
+                proposal.notes = parcel.comment
+                proposal.action_for = parcel.company_id
+                proposal.buyer_comment = params[:comment]
+                if proposal.save
+                  Message.create_new(proposal)
+                  render json: { success: true, message: 'Proposal Submitted Successfully' }
+                else
+                  render json: { success: false, errors: proposal.errors.full_messages }
+                end
+              end
             else
-              render json: { success: false, errors: proposal.errors.full_messages }
+              render json: { success: false, message: 'Parcel does not exists for this id.' }
             end
-          else
-            render json: { success: false, message: 'Parcel does not exists for this id.' }
-          end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
