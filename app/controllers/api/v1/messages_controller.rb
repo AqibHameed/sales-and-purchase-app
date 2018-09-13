@@ -5,51 +5,10 @@ module Api
       before_action :current_customer, only: [:index, :show, :create]
 
       def index
-      if current_company
-        @messages = []
-        @all_messages = Message.where(receiver_id: current_company.id)
-          if @all_messages.present?
-            @all_messages.each do |message|
-              sender = Company.where(id: message.sender_id).first
-              if message.proposal.present?
-                if message.proposal.status == 'accepted'
-                  status = 'accepted'
-                elsif message.proposal.status == 'rejected'
-                  status = 'rejected'
-                elsif message.proposal.negotiated == true
-                  status = 'negotiated'
-                else
-                  status = nil
-                end
-              else
-                status = nil
-              end
-              proposal = Proposal.where(id: message.proposal_id).first
-              @data = {
-                id: message.id,
-                proposal_id: message.proposal_id,
-                sender: sender.name,
-                receiver: current_company.name,
-                message: message.message,
-                message_type: message.message_type,
-                subject: message.subject,
-                created_at: message.created_at,
-                updated_at: message.updated_at,
-                date: message.created_at,
-                description: proposal.present? ? (proposal.trading_parcel.present? ? proposal.trading_parcel.description : 'N/A') : 'N/A',
-                status: status
-              }
-              if proposal.present? && proposal.trading_parcel.present? 
-                @offered_price = proposal.price.to_f
-                @offered_percent = ((@offered_price.to_f/proposal.trading_parcel.price.to_f)-1).to_f*100
-                @data.merge!(calculation: @offered_percent.to_i)
-              end
-              @messages << @data
-            end
-            render :json => {:success => true, :messages=> @messages, response_code: 200 }
-          else
-            render :json => {:success => true, :messages=> @messages, response_code: 201 }
-          end
+        if current_company
+          all_messages = Message.where(receiver_id: current_company.id)
+          @messages = all_messages.page(params[:page]).per(params[:count])
+          render json: { pagination: set_pagination(:messages), messages: messages_data(@messages), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
@@ -102,6 +61,46 @@ module Api
 
       def message_params
         params.require(:message).permit(:subject, :message, :message_type, :receiver_id)
+      end
+
+      def messages_data(messages)
+        @data = []
+        messages.each do |message|
+          if message.proposal.present?
+            if message.proposal.status == 'accepted'
+              status = 'accepted'
+            elsif message.proposal.status == 'rejected'
+              status = 'rejected'
+            elsif message.proposal.negotiated == true
+              status = 'negotiated'
+            else
+              status = nil
+            end
+          else
+            status = nil
+          end
+          data = {
+            id: message.id,
+            proposal_id: message.proposal_id,
+            sender: message.sender.name,
+            receiver: current_company.name,
+            message: message.message,
+            message_type: message.message_type,
+            subject: message.subject,
+            created_at: message.created_at,
+            updated_at: message.updated_at,
+            date: message.created_at,
+            description: message.proposal.present? ? (message.proposal.trading_parcel.present? ? message.proposal.trading_parcel.description : 'N/A') : 'N/A',
+            status: status
+          }
+          if message.proposal.present? && message.proposal.trading_parcel.present? 
+            offered_price = message.proposal.price.to_f
+            offered_percent = ((offered_price.to_f/message.proposal.trading_parcel.price.to_f)-1).to_f*100
+            data.merge!(calculation: offered_percent.to_i)
+          end
+          @data << data
+        end
+        @data
       end
     end
   end
