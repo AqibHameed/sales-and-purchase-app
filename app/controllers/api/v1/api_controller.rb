@@ -113,20 +113,12 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def customer_list
-    if current_customer
-      customers = Customer.all
-      render json: { customers: get_customers_data(customers, current_customer), response_code: 200 }
-      # if params[:first_name].present? or params[:last_name].present?
-      #   @customers = params[:first_name].present? ? Customer.where('first_name LIKE ?', "%#{params[:first_name]}%") : Customer.all
-      #   @customers = @customers.where('last_name LIKE ?', "%#{params[:last_name]}%") if params[:last_name].present?
-      # elsif params[:name].present?
-      #   @customers = Customer.where('first_name LIKE ? or last_name LIKE ?', "%#{params[:name]}%", "%#{params[:name]}%")
-      # end
-      # @customers = @customers.page(params[:page]).per(params[:count])
-      # render json: { pagination: set_pagination(:customers), customers: get_customers_data(@customers, current_customer), response_code: 200 }
-    else
-      render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
-    end
+    @customers = Customer.all
+    @customers = @customers.where('first_name LIKE ?', "%#{params[:first_name]}%") if params[:first_name].present?
+    @customers = @customers.where('last_name LIKE ?', "%#{params[:last_name]}%") if params[:last_name].present?
+    @customers = @customers.where('first_name LIKE ? or last_name LIKE ?', "%#{params[:name]}%", "%#{params[:name]}%") if params[:name].present?
+    @customers = @customers.page(params[:page]).per(params[:count])
+    render json: { pagination: set_pagination(:customers), customers: get_customers_data(@customers, current_customer), response_code: 200 }
   end
 
   def company_list
