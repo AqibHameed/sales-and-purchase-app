@@ -512,6 +512,12 @@ class Company < ApplicationRecord
     return SellerScore.get_score(self.id)
   end
 
+  def self.add_historical_data(buyer_id, seller_id, credit_limit, market_limit, overdue_limit)
+    historical_record = HistoricalRecord.new(buyer_id: buyer_id, seller_id: seller_id, total_limit: credit_limit, market_limit: market_limit, overdue_limit: overdue_limit, date: Date.today)
+    historical_record.save
+    return historical_record.id
+  end
+
   ##### End of Credit Scores #####
 
   rails_admin do

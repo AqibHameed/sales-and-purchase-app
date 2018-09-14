@@ -1,0 +1,2 @@
+class HistoricalRecord < ApplicationRecord
+end

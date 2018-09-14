@@ -93,7 +93,7 @@
                       <% elsif check_for_group_market_limit(current_company, @parcel.company) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">Please, Clear your overdue payments to send proposal.</p>
                       <% elsif current_company.is_blocked_by_supplier(@parcel.try(:company_id)) %>
-                        <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has blocked you. Please contact supplier.</p>
+                        <p style="margin: 0px 0px 6px 5px; color: red;">You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.</p>
                       <%# elsif !current_company.has_limit(@parcel.try(:company_id)) %>
                         <!-- <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has not given credit limit to you. -->
                         <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:company_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
