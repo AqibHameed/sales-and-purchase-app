@@ -12,11 +12,12 @@ module Api
           col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = Tender.active.where(col_str).order("open_date")
+          tender = Tender.active.where(col_str).order("open_date")
         else
-          tenders = Tender.active.where(col_str).order("open_date")
+          tender = Tender.active.where(col_str).order("open_date")
         end
-        render json: { tenders: tender_data(tenders), response_code: 200 }
+        @tenders = tender.page(params[:page]).per(params[:count])
+        render json: { success: true, pagination: set_pagination(:tenders), tenders: tender_data(@tenders), response_code: 200 }
       end
 
       def upcoming
@@ -27,11 +28,12 @@ module Api
           col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = Tender.where(col_str).order("open_date")
+          tender = Tender.where(col_str).order("open_date")
         else
-          tenders = Tender.where(col_str).order("open_date")
+          tender = Tender.where(col_str).order("open_date")
         end
-        render json: { success: true, tenders: tender_data(tenders), response_code: 200 }
+        @tenders = tender.page(params[:page]).per(params[:count])
+        render json: { success: true, pagination: set_pagination(:tenders), tenders: tender_data(@tenders), response_code: 200 }
         # col_str = ""
         # upcoming_str = "open_date > '#{Time.zone.now}'"
         # if params[:location] || params[:month] || params[:supplier]
@@ -73,11 +75,12 @@ module Api
           col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
         if current_customer
-          tenders = Tender.active.where(col_str).order("open_date")
+          tender = Tender.active.where(col_str).order("open_date")
         else
-          tenders = Tender.active.where(col_str).order("open_date")
+          tender = Tender.active.where(col_str).order("open_date")
         end
-        render json: { tenders: old_tender_data(tenders), response_code: 200 }
+        @tenders = tender.page(params[:page]).per(params[:count])
+        render json: { success: true, pagination: set_pagination(:tenders), tenders: old_tender_data(@tenders), response_code: 200 }
       end
 
       def old_upcoming

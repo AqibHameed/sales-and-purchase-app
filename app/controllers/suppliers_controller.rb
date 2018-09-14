@@ -220,10 +220,13 @@ class SuppliersController < ApplicationController
 
   def change_limits
     cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_initialize
-    # total_clms = CreditLimit.where(seller_id: current_customer.id).sum(:credit_limit)
+    unless cl.id.nil?
+      dl = DaysLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first
+      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.credit_limit, market_limit: cl.market_limit, overdue_limit: dl.present? ? dl.days_limit : 0, date: Date.today)
+    end
     cl.credit_limit = params[:limit].to_f
     cl.errors.add(:credit_limit, "should not be negative ") if params[:limit].to_f < 0
-
+    # total_clms = CreditLimit.where(seller_id: current_customer.id).sum(:credit_limit)
     # if current_customer.parent_id.present?
     #   sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_customer.id)
     #   if sub_company_limit.try(:credit_type) == "General"
@@ -248,6 +251,7 @@ class SuppliersController < ApplicationController
       render json: { message: cl.errors.full_messages.first, value: nil, errors: true }
     else
       if cl.save
+        historical_record.save if historical_record.present?
         render json: { message: 'Credit Limit updated.', value: cl.credit_limit, errors: false }
       else
         render json: { message: cl.errors.full_messages.first, value: nil, errors: true }
@@ -261,9 +265,13 @@ class SuppliersController < ApplicationController
     if dl.days_limit.nil?
       dl.days_limit = params[:limit]
     else
+      cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first
+      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.present? ? cl.credit_limit : 0, market_limit: cl.present? ? cl.market_limit : 0, overdue_limit: dl.days_limit, date: Date.today)
+
       dl.days_limit = dl.days_limit + params[:limit].to_i
     end
     if dl.save!
+      historical_record.save if historical_record.present?
       render json: { message: 'Days Limit updated.', value: view_context.get_days_limit(buyer, current_company) }
     else
       render json: { message: dl.errors.full_messages.first, value: '' }
@@ -273,9 +281,14 @@ class SuppliersController < ApplicationController
   def change_market_limit
     buyer = Company.find(params[:buyer_id])
     cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_create
+    unless cl.id.nil?
+      dl = DaysLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first
+      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.credit_limit, market_limit: cl.market_limit, overdue_limit: dl.present? ? dl.days_limit : 0, date: Date.today)
+    end
     cl.credit_limit = 0 unless cl.credit_limit.present?
     cl.market_limit = params[:market_limit]
-    if cl.save!
+    if cl.save
+      historical_record.save if historical_record.present?
       render json: { message: 'Market Limit updated.', value: view_context.get_market_limit(buyer, current_company) }
     else
       render json: { message: cl.errors.full_messages.first, value: '' }
