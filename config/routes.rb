@@ -353,6 +353,8 @@ Rails.application.routes.draw do
           get :live_demands
         end
       end
+
+      get '/profile', to: 'customers#profile'
     end
   end
 
