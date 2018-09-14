@@ -1,7 +1,7 @@
 module Api
   module V1
     class CustomersController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:update_profile]
+      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password]
       before_action :current_customer
 
       def profile
@@ -24,10 +24,27 @@ module Api
         end
       end
 
+      def update_password
+        render json: { errors: "Not authenticated", response_code: 201 } and return unless current_customer
+        render json: { success: false, message: "Invalid Current Password", response_code: 201 } and return unless current_customer.valid_password?(password_params[:current_password])
+        render json: { success: false, message: "Provide New Password", response_code: 201 } and return unless password_params[:password].present?
+        render json: { success: false, message: "Provide New Password Confirmation", response_code: 201 } and return unless password_params[:password_confirmation].present?
+        render json: { success: false, message: "Doesn't Match Password", response_code: 201 } and return unless password_params[:password] == password_params[:password_confirmation]
+        if current_customer.update(password_params.except(:current_password))
+          render json: { success: true, message: 'Password Updated Successfully', response_code: 200 }
+        else
+          render json: { success: true, message: 'Invalid Parameters', response_code: 200 }
+        end
+      end
+
       private
 
       def customer_params
         params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate)
+      end
+
+      def password_params
+        params.require(:customer).permit(:current_password, :password, :password_confirmation)
       end
 
       def profile_data(customer)

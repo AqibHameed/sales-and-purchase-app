@@ -356,6 +356,7 @@ Rails.application.routes.draw do
 
       get '/profile', to: 'customers#profile'
       patch '/update_profile', to: 'customers#update_profile'
+      patch '/update_password', to: 'customers#update_password'
     end
   end
 
