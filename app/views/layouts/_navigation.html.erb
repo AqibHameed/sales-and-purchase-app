@@ -96,6 +96,7 @@
 
   <% if current_customer %>
     <div class="current_user_menu">
+
       <div class="dropdown nav-dropdown">
         <a id="dropbtn" class="dropbtn">Welcome <%= current_customer.name %></a>
         <span><%=image_tag "down-arrow.png", width: '4%' %></span>
@@ -110,6 +111,7 @@
           <%#= link_to 'Scores', scores_customers_path, data: { turbolinks: false } unless current_admin %>
           <%= link_to 'Buyer Scores', buyer_scores_customers_path, data: { turbolinks: false } unless current_admin %>
           <%= link_to 'Seller Scores', seller_scores_customers_path, data: { turbolinks: false } unless current_admin %>
+          <%= if !current_customer.has_role?('Seller') %><%= '(Broker)' %><% else %>not broker<% end %>
 
           <!-- SUB COMPANY Feature on Hold -->
           <%#= link_to 'Sub Companies', sub_companies_path, data: { turbolinks: false } if current_customer.has_role?('Seller') %>
