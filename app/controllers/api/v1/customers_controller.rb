@@ -1,11 +1,24 @@
 module Api
   module V1
     class CustomersController < ApiController
+      skip_before_action :verify_authenticity_token, only: [:update_profile]
       before_action :current_customer
 
       def profile
         if current_customer
           render json: { profile: profile_data(current_customer), response_code: 200 }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+      def update_profile
+        if current_customer
+          if current_customer.update_attributes(customer_params)
+            render json: { success: true, message: 'Profile Updated Successfully', response_code: 200 }
+          else
+            render json: { success: false, message: 'Invalid Parameters', response_code: 201 }
+          end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
