@@ -1,8 +1,9 @@
 <%= render partial: 'layouts/internal_navigation' %>
 <div class="form-wrapper">
-  <% if @disable %>
-    <p>YOU ARE NOT ALLOW TO DEMAND, PLEASE CLEAR YOUR OVERDUE PAYMENT</p>
-  <% else %>
+  <%# if @disable %>
+    <!-- <p>YOU ARE NOT ALLOW TO DEMAND, PLEASE CLEAR YOUR OVERDUE PAYMENT</p> -->
+    <!-- <p>You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.</p> -->
+  <%# else %>
     <%= form_for @demanding_parcel, :url =>  demanding_create_customers_path , method: :post  do |f| %>
       <div class="form-row">
         <div class="label">Source: </div>
@@ -24,7 +25,7 @@
         </div>
       </div>
     <% end %>
-  <% end %>
+  <%# end %>
 </div>
 <div class="clear20"></div>
 

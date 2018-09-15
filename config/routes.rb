@@ -353,6 +353,10 @@ Rails.application.routes.draw do
           get :live_demands
         end
       end
+
+      get '/profile', to: 'customers#profile'
+      patch '/update_profile', to: 'customers#update_profile'
+      patch '/update_password', to: 'customers#update_password'
     end
   end
 
