@@ -224,6 +224,14 @@ class Api::V1::ApiController < ApplicationController
   def companies_data(companies)
     @data = []
     companies.each do |c|
+      customers = []
+      c.customers.each do |customer|
+        customers << {
+          id: customer.id,
+          first_name: customer.first_name,
+          last_name: customer.last_name
+        }
+      end
       status = c.customers.present?
       @data << {
         id: c.id.to_s,
@@ -234,7 +242,8 @@ class Api::V1::ApiController < ApplicationController
         updated_at: c.updated_at,
         purchases_completed: get_completed_transaction(c),
         suppliers_connected: get_supplier_connected(c.id),
-        status: status
+        status: status,
+        customers: customers
       }
     end
     @data
