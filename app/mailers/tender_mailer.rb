@@ -58,7 +58,7 @@ class TenderMailer < ApplicationMailer
   def parcel_up_email(parcel, emails)
     @emails = emails
     @parcel = parcel
-    mail(:to => emails, :subject => '[SafeTrade] Parcel is up for sale' )
+    mail(:to => emails, :subject => "New Parcel : #{parcel.source} : #{parcel.description}" )
   end
 
   def parcel_won_email(customer, parcel)

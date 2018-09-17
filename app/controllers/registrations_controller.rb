@@ -3,7 +3,20 @@ class RegistrationsController < Devise::RegistrationsController
   
   def create
     # company = Company.where(name: sign_up_params[:company_name]).first_or_create
-    company = Company.find(sign_up_params[:company_id]) if sign_up_params[:company_id].present?
+    if sign_up_params[:company_id].present?
+       company = Company.find(sign_up_params[:company_id]) 
+    else
+      if params[:company_individual].present?
+        if params[:company_individual] == "Individual" && sign_up_params[:role] == 'Broker'
+          string = "#{sign_up_params[:first_name]}"+"#{sign_up_params[:last_name]}"+"("+"#{sign_up_params[:role]}"+")"
+          company = Company.where(name: string).first_or_create
+          params[:customer].delete("company_id")
+          params[:customer].merge!("company_id"  =>  company.id)
+        end
+      end
+    end
+    # puts sign_up_params[:company_id]
+    # sign_up_params[:company_id] = company.id
     build_resource(sign_up_params)
     unless sign_up_params[:role].blank? || sign_up_params[:company_id].blank?
       if sign_up_params[:role] == 'Broker'
