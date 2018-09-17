@@ -11,8 +11,6 @@ module CustomersHelper
       #   false
       # elsif parcel.sale_all == true
       #   true
-      elsif parcel.sale_broker == true
-        parcel.broker_ids.include?(company.id.to_s) rescue false
       elsif parcel.sale_demanded == true
         demands = Demand.where(description: parcel.description, company_id: company.id)
         polished_demand = PolishedDemand.where(description: parcel.description, company_id: company.id)
@@ -21,6 +19,8 @@ module CustomersHelper
         else
           false
         end
+      elsif parcel.sale_broker == true
+        parcel.broker_ids.include?(company.id.to_s) rescue false
       # elsif parcel.sale_credit == true
       #   company.has_limit(parcel.try(:company).try(:id))
       else
