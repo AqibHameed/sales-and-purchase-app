@@ -5,20 +5,10 @@ module Api
 
       def index
         if current_company
-          @all_demands = []
-          @demand_suppliers = DemandSupplier.all
-          DemandSupplier.all.each do |supplier|
-            demands = Demand.where(company_id: current_company.id, demand_supplier_id: supplier.id, deleted: false)
-            demand_supplier = {
-              id: supplier.id,
-              name: supplier.name,
-              demands: demands
-            }
-            @all_demands << demand_supplier
-          end
-          respond_to do |format|
-            format.json { render :index }
-          end
+          demands = Demand.where(company_id: current_company.id, deleted: false)
+          demands = demands.where(demand_supplier_id: params[:supplier_id]) if params[:supplier_id].present?
+          @demands = demands.page(params[:page]).per(params[:count])
+          render json: { pagination: set_pagination(:demands), demands: demands_data(@demands), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
@@ -205,6 +195,23 @@ module Api
         end
       end
 
+      private
+
+      def demands_data(demands)
+        @data = []
+        demands.each do |demand|
+          data = {
+            id: demand.id,
+            description: demand.description,
+            company_id: demand.company_id,
+            created_at: demand.created_at,
+            updated_at: demand.updated_at,
+            demand_supplier_id: demand.demand_supplier_id
+          }
+          @data << data
+        end
+        @data
+      end
     end
   end
 end
