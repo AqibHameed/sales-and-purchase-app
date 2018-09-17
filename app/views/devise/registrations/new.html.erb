@@ -36,19 +36,19 @@
         </div>
 
         <div class="field">
-          <%= f.label 'Company/Individual' %><br />
-          <%= select_tag "company_individual", options_for_select(['Company', "Individual"]), prompt: 'Please select',  class: 'input form-control', autocomplete: "off", style: "width: 330px;" %>
+          <%= f.label 'Company/Individual', id: 'company_individual_label', class: 'hide'  %><br />
+          <%= select_tag "company_individual", options_for_select(['Company', "Individual"]), prompt: 'Please select',  class: 'hide input form-control', autocomplete: "off", style: "width: 330px;" %>
         </div>
 
         <div class="field">
-          <%= f.label :country , id: 'country_label', class: 'hide'%><br />
-          <%= select_tag "country", options_for_select(country_list), prompt: 'Please select', class: 'input form-control hide', style: "width: 330px;"%>
+          <%= f.label :country , id: 'country_label'%><br />
+          <%= select_tag "country", options_for_select(country_list), prompt: 'Please select', class: 'input form-control ', style: "width: 330px;"%>
         </div>
 
         <div class="field">
           <%= f.hidden_field :is_requested, value: false %>
-          <%= f.label :company_id, id: 'company', class: 'hide' %><br />
-          <%= f.select :company_id, options_for_select([]), { prompt: 'Please select' }, class: ' hide input form-control', style: "width: 330px;" %>
+          <%= f.label :company_id, id: 'company' %><br />
+          <%= f.select :company_id, options_for_select([]), { prompt: 'Please select' }, class: ' input form-control', style: "width: 330px;" %>
         </div>
 
         <div class="field">
@@ -119,8 +119,20 @@
       $('#customer_is_requested').val(false)
       $('.signup-btn').removeClass('hide')
       $('.request-btn').addClass('hide')
+      $('#company_individual_label').removeClass('hide')
+      $('#company_individual').removeClass('hide')
+      $('#customer_company_id').addClass('hide')
+      $('#company').addClass('hide')
+      $('#country_label').addClass('hide')
+      $('#country').addClass('hide')
     } else {
       $('#customer_company_name').val('')
+      $('#customer_company_id').removeClass('hide')
+      $('#company').removeClass('hide')
+      $('#country_label').removeClass('hide')
+      $('#country').removeClass('hide')
+      $('#company_individual_label').addClass('hide')
+      $('#company_individual').addClass('hide')
     }
   });
 
