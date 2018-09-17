@@ -180,7 +180,7 @@ class Api::V1::CompaniesController < ApplicationController
           buyer_id: t.buyer_id,
           seller_id: t.seller_id,
           trading_parcel_id: t.trading_parcel_id,
-          due_date: t.due_date,
+          due_date: t.due_date.strftime("%FT%T%:z"),
           avg_price: t.price,
           total_amount: t.total_amount,
           credit: t.credit,

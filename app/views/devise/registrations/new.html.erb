@@ -36,15 +36,21 @@
         </div>
 
         <div class="field">
-          <%= f.label :country %><br />
-          <%= select_tag "country", options_for_select(country_list), prompt: 'Please select', class: 'input form-control', style: "width: 330px;" %>
+          <%= f.label 'Company/Individual' %><br />
+          <%= select_tag "company_individual", options_for_select(['Company', "Individual"]), prompt: 'Please select',  class: 'input form-control', autocomplete: "off", style: "width: 330px;" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :country , id: 'country_label', class: 'hide'%><br />
+          <%= select_tag "country", options_for_select(country_list), prompt: 'Please select', class: 'input form-control hide', style: "width: 330px;"%>
         </div>
 
         <div class="field">
           <%= f.hidden_field :is_requested, value: false %>
-          <%= f.label :company_id %><br />
-          <%= f.select :company_id, options_for_select([]), { prompt: 'Please select' }, class: 'input form-control', style: "width: 330px;" %>
+          <%= f.label :company_id, id: 'company', class: 'hide' %><br />
+          <%= f.select :company_id, options_for_select([]), { prompt: 'Please select' }, class: ' hide input form-control', style: "width: 330px;" %>
         </div>
+
         <div class="field">
           <%= f.label :email %><br />
           <%= f.email_field :email %>
@@ -115,6 +121,21 @@
       $('.request-btn').addClass('hide')
     } else {
       $('#customer_company_name').val('')
+    }
+  });
+
+  $('#company_individual').change(function(){
+    temp = $('#company_individual').val()
+    if (temp == 'Company'){
+      $('#customer_company_id').removeClass('hide')
+      $('#company').removeClass('hide')
+      $('#country_label').removeClass('hide')
+      $('#country').removeClass('hide')
+    } else {
+      $('#customer_company_id').addClass('hide')
+      $('#company').addClass('hide')
+      $('#country_label').addClass('hide')
+      $('#country').addClass('hide')
     }
   });
 

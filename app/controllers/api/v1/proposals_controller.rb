@@ -7,7 +7,9 @@ module Api
         if current_company
           parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
             if parcel.present?
-              if current_company.is_blocked_by_supplier(parcel.try(:company_id))
+              # if current_company.is_blocked_by_supplier(parcel.try(:company_id))
+              credit_limit = CreditLimit.where(seller_id: parcel.try(:company_id), buyer_id: current_company.id).first
+              if current_company.is_overdue || (credit_limit.present? && credit_limit.market_limit.to_f < parcel.total_value)
                 render json: { success: false, message: 'You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.' }
               else
                 proposal = Proposal.new(proposal_params)
