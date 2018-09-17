@@ -62,6 +62,13 @@ module Api
 
       def demand_description
         list = DemandList.where(demand_supplier_id: params[:demand_supplier_id])
+        if params[:company_id].present?
+          company = Company.where(id: params[:company_id]).first
+          render json: { errors: "Not found the company", response_code: 201 } and return unless company
+          ds = Demand.where(company_id: company.id, demand_supplier_id: params[:demand_supplier_id]).pluck(:description)
+          list = list.where.not(description: ds)
+        end
+        
         render json: { success: true, descriptions: list.map { |e| e.description }, response_code: 200 }
       end
 
