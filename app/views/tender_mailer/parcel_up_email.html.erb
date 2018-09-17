@@ -1,9 +1,14 @@
 <p>Hello,</p>
-<br><br>
-<p>Your demanded parcel is up for sale. </p>
-<p>To view the details, <%= link_to 'Click here.', trading_customers_url %></p>
+<br>
+<p><b>A new parcel was found for you. Here are the details: </b></p>
+<p>Supplier: <%= @parcel.try(:company).try(:name) %></p>
+<p>Cost: <%= @parcel.cost %></p>
+<p>Carats: <%= @parcel.weight %></p>
+<p>Average Price: <%= @parcel.price %></p>
+<p>Total Price: <%= @parcel.total_value %></p><br>
+<p><%= link_to 'Click here', trading_customers_url %> to view more details or make an offer.</p>
 <br><br>
 
-Thanks & Regards,<br>
+Sincerely<br>
 SafeTrade Team.
 
