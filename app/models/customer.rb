@@ -246,7 +246,7 @@ class Customer < ApplicationRecord
   ############
 
   def generate_jwt_token
-    if Rails.env == "production" || Rails.env == "staging"
+    if Rails.env == "production" 
       service_account_email = ENV['service_account_email']
       private_key = OpenSSL::PKey::RSA.new ENV['private_key']
       now_seconds = Time.now.to_i
