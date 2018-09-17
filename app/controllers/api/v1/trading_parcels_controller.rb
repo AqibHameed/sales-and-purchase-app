@@ -258,7 +258,7 @@ module Api
         end
         if available_credit_limit < parcel.total_value.to_f
           parcel.destroy
-          render json: { sucess: false, message: "This buyer does not meet your credit requirements. It  will increase from  #{used} to #{new_limit}.  Do you want to continue ?" }
+          render json: { sucess: false, message: "You have set a credit limit of #{used}. This transaction will increase it to #{new_limit}. Do you wish to continue?" }
         else
           save_transaction(transaction, parcel)
         end
