@@ -133,7 +133,7 @@ class TradingParcelsController < ApplicationController
                                     price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                     created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
 
-
+    buyer =  Company.where(id: transaction.buyer_id).first
     registered_users = Company.where(id: params[:trading_parcel][:my_transaction_attributes][:buyer_id]).first.customers.count
     if transaction.paid == true
       save_transaction(transaction, @parcel)
@@ -142,7 +142,19 @@ class TradingParcelsController < ApplicationController
         if params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today
           save_transaction(transaction, @parcel)
         else
-          check_overdue_and_market_limit(transaction, @parcel)
+          if buyer.buyer_transactions.count < 1
+            if params[:check_transactions].present? && params[:check_transactions] == "true"
+              check_overdue_and_market_limit(transaction, @parcel)
+            elsif params[:check_transactions].present? && params[:check_transactions] == "false"
+            else
+              respond_to do |format|
+
+                format.js { render 'check_unregistered_transaction.js.erb', locals: {price: @parcel.total_value, buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: @parcel.id}}
+              end
+            end
+          else
+            check_overdue_and_market_limit(transaction, @parcel)
+          end
         end
       else
         check_credit_limit(transaction, @parcel)
@@ -295,10 +307,8 @@ class TradingParcelsController < ApplicationController
 
   def check_overdue_and_market_limit(transaction, parcel)
     buyer = Company.where(id: transaction.buyer_id).first
-    # market_limit =  get_market_limit_from_credit_limit_table(buyer, current_company).to_f
     market_limit = CreditLimit.where(seller_id: current_company.id, buyer_id: buyer.id).first
     if (market_limit.present? && market_limit.market_limit.to_f < parcel.total_value.to_f) || current_company.has_overdue_transaction_of_30_days(transaction.buyer_id)     
-    # if market_limit < parcel.total_value.to_f || current_company.has_overdue_transaction_of_30_days(transaction.buyer_id)
       respond_to do |format|
         format.js { render 'check_market_overdue_limit.js.erb', locals: { buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: parcel.id }}
       end
