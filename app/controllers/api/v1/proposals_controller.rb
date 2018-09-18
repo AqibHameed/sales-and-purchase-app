@@ -165,36 +165,33 @@ module Api
         }
         if proposal.negotiated == true
           if current_company.id == proposal.seller_id
-            # offered
             buyer_last_negotiated = {
-              percentage: proposal.buyer_percent,
-              price: proposal.buyer_price,
-              total_value: proposal.buyer_total_value,
-              credit: proposal.buyer_credit,
-              comment: proposal.buyer_comment
+              offered_percentage: proposal.buyer_percent,
+              offered_price: proposal.buyer_price,
+              offered_total_value: proposal.buyer_total_value,
+              offered_credit: proposal.buyer_credit,
+              offered_comment: proposal.buyer_comment
             }
             @data.merge!(buyer_last_negotiated)
             @data.merge!(negotiated: seller_offers)
           else current_company.id == proposal.buyer_id
-            # offered
             seller_last_negotiated = {
-              percentage: proposal.seller_percent,
-              price: proposal.seller_price,
-              total_value: proposal.seller_total_value,
-              credit: proposal.seller_credit,
-              comment: proposal.notes
+              offered_percentage: proposal.seller_percent,
+              offered_price: proposal.seller_price,
+              offered_total_value: proposal.seller_total_value,
+              offered_credit: proposal.seller_credit,
+              offered_comment: proposal.notes
             }
             @data.merge!(seller_last_negotiated)
             @data.merge!(negotiated: buyer_offers)
           end
         else
-          # offered
           offered = {
-          percentage: proposal.percent,
-          price: proposal.price,
-          total_value: proposal.total_value,
-          credit: proposal.credit,
-          comment: proposal.buyer_comment,
+          offered_percentage: proposal.percent,
+          offered_price: proposal.price,
+          offered_total_value: proposal.total_value,
+          offered_credit: proposal.credit,
+          offered_comment: proposal.buyer_comment,
           negotiated: nil
           }
           @data.merge!(offered)
