@@ -182,7 +182,7 @@ class Customer < ApplicationRecord
 
   def create_update_firebase_user
     begin
-      response = RestClient.post 'https://clarity-staging.firebaseapp.com/addUsers?key=8d5d78cb50530c5e61224670cae7811fb80315f2', [{ userUid: id.to_s, email: email.to_s, first_name: first_name.to_s, last_name: last_name.to_s, company: self.company.name.to_s, mobile_no: mobile_no.to_s, address: address.to_s, city: city.to_s, postal_code: postal_code.to_s}].to_json, {content_type: :json}
+      response = RestClient.post 'https://clarity-staging.firebaseapp.com/addUsers?key=d99ae5a131f1fe94f673aaaf0605a36633a1a22d', [{ userUid: id.to_s, email: email.to_s, first_name: first_name.to_s, last_name: last_name.to_s, company: self.company.name.to_s, mobile_no: mobile_no.to_s, address: address.to_s, city: city.to_s, postal_code: postal_code.to_s}].to_json, {content_type: :json}
       data = JSON.parse(response)
       # self.update_attributes(firebase_uid: data["user"]["uid"])
     rescue RestClient::ExceptionWithResponse => e
@@ -192,7 +192,7 @@ class Customer < ApplicationRecord
 
   def delete_firebase_user
     begin
-      response = RestClient.delete 'https://clarity-staging.firebaseapp.com/deleteUser?key=8d5d78cb50530c5e61224670cae7811fb80315f2&uid='+id.to_s
+      response = RestClient.delete 'https://clarity-staging.firebaseapp.com/deleteUser?key=d99ae5a131f1fe94f673aaaf0605a36633a1a22d&uid='+id.to_s
       data = JSON.parse(response)
     rescue RestClient::ExceptionWithResponse => e
       puts e.response
