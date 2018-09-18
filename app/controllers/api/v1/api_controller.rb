@@ -114,6 +114,10 @@ class Api::V1::ApiController < ApplicationController
 
   def customer_list
     @customers = Customer.all
+    if params[:company].present?
+      c = Company.where('name LIKE ?', "%#{params[:company]}%").first
+      @customers = c.customers
+    end
     @customers = @customers.where('first_name LIKE ?', "%#{params[:first_name]}%") if params[:first_name].present?
     @customers = @customers.where('last_name LIKE ?', "%#{params[:last_name]}%") if params[:last_name].present?
     @customers = @customers.where('first_name LIKE ? or last_name LIKE ?', "%#{params[:name]}%", "%#{params[:name]}%") if params[:name].present?
