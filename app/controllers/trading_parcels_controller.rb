@@ -184,7 +184,7 @@ class TradingParcelsController < ApplicationController
       credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
       if available_credit_limit < total_price
         if credit_limit.nil?
-          CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
+          credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
         else
           new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
           credit_limit.update_attributes(credit_limit: new_limit)
