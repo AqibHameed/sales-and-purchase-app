@@ -119,8 +119,12 @@ class TradingParcelsController < ApplicationController
   def save_direct_sell
     if params[:check].present?
       if params[:check] == 'true'
-        @parcel = TradingParcel.create(trading_parcel_params)
-        @parcel.update(sold: true)
+        if params[:check_transactions].present? 
+          @parcel = TradingParcel.find_by(id: params[:id])
+        else
+          @parcel = TradingParcel.create(trading_parcel_params)
+          @parcel.update(sold: true)
+        end
       else
         @parcel = TradingParcel.find_by(id: params[:id])
       end
@@ -148,7 +152,6 @@ class TradingParcelsController < ApplicationController
             elsif params[:check_transactions].present? && params[:check_transactions] == "false"
             else
               respond_to do |format|
-
                 format.js { render 'check_unregistered_transaction.js.erb', locals: {price: @parcel.total_value, buyer_id: transaction.buyer_id, created_at: transaction.created_at, paid: transaction.paid, parcel_id: @parcel.id}}
               end
             end
