@@ -415,6 +415,14 @@ module ApplicationHelper
    "#{link_to('Click Here', Rails.application.routes.url_helpers.confirm_request_suppliers_path )}"
   end
 
+  def view_limit_increase_accept parcel, buyer
+    "#{link_to('Click Here', Rails.application.routes.url_helpers.accept_limit_increase_api_v1_trading_parcel_path(parcel, buyer_id: buyer.id) )}"
+  end
+
+  def view_limit_increase_reject parcel, buyer
+    "#{link_to('Click Here', Rails.application.routes.url_helpers.reject_limit_increase_api_v1_trading_parcel_path(parcel, buyer_id: buyer.id) )}"
+  end
+
   def check_round stones
     # YesNoBuyerInterest.where(stone_id: stones.map { |e| e.id }).empty
   end
