@@ -52,10 +52,25 @@ module Api
         end
       end
 
+      # def index
+      #   if current_customer
+      #     parcels = current_company.trading_parcels.where(sold: false)
+      #     render json: { success: true, parcels: list_parcel_data(parcels), response_code: 200 }
+      #   else
+      #     render json: { errors: "Not authenticated", response_code: 201 }
+      #   end
+      # end
+
       def index
         if current_customer
-          parcels = current_company.trading_parcels.where(sold: false)
-          render json: { success: true, parcels: list_parcel_data(parcels), response_code: 200 }
+          if params[:demand_supplier_id].present? 
+            source = DemandSupplier.where(id: params[:demand_supplier_id]).first.name
+          end
+          parcel = current_company.trading_parcels.where(sold: false)
+          parcel = current_company.trading_parcels.where(sold: false).where(source: source) if source.present?
+          parcel = current_company.trading_parcels.where(sold: false).where("description LIKE ? ", params[:description]) if params[:description].present?
+          @parcels = parcel.page(params[:page]).per(params[:count])
+          render json: { success: true, pagination: set_pagination(:parcels), parcels: list_parcel_data(@parcels), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end

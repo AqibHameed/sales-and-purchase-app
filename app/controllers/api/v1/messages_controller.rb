@@ -67,7 +67,7 @@ module Api
       def messages_data(messages)
         @data = []
         messages.each do |message|
-          if message.proposal.present?
+          if message.proposal.present? && message.proposal.trading_parcel.present?
             if message.proposal.status == 'accepted'
               status = 'accepted'
             elsif message.proposal.status == 'rejected'
@@ -77,29 +77,27 @@ module Api
             else
               status = nil
             end
-          else
-            status = nil
+            data = {
+              id: message.id,
+              proposal_id: message.proposal_id,
+              sender: message.sender.name,
+              receiver: current_company.name,
+              message: message.message,
+              message_type: message.message_type,
+              subject: message.subject,
+              created_at: message.created_at,
+              updated_at: message.updated_at,
+              date: message.created_at,
+              description: message.proposal.present? ? (message.proposal.trading_parcel.present? ? message.proposal.trading_parcel.description : 'N/A') : 'N/A',
+              status: status
+            }
+            if message.proposal.present? && message.proposal.trading_parcel.present? 
+              offered_price = message.proposal.price.to_f
+              offered_percent = ((offered_price.to_f/message.proposal.trading_parcel.price.to_f)-1).to_f*100
+              data.merge!(calculation: offered_percent.to_i)
+            end
+            @data << data
           end
-          data = {
-            id: message.id,
-            proposal_id: message.proposal_id,
-            sender: message.sender.name,
-            receiver: current_company.name,
-            message: message.message,
-            message_type: message.message_type,
-            subject: message.subject,
-            created_at: message.created_at,
-            updated_at: message.updated_at,
-            date: message.created_at,
-            description: message.proposal.present? ? (message.proposal.trading_parcel.present? ? message.proposal.trading_parcel.description : 'N/A') : 'N/A',
-            status: status
-          }
-          if message.proposal.present? && message.proposal.trading_parcel.present? 
-            offered_price = message.proposal.price.to_f
-            offered_percent = ((offered_price.to_f/message.proposal.trading_parcel.price.to_f)-1).to_f*100
-            data.merge!(calculation: offered_percent.to_i)
-          end
-          @data << data
         end
         @data
       end
