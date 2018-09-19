@@ -56,6 +56,7 @@ class Api::V1::SessionsController < Devise::SessionsController
     {
       id: customer.id,
       email:  customer.email,
+      designation: customer.has_role?('Broker') ? 'Broker' : 'Buyer/Seller',
       created_at: customer.created_at,
       updated_at: customer.updated_at,
       first_name: customer.first_name,
