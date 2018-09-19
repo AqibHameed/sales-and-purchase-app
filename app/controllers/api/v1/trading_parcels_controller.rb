@@ -106,7 +106,7 @@ module Api
               registered_users = buyer.customers.count
               if transaction.paid == true
                 save_transaction(transaction, @parcel)
-              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == true
+              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == true 
                 save_transaction(transaction, @parcel)
               elsif params[:available_credit_limit].present? && params[:available_credit_limit] == false
               elsif params[:available_market_overdue].present? && params[:available_market_overdue] == false
@@ -117,7 +117,16 @@ module Api
                   if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today)
                     save_transaction(transaction, @parcel)
                   else
-                    check_overdue_and_market_limit(transaction, @parcel)
+                    if buyer.buyer_transactions.count < 1
+                      if params[:check_transactions].present? && params[:check_transactions] == true
+                        check_overdue_and_market_limit(transaction, @parcel)
+                      elsif params[:check_transactions].present? && params[:check_transactions] == "false"
+                      else
+                        render json: { sucess: false, message: "No Information Available about this Company. Do you want to continue ?" }
+                      end
+                    else
+                      check_overdue_and_market_limit(transaction, @parcel)
+                    end
                   end
                 else
                   check_credit_limit(transaction, @parcel)
@@ -145,7 +154,7 @@ module Api
           credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
           if available_credit_limit < total_price
             if credit_limit.nil?
-              CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
+              credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
             else
               new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
               credit_limit.update_attributes(credit_limit: new_limit)
