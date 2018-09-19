@@ -3,12 +3,33 @@ module Api
     class DemandsController < ApiController
       skip_before_action :verify_authenticity_token, only: [:create, :destroy]
 
+      # def index
+      #   if current_company
+      #     demands = Demand.where(company_id: current_company.id, deleted: false)
+      #     demands = demands.where(demand_supplier_id: params[:supplier_id]) if params[:supplier_id].present?
+      #     @demands = demands.page(params[:page]).per(params[:count])
+      #     render json: { pagination: set_pagination(:demands), demands: demands_data(@demands), response_code: 200 }
+      #   else
+      #     render json: { errors: "Not authenticated", response_code: 201 }
+      #   end
+      # end
+
       def index
         if current_company
-          demands = Demand.where(company_id: current_company.id, deleted: false)
-          demands = demands.where(demand_supplier_id: params[:supplier_id]) if params[:supplier_id].present?
-          @demands = demands.page(params[:page]).per(params[:count])
-          render json: { pagination: set_pagination(:demands), demands: demands_data(@demands), response_code: 200 }
+          @all_demands = []
+          @demand_suppliers = DemandSupplier.all
+          DemandSupplier.all.each do |supplier|
+            demands = Demand.where(company_id: current_company.id, demand_supplier_id: supplier.id, deleted: false)
+            demand_supplier = {
+              id: supplier.id,
+              name: supplier.name,
+              demands: demands
+            }
+            @all_demands << demand_supplier
+          end
+          respond_to do |format|
+            format.json { render :index }
+          end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
