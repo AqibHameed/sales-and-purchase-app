@@ -105,7 +105,7 @@ module Api
             end
           end
           @all_parcels =  Kaminari.paginate_array(@demanded).page(params[:page]).per(params[:count])
-          render json: { success: true, pagination: set_pagination(:all_parcels), parcels: { demanded: @all_parcels }, response_code: 200 }
+          render json: { pagination: set_pagination(:all_parcels), parcels: @all_parcels, response_code: 200 }
         else
           render json: { success: false, errors: "Not authenticated", response_code: 201 }
         end
