@@ -150,18 +150,18 @@ module Api
           status: status,
           sender_name: sender_name,
           supplier_name: proposal.seller.name,
-          source: proposal.trading_parcel.source,
-          description: proposal.trading_parcel.description,
-          sight: proposal.trading_parcel.sight,
-          no_of_stones: proposal.trading_parcel.no_of_stones,
-          carats: proposal.trading_parcel.weight,
-          cost: proposal.trading_parcel.cost,
-          list_percentage: proposal.trading_parcel.percent,
-          list_avg_price: proposal.trading_parcel.price,
-          list_total_price: proposal.trading_parcel.total_value,
-          list_credit: proposal.trading_parcel.credit_period,
-          list_discount: proposal.trading_parcel.box_value.to_i,
-          list_comment: proposal.trading_parcel.comment
+          source: proposal.trading_parcel.present? ?  proposal.trading_parcel.source : 'N/A',
+          description: proposal.trading_parcel.present? ? proposal.trading_parcel.description : 'N/A',
+          sight: proposal.trading_parcel.present? ? proposal.trading_parcel.sight : 'N/A',
+          no_of_stones: proposal.trading_parcel.present? ? proposal.trading_parcel.no_of_stones : 'N/A',
+          carats: proposal.trading_parcel.present? ? proposal.trading_parcel.weight : 'N/A',
+          cost: proposal.trading_parcel.present? ? proposal.trading_parcel.cost : 'N/A',
+          list_percentage: proposal.trading_parcel.present? ? proposal.trading_parcel.percent : 'N/A',
+          list_avg_price: proposal.trading_parcel.present? ? proposal.trading_parcel.price : 'N/A',
+          list_total_price: proposal.trading_parcel.present? ? proposal.trading_parcel.total_value : 'N/A',
+          list_credit: proposal.trading_parcel.present? ? proposal.trading_parcel.credit_period : 'N/A',
+          list_discount: proposal.trading_parcel.present? ? proposal.trading_parcel.box_value.to_i : 'N/A',
+          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A'
         }
         if proposal.negotiated == true
           if current_company.id == proposal.seller_id
