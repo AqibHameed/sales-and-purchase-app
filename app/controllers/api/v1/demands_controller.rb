@@ -89,21 +89,23 @@ module Api
       def parcels_list
         if current_company
           @demanded = []
-          @others = []
-          # Not showing Polished now
+          if params[:demand_supplier_id].present? 
+            source = DemandSupplier.where(id: params[:demand_supplier_id]).first.name
+          end
           parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished')
+          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished').where(source: source) if source.present?
+          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished').where("description LIKE ?", params[:description]) if params[:description].present?
           # parcels = TradingParcel.where(sold: false)
           required_parcels = []
           parcels.each do |parcel|
             if check_parcel_visibility(parcel, current_company)
               if parcel_demanded(parcel, current_company)
                 @demanded << parcel_data(parcel, 'demanded')
-              else
-                @others << parcel_data(parcel, 'other')
               end
             end
           end
-          render json: { success: true, parcels: { demanded: @demanded, others: @others }, response_code: 200 }
+          @all_parcels =  Kaminari.paginate_array(@demanded).page(params[:page]).per(params[:count])
+          render json: { success: true, pagination: set_pagination(:all_parcels), parcels: { demanded: @all_parcels }, response_code: 200 }
         else
           render json: { success: false, errors: "Not authenticated", response_code: 201 }
         end
