@@ -32,13 +32,13 @@ function calculate_prices(carat, cost, percent, price){
     if (isNaN(avg_price)){
       $('#proposal_price').val('')
     }else{
-      $('#proposal_price').val(avg_price)
+      $('#proposal_price').val(avg_price.toFixed(2))
     }
   }
   if(isNaN(amount)){
     $('#proposal_total_value').val('')
   }else{
-    $('#proposal_total_value').val(amount)
+    $('#proposal_total_value').val(amount.toFixed(2))
   }
   showDiff(amount, last_sold)
 }
@@ -51,13 +51,13 @@ function calculate_percents(carat, cost, price){
     if (isNaN(percent)){
       $('#proposal_percent').val('')
     }else{
-      $('#proposal_percent').val(percent)
+      $('#proposal_percent').val(percent.toFixed(2))
     }
   }
   if(isNaN(amount)){
     $('#proposal_total_value').val('')
   }else{
-    $('#proposal_total_value').val(amount)
+    $('#proposal_total_value').val(amount.toFixed(2))
   }
   showDiff(amount, last_sold)
 }
