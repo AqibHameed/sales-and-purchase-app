@@ -107,7 +107,7 @@ module Api
           description: proposal.trading_parcel.present? ? proposal.trading_parcel.description : 'N/A',
           sight: proposal.trading_parcel.present? ? proposal.trading_parcel.sight : 'N/A',
           no_of_stones: proposal.trading_parcel.present? ? proposal.trading_parcel.no_of_stones : 'N/A',
-          carats: proposal.trading_parcel.present? ? proposal.trading_parcel.weight : 'N/A',
+          carats: proposal.trading_parcel.present? ? proposal.trading_parcel.weight.to_f : 'N/A',
           cost: proposal.trading_parcel.present? ? proposal.trading_parcel.cost : 'N/A',
           list_percentage: proposal.trading_parcel.present? ? proposal.trading_parcel.percent : 'N/A',
           list_avg_price: proposal.trading_parcel.present? ? proposal.trading_parcel.price : 'N/A',
