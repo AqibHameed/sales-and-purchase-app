@@ -2,120 +2,78 @@ module Api
   module V1
     class ProposalsController < ApiController
       skip_before_action :verify_authenticity_token, only: [:create, :negotiate]
+      before_action :set_proposal, only: [ :negotiate, :show, :accept_and_decline ]
+      before_action :verify_current_company, only: [ :negotiate, :show, :create, :accept_and_decline ]
 
-      def create
-        if current_company
-          parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
-            if parcel.present?
-              # if current_company.is_blocked_by_supplier(parcel.try(:company_id))
-              credit_limit = CreditLimit.where(seller_id: parcel.try(:company_id), buyer_id: current_company.id).first
-              if current_company.is_overdue || (credit_limit.present? && credit_limit.market_limit.to_f < parcel.total_value)
-                render json: { success: false, message: 'You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.' }
-              else
-                proposal = Proposal.new(proposal_params)
-                proposal.buyer_id = current_company.id
-                proposal.seller_id = parcel.company_id
-                proposal.notes = parcel.comment
-                proposal.action_for = parcel.company_id
-                proposal.buyer_comment = params[:comment]
-                if proposal.save
-                  Message.create_new(proposal)
-                  render json: { success: true, message: 'Proposal Submitted Successfully' }
-                else
-                  render json: { success: false, errors: proposal.errors.full_messages }
-                end
-              end
+      def create        
+        parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
+        if parcel.present?
+          # if current_company.is_blocked_by_supplier(parcel.try(:company_id))
+          credit_limit = CreditLimit.where(seller_id: parcel.try(:company_id), buyer_id: current_company.id).first
+          if current_company.is_overdue || (credit_limit.present? && credit_limit.market_limit.to_f < parcel.total_value)
+            render json: { success: false, message: 'You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.' }
+          else
+            proposal = Proposal.new(proposal_params)
+            proposal.buyer_id = current_company.id
+            proposal.seller_id = parcel.company_id
+            proposal.notes = parcel.comment
+            proposal.action_for = parcel.company_id
+            proposal.buyer_comment = params[:comment]
+            if proposal.save
+              Message.create_new(proposal)
+              render json: { success: true, message: 'Proposal Submitted Successfully' }
             else
-              render json: { success: false, message: 'Parcel does not exists for this id.' }
+              render json: { success: false, errors: proposal.errors.full_messages }
             end
+          end
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
-        end
+          render json: { success: false, message: 'Parcel does not exists for this id.' }
+        end      
       end
 
       def show
-        if current_company
-          proposal = Proposal.where(id: params[:id]).first
-          if proposal.present?
-            if proposal.action_for == proposal.buyer_id
-              company = Company.where(id: proposal.seller_id).first
-            else
-              company = Company.where(id: proposal.buyer_id).first
-            end
-            get_proposal_details(proposal, company.name)
-            render :json => {:success => true, :proposal=> @data, response_code: 200 }
-          else
-            render :json => {:success => false, :message=> 'Proposal does not exists for this id.', response_code: 201 }
-          end
-        else
-          render json: { errors: "Not authenticated", response_code: 201 }
-        end
+        get_proposal_details(@proposal)
+        render :json => {:success => true, :proposal=> @data, response_code: 200 }
       end
 
       def accept_and_decline
-        if current_company
-          proposal = Proposal.where(id: params[:id]).first
-          if params[:perform] == 'accept'
-            accpet_proposal(proposal)
-            if @available_credit_limit < @total_price
-              render :json => {:success => true, :message=> " Your credit_limit is increased form  #{@available_credit_limit}   to   #{@new_limit}", response_code: 201 }
-            else
-              render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
-            end
-          elsif params[:perform] == 'reject'
-            proposal.status = 2
-            if proposal.save(validate: false)
-              render :json => {:success => true, :message=> ' Proposal is rejected. ', response_code: 201 }
-            else
-              render :json => {:success => false, :message=> ' Something went wrong. ', response_code: 201 }
-            end
+        if params[:perform] == 'accept'
+          accpet_proposal(@proposal)
+          if @available_credit_limit < @total_price
+            render :json => {:success => true, :message=> " Your credit_limit is increased form  #{@available_credit_limit}   to   #{@new_limit}", response_code: 201 }
           else
-            render :json => {:success => false, :message=> ' Appropriate action should be present. ', response_code: 201 }
+            render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
+          end
+        elsif params[:perform] == 'reject'
+          @proposal.status = 2
+          if @proposal.save(validate: false)
+            render :json => {:success => true, :message=> ' Proposal is rejected. ', response_code: 201 }
+          else
+            render :json => {:success => false, :message=> ' Something went wrong. ', response_code: 201 }
           end
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
-        end
+          render :json => {:success => false, :message=> ' Appropriate action should be present. ', response_code: 201 }
+        end      
       end
 
       def negotiate
-        if current_company
-          proposal = Proposal.where(id: params[:id]).first
-          if proposal.present?
-            if current_company.id == proposal.buyer_id
-              sender_name = proposal.buyer.name
-              proposal.update_attributes(update_params)
-              proposal.buyer_price = params[:price]
-              proposal.buyer_credit = params[:credit]
-              proposal.buyer_total_value = params[:total_value]
-              proposal.buyer_percent = params[:percent]
-              proposal.buyer_comment = params[:comment]
-              proposal.action_for = proposal.seller_id
-              proposal.save
-            else
-              sender_name = proposal.seller.name
-              proposal.update_attributes(update_params)
-              proposal.seller_price = params[:price]
-              proposal.seller_credit = params[:credit]
-              proposal.seller_total_value = params[:total_value]
-              proposal.seller_percent = params[:percent]
-              proposal.notes = params[:comment]
-              proposal.action_for = proposal.buyer_id
-              proposal.save
-            end
-            proposal.negotiated = true
-            proposal.save
-            get_proposal_details(proposal,sender_name)
-            Message.create_new_negotiate(proposal, current_company)
-            render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 201 }
-          else
-            render :json => {:success => false, :message=> 'Proposal does not exists for this id.', response_code: 201 }
-          end
+        if @proposal.negotiations.create( negotiation_params.merge({from: from}) )
+          # proposal.update_attributes(negotiated: true)
+          get_proposal_details(@proposal)
+          # Message.create_new_negotiate(proposal, current_company)
+          render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
+          render :json => {:success => false, :message=> 'Proposal is not negotiated unsuccessfully..', response_code: 201 }
         end
       end
 
       private
+
+      def set_proposal
+        @proposal = Proposal.where(id: params[:id]).first
+        render :json => {:success => false, :message=> 'Proposal does not exists for this id.', response_code: 201 } and return unless @proposal
+      end
+
       def proposal_params
         params.permit(:buyer_id, :seller_id, :credit, :price, :percent, :total_value, :trading_parcel_id)
       end
@@ -124,31 +82,22 @@ module Api
         params.permit(:price, :credit, :total_value, :percent)
       end
 
-      def get_proposal_details(proposal,sender_name)
-        if proposal.status == 'accepted'
-          status = 'accepted'
-        elsif proposal.status == 'rejected'
-          status = 'rejected'
+      def negotiation_params
+        params.permit(:price, :credit, :total_value, :percent, :comment)
+      end
+
+      def verify_current_company
+        render json: { errors: "Not authenticated", response_code: 201 } and return unless current_company
+      end
+
+      def get_proposal_details(proposal)
+        if current_company == proposal.buyer
+          last_negotiation = proposal.negotiations.where(from: 'seller').last
         else
-          status = nil
+          last_negotiation = proposal.negotiations.where(from: 'buyer').last
         end
-        buyer_offers = {
-          percent: proposal.buyer_percent,
-          avg_price: proposal.buyer_price,
-          total_price: proposal.buyer_total_value,
-          credit: proposal.buyer_credit,
-          negotiated_comment: proposal.buyer_comment
-        }
-        seller_offers= {
-          percent: proposal.seller_percent,
-          avg_price: proposal.seller_price,
-          total_price: proposal.seller_total_value,
-          credit: proposal.seller_credit,
-          negotiated_comment: proposal.notes
-        }
         @data = {
-          status: status,
-          sender_name: sender_name,
+          status: proposal.status,
           supplier_name: proposal.seller.name,
           source: proposal.trading_parcel.present? ?  proposal.trading_parcel.source : 'N/A',
           description: proposal.trading_parcel.present? ? proposal.trading_parcel.description : 'N/A',
@@ -161,41 +110,30 @@ module Api
           list_total_price: proposal.trading_parcel.present? ? proposal.trading_parcel.total_value : 'N/A',
           list_credit: proposal.trading_parcel.present? ? proposal.trading_parcel.credit_period : 'N/A',
           list_discount: proposal.trading_parcel.present? ? proposal.trading_parcel.box_value.to_i : 'N/A',
-          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A'
-        }
-        if proposal.negotiated == true
-          if current_company.id == proposal.seller_id
-            buyer_last_negotiated = {
-              offered_percentage: proposal.buyer_percent,
-              offered_price: proposal.buyer_price,
-              offered_total_value: proposal.buyer_total_value,
-              offered_credit: proposal.buyer_credit,
-              offered_comment: proposal.buyer_comment
-            }
-            @data.merge!(buyer_last_negotiated)
-            @data.merge!(negotiated: seller_offers)
-          else current_company.id == proposal.buyer_id
-            seller_last_negotiated = {
-              offered_percentage: proposal.seller_percent,
-              offered_price: proposal.seller_price,
-              offered_total_value: proposal.seller_total_value,
-              offered_credit: proposal.seller_credit,
-              offered_comment: proposal.notes
-            }
-            @data.merge!(seller_last_negotiated)
-            @data.merge!(negotiated: buyer_offers)
-          end
-        else
-          offered = {
-          offered_percentage: proposal.percent,
-          offered_price: proposal.price,
-          offered_total_value: proposal.total_value,
-          offered_credit: proposal.credit,
-          offered_comment: proposal.buyer_comment,
-          negotiated: nil
+          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A',
+          negotiated: {
+            offered_percentage: last_negotiation.try(:percent),
+            offered_price: last_negotiation.try(:price),
+            offered_total_value: last_negotiation.try(:total_value),
+            offered_credit: last_negotiation.try(:credit),
+            offered_comment: last_negotiation.try(:comment),
+            offered_from: last_negotiation.try(:from)
           }
-          @data.merge!(offered)
+        }
+        negotiations = []
+        proposal.negotiations.each do |negotiation|
+          negotiations << {
+            id: negotiation.id,
+            percent: negotiation.percent,
+            credit: negotiation.credit,
+            price: negotiation.price,
+            total_value: negotiation.total_value,
+            comment: negotiation.comment,
+            from: negotiation.from
+          }
         end
+        @data.merge!(total_negotiations: proposal.negotiations.count)
+        @data.merge!(negotiations: negotiations)
       end
 
       def accpet_proposal(proposal)

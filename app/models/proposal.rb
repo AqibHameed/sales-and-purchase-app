@@ -4,6 +4,7 @@ class Proposal < ApplicationRecord
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
   has_many :messages
+  has_many :negotiations
   after_create :set_buyer_offers
 
 
