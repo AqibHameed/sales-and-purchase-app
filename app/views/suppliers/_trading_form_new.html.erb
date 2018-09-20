@@ -182,9 +182,9 @@
       $('#amount').val('');
       $('#trading_parcel_total_value').val('')
     }else{
-      $('#trading_parcel_price').val(avg_price)
+      $('#trading_parcel_price').val(avg_price.toFixed(2))
       $('#amount').val(amount);
-      $('#trading_parcel_total_value').val(amount)
+      $('#trading_parcel_total_value').val(amount.toFixed(2))
     }
   }
 
@@ -195,11 +195,11 @@
       $('#trading_parcel_percent').val('')
       $('#amount').val(amount);
       var total_price = carat * price;
-      $('#trading_parcel_total_value').val(total_price)
+      $('#trading_parcel_total_value').val(total_price.toFixed(2))
     }else{
-      $('#trading_parcel_percent').val(percent)
+      $('#trading_parcel_percent').val(percent.toFixed(2))
       $('#amount').val(amount);
-      $('#trading_parcel_total_value').val(amount)
+      $('#trading_parcel_total_value').val(amount.toFixed(2))
     }
   }
 
