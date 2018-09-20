@@ -5,30 +5,34 @@ module Api
       before_action :set_proposal, only: [ :negotiate, :show, :accept_and_decline ]
       before_action :verify_current_company, only: [ :negotiate, :show, :create, :accept_and_decline ]
 
-      def create        
-        parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
-        if parcel.present?
-          # if current_company.is_blocked_by_supplier(parcel.try(:company_id))
-          credit_limit = CreditLimit.where(seller_id: parcel.try(:company_id), buyer_id: current_company.id).first
-          if current_company.is_overdue || (credit_limit.present? && credit_limit.market_limit.to_f < parcel.total_value)
-            render json: { success: false, message: 'You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.' }
-          else
-            proposal = Proposal.new(proposal_params)
-            proposal.buyer_id = current_company.id
-            proposal.seller_id = parcel.company_id
-            proposal.notes = parcel.comment
-            proposal.action_for = parcel.company_id
-            proposal.buyer_comment = params[:comment]
-            if proposal.save
-              Message.create_new(proposal)
-              render json: { success: true, message: 'Proposal Submitted Successfully' }
+      def create
+        if current_company
+          parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
+            if parcel.present?
+              # if current_company.is_blocked_by_supplier(parcel.try(:company_id))
+              credit_limit = CreditLimit.where(seller_id: parcel.try(:company_id), buyer_id: current_company.id).first
+              if current_company.is_overdue || (credit_limit.present? && credit_limit.market_limit.to_f < parcel.total_value)
+                render json: { success: false, message: 'You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.' }
+              else
+                proposal = Proposal.new(proposal_params)
+                proposal.buyer_id = current_company.id
+                proposal.seller_id = parcel.company_id
+                proposal.notes = parcel.comment
+                proposal.action_for = parcel.company_id
+                proposal.buyer_comment = params[:comment]
+                if proposal.save
+                  Message.create_new(proposal)
+                  render json: { success: true, message: 'Proposal Submitted Successfully' }
+                else
+                  render json: { success: false, errors: proposal.errors.full_messages }
+                end
+              end
             else
-              render json: { success: false, errors: proposal.errors.full_messages }
+              render json: { success: false, message: 'Parcel does not exists for this id.' }
             end
-          end
         else
-          render json: { success: false, message: 'Parcel does not exists for this id.' }
-        end      
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
       end
 
       def show
@@ -124,12 +128,12 @@ module Api
         proposal.negotiations.each do |negotiation|
           negotiations << {
             id: negotiation.id,
-            percent: negotiation.percent,
-            credit: negotiation.credit,
-            price: negotiation.price,
-            total_value: negotiation.total_value,
-            comment: negotiation.comment,
-            from: negotiation.from
+            offered_percent: negotiation.percent,
+            offered_credit: negotiation.credit,
+            offered_price: negotiation.price,
+            offered_total_value: negotiation.total_value,
+            offered_comment: negotiation.comment,
+            offered_from: negotiation.from
           }
         end
         @data.merge!(total_negotiations: proposal.negotiations.count)
