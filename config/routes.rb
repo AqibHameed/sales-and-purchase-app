@@ -355,6 +355,14 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :brokers, only: [:create, :index, :destroy] do
+        collection do
+          get :assigned_parcels
+          get :demanding_companies
+          post :send_request
+        end
+      end
+
       get '/profile', to: 'customers#profile'
       patch '/update_profile', to: 'customers#update_profile'
       patch '/update_password', to: 'customers#update_password'

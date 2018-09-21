@@ -450,7 +450,8 @@ module ApplicationHelper
   end
 
   def list_of_brokers(current_company)
-    current_company.my_brokers.map { |e| [e.broker.name, e.broker.id]  } rescue ''
+    # current_company.my_brokers.map { |e| [e.broker.name, e.broker.id]  } rescue ''
+    Customer.all.map{ |e| [e.first_name, e.company.id] if e.has_role?('Broker')}.compact rescue ''
   end
 
   def all_companies(current_company)
