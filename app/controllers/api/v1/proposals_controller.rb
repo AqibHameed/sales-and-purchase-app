@@ -61,8 +61,8 @@ module Api
       end
 
       def negotiate
-        if @proposal.negotiations.create( negotiation_params.merge({from: from}) )
-          # proposal.update_attributes(negotiated: true)
+        if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))     
+	  # proposal.update_attributes(negotiated: true)
           get_proposal_details(@proposal)
           # Message.create_new_negotiate(proposal, current_company)
           render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
@@ -100,8 +100,17 @@ module Api
         else
           last_negotiation = proposal.negotiations.where(from: 'buyer').last
         end
+        if proposal.status == 'negotiated' 
+          if proposal.negotiations.present?
+            status = "negotiated"
+          else
+            status = nil
+          end
+        else 
+          status = proposal.status
+        end
         @data = {
-          status: proposal.status,
+          status: status,
           supplier_name: proposal.seller.name,
           source: proposal.trading_parcel.present? ?  proposal.trading_parcel.source : 'N/A',
           description: proposal.trading_parcel.present? ? proposal.trading_parcel.description : 'N/A',
@@ -114,8 +123,10 @@ module Api
           list_total_price: proposal.trading_parcel.present? ? proposal.trading_parcel.total_value : 'N/A',
           list_credit: proposal.trading_parcel.present? ? proposal.trading_parcel.credit_period : 'N/A',
           list_discount: proposal.trading_parcel.present? ? proposal.trading_parcel.box_value.to_i : 'N/A',
-          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A',
-          negotiated: {
+          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A'
+        }
+        if proposal.negotiations.present? && proposal.status == 'negotiated'
+          negotiated = {
             offered_percentage: last_negotiation.try(:percent),
             offered_price: last_negotiation.try(:price),
             offered_total_value: last_negotiation.try(:total_value),
@@ -123,21 +134,24 @@ module Api
             offered_comment: last_negotiation.try(:comment),
             offered_from: last_negotiation.try(:from)
           }
-        }
-        negotiations = []
-        proposal.negotiations.each do |negotiation|
-          negotiations << {
-            id: negotiation.id,
-            offered_percent: negotiation.percent,
-            offered_credit: negotiation.credit,
-            offered_price: negotiation.price,
-            offered_total_value: negotiation.total_value,
-            offered_comment: negotiation.comment,
-            offered_from: negotiation.from
-          }
+          negotiations = []
+          proposal.negotiations.each do |negotiation|
+            negotiations << {
+              id: negotiation.id,
+              offered_percent: negotiation.percent,
+              offered_credit: negotiation.credit,
+              offered_price: negotiation.price,
+              offered_total_value: negotiation.total_value,
+              offered_comment: negotiation.comment,
+              offered_from: negotiation.from
+            }
+          end
+          @data.merge!(negotiated: negotiated)
+          @data.merge!(total_negotiations: proposal.negotiations.count)
+          @data.merge!(negotiations: negotiations)      
+        else
+          @data.merge!(negotiated: nil)
         end
-        @data.merge!(total_negotiations: proposal.negotiations.count)
-        @data.merge!(negotiations: negotiations)
       end
 
       def accpet_proposal(proposal)
