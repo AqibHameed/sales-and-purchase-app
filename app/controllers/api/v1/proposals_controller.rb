@@ -96,9 +96,9 @@ module Api
 
       def get_proposal_details(proposal)
         if current_company == proposal.buyer
-          last_negotiation = proposal.negotiations.where(from: 'seller').last
+          last_negotiation = proposal.negotiations.where(from: 'seller').order('created_at ASC' ).last
         else
-          last_negotiation = proposal.negotiations.where(from: 'buyer').last
+          last_negotiation = proposal.negotiations.where(from: 'buyer').order('created_at ASC').last
         end
         if proposal.status == 'negotiated' 
           if proposal.negotiations.present?
