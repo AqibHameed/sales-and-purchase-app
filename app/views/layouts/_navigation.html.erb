@@ -11,6 +11,9 @@
             <li class="">
               <%= link_to 'Network', brokers_path, :class => 'home', data: { turbolinks: false } %>
             </li>
+            <li class="<%= 'active' if current_page?('/live_demands') %>">
+              <%= link_to 'Live Demands', '/live_demands', data: { turbolinks: false } %>
+            </li>
             <!-- <li><%#= link_to 'Parcels', shared_parcels_brokers_path, data: { turbolinks: false } %></li> -->
             <li>
               <%#= link_to 'Invite', '#', data: { turbolinks: false } %>
