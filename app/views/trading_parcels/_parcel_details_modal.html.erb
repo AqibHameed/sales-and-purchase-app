@@ -178,7 +178,7 @@
     $('#form-submit').on('click', function(e) {
       if ((parseInt($('#proposal_percent').val()) == 0) || (parseInt($('#proposal_price').val()) == 0) || (parseInt($('#proposal_total_value').val()) == 0)){
         $('.error-message').text("Please enter value greater than 0")
-      } else if ($('#proposal_percent').val() == '' || $('#proposal_price').val() == '' || $('#proposal_total_value').val() == '' || $('#proposal_credit').val() == ''){
+      } else if (($('#proposal_percent').val() == '' && $("#proposal_percent").attr('disabled') != "disabled") || $('#proposal_price').val() == '' || $('#proposal_total_value').val() == '' || $('#proposal_credit').val() == ''){
         $('.error-message').text("Value cannot be blank...");
       }else if ( !$.isNumeric($('#proposal_price').val()) || !$.isNumeric($('#proposal_total_value').val()) || !$.isNumeric($('#proposal_credit').val()) ){
         $('.error-message').text("Please enter numeric value...");
