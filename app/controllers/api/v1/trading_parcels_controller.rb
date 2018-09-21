@@ -61,6 +61,27 @@ module Api
       #   end
       # end
 
+      def available_trading_parcels
+        if current_company
+          @all_parcels = []
+          @demand_suppliers = DemandSupplier.all
+          DemandSupplier.all.each do |supplier|
+            parcels = current_company.trading_parcels.where(sold: false)
+            demand_supplier = {
+              id: supplier.id,
+              name: supplier.name,
+              parcels: parcels
+            }
+            @all_parcels << demand_supplier
+          end
+          respond_to do |format|
+            format.json { render :available_trading_parcels }
+          end
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
       def index
         if current_customer
           if params[:demand_supplier_id].present? 

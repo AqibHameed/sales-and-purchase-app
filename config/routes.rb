@@ -336,6 +336,7 @@ Rails.application.routes.draw do
       resources :trading_parcels do
         collection do
           post :direct_sell
+          get :available_trading_parcels
         end
       end
       resources :companies_groups
