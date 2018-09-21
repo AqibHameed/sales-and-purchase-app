@@ -66,7 +66,7 @@ module Api
           @all_parcels = []
           @demand_suppliers = DemandSupplier.all
           DemandSupplier.all.each do |supplier|
-            parcels = current_company.trading_parcels.where(sold: false)
+            parcels = current_company.trading_parcels.where(sold: false).where("source LIKE ? ", supplier.name)
             demand_supplier = {
               id: supplier.id,
               name: supplier.name,
