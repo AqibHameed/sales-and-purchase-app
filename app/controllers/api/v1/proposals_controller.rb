@@ -118,9 +118,9 @@ module Api
           no_of_stones: proposal.trading_parcel.present? ? proposal.trading_parcel.no_of_stones : 'N/A',
           carats: proposal.trading_parcel.present? ? proposal.trading_parcel.weight: 'N/A',
           cost: proposal.trading_parcel.present? ? proposal.trading_parcel.cost.to_f : 'N/A',
-          list_percentage: proposal.trading_parcel.present? ? proposal.trading_parcel.percent : 'N/A',
-          list_avg_price: proposal.trading_parcel.present? ? proposal.trading_parcel.price : 'N/A',
-          list_total_price: proposal.trading_parcel.present? ? proposal.trading_parcel.total_value : 'N/A',
+          list_percentage: proposal.trading_parcel.present? ? proposal.trading_parcel.percent.to_f : 'N/A',
+          list_avg_price: proposal.trading_parcel.present? ? proposal.trading_parcel.price.to_f : 'N/A',
+          list_total_price: proposal.trading_parcel.present? ? proposal.trading_parcel.total_value.to_f : 'N/A',
           list_credit: proposal.trading_parcel.present? ? proposal.trading_parcel.credit_period : 'N/A',
           list_discount: proposal.trading_parcel.present? ? proposal.trading_parcel.box_value.to_i : 'N/A',
           list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A'
@@ -128,9 +128,9 @@ module Api
         if proposal.negotiations.present? && proposal.status == 'negotiated'
           negotiated = {
             id: last_negotiation.try(:id),
-            offered_percentage: last_negotiation.try(:percent),
-            offered_price: last_negotiation.try(:price),
-            offered_total_value: last_negotiation.try(:total_value),
+            offered_percentage: last_negotiation.try(:percent).to_f,
+            offered_price: last_negotiation.try(:price).to_f,
+            offered_total_value: last_negotiation.try(:total_value).to_f,
             offered_credit: last_negotiation.try(:credit),
             offered_comment: last_negotiation.try(:comment),
             offered_from: last_negotiation.try(:from)
@@ -139,10 +139,10 @@ module Api
           proposal.negotiations.each do |negotiation|
             negotiations << {
               id: negotiation.id,
-              offered_percent: negotiation.percent,
+              offered_percent: negotiation.percent.to_f,
               offered_credit: negotiation.credit,
-              offered_price: negotiation.price,
-              offered_total_value: negotiation.total_value,
+              offered_price: negotiation.price.to_f,
+              offered_total_value: negotiation.total_value.to_f,
               offered_comment: negotiation.comment,
               offered_from: negotiation.from
             }
