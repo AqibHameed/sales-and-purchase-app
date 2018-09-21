@@ -62,7 +62,7 @@ module Api
 
       def negotiate
         if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))     
-	  # proposal.update_attributes(negotiated: true)
+	      # proposal.update_attributes(negotiated: true)
           get_proposal_details(@proposal)
           # Message.create_new_negotiate(proposal, current_company)
           render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
@@ -127,6 +127,7 @@ module Api
         }
         if proposal.negotiations.present? && proposal.status == 'negotiated'
           negotiated = {
+            id: last_negotiation.try(:id),
             offered_percentage: last_negotiation.try(:percent),
             offered_price: last_negotiation.try(:price),
             offered_total_value: last_negotiation.try(:total_value),
