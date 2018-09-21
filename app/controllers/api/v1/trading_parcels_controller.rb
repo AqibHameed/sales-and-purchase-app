@@ -89,7 +89,7 @@ module Api
           end
           parcel = current_company.trading_parcels.where(sold: false)
           parcel = current_company.trading_parcels.where(sold: false).where(source: source) if source.present?
-          parcel = current_company.trading_parcels.where(sold: false).where("description LIKE ? ", params[:description]) if params[:description].present?
+          parcel = current_company.trading_parcels.where(sold: false).where(description: params[:description]) if params[:description].present?
           @parcels = parcel.page(params[:page]).per(params[:count])
           render json: { success: true, pagination: set_pagination(:parcels), parcels: list_parcel_data(@parcels), response_code: 200 }
         else
