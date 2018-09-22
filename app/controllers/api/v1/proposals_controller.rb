@@ -94,12 +94,8 @@ module Api
         render json: { errors: "Not authenticated", response_code: 201 } and return unless current_company
       end
 
-      def get_proposal_details(proposal)
-        if current_company == proposal.buyer
-          last_negotiation = proposal.negotiations.where(from: 'seller').order('created_at ASC' ).last
-        else
-          last_negotiation = proposal.negotiations.where(from: 'buyer').order('created_at ASC').last
-        end
+      def get_proposal_details(proposal)        
+        last_negotiation = proposal.negotiations.order('created_at ASC' ).last
         if proposal.status == 'negotiated' 
           if proposal.negotiations.present?
             status = "negotiated"
