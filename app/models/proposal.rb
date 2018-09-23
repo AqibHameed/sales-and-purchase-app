@@ -18,6 +18,27 @@ class Proposal < ApplicationRecord
     self.save
   end
 
+  def negotiation_status from
+    if from == buyer
+      sender = 'buyer'
+      receiver = 'seller'      
+    elsif from == seller
+      sender = 'seller'
+      receiver = 'buyer'
+    end
+
+    last_negotiation = negotiations.where(from: sender).last
+    if last_negotiation
+      if negotiations.where(from: receiver).where('created_at > ?', last_negotiation.created_at).present?
+        return 'negotiated'
+      else
+        return 'yes'
+      end
+    else
+      return 'no'
+    end        
+  end
+
   # validate  :credit_validation
 
   # def credit_validation
