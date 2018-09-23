@@ -67,10 +67,18 @@ module Api
           @demand_suppliers = DemandSupplier.all
           DemandSupplier.all.each do |supplier|
             parcels = current_company.trading_parcels.where(sold: false).where("source LIKE ? ", supplier.name)
+            parcel_h = []
+            parcels.each do |parcel|
+              parcels_with_d = current_company.trading_parcels.where(sold: false).where("source LIKE ? ", supplier.name).where("description LIKE ? ", parcel.description)
+              parcel_h << {
+                description: parcel.description,
+                parcels: parcels_with_d.count
+              }
+            end
             demand_supplier = {
               id: supplier.id,
               name: supplier.name,
-              parcels: parcels
+              parcels: parcel_h
             }
             @all_parcels << demand_supplier
           end
