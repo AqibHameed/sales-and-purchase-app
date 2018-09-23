@@ -61,14 +61,25 @@ module Api
       end
 
       def negotiate
-        if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))     
-	      # proposal.update_attributes(negotiated: true)
-          get_proposal_details(@proposal)
-          # Message.create_new_negotiate(proposal, current_company)
-          render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
+        if params[:negotiation_id].present?
+          negotiation = Negotiation.where(id: params[:negotiation_id]).first
+          render :json => {:success => false, :message=> 'Negotiation does not exists for the negotiation id.', response_code: 201 } and return unless negotiation
+          render :json => {:success => false, :message=> 'This negotiation is not yours.', response_code: 201 } and return unless negotiation.whose == current_company
+          if negotiation.update_attributes(negotiation_params)
+            render :json => {:success => true, :message=> ' Negotiation is updated successfully. ', :negotiation => negotiation, response_code: 200 }  
+          else
+            render :json => {:success => false, :message=> 'Negotiation is not updated successfully..', response_code: 201 }
+          end
         else
-          render :json => {:success => false, :message=> 'Proposal is not negotiated unsuccessfully..', response_code: 201 }
-        end
+          if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
+          # proposal.update_attributes(negotiated: true)
+            get_proposal_details(@proposal)
+            # Message.create_new_negotiate(proposal, current_company)
+            render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
+          else
+            render :json => {:success => false, :message=> 'Proposal is not negotiated successfully..', response_code: 201 }
+          end
+        end        
       end
 
       private
@@ -140,7 +151,8 @@ module Api
               offered_price: negotiation.price.to_f,
               offered_total_value: negotiation.total_value.to_f,
               offered_comment: negotiation.comment,
-              offered_from: negotiation.from
+              offered_from: negotiation.from,
+              is_mine: negotiation.whose == current_company
             }
           end
           @data.merge!(negotiated: negotiated)
