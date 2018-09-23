@@ -24,6 +24,7 @@ module Api
             demands.each do |demand|
               parcels = current_company.trading_parcels.where(sold: false).where("source LIKE ? ", supplier.name).where("description LIKE ? ", demand.description)
               demand_h << {
+                id: demand.id,
                 description: demand.description,
                 parcels: parcels.count
               }
