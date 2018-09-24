@@ -221,6 +221,7 @@ Rails.application.routes.draw do
     member do
       get :confirm
       get :reject
+      get :cancel
       patch :reject_reason
     end
   end
