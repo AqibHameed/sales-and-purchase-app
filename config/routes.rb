@@ -313,6 +313,8 @@ Rails.application.routes.draw do
       resources :transactions do
         collection do
           post :make_payment
+          post :confirm
+          post :reject
         end
       end
       resources :limits do

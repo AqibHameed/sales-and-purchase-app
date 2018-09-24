@@ -1,8 +1,8 @@
 module Api
   module V1
     class TransactionsController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:make_payment]
-      before_action :current_customer, only: [:make_payment]
+      skip_before_action :verify_authenticity_token, only: [:make_payment, :confirm, :reject]
+      before_action :current_customer, only: [:make_payment, :confirm, :reject]
 
       def make_payment
         if current_company
@@ -23,6 +23,36 @@ module Api
             end
           else
             render json: { errors: @payment.errors.full_messages }
+          end
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+      def confirm
+        if current_company
+          @transaction = Transaction.find(params[:id])
+          @transaction.buyer_confirmed = true
+          if @transaction.save
+            @transaction.create_parcel_for_buyer
+            render json: { success: true, message: 'Transaction confirm successfully' }
+          else
+            render json: { success: false, message: 'Not confirm now. Please try again.' }
+          end
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end  
+      end
+
+      def reject
+        if current_company
+          @transaction = Transaction.find(params[:id])
+          @transaction.buyer_reject = true
+          if @transaction.save
+            TenderMailer.buyer_reject_transaction(@transaction).deliver
+            render json: { success: true, message: 'Transaction rejected successfully' }
+          else
+            render json: { success: false, message: 'Not rejected now. Please try again.' }
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
