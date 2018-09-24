@@ -98,6 +98,8 @@
                         <!-- <p style="margin: 0px 0px 6px 5px; color: red;">Supplier has not given credit limit to you. -->
                         <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:company_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
                       <%#elsif current_company.has_overdue_transaction_of_30_days(@parcel.try(:company_id)) %>
+                      <% elsif current_company.check_group_overdue(@parcel.try(:company_id)) %>
+                        <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything. Your group customer have overdue.</p>
                       <% elsif current_company.is_overdue %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.</p>
                         <!-- <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything. Please clear your overdue payments.</p> -->
@@ -105,8 +107,7 @@
                         <%#= link_to 'Buy', 'javascript:void(0)', class: 'btn-02 login-btn disabled'  %>
                         <!-- <p style="margin: -14px 0px 6px 65px; color: red;">Credit limit is 0. Please contact supplier -->
                         <%#= link_to 'Request', message_trading_parcel_path(id: @parcel.try(:company_id)), class: 'btn-02 login-btn ',data: { turbolinks: false } %></p>
-                      <% elsif current_company.check_group_overdue(@parcel.try(:company_id)) %>
-                        <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything. Your group customer have overdue.</p>
+                     
                       <% elsif current_company.check_market_limit_overdue(get_market_limit(current_company, @parcel.try(:company_id)), @parcel.try(:company_id)) %>
                         <p style="margin: 0px 0px 6px 5px; color: red;">You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.</p>
                         <!-- <p style="margin: 0px 0px 6px 5px; color: red;">You cannot buy anything, due to your Market limit overdue.</p> -->
