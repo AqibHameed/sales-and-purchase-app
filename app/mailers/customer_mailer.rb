@@ -33,7 +33,7 @@ class CustomerMailer < ApplicationMailer
   end
 
   def send_feedback(star, comment)
-    @email = 'contact@safetrade.ai'
+    @email = 'maneetchoksi1+3yacf283ozlmnfeswtlu@boards.trello.com'
     @star = star
     @comment = comment
     mail(:to => @email, :subject => '[SafeTrade] You have a feedback')

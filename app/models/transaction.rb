@@ -41,6 +41,12 @@ class Transaction < ApplicationRecord
     errors[:base] << "Invoice date can't be nil." if created_at.nil? || created_at.blank?
   end
 
+  def paid_date
+    if self.paid == true
+      self.partial_payment.order('created_at ASC').last.created_at if self.partial_payment.present?
+    end
+  end
+
   def self.create_new(proposal)
     trading_parcel = proposal.trading_parcel
     Transaction.create(buyer_id: proposal.buyer_id, seller_id: proposal.seller_id,

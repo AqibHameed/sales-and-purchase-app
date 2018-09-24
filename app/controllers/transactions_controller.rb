@@ -76,6 +76,16 @@ class TransactionsController < ApplicationController
     end
   end
 
+  def cancel
+    puts params
+    @transaction = Transaction.find(params[:id])
+    if @transaction.update_attributes(cancel: true)
+      redirect_to trading_history_path, notice: 'Transaction canceled successfully'  
+    else
+      redirect_to trading_history_path, notice: 'Not canceled now. Please try again.'
+    end
+  end
+
   def show
     @transaction = Transaction.find(params[:id])
     @payment = PartialPayment.new

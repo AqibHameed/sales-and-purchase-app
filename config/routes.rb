@@ -221,6 +221,7 @@ Rails.application.routes.draw do
     member do
       get :confirm
       get :reject
+      get :cancel
       patch :reject_reason
     end
   end
@@ -313,6 +314,8 @@ Rails.application.routes.draw do
       resources :transactions do
         collection do
           post :make_payment
+          post :confirm
+          post :reject
         end
       end
       resources :limits do

@@ -106,6 +106,7 @@ class Api::V1::CompaniesController < ApplicationController
 
   def history
     if current_company
+      no_of_overdue_transactions = current_company.buyer_transactions.where(" due_date < ? AND paid = ?", Date.today, false).count
       history = []
       all_rough_pend_transactions = []
       all_rough_over_transactions = []
@@ -121,7 +122,7 @@ class Api::V1::CompaniesController < ApplicationController
           buyer_id: t.buyer_id,
           seller_id: t.seller_id,
           trading_parcel_id: t.trading_parcel_id,
-          due_date: t.due_date.strftime("%FT%T%:z"),
+          due_date: t.due_date.present? ? t.due_date.strftime("%FT%T%:z") : 'N/A',
           avg_price: t.price,
           credit: t.credit,
           paid: t.paid,
@@ -148,7 +149,8 @@ class Api::V1::CompaniesController < ApplicationController
           box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
           sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
           comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
-          confirm_status: t.buyer_confirmed
+          confirm_status: t.buyer_confirmed,
+          paid_date: t.paid_date
         }
         if t.paid == false
           other = {
@@ -180,7 +182,7 @@ class Api::V1::CompaniesController < ApplicationController
           buyer_id: t.buyer_id,
           seller_id: t.seller_id,
           trading_parcel_id: t.trading_parcel_id,
-          due_date: t.due_date.strftime("%FT%T%:z"),
+          due_date: t.due_date.present? ? t.due_date.strftime("%FT%T%:z") : 'N/A',
           avg_price: t.price,
           total_amount: t.total_amount,
           credit: t.credit,
@@ -236,7 +238,7 @@ class Api::V1::CompaniesController < ApplicationController
         rough: rough,
         polished: polished
       }
-      render :json => {:success => true, :history=> history, response_code: 200 }
+      render :json => {:success => true, :overdue_transactions => no_of_overdue_transactions, :history=> history, response_code: 200 }
     else
       render json: { errors: "Not authenticated", response_code: 201 }
     end
