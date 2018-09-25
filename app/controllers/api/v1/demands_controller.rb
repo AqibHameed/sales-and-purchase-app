@@ -159,7 +159,7 @@ module Api
           per = i.percent.to_f
           @info << { size: size, percent: per }
         end
-        proposal = Proposal.where(buyer_id: current_company.id, trading_parcel_id: parcel.id).first
+        proposal = Proposal.where(buyer_id: current_company.id, trading_parcel_id: parcel.id).last
         if proposal.present?
           proposal_send = true
           proposal_status = proposal.negotiation_status(current_company)
