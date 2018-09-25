@@ -106,7 +106,7 @@ class Api::V1::CompaniesController < ApplicationController
 
   def history
     if current_company
-      no_of_overdue_transactions = current_company.buyer_transactions.where(" due_date < ? AND paid = ?", Date.today, false).count
+      no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
       history = []
       all_rough_pend_transactions = []
       all_rough_over_transactions = []
@@ -152,6 +152,9 @@ class Api::V1::CompaniesController < ApplicationController
           confirm_status: t.buyer_confirmed,
           paid_date: t.paid_date
         }
+        if current_company.id == t.buyer_id
+          data.merge!(overdue_transactions: no_of_overdue_transactions)
+        end
         if t.paid == false
           other = {
             seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
@@ -211,6 +214,9 @@ class Api::V1::CompaniesController < ApplicationController
           comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
           confirm_status: t.buyer_confirmed
         }
+        if current_company.id == t.buyer_id
+          data.merge!(overdue_transactions: no_of_overdue_transactions)
+        end
         if t.paid == false
           other = {
             seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
@@ -238,7 +244,7 @@ class Api::V1::CompaniesController < ApplicationController
         rough: rough,
         polished: polished
       }
-      render :json => {:success => true, :overdue_transactions => no_of_overdue_transactions, :history=> history, response_code: 200 }
+      render :json => {:success => true, :history=> history, response_code: 200 }
     else
       render json: { errors: "Not authenticated", response_code: 201 }
     end
