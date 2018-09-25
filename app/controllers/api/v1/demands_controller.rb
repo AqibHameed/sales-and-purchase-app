@@ -210,7 +210,7 @@ module Api
           }
         }
 
-        respose_hash.merge(my_offer: my_offer) if my_offer
+        respose_hash.merge!(my_offer: my_offer) if my_offer
 
         if category == "demanded"
           demand = Demand.where(description: parcel.description, company_id: current_company.id).first
