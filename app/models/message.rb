@@ -1,7 +1,7 @@
 class Message < ApplicationRecord
   belongs_to :sender, class_name: 'Company', foreign_key: 'sender_id', optional: true
   belongs_to :receiver, class_name: 'Company', foreign_key: 'receiver_id', optional: true
-  belongs_to :proposal
+  belongs_to :proposal, optional: true
   def self.create_message(transaction)
     message = Message.create(subject: "Reject Transaction", message: transaction.reject_reason, sender_id: transaction.buyer_id, receiver_id: transaction.seller_id, message_type: "Reject")
   end
@@ -58,4 +58,27 @@ class Message < ApplicationRecord
     Message.create(subject: "Buyer rejected your negotiated proposal.", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.seller_id, message_type: "Proposal", proposal_id: proposal.id)
   end
 
+  def self.request_limit_increase(parcel, current_company)
+    @message = "A new limit increase request sent to you. Please #{ApplicationController.helpers.view_limit_increase_accept(parcel, current_company)} to accept, #{ApplicationController.helpers.view_limit_increase_reject(parcel, current_company)} to reject"
+    Message.create(subject: "You have a new limit increase request.", message: @message, sender_id: current_company.id , receiver_id: parcel.company_id, message_type: "Limit Increase Request", proposal_id: parcel.id)
+  end
+
+  def self.accept_limit_increase(buyer_id, parcel)
+    @message = "Limit is increased successfully."
+    Message.create(subject: "You have a new limit increase accept.", message: @message, sender_id: parcel.company_id, receiver_id: buyer_id, message_type: "Limit Increase Accept", proposal_id: parcel.id)
+  end
+
+  def self.reject_limit_increase(buyer_id, parcel)
+    @message = "Limit request is rejected."
+    Message.create(subject: "You have a new limit increase reject.", message: @message, sender_id: parcel.company_id, receiver_id: buyer_id, message_type: "Limit Increase Reject", proposal_id: parcel.id)
+  end
+
+  def self.check_parcel_request(sender_id, parcel)
+    last_message = Message.where(sender_id: sender_id, receiver_id: parcel.company.id, proposal_id: parcel.id).where('message_type in (?)', ['Limit Increase Request', 'Limit Increase Accept', 'Limit Increase Reject']).last
+    if Message.where(sender_id: parcel.company.id, receiver_id: sender_id, proposal_id: parcel.id).where('id > ? and message_type in (?)', last_message.id, ['Limit Increase Accept', 'Limit Increase Reject']).present?
+      return false
+    else
+      return true
+    end
+  end
 end

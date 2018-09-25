@@ -1,7 +1,7 @@
 module Api
   module V1
     class TradingParcelsController <ApiController
-      skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy]
+      skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy, :request_limit_increase, :accept_limit_increase, :reject_limit_increase]
 
       def create
         if current_company
@@ -200,6 +200,48 @@ module Api
         else
           render json: { success: false, errors: transaction.errors.full_messages }
         end
+      end
+
+      def request_limit_increase
+        parcel = TradingParcel.find(params[:id])
+        render json: { errors: 'Parcel does not exist.' } and return unless parcel.present?
+        render json: { errors: 'You are seller of this parcel.' } and return if current_company == parcel.company
+
+        Message.request_limit_increase(parcel, current_company)
+
+        render json: { success: true, message: "This request is sent successfully." }
+      end
+
+      def accept_limit_increase
+        parcel = TradingParcel.find(params[:id])
+        
+        render json: { errors: 'Parcel does not exist.' } and return unless parcel.present?        
+        render json: { errors: 'You are not seller of this parcel.' } and return unless current_company == parcel.company        
+
+        buyer = Company.where(id: params[:buyer_id]).first
+        render json: { errors: 'Buyer does not exist.' } and return unless buyer.present?
+
+        if buyer.has_overdue_transaction_of_30_days(current_company.id)          
+          current_company.increase_overdue_limit(buyer.id, parcel)
+        elsif buyer.check_market_limit_overdue(get_market_limit(buyer, current_company), current_company.id)
+          current_company.increase_market_limit(get_market_limit(buyer, current_company), buyer.id, parcel)
+        end
+
+        render json: { success: true, message: "This request is accepted successfully." }
+      end
+
+      def reject_limit_increase
+        parcel = TradingParcel.find(params[:id])
+        
+        render json: { errors: 'Parcel does not exist.' } and return unless parcel.present?        
+        render json: { errors: 'You are not seller of this parcel.' } and return unless current_company == parcel.company
+
+        buyer = Company.where(id: params[:buyer_id]).first
+        render json: { errors: 'Buyer does not exist.' } and return unless buyer.present?
+
+        Message.reject_limit_increase(buyer.id, parcel)
+
+        render json: { success: true, message: "This request is rejected." }
       end
 
 

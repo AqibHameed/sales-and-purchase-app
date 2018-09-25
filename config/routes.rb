@@ -341,6 +341,11 @@ Rails.application.routes.draw do
           post :direct_sell
           get :available_trading_parcels
         end
+        member do
+          post :request_limit_increase
+          get :accept_limit_increase
+          get :reject_limit_increase
+        end
       end
       resources :companies_groups
       get '/filter_data', to: 'api#filter_data'

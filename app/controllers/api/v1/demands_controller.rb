@@ -105,6 +105,9 @@ module Api
           parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished').where(source: source) if source.present?
           parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished').where("description LIKE ?", params[:description]) if params[:description].present?
           # parcels = TradingParcel.where(sold: false)
+
+          parcels = parcels.where(id: params[:parcel_id]) if params[:parcel_id].present?
+
           required_parcels = []
           parcels.each do |parcel|
             if check_parcel_visibility(parcel, current_company)
@@ -126,10 +129,29 @@ module Api
         else
           is_mine = false
         end
-        if current_company.has_overdue_transaction_of_30_days(parcel.try(:company_id)) || current_company.check_market_limit_overdue(get_market_limit(current_company, parcel.try(:company_id)), parcel.try(:company_id))
+        is_overdue = false
+        can_buy = true
+        requested = nil
+        if current_company.has_overdue_transaction_of_30_days(parcel.try(:company_id))          
           is_overdue = true
-        else
-          is_overdue = false
+          can_buy = false
+          if Message.check_parcel_request(current_company.id, parcel)
+            requested = true
+            message = "You already requested"
+          else
+            message = "You don't meet days limit."  
+          end
+        end
+
+        if current_company.check_market_limit_overdue(get_market_limit(current_company, parcel.try(:company_id)), parcel.try(:company_id))
+          is_overdue = true
+          can_buy = false
+          if Message.check_parcel_request(current_company.id, parcel)
+            requested = true
+            message = "You already requested"
+          else
+            message = "You don't meet market limit."
+          end
         end
         @info = []
         parcel.parcel_size_infos.each do |i|
@@ -180,7 +202,12 @@ module Api
           comment: parcel.comment.to_s,
           total_value: parcel.try(:total_value).to_f,
           size_info: @info,
-          proposal_status: proposal_status
+          proposal_status: proposal_status,
+          status: {
+            can_buy: can_buy,
+            requested: requested,
+            message: message
+          }
         }
 
         respose_hash.merge(my_offer: my_offer) if my_offer

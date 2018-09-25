@@ -518,6 +518,31 @@ class Company < ApplicationRecord
     return historical_record.id
   end
 
+  def increase_market_limit(market_limit_overdue, buyer_id, parcel)
+    cl = CreditLimit.where(seller_id: self.id, buyer_id: buyer_id).first
+    cl.market_limit = market_limit_overdue + 1000
+    Message.accept_limit_increase(buyer_id, parcel) if cl.save
+  end
+
+  def increase_overdue_limit(buyer_id, parcel)
+    dl = DaysLimit.where(buyer_id: buyer_id, seller_id: self.id).first
+    if dl.nil?
+      number_of_days = 30
+    else
+      number_of_days = dl.days_limit.to_i
+    end
+    date = Date.today - number_of_days.days
+    oldest_transaction = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", buyer_id, date, false).order(:due_date).first
+    new_limit = Date.today - oldest_transaction.due_date.to_date + 5
+    if dl
+      dl.days_limit = new_limit
+      dl.save
+    else
+      DaysLimit.create(buyer_id: buyer_id, seller_id: self.id, days_limit: new_limit)
+    end
+    Message.accept_limit_increase(buyer_id, parcel)
+  end
+
   ##### End of Credit Scores #####
 
   rails_admin do
