@@ -74,11 +74,10 @@ class Message < ApplicationRecord
   end
 
   def self.check_parcel_request(sender_id, parcel)
-    last_message = Message.where(sender_id: sender_id, receiver_id: parcel.company.id, proposal_id: parcel.id).where('message_type in (?)', ['Limit Increase Request', 'Limit Increase Accept', 'Limit Increase Reject']).last
-    if Message.where(sender_id: parcel.company.id, receiver_id: sender_id, proposal_id: parcel.id).where('id > ? and message_type in (?)', last_message.id, ['Limit Increase Accept', 'Limit Increase Reject']).present?
-      return false
-    else
-      return true
-    end
+    last_message = Message.where(sender_id: sender_id, receiver_id: parcel.company.id, proposal_id: parcel.id).where(message_type: 'Limit Increase Request').last
+    status = true
+    status = false unless last_message
+    status = false if last_message and Message.where(sender_id: parcel.company.id, receiver_id: sender_id, proposal_id: parcel.id).where('id > ? and message_type in (?)', last_message.id, ['Limit Increase Accept', 'Limit Increase Reject']).present?
+    status
   end
 end
