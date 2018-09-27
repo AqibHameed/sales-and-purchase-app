@@ -32,10 +32,16 @@ class CustomerMailer < ApplicationMailer
     mail(:to => email, :subject => '[SafeTrade] You have a invitation ')
   end
 
-  def send_feedback(star, comment)
+  def send_feedback(name, star, comment)
     @email = 'maneetchoksi1+3yacf283ozlmnfeswtlu@boards.trello.com'
     @star = star
     @comment = comment
+    @name = name
     mail(:to => @email, :subject => '[SafeTrade] You have a feedback')
+  end
+
+  def send_negotiation(proposal , receiver_emails, sender_email)
+    @last_negotiated = proposal.negotiations.order('created_at ASC' ).last
+    mail(:to => receiver_emails, from: sender_email, :subject => '[SafeTrade] You have a new proposal.')
   end
 end

@@ -97,7 +97,7 @@ class Api::V1::CompaniesController < ApplicationController
 
   def send_feedback
     if current_company
-      CustomerMailer.send_feedback(params[:star], params[:comment]).deliver
+      CustomerMailer.send_feedback(current_customer.name, params[:star], params[:comment]).deliver
       render json: { success: true, message: " Feedback is submitted successfully", response_code: 200 }
     else
       render json: { errors: "Not authenticated", response_code: 201 }
@@ -142,7 +142,7 @@ class Api::V1::CompaniesController < ApplicationController
           description: get_description(t.trading_parcel),
           activity: (current_company.id == t.buyer_id) ? 'Bought' : ((current_company.id == t.seller_id) ? 'Sold' : 'N/A'),
           counter_party: (current_company.id == t.buyer_id) ? t.seller.try(:name) : ((current_company.id == t.seller_id) ? t.buyer.try(:name) : 'N/A'),
-          payment_status: get_status(t),
+          payment_status: t.buyer_reject ? 'Rejected' : get_status(t),
           no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
           carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
           cost: t.trading_parcel.present? ? t.trading_parcel.cost : 'N/A',
@@ -203,7 +203,7 @@ class Api::V1::CompaniesController < ApplicationController
           lab: t.trading_parcel.present? ? (t.trading_parcel.lab.nil? ? 'N/A' : t.trading_parcel.lab) : 'N/A',
           activity: (current_company.id == t.buyer_id) ? 'Bought' : ((current_company.id == t.seller_id) ? 'Sold' : 'N/A'),
           counter_party: (current_company.id == t.buyer_id) ? t.seller.try(:name) : ((current_company.id == t.seller_id) ? t.buyer.try(:name) : 'N/A'),
-          payment_status: get_status(t),
+          payment_status:  t.buyer_reject ? 'Rejected' : get_status(t),
           description: get_description(t.trading_parcel),
           no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
           carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',

@@ -81,7 +81,10 @@ module Api
           end
         else
           if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
-          # proposal.update_attributes(negotiated: true)
+            # proposal.update_attributes(negotiated: true)
+            receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
+            receiver_emails = receiver.customers.map{ |c| c.email }
+            CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver
             get_proposal_details(@proposal)
             # Message.create_new_negotiate(proposal, current_company)
             render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
