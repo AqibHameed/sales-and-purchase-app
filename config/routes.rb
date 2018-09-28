@@ -329,7 +329,11 @@ Rails.application.routes.draw do
           post :add_star
         end
       end
-      resources :messages
+      resources :messages do
+        collection do
+          get :limit_messages
+        end
+      end
       resources :proposals do
         member do
           get :accept_and_decline

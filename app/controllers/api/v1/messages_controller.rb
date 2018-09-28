@@ -20,6 +20,16 @@ module Api
         end
       end
 
+      def limit_messages
+        if current_company
+          all_messages = Message.where("receiver_id = ? && message_type in (?) ", current_company.id, ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
+          @messages = all_messages.page(params[:page]).per(params[:count])
+          render json: { pagination: set_pagination(:messages), messages: messages_data(@messages), response_code: 200 }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
       def show
         if current_company
           if params[:id].present?
@@ -102,6 +112,18 @@ module Api
               data.merge!(calculation: offered_percent.to_i)
             end
             @data << data
+          else
+            @data << {
+              id: message.id,
+              sender: message.sender.name,
+              receiver: current_company.name,
+              message: message.message,
+              message_type: message.message_type,
+              subject: message.subject,
+              created_at: message.created_at,
+              updated_at: message.updated_at,
+              date: message.created_at
+            }
           end
         end
         @data
