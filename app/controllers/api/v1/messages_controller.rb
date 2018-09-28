@@ -115,6 +115,7 @@ module Api
           else
             @data << {
               id: message.id,
+              parcel_id: message.proposal_id,
               sender: message.sender.name,
               receiver: current_company.name,
               message: message.message,
