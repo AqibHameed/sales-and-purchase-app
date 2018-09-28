@@ -3,12 +3,17 @@ module Api
     class MessagesController < ApiController
       skip_before_action :verify_authenticity_token, only: [:create]
       before_action :current_customer, only: [:index, :show, :create]
-
+      
       def index
+        all_messages = []
         if current_company
-          from_ids = Company.where('name LIKE ?', "%#{params[:search]}%").ids
-          all_messages = Message.where(receiver_id: current_company.id, sender_id: from_ids)
-          @messages = all_messages.page(params[:page]).per(params[:count])
+          # from_ids = Company.where('name LIKE ?', "%#{params[:search]}%").ids
+          messages = Message.where(receiver_id: current_company.id)
+          # @messages = all_messages.page(params[:page]).per(params[:count])
+          messages.group_by(&:proposal_id).each do |proposal_id, messages|
+            all_messages << messages.last
+          end
+          @messages = Kaminari.paginate_array(all_messages).page(params[:page]).per(params[:count])
           render json: { pagination: set_pagination(:messages), messages: messages_data(@messages), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
