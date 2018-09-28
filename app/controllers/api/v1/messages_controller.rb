@@ -113,6 +113,7 @@ module Api
             end
             @data << data
           else
+            parcel = TradingParcel.where(id: message.proposal_id).first
             @data << {
               id: message.id,
               parcel_id: message.proposal_id,
@@ -123,7 +124,8 @@ module Api
               subject: message.subject,
               created_at: message.created_at,
               updated_at: message.updated_at,
-              date: message.created_at
+              date: message.created_at,
+              description: parcel.present? ? parcel.description : nil
             }
           end
         end
