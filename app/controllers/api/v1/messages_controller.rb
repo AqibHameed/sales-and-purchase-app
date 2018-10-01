@@ -8,7 +8,7 @@ module Api
         all_messages = []
         if current_company
           # from_ids = Company.where('name LIKE ?', "%#{params[:search]}%").ids
-          messages = Message.where(receiver_id: current_company.id)
+          messages = Message.where(receiver_id: current_company.id).where.not("message_type in (?)", ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
           # @messages = all_messages.page(params[:page]).per(params[:count])
           messages.group_by(&:proposal_id).each do |proposal_id, messages|
             all_messages << messages.last

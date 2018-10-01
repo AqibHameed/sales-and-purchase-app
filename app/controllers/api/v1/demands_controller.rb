@@ -57,7 +57,7 @@ module Api
             }
             array << data
           end
-          demands = Demand.create(array)
+          demands = Demand.first_or_create(array)
           if demands.present? 
             render json: { success: true, message: 'Demand created successfully.', demands: demands }
           else
@@ -183,6 +183,7 @@ module Api
         end
         respose_hash =  {
           proposal_send: proposal_send,
+          proposal_id: proposal.try(:id),
           is_mine: is_mine,
           is_overdue: is_overdue,
           id: parcel.id.to_s,
