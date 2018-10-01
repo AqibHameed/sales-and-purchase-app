@@ -152,17 +152,17 @@ module Api
           offered = {
             offered_percentage: offered_last_negotiation.try(:percent).to_f,
             offered_price: offered_last_negotiation.try(:price).to_f,
-            offered_credit: offered_last_negotiation.try(:credit).to_f,
+            offered_credit: offered_last_negotiation.try(:credit).to_i,
             offered_total_value: offered_last_negotiation.try(:total_value).to_f,
-            offered_comment: offered_last_negotiation.try(:comment).to_f
+            offered_comment: offered_last_negotiation.try(:comment)
           }
         else
           offered = {
             offered_percentage: proposal.try(:percent).to_f,
             offered_price: proposal.try(:price).to_f,
-            offered_credit: proposal.try(:credit).to_f,
+            offered_credit: proposal.try(:credit).to_i,
             offered_total_value: proposal.try(:total_value).to_f,
-            offered_comment: proposal.try(:comment).to_f
+            offered_comment: proposal.try(:comment)
           }
         end
         @data.merge!(offered)
