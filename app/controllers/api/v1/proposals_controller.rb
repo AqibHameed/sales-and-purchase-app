@@ -146,13 +146,26 @@ module Api
           list_total_price: proposal.trading_parcel.present? ? proposal.trading_parcel.total_value.to_f : 'N/A',
           list_credit: proposal.trading_parcel.present? ? proposal.trading_parcel.credit_period : 'N/A',
           list_discount: proposal.trading_parcel.present? ? proposal.trading_parcel.box_value.to_i : 'N/A',
-          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A',
-          offered_percentage: offered_last_negotiation.try(:percent).to_f,
-          offered_price: offered_last_negotiation.try(:price).to_f,
-          offered_credit: offered_last_negotiation.try(:credit).to_f,
-          offered_total_value: offered_last_negotiation.try(:total_value).to_f,
-          offered_comment: offered_last_negotiation.try(:comment).to_f
+          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A'
         }
+        if offered_last_negotiation.present?
+          offered = {
+            offered_percentage: offered_last_negotiation.try(:percent).to_f,
+            offered_price: offered_last_negotiation.try(:price).to_f,
+            offered_credit: offered_last_negotiation.try(:credit).to_f,
+            offered_total_value: offered_last_negotiation.try(:total_value).to_f,
+            offered_comment: offered_last_negotiation.try(:comment).to_f
+          }
+        else
+          offered = {
+            offered_percentage: proposal.try(:percent).to_f,
+            offered_price: proposal.try(:price).to_f,
+            offered_credit: proposal.try(:credit).to_f,
+            offered_total_value: proposal.try(:total_value).to_f,
+            offered_comment: proposal.try(:comment).to_f
+          }
+        end
+        @data.merge!(offered)
         if proposal.negotiations.present? && proposal.status == 'negotiated'
           negotiated = {
             id: last_negotiation.try(:id),
