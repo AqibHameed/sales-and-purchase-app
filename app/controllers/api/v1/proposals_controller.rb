@@ -27,9 +27,7 @@ module Api
                 proposal.action_for = parcel.company_id
                 proposal.buyer_comment = params[:comment]
                 if proposal.save
-                  
                   proposal.negotiations.create(price: proposal_params[:price], credit: proposal_params[:credit], total_value: proposal_params[:total_value], percent: proposal_params[:percent], comment: parcel.comment, from: 'buyer')
-
                   Message.create_new(proposal)
                   render json: { success: true, message: 'Proposal Submitted Successfully' }
                 else
@@ -81,6 +79,7 @@ module Api
           end
         else
           if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
+            
             # proposal.update_attributes(negotiated: true)
             receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
             receiver_emails = receiver.customers.map{ |c| c.email }
@@ -119,6 +118,11 @@ module Api
 
       def get_proposal_details(proposal)        
         last_negotiation = proposal.negotiations.order('created_at ASC' ).last
+        if proposal.buyer == current_company
+          offered_last_negotiation = proposal.negotiations.where(from: 'seller').order('created_at ASC').last
+        else
+          offered_last_negotiation = proposal.negotiations.where(from: 'buyer').order('created_at ASC').last
+        end
         if proposal.status == 'negotiated' 
           if proposal.negotiations.present?
             status = "negotiated"
@@ -142,7 +146,12 @@ module Api
           list_total_price: proposal.trading_parcel.present? ? proposal.trading_parcel.total_value.to_f : 'N/A',
           list_credit: proposal.trading_parcel.present? ? proposal.trading_parcel.credit_period : 'N/A',
           list_discount: proposal.trading_parcel.present? ? proposal.trading_parcel.box_value.to_i : 'N/A',
-          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A'
+          list_comment: proposal.trading_parcel.present? ? proposal.trading_parcel.comment : 'N/A',
+          offered_percentage: offered_last_negotiation.try(:percent).to_f,
+          offered_price: offered_last_negotiation.try(:price).to_f,
+          offered_credit: offered_last_negotiation.try(:credit).to_f,
+          offered_total_value: offered_last_negotiation.try(:total_value).to_f,
+          offered_comment: offered_last_negotiation.try(:comment).to_f
         }
         if proposal.negotiations.present? && proposal.status == 'negotiated'
           negotiated = {
