@@ -520,7 +520,7 @@ class Company < ApplicationRecord
 
   def increase_market_limit(market_limit_overdue, buyer_id, parcel)
     cl = CreditLimit.where(seller_id: self.id, buyer_id: buyer_id).first
-    cl.market_limit = market_limit_overdue + 1000
+    cl.market_limit = market_limit_overdue.to_i + 1000
     Message.accept_limit_increase(buyer_id, parcel) if cl.save
   end
 

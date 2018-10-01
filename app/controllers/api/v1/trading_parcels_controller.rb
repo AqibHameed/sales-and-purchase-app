@@ -217,17 +217,21 @@ module Api
         
         render json: { errors: 'Parcel does not exist.' } and return unless parcel.present?        
         render json: { errors: 'You are not seller of this parcel.' } and return unless current_company == parcel.company        
-
         buyer = Company.where(id: params[:buyer_id]).first
         render json: { errors: 'Buyer does not exist.' } and return unless buyer.present?
-
-        if buyer.has_overdue_transaction_of_30_days(current_company.id)          
-          current_company.increase_overdue_limit(buyer.id, parcel)
-        elsif buyer.check_market_limit_overdue(get_market_limit(buyer, current_company), current_company.id)
-          current_company.increase_market_limit(get_market_limit(buyer, current_company), buyer.id, parcel)
+        days_limit = DaysLimit.where(buyer_id: buyer.id, seller_id: current_company.id).first.days_limit
+        market_limit = CreditLimit.where(buyer_id: buyer.id, seller_id: current_company.id).first.market_limit
+        if !params[:accept].present? 
+          render json: { message: "You are increasing limits for #{parcel.company.name}: Overdue Limit will now be 30 from #{days_limit}. Market Limit will now be $1,000 from $#{market_limit}. Do you wish to continue?"}
+        elsif params[:accept] == 'false'
+        else  params[:accept] == 'true'
+          if buyer.has_overdue_transaction_of_30_days(current_company.id)          
+            current_company.increase_overdue_limit(buyer.id, parcel)
+          elsif buyer.check_market_limit_overdue(get_market_limit(buyer, current_company), current_company.id)
+            current_company.increase_market_limit(get_market_limit(buyer, current_company), buyer.id, parcel)
+          end
+          render json: { success: true, message: "This request is accepted successfully." }
         end
-
-        render json: { success: true, message: "This request is accepted successfully." }
       end
 
       def reject_limit_increase
