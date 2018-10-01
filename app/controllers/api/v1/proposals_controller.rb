@@ -150,7 +150,7 @@ module Api
         }
         if offered_last_negotiation.present?
           offered = {
-            offered_percentage: offered_last_negotiation.try(:percent).to_f,
+            offered_percent: offered_last_negotiation.try(:percent).to_f,
             offered_price: offered_last_negotiation.try(:price).to_f,
             offered_credit: offered_last_negotiation.try(:credit).to_i,
             offered_total_value: offered_last_negotiation.try(:total_value).to_f,
@@ -158,7 +158,7 @@ module Api
           }
         else
           offered = {
-            offered_percentage: proposal.try(:percent).to_f,
+            offered_percent: proposal.try(:percent).to_f,
             offered_price: proposal.try(:price).to_f,
             offered_credit: proposal.try(:credit).to_i,
             offered_total_value: proposal.try(:total_value).to_f,
@@ -169,12 +169,13 @@ module Api
         if proposal.negotiations.present? && proposal.status == 'negotiated'
           negotiated = {
             id: last_negotiation.try(:id),
-            offered_percentage: last_negotiation.try(:percent).to_f,
+            offered_percent: last_negotiation.try(:percent).to_f,
             offered_price: last_negotiation.try(:price).to_f,
             offered_total_value: last_negotiation.try(:total_value).to_f,
             offered_credit: last_negotiation.try(:credit),
             offered_comment: last_negotiation.try(:comment),
-            offered_from: last_negotiation.try(:from)
+            offered_from: last_negotiation.try(:from),
+            is_mine: negotiation.whose == current_company
           }
           negotiations = []
           proposal.negotiations.each do |negotiation|
