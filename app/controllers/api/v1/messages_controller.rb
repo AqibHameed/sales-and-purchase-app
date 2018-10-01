@@ -87,7 +87,7 @@ module Api
               status = 'accepted'
             elsif message.proposal.status == 'rejected'
               status = 'rejected'
-            elsif message.proposal.negotiated == true
+            elsif message.proposal.negotiations.present?
               status = 'negotiated'
             else
               status = nil

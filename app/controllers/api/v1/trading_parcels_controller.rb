@@ -311,6 +311,7 @@ module Api
           percent:  parcel.try(:percent).to_f,
           comment: parcel.comment.to_s,
           total_value: parcel.try(:total_value).to_f,
+          no_of_demands: parcel.demand_count(parcel, current_company, false),
           size_info: @info,
           vital_sales_data: {
             demanded_clients: demanded_clients
