@@ -114,7 +114,7 @@ module Api
             @data << data
           else
             parcel = TradingParcel.where(id: message.proposal_id).first
-            @data << {
+            data = {
               id: message.id,
               parcel_id: message.proposal_id,
               sender: message.sender.name,
@@ -127,6 +127,12 @@ module Api
               date: message.created_at,
               description: parcel.present? ? parcel.description : nil
             }
+            if message.message_type == 'Limit Increase Request'
+              data.merge!(buyer_id: message.sender_id)
+            else 
+              data.merge!(buyer_id: message.receiver_id)
+            end
+            @data << data
           end
         end
         @data
