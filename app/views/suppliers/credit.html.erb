@@ -121,7 +121,7 @@
     old_limit = $(this).parents('td').find('#days_edit').text().replace(/\n/g,"").replace(/\s+/g,' ').trim();
     old = parseInt(old_limit.split(" ")[0]);
     new_value = parseInt(value);
-    if ((old + new_value) < 15) {
+    if ((old == 30 && new_value < 15) || (old + new_value) < 15 ) {
       alert("Overdue Limit can't be less than 15 days");
     }
     else {
