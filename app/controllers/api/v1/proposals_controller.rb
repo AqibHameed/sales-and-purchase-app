@@ -27,7 +27,7 @@ module Api
                 proposal.action_for = parcel.company_id
                 proposal.buyer_comment = params[:comment]
                 if proposal.save
-                  proposal.negotiations.create(price: proposal_params[:price], credit: proposal_params[:credit], total_value: proposal_params[:total_value], percent: proposal_params[:percent], comment: parcel.comment, from: 'buyer')
+                  # proposal.negotiations.create(price: proposal_params[:price], credit: proposal_params[:credit], total_value: proposal_params[:total_value], percent: proposal_params[:percent], comment: parcel.comment, from: 'buyer')
                   Message.create_new(proposal)
                   render json: { success: true, message: 'Proposal Submitted Successfully' }
                 else
@@ -78,8 +78,7 @@ module Api
             render :json => {:success => false, :message=> 'Negotiation is not updated successfully..', response_code: 201 }
           end
         else
-          if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
-            
+          if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))   
             # proposal.update_attributes(negotiated: true)
             receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
             receiver_emails = receiver.customers.map{ |c| c.email }
