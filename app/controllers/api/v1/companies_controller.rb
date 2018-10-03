@@ -106,150 +106,139 @@ class Api::V1::CompaniesController < ApplicationController
 
   def history
     if current_company
-      no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
-      history = []
-      all_rough_pend_transactions = []
-      all_rough_over_transactions = []
-      all_rough_comp_transactions = []
-      polish_pending_transactions = []
-      polish_overdue_transactions = []
-      polish_completed_transactions = []
-      @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?)', current_company.id, current_company.id)
-      @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ?', current_company.id, current_company.id, 'Polished')
-      @all_rough_transaction.each do |t|
-        data = {
-          id: t.id,
-          buyer_id: t.buyer_id,
-          seller_id: t.seller_id,
-          trading_parcel_id: t.trading_parcel_id,
-          due_date: t.due_date.present? ? t.due_date.strftime("%FT%T%:z") : 'N/A',
-          avg_price: t.price,
-          credit: t.credit,
-          paid: t.paid,
-          created_at: t.created_at,
-          invoice_date: t.created_at.strftime("%FT%T%:z"),
-          updated_at: t.updated_at,
-          buyer_confirmed: t.buyer_confirmed,
-          reject_reason: t.reject_reason,
-          reject_date: t.reject_date,
-          transaction_type: t.transaction_type,
-          amount_to_be_paid: t.remaining_amount,
-          transaction_uid: t.transaction_uid,
-          diamond_type: t.diamond_type,
-          total_amount: t.total_amount,
-          invoice_no: t.invoice_no,
-          ready_for_buyer: t.ready_for_buyer,
-          description: get_description(t.trading_parcel),
-          activity: (current_company.id == t.buyer_id) ? 'Bought' : ((current_company.id == t.seller_id) ? 'Sold' : 'N/A'),
-          counter_party: (current_company.id == t.buyer_id) ? t.seller.try(:name) : ((current_company.id == t.seller_id) ? t.buyer.try(:name) : 'N/A'),
-          payment_status: t.buyer_reject ? 'Rejected' : get_status(t),
-          no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
-          carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
-          cost: t.trading_parcel.present? ? t.trading_parcel.cost : 'N/A',
-          box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
-          sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
-          comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
-          confirm_status: t.buyer_confirmed,
-          paid_date: t.paid_date
-        }
-        if current_company.id == t.buyer_id
-          data.merge!(overdue_transactions: no_of_overdue_transactions)
-        end
-        if t.paid == false
-          other = {
-            seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-            buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
-            market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
-          }
-          if t.due_date.present?
-            data.merge!(other)
-            if (t.due_date > Date.today)
-              all_rough_pend_transactions << data
-            else
-              all_rough_over_transactions << data
-            end
-          end
-        else
-          all_rough_comp_transactions << data
-        end
+      if params[:type] == 'polished'
+        transactions = get_polished_transaction(params[:search], params[:status])
+      else 
+        transactions = get_rough_transaction(params[:search], params[:status])
       end
-      rough = {
-        pending_transaction: all_rough_pend_transactions,
-        overdue_transaction: all_rough_over_transactions,
-        completed_transaction: all_rough_comp_transactions
-      }
-
-      @all_polished_transaction.each do |t|
-        data = {
-          id: t.id,
-          buyer_id: t.buyer_id,
-          seller_id: t.seller_id,
-          trading_parcel_id: t.trading_parcel_id,
-          due_date: t.due_date.present? ? t.due_date.strftime("%FT%T%:z") : 'N/A',
-          avg_price: t.price,
-          total_amount: t.total_amount,
-          credit: t.credit,
-          paid: t.paid,
-          created_at: t.created_at,
-          invoice_date: t.created_at.strftime("%FT%T%:z"),
-          updated_at: t.updated_at,
-          buyer_confirmed: t.buyer_confirmed,
-          shape:  t.trading_parcel.present? ? (t.trading_parcel.shape.present? ? t.trading_parcel.shape : 'N/A') : 'N/A',
-          size:  t.trading_parcel.present? ? (t.trading_parcel.weight.nil? ? 'N/A' : t.trading_parcel.weight) : 'N/A',
-          color: t.trading_parcel.present? ? (t.trading_parcel.color.nil? ? 'N/A' : t.trading_parcel.color) : 'N/A',
-          clarity: t.trading_parcel.present? ? (t.trading_parcel.clarity.nil? ? 'N/A' : t.trading_parcel.clarity) : 'N/A',
-          cut: t.trading_parcel.present? ? (t.trading_parcel.cut.nil? ? (t.trading_parcel.polish.nil? ? (t.trading_parcel.symmetry.nil? ? 'N/A' : t.trading_parcel.symmetry[0..1]) : t.trading_parcel.polish[0..1]) : t.trading_parcel.cut[0..1]) : 'N/A',
-          fluorescence: t.trading_parcel.present? ? (t.trading_parcel.fluorescence.nil? ? 'N/A' : t.trading_parcel.fluorescence) : 'N/A',
-          lab: t.trading_parcel.present? ? (t.trading_parcel.lab.nil? ? 'N/A' : t.trading_parcel.lab) : 'N/A',
-          activity: (current_company.id == t.buyer_id) ? 'Bought' : ((current_company.id == t.seller_id) ? 'Sold' : 'N/A'),
-          counter_party: (current_company.id == t.buyer_id) ? t.seller.try(:name) : ((current_company.id == t.seller_id) ? t.buyer.try(:name) : 'N/A'),
-          payment_status:  t.buyer_reject ? 'Rejected' : get_status(t),
-          description: get_description(t.trading_parcel),
-          no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
-          carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
-          cost: t.trading_parcel.present? ? t.trading_parcel.cost : 'N/A',
-          box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
-          sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
-          amount_to_be_paid: t.remaining_amount,
-          comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
-          confirm_status: t.buyer_confirmed
-        }
-        if current_company.id == t.buyer_id
-          data.merge!(overdue_transactions: no_of_overdue_transactions)
-        end
-        if t.paid == false
-          other = {
-            seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-            buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
-            market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
-          }
-          if t.due_date.present?
-            data.merge!(other)
-            if (t.due_date > Date.today)
-              polish_pending_transactions << data
-            else
-              polish_overdue_transactions << data
-            end
-          end
-        else
-          polish_completed_transactions << data
-        end
-      end
-      polished = {
-        pending_transaction: polish_pending_transactions,
-        overdue_transaction: polish_overdue_transactions,
-        completed_transaction: polish_completed_transactions
-      }
-      history = {
-        rough: rough,
-        polished: polished
-      }
-      render :json => {:success => true, :history=> history, response_code: 200 }
+      @all_transactions = Kaminari.paginate_array(transactions).page(params[:page]).per(params[:count])
+      render json: { success: true, pagination: set_pagination(:all_transactions), transactions: @all_transactions }
     else
       render json: { errors: "Not authenticated", response_code: 201 }
     end
   end
 
+  def get_polished_transaction(search, status)
+    @array = []
+    no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
+    @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ?', current_company.id, current_company.id, 'Polished')
+    @transactions = []
+    @transactions << @all_polished_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
+    @transactions << @all_polished_transaction.where("due_date < ? && paid = ?", Date.today, false) if status.include? 'overdue'
+    @transactions << @all_polished_transaction.where("paid = ?", true) if status.include? 'completed'
+    @transactions = @all_polished_transaction if status.include? 'all'
+    @transactions.flatten.uniq.each do |t|
+      data = {
+        id: t.id,
+        buyer_id: t.buyer_id,
+        seller_id: t.seller_id,
+        trading_parcel_id: t.trading_parcel_id,
+        due_date: t.due_date.present? ? t.due_date.strftime("%FT%T%:z") : 'N/A',
+        avg_price: t.price,
+        total_amount: t.total_amount,
+        credit: t.credit,
+        paid: t.paid,
+        created_at: t.created_at,
+        invoice_date: t.created_at.strftime("%FT%T%:z"),
+        updated_at: t.updated_at,
+        buyer_confirmed: t.buyer_confirmed,
+        shape:  t.trading_parcel.present? ? (t.trading_parcel.shape.present? ? t.trading_parcel.shape : 'N/A') : 'N/A',
+        size:  t.trading_parcel.present? ? (t.trading_parcel.weight.nil? ? 'N/A' : t.trading_parcel.weight) : 'N/A',
+        color: t.trading_parcel.present? ? (t.trading_parcel.color.nil? ? 'N/A' : t.trading_parcel.color) : 'N/A',
+        clarity: t.trading_parcel.present? ? (t.trading_parcel.clarity.nil? ? 'N/A' : t.trading_parcel.clarity) : 'N/A',
+        cut: t.trading_parcel.present? ? (t.trading_parcel.cut.nil? ? (t.trading_parcel.polish.nil? ? (t.trading_parcel.symmetry.nil? ? 'N/A' : t.trading_parcel.symmetry[0..1]) : t.trading_parcel.polish[0..1]) : t.trading_parcel.cut[0..1]) : 'N/A',
+        fluorescence: t.trading_parcel.present? ? (t.trading_parcel.fluorescence.nil? ? 'N/A' : t.trading_parcel.fluorescence) : 'N/A',
+        lab: t.trading_parcel.present? ? (t.trading_parcel.lab.nil? ? 'N/A' : t.trading_parcel.lab) : 'N/A',
+        activity: (current_company.id == t.buyer_id) ? 'Bought' : ((current_company.id == t.seller_id) ? 'Sold' : 'N/A'),
+        counter_party: (current_company.id == t.buyer_id) ? t.seller.try(:name) : ((current_company.id == t.seller_id) ? t.buyer.try(:name) : 'N/A'),
+        payment_status:  t.buyer_reject ? 'Rejected' : get_status(t),
+        description: get_description(t.trading_parcel),
+        no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
+        carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
+        cost: t.trading_parcel.present? ? t.trading_parcel.cost : 'N/A',
+        box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
+        sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
+        amount_to_be_paid: t.remaining_amount,
+        comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
+        confirm_status: t.buyer_confirmed
+      }
+      if current_company.id == t.buyer_id
+        data.merge!(overdue_transactions: no_of_overdue_transactions)
+      end
+      if t.paid == false && t.due_date.present?
+        other = {
+          seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
+          buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
+          market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
+        }
+        data.merge!(other)
+      end
+      @array << data
+    end
+    return @array
+  end
+
+  def get_rough_transaction(search, status)
+    @array = []
+    no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
+    @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?)', current_company.id, current_company.id)
+    @transactions = []
+    @transactions << @all_rough_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
+    @transactions << @all_rough_transaction.where("due_date < ? && paid = ?", Date.today, false) if status.include? 'overdue'
+    @transactions << @all_rough_transaction.where("paid = ?", true) if status.include? 'completed'
+    @transactions << @all_rough_transaction if status.include? 'all'
+    @transactions.flatten.uniq.each do |t|
+      data = {
+        id: t.id,
+        buyer_id: t.buyer_id,
+        seller_id: t.seller_id,
+        trading_parcel_id: t.trading_parcel_id,
+        due_date: t.due_date.present? ? t.due_date.strftime("%FT%T%:z") : 'N/A',
+        avg_price: t.price,
+        credit: t.credit,
+        paid: t.paid,
+        created_at: t.created_at,
+        invoice_date: t.created_at.strftime("%FT%T%:z"),
+        updated_at: t.updated_at,
+        buyer_confirmed: t.buyer_confirmed,
+        reject_reason: t.reject_reason,
+        reject_date: t.reject_date,
+        transaction_type: t.transaction_type,
+        amount_to_be_paid: t.remaining_amount,
+        transaction_uid: t.transaction_uid,
+        diamond_type: t.diamond_type,
+        total_amount: t.total_amount,
+        invoice_no: t.invoice_no,
+        ready_for_buyer: t.ready_for_buyer,
+        description: get_description(t.trading_parcel),
+        activity: (current_company.id == t.buyer_id) ? 'Bought' : ((current_company.id == t.seller_id) ? 'Sold' : 'N/A'),
+        counter_party: (current_company.id == t.buyer_id) ? t.seller.try(:name) : ((current_company.id == t.seller_id) ? t.buyer.try(:name) : 'N/A'),
+        payment_status: t.buyer_reject ? 'Rejected' : get_status(t),
+        no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
+        carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
+        cost: t.trading_parcel.present? ? t.trading_parcel.cost : 'N/A',
+        box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
+        sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
+        comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
+        confirm_status: t.buyer_confirmed,
+        paid_date: t.paid_date
+      }
+      if current_company.id == t.buyer_id
+        data.merge!(overdue_transactions: no_of_overdue_transactions)
+      end
+      if t.paid == false && t.due_date.present?
+        other = {
+          seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
+          buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
+          market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
+        }
+        data.merge!(other)
+      end
+      @array << data
+    end
+    return @array
+  end
+  
   protected
 
   def current_company
@@ -261,5 +250,39 @@ class Api::V1::CompaniesController < ApplicationController
     if request.headers["Authorization"].blank?
       render json: {msg: "Unauthorized Request", response_code: 201 }
     end
+  end
+
+  def set_pagination(name, options = {})
+    results = instance_variable_get("@#{name}")
+    page = {}
+    pagination = {}
+    if results.current_page <= results.total_pages
+      request_params = request.query_parameters
+      url_without_params = request.original_url.slice(0..(request.original_url.index("?")-1)) unless request_params.empty?
+      url_without_params ||= request.original_url
+      page[:first] = 1 if results.total_pages > 1 && !results.first_page?
+      page[:last]  = results.total_pages  if results.total_pages > 1 && !results.last_page?
+      page[:next]  = results.current_page + 1 unless results.last_page?
+      page[:prev]  = results.current_page - 1 unless results.first_page?
+      page.each do |k, v|
+        page[k] = "#{url_without_params}?page=#{v}#{url_params}"
+      end
+      pagination = {
+        total_pages: results.total_pages,
+        prev_page: page[:prev].present? ? page[:prev].to_s : nil,
+        next_page: page[:next].present? ? page[:next].to_s : nil,
+        current_page: results.current_page
+      }
+    end
+  end
+
+  def url_params
+    url = request.url
+    uri = URI(url)
+    params = CGI.parse(uri.query || "")
+    params.delete('page')
+    uri.query = URI.encode_www_form(params)
+    query = ''
+    query = '&'+uri.query unless uri.query.blank?
   end
 end
