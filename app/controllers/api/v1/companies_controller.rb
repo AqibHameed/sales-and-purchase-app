@@ -104,7 +104,7 @@ class Api::V1::CompaniesController < ApplicationController
     end
   end
 
-  def history
+  def history    
     if current_company
       if params[:type] == 'polished'
         transactions = get_polished_transaction(params[:search], params[:status])
@@ -121,10 +121,11 @@ class Api::V1::CompaniesController < ApplicationController
   def get_polished_transaction(search, status)
     @array = []
     no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
-    @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ?', current_company.id, current_company.id, 'Polished')
+    @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ? and cancel = ?' , current_company.id, current_company.id, 'Polished', false)
     @transactions = []
     @transactions << @all_polished_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
     @transactions << @all_polished_transaction.where("due_date < ? && paid = ?", Date.today, false) if status.include? 'overdue'
+    @transactions << @all_polished_transaction.where("buyer_confirmed = ?", false) if status.include? 'awaiting confirmation'
     @transactions << @all_polished_transaction.where("paid = ?", true) if status.include? 'completed'
     @transactions = @all_polished_transaction if status.include? 'all'
     @transactions.flatten.uniq.each do |t|
@@ -181,9 +182,10 @@ class Api::V1::CompaniesController < ApplicationController
   def get_rough_transaction(search, status)
     @array = []
     no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
-    @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?)', current_company.id, current_company.id)
+    @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) AND cancel = ?', current_company.id, current_company.id, false)
     @transactions = []
     @transactions << @all_rough_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
+    @transactions << @all_rough_transaction.where("buyer_confirmed = ?", false) if status.include? 'awaiting confirmation'
     @transactions << @all_rough_transaction.where("due_date < ? && paid = ?", Date.today, false) if status.include? 'overdue'
     @transactions << @all_rough_transaction.where("paid = ?", true) if status.include? 'completed'
     @transactions << @all_rough_transaction if status.include? 'all'
@@ -240,7 +242,6 @@ class Api::V1::CompaniesController < ApplicationController
   end
   
   protected
-
   def current_company
     @company ||= current_customer.company
   end
