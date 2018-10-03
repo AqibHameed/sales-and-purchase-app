@@ -49,19 +49,12 @@ module Api
           array = []
           descriptions = params[:description]
           descriptions.each do |d|
-            data = {
-              company_id: current_company.id,
-              demand_supplier_id: params[:demand_supplier_id],
-              description: d,
-              block: false
-            }
-            array << data
+            @demands = Demand.where(company_id: current_company.id, demand_supplier_id: params[:demand_supplier_id], description: d, block: false).first_or_create
           end
-          demands = Demand.first_or_create(array)
-          if demands.present? 
-            render json: { success: true, message: 'Demand created successfully.', demands: demands }
+          if @demands.present? 
+            render json: { success: true, message: 'Demand created successfully.', demands: @demands }
           else
-            render json: { success: false, message: demand.errors.full_messages.first }
+            render json: { success: false, message: @demands.errors.full_messages.first }
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
