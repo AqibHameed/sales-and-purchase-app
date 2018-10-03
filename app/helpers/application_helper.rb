@@ -294,6 +294,11 @@ module ApplicationHelper
     number_with_precision((current_limit), precision: 2)
   end
 
+  def overall_market_limit_received(company)
+    market_limit = CreditLimit.where(buyer_id: company.id).sum(:market_limit)
+    number_with_precision((market_limit), precision: 2)
+  end
+
   def overall_credit_spent(customer)
     transactions = Transaction.where(buyer_id: customer.id)
     @amount = []

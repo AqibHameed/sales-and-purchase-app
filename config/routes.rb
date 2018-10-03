@@ -294,6 +294,7 @@ Rails.application.routes.draw do
       post '/invite', to: 'companies#invite'
       post '/feedback', to: 'companies#send_feedback'
       get '/history', to: 'companies#history'
+      get '/secure_center', to: 'companies#live_monitoring'
       resources :tenders do
         collection do
           get :upcoming

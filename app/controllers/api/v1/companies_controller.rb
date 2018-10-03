@@ -249,20 +249,23 @@ class Api::V1::CompaniesController < ApplicationController
     if current_company
       transaction = Transaction.where(id: params[:id]).first
       if transaction.present?
-        render json: { errors: "You are not seller of this transaction.", response_code: 201 } unless current_company == transaction.seller
-        data = {
-          invoices_overdue:  transaction.buyer.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
-          paid_date: transaction.paid_date, 
-          late_days: (Date.today - transaction.due_date.to_date).to_i,
-          buyer_days_limit: (Date.today - transaction.created_at.to_date).to_i,
-          market_limit: get_market_limit_from_credit_limit_table(transaction.buyer, current_company).to_i,
-          supplier_connected: transaction.buyer.buyer_credit_limits.count,
-          outstandings: transaction.buyer.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum,
-          given_credit_limit: overall_credit_received(transaction.buyer),
-          given_market_limit: overall_market_limit_received(transaction.buyer),
-          last_bought_on: transaction.buyer.transactions.order('created_at ASC').last.created_at
-        }
-        render json: { success: false, details: data}
+        if current_company != transaction.seller
+          render json: { errors: "You are not seller of this transaction.", response_code: 201 }
+        else 
+          data = {
+            invoices_overdue:  transaction.buyer.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
+            paid_date: transaction.paid_date, 
+            late_days: (Date.today - transaction.due_date.to_date).to_i,
+            buyer_days_limit: (Date.today - transaction.created_at.to_date).to_i,
+            market_limit: get_market_limit_from_credit_limit_table(transaction.buyer, current_company).to_i,
+            supplier_connected: transaction.buyer.buyer_credit_limits.count,
+            outstandings: transaction.buyer.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum,
+            given_credit_limit: overall_credit_received(transaction.buyer),
+            given_market_limit: overall_market_limit_received(transaction.buyer),
+            last_bought_on: transaction.buyer.buyer_transactions.order('created_at ASC').last.created_at
+          }
+          render json: { success: true, details: data }
+        end
       else
         render json: { errors: "Transaction with this id does not present.", response_code: 201 }
       end
