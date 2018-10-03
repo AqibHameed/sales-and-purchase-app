@@ -3,8 +3,8 @@ class Proposal < ApplicationRecord
   belongs_to :trading_parcel
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
-  has_many :messages
-  has_many :negotiations
+  has_many :messages, dependent: :destroy
+  has_many :negotiations, dependent: :destroy
   after_create :set_buyer_offers
 
 
