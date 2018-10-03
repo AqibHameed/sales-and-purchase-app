@@ -252,9 +252,14 @@ class Api::V1::CompaniesController < ApplicationController
         if current_company != transaction.seller
           render json: { errors: "You are not seller of this transaction.", response_code: 201 }
         else 
+          if transaction.paid_date.nil?
+            date = transaction.partial_payment.order('created_at ASC').last.created_at if transaction.partial_payment.present?
+          else
+            date = transaction.paid_date
+          end
           data = {
             invoices_overdue:  transaction.buyer.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
-            paid_date: transaction.paid_date, 
+            paid_date: date, 
             late_days: (Date.today - transaction.due_date.to_date).to_i,
             buyer_days_limit: (Date.today - transaction.created_at.to_date).to_i,
             market_limit: get_market_limit_from_credit_limit_table(transaction.buyer, current_company).to_i,
