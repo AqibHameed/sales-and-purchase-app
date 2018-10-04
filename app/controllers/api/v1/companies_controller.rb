@@ -125,8 +125,8 @@ class Api::V1::CompaniesController < ApplicationController
     @transactions = []
     @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ? and cancel = ?' , current_company.id, current_company.id, 'Polished', false)
     if activity.present?
-      @all_polished_transaction = Transaction.includes(:trading_parcel).where('buyer_id = ? and diamond_type = ? and cancel = ?' , current_company.id, 'Polished', false) if activity == 'bought'
-      @all_polished_transaction = Transaction.includes(:trading_parcel).where('seller_id = ? and diamond_type = ? and cancel = ?' , current_company.id, 'Polished', false) if activity == 'sold'
+      @all_polished_transaction = @all_polished_transaction.where('buyer_id = ?' , current_company.id) if activity == 'bought'
+      @all_polished_transaction = @all_polished_transaction.where('seller_id = ?' , current_company.id) if activity == 'sold'
     end
 
     if status.present?
@@ -195,16 +195,22 @@ class Api::V1::CompaniesController < ApplicationController
   def get_rough_transaction(search, status, activity)
     @array = []
     no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
-    @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) AND cancel = ?', current_company.id, current_company.id, false)
+
     @transactions = []
-    @transactions << @all_rough_transaction.where(buyer_id: current_company.id) if activity == 'bought'
-    @transactions << @all_rough_transaction.where(seller_id: current_company.id) if activity == 'sold'
+    @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) AND cancel = ?', current_company.id, current_company.id, false)
+    if activity.present?
+      @all_rough_transaction = @all_rough_transaction.where('buyer_id = ? AND cancel = ?', current_company.id, false) if activity == 'bought'
+      @all_rough_transaction = @all_rough_transaction.where('seller_id = ? AND cancel = ?', current_company.id, false) if activity == 'sold'
+    end
+
     if status.present?
       @transactions << @all_rough_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
       @transactions << @all_rough_transaction.where("buyer_confirmed = ?", false) if status.include? 'awaiting confirmation'
       @transactions << @all_rough_transaction.where("due_date < ? && paid = ?", Date.today, false) if status.include? 'overdue'
       @transactions << @all_rough_transaction.where("paid = ?", true) if status.include? 'completed'
       @transactions << @all_rough_transaction if status.include? 'all'
+    else
+      @transactions = @all_polished_transaction
     end
     if @transactions.present?
       @transactions.flatten.uniq.each do |t|
