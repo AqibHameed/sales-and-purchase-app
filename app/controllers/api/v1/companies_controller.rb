@@ -124,7 +124,8 @@ class Api::V1::CompaniesController < ApplicationController
       transactions = Company.select("
               companies.id,
               count(companies.id) as transaction_count,
-              companies.name
+              companies.name,
+              sum(t.remaining_amount) as remaining_amount
       ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = 510 and t.paid = 0)")
       .group(:id)
       .order(:id)
