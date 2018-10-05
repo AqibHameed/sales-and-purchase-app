@@ -114,6 +114,31 @@ class Api::V1::CompaniesController < ApplicationController
       @all_transactions = Kaminari.paginate_array(transactions).page(params[:page]).per(params[:count])
       render json: { success: true, pagination: set_pagination(:all_transactions), transactions: @all_transactions }
     else
+
+    end
+  end
+
+  def seller_companies
+    if current_company
+      #transactions =  current_company.seller_transactions.select('buyer_id').where("paid = ?", false)
+      transactions = Company.select("
+              companies.id,
+              count(companies.id) as transaction_count,
+              companies.name
+      ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = 510 and t.paid = 0)")
+      .group(:id)
+      .order(:id)
+
+      result = []
+      if transactions.present?
+        transactions.uniq.each do |t|
+          result << t
+        end
+      end
+
+      @companies = Kaminari.paginate_array(result).page(params[:page]).per(params[:count])
+      render json: { success: true, pagination: set_pagination(:companies), companies: @companies }
+    else
       render json: { errors: "Not authenticated", response_code: 201 }
     end
   end
