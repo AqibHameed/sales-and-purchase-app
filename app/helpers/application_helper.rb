@@ -643,4 +643,14 @@ module ApplicationHelper
     ]
   end
 
+  def buyer_days_limit(company)
+    count = 0
+    transactions = company.buyer_transactions.where(seller_id: current_company.id)
+    transactions.each do |t|
+      if t.due_date.present? && (Date.today - t.due_date.to_date).to_i > 30
+        count = count + 1
+      end
+    end
+    return count
+  end
 end

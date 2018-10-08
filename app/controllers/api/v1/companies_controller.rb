@@ -148,7 +148,6 @@ class Api::V1::CompaniesController < ApplicationController
       @all_transactions = Kaminari.paginate_array(transactions).page(params[:page]).per(params[:count])
       render json: { success: true, pagination: set_pagination(:all_transactions), transactions: @all_transactions }
     else
-
     end
   end
 
@@ -164,7 +163,6 @@ class Api::V1::CompaniesController < ApplicationController
       @all_polished_transaction = @all_polished_transaction.where('buyer_id = ?' , current_company.id) if activity == 'bought'
       @all_polished_transaction = @all_polished_transaction.where('seller_id = ?' , current_company.id) if activity == 'sold'
     end
-
     if status.present?
       @transactions << @all_polished_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
       @transactions << @all_polished_transaction.where("due_date < ? && paid = ?", Date.today, false) if status.include? 'overdue'
@@ -309,32 +307,34 @@ class Api::V1::CompaniesController < ApplicationController
 
   def live_monitoring
     if current_company
-      transaction = Transaction.where(id: params[:id]).first
-      if transaction.present?
-        if current_company != transaction.seller
-          render json: { errors: "You are not seller of this transaction.", response_code: 201 }
-        else 
-          if transaction.paid_date.nil?
-            date = transaction.partial_payment.order('created_at ASC').last.created_at if transaction.partial_payment.present?
-          else
-            date = transaction.paid_date
-          end
-          data = {
-            invoices_overdue:  transaction.buyer.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
-            paid_date: date, 
-            late_days: (Date.today - transaction.due_date.to_date).to_i,
-            buyer_days_limit: (Date.today - transaction.created_at.to_date).to_i,
-            market_limit: get_market_limit_from_credit_limit_table(transaction.buyer, current_company).to_i,
-            supplier_connected: transaction.buyer.buyer_credit_limits.count,
-            outstandings: transaction.buyer.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum,
-            given_credit_limit: overall_credit_received(transaction.buyer),
-            given_market_limit: overall_market_limit_received(transaction.buyer),
-            last_bought_on: transaction.buyer.buyer_transactions.order('created_at ASC').last.created_at
-          }
-          render json: { success: true, details: data }
+      company = Company.where(id: params[:id]).first
+      if company.present?
+        if company.buyer_transactions.present? && company.buyer_transactions.last.paid_date.nil?
+          date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
+        elsif company.buyer_transactions.present? && !company.buyer_transactions.last.paid_date.nil?
+          date =  company.buyer_transactions.last.paid_date
+        else
         end
+        if company.buyer_transactions.present? && company.buyer_transactions.order('created_at ASC').last.due_date.to_date.present?
+          late_days = (Date.today - company.buyer_transactions.order('created_at ASC').last.due_date.to_date).to_i
+        else
+          late_days = nil
+        end
+        data = {
+          invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
+          paid_date: date, 
+          late_days: late_days,
+          buyer_days_limit: buyer_days_limit(company),
+          market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
+          supplier_connected: company.buyer_credit_limits.count,
+          outstandings: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
+          given_credit_limit: overall_credit_received(company),
+          given_market_limit: overall_market_limit_received(company),
+          last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.order('created_at ASC').last.created_at : nil
+        }
+        render json: { success: true, details: data }
       else
-        render json: { errors: "Transaction with this id does not present.", response_code: 201 }
+        render json: { errors: "Company with this id does not present.", response_code: 201 }
       end
     else
       render json: { errors: "Not authenticated", response_code: 201 }
