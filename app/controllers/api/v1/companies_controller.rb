@@ -320,6 +320,9 @@ class Api::V1::CompaniesController < ApplicationController
         else
           late_days = 0
         end
+        @group = CompaniesGroup.where("company_id like '%#{company.id}%'").where(seller_id: current_company.id).first
+        @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
+        @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
         data = {
           invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
           paid_date: date, 
@@ -329,8 +332,9 @@ class Api::V1::CompaniesController < ApplicationController
           supplier_connected: company.buyer_credit_limits.count,
           outstandings: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
           overdue_amount: company.buyer_transactions.present? ? company.buyer_transactions.where(seller_id: current_company.id).where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
-          given_credit_limit: overall_credit_received(company),
-          given_market_limit: overall_market_limit_received(company),
+          given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
+          given_market_limit:  @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
+          given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 0),
           last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.order('created_at ASC').last.created_at : nil
         }
         render json: { success: true, details: data }
