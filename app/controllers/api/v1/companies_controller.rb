@@ -104,20 +104,6 @@ class Api::V1::CompaniesController < ApplicationController
     end
   end
 
-  def history    
-    if current_company
-      if params[:type] == 'polished'
-        transactions = get_polished_transaction(params[:search], params[:status], params[:activity])
-      else 
-        transactions = get_rough_transaction(params[:search], params[:status], params[:activity])
-      end
-      @all_transactions = Kaminari.paginate_array(transactions).page(params[:page]).per(params[:count])
-      render json: { success: true, pagination: set_pagination(:all_transactions), transactions: @all_transactions }
-    else
-
-    end
-  end
-
   def seller_companies
     if current_company
       #transactions =  current_company.seller_transactions.select('buyer_id').where("paid = ?", false)
@@ -144,12 +130,36 @@ class Api::V1::CompaniesController < ApplicationController
     end
   end
 
-  def get_polished_transaction(search, status, activity)
+  def history   
+    transactions = [] 
+    if current_company
+      company = Company.where(name: params[:company]).first
+      unless company.present?
+        company = nil
+      end
+      if params[:type] == 'polished'
+        transactions << get_polished_transaction(company, params[:search], params[:status], params[:activity])
+      elsif params[:type] == 'rough' 
+        transactions << get_rough_transaction(company, params[:search], params[:status], params[:activity])
+      else
+        transactions << get_rough_transaction(company, params[:search], params[:status], params[:activity])
+        transactions <<  get_polished_transaction(company, params[:search], params[:status], params[:activity])
+      end
+      @all_transactions = Kaminari.paginate_array(transactions).page(params[:page]).per(params[:count])
+      render json: { success: true, pagination: set_pagination(:all_transactions), transactions: @all_transactions }
+    else
+
+    end
+  end
+
+  def get_polished_transaction(company, search, status, activity)
     @array = []
     no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
-
     @transactions = []
     @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ? and cancel = ?' , current_company.id, current_company.id, 'Polished', false)
+    if company.present?
+      @all_polished_transaction = @all_polished_transaction.where('buyer_id = ?' , company.id)
+    end
     if activity.present?
       @all_polished_transaction = @all_polished_transaction.where('buyer_id = ?' , current_company.id) if activity == 'bought'
       @all_polished_transaction = @all_polished_transaction.where('seller_id = ?' , current_company.id) if activity == 'sold'
@@ -162,7 +172,7 @@ class Api::V1::CompaniesController < ApplicationController
       @transactions << @all_polished_transaction.where("paid = ?", true) if status.include? 'completed'
       @transactions << @all_polished_transaction if status.include? 'all'
     else
-      @transactions = @all_polished_transaction
+      @transactions << @all_polished_transaction
     end
 
     if @transactions.present?
@@ -218,12 +228,17 @@ class Api::V1::CompaniesController < ApplicationController
     end
   end
 
-  def get_rough_transaction(search, status, activity)
+  def get_rough_transaction(company, search, status, activity)
     @array = []
     no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
 
     @transactions = []
     @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) AND cancel = ?', current_company.id, current_company.id, false)
+
+    if company.present?
+      @all_rough_transaction = @all_rough_transaction.where('buyer_id = ?' , company.id)
+    end
+
     if activity.present?
       @all_rough_transaction = @all_rough_transaction.where('buyer_id = ? AND cancel = ?', current_company.id, false) if activity == 'bought'
       @all_rough_transaction = @all_rough_transaction.where('seller_id = ? AND cancel = ?', current_company.id, false) if activity == 'sold'
@@ -236,7 +251,7 @@ class Api::V1::CompaniesController < ApplicationController
       @transactions << @all_rough_transaction.where("paid = ?", true) if status.include? 'completed'
       @transactions << @all_rough_transaction if status.include? 'all'
     else
-      @transactions = @all_polished_transaction
+      @transactions << @all_rough_transaction
     end
     if @transactions.present?
       @transactions.flatten.uniq.each do |t|
