@@ -328,6 +328,7 @@ class Api::V1::CompaniesController < ApplicationController
           market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
           supplier_connected: company.buyer_credit_limits.count,
           outstandings: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
+          overdue_amount: company.buyer_transactions.present? ? company.buyer_transactions.where(seller_id: current_company.id).where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
           given_credit_limit: overall_credit_received(company),
           given_market_limit: overall_market_limit_received(company),
           last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.order('created_at ASC').last.created_at : nil
