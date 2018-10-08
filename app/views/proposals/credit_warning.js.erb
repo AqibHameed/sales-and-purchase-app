@@ -6,4 +6,4 @@ $('#credit_warning').modal('show')
 <% else %>
   <% new_limit = credit_limit.credit_limit + (total_price - available_credit_limit) %>
 <% end %>
-$('#credit_warning .modal-body').html('<h1>Your existing credit limit for this buyer was: $<%= available_credit_limit %>. This transaction would increase it to $<%= new_limit %>. Would you like to continue?</h1><div class="row text-center mt10"><%=link_to "Yes", accept_proposal_path(id: proposal.id, check: false), class: "btn btn-primary", method: :put%><button type="button" class="btn btn-default" data-dismiss="modal">No</button></div>')
+$('#credit_warning .modal-body').html('<% if flag == true %><h1>Your existing credit limit for this buyer was: $<%= available_credit_limit %>. This transaction would increase it to $<%= new_limit %>.</h1><% end %><ul><% errors.each do |error| %><li><h1><%= error %></h1></li></ul><% end %></br><h1>Would you like to continue?</h1><div class="row text-center mt10"><%=link_to "Yes", accept_proposal_path(id: proposal.id, check: false), class: "btn btn-primary", method: :put%><button type="button" class="btn btn-default" data-dismiss="modal">No</button></div>')

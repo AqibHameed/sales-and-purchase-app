@@ -15,8 +15,8 @@ module Api
                 render json: { success: false, message: 'Please, Clear your overdue payments to send proposal.'}
               elsif current_company.is_blocked_by_supplier(parcel.try(:company_id))
                 render json: { success: false, message: 'You are blocked by supplier, So please contact to supplier.'}
-              elsif current_company.check_group_overdue(parcel.try(:company_id))
-                render json: { success: false, message: 'You cannot buy anything. Your group customer have overdue.'}
+              # elsif current_company.check_group_overdue(parcel.try(:company_id))
+              #   render json: { success: false, message: 'You cannot buy anything. Your group customer have overdue.'}
               elsif current_company.is_overdue || current_company.check_market_limit_overdue(get_market_limit(current_company, parcel.try(:company_id)), parcel.try(:company_id))
                 render json: { success: false, message: 'You are blocked from purchasing from this seller due to number of days late on a payment or amount payable to the market.' }
               else
