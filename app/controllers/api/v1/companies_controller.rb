@@ -318,7 +318,7 @@ class Api::V1::CompaniesController < ApplicationController
         if company.buyer_transactions.present? && company.buyer_transactions.order('created_at ASC').last.due_date.to_date.present?
           late_days = (Date.today - company.buyer_transactions.order('created_at ASC').last.due_date.to_date).to_i
         else
-          late_days = nil
+          late_days = 0
         end
         data = {
           invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
