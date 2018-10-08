@@ -173,12 +173,23 @@ class ProposalsController < ApplicationController
     if check_for_group_overdue_limit(current_company, proposal.trading_parcel.company) || check_for_group_market_limit(current_company, proposal.trading_parcel.company)
       errors <<  'This buyer does not meet your group overdue limits.'
     end
-    if proposal.buyer.is_blocked_by_supplier(proposal.trading_parcel.try(:company_id))
-      errors << 'This buyer is blocked by you, Do you want to unblock it.'
-    end
+    # if proposal.buyer.is_blocked_by_supplier(proposal.trading_parcel.try(:company_id))
+    #   errors << 'This buyer is blocked by you, Do you want to unblock it.'
+    # end
     # if proposal.buyer.check_group_overdue(proposal.trading_parcel.try(:company_id))
     #   errors << 'You cannot buy anything. Your group customer have overdue.'
     # end
+    market_limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
+    if market_limit.present? && market_limit.market_limit < (proposal.price*proposal.trading_parcel.weight)
+      available_market_limit = market_limit.market_limit
+      total_price = proposal.price*proposal.trading_parcel.weight 
+      if market_limit.nil?
+        new_limit = total_price
+      else 
+        new_limit = market_limit.market_limit + (total_price - available_market_limit)
+      end
+      errors << 'Your existing market_limit limit for this buyer was: #{ available_market_limit }. This transaction would increase it to #{ new_limit } %>'
+    end
     if proposal.buyer.is_overdue || proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, proposal.trading_parcel.try(:company_id)), proposal.trading_parcel.try(:company_id))
       errors << 'This buyer is blocked from purchasing from your side due to number of days late on a payment or amount payable to the market.'
     end
