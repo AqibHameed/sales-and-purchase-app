@@ -174,7 +174,7 @@ module Api
             offered_credit: last_negotiation.try(:credit),
             offered_comment: last_negotiation.try(:comment),
             offered_from: last_negotiation.try(:from),
-            is_mine: negotiation.whose == current_company
+            is_mine: last_negotiation.whose == current_company
           }
           negotiations = []
           proposal.negotiations.each do |negotiation|
@@ -186,7 +186,7 @@ module Api
               offered_total_value: negotiation.total_value.to_f,
               offered_comment: negotiation.comment,
               offered_from: negotiation.from,
-              is_mine: negotiation.whose == current_company
+              is_mine: last_negotiation.whose == current_company
             }
           end
           @data.merge!(negotiated: negotiated)
