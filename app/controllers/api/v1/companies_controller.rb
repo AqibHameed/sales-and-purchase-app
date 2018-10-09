@@ -145,7 +145,7 @@ class Api::V1::CompaniesController < ApplicationController
         transactions << get_rough_transaction(company, params[:search], params[:status], params[:activity])
         transactions <<  get_polished_transaction(company, params[:search], params[:status], params[:activity])
       end
-      @all_transactions = Kaminari.paginate_array(transactions).page(params[:page]).per(params[:count])
+      @all_transactions = Kaminari.paginate_array(transactions.flatten).page(params[:page]).per(params[:count])
       render json: { success: true, pagination: set_pagination(:all_transactions), transactions: @all_transactions }
     else
     end
