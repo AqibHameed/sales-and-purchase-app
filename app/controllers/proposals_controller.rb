@@ -119,7 +119,7 @@ class ProposalsController < ApplicationController
           new_limit = @group.group_market_limit + (total_price - @group.group_market_limit)
           @group.update_attributes(group_market_limit: new_limit)
         end
-        if !@group.present? && available_credit_limit < total_price
+        if available_credit_limit < total_price
           credit_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
           if credit_limit.nil?
             CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, credit_limit: total_price)
