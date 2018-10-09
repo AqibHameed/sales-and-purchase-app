@@ -7,14 +7,12 @@ module Api
       def index
         all_messages = []
         if current_company
-          # from_ids = Company.where('name LIKE ?', "%#{params[:search]}%").ids
-          messages = Message.where(receiver_id: current_company.id).where.not("message_type in (?)", ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
-          # @messages = all_messages.page(params[:page]).per(params[:count])
+          messages = Message.joins(:sender).order("companies.name").where(receiver_id: current_company.id).where.not("message_type in (?)", ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
           messages.group_by(&:proposal_id).each do |proposal_id, messages|
             all_messages << messages.last
           end
           @messages = Kaminari.paginate_array(all_messages).page(params[:page]).per(params[:count])
-          render json: { pagination: set_pagination(:messages), messages: messages_data(@messages), response_code: 200 }
+          render json: { pagination: set_pagination(:messages), messages: messages_data(@messages, params[:status], params[:description], params[:company]), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
@@ -24,7 +22,7 @@ module Api
         if current_company
           all_messages = Message.where("receiver_id = ? && message_type in (?) ", current_company.id, ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
           @messages = all_messages.page(params[:page]).per(params[:count])
-          render json: { pagination: set_pagination(:messages), messages: messages_data(@messages), response_code: 200 }
+          render json: { pagination: set_pagination(:messages), messages: messages_data_for_limit_messages(@messages), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
@@ -79,9 +77,24 @@ module Api
         params.require(:message).permit(:subject, :message, :message_type, :receiver_id)
       end
 
-      def messages_data(messages)
+      def messages_data(messages, status, description, company)
         @data = []
-        messages.each do |message|
+        @messages = messages
+        if status.present?
+          if status == 'negotiated'
+            @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.negotiations.present? && m.proposal.status == status }.compact
+          else
+            @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == status }.compact
+          end
+        end
+        if description.present?
+          @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.trading_parcel.present? && m.proposal.trading_parcel.description == description }.compact
+        end
+        if company.present?
+          c = Company.where(name: company).first
+          @messages = @messages.map{ |m| m if m.sender.present? && m.sender == c}.compact
+        end
+        @messages.each do |message|
           if message.proposal.present? && message.proposal.trading_parcel.present?
             if message.proposal.status == 'accepted'
               status = 'accepted'
@@ -111,7 +124,15 @@ module Api
               offered_percent = ((offered_price.to_f/message.proposal.trading_parcel.price.to_f)-1).to_f*100
               data.merge!(calculation: offered_percent.to_i)
             end
-            @data << data
+            @data << data  
+          end
+        end
+        @data
+      end
+      def messages_data_for_limit_messages(messages)
+        @data = []
+        messages.each do |message|
+          if message.proposal.present? && message.proposal.trading_parcel.present?
           else
             parcel = TradingParcel.where(id: message.proposal_id).first
             data = {
