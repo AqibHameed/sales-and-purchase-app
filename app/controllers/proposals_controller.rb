@@ -113,8 +113,13 @@ class ProposalsController < ApplicationController
       if @proposal.save(validate: false)
         available_credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
         available_market_limit = get_market_limit_from_credit_limit_table(@proposal.buyer, current_company)
+        @group = CompaniesGroup.where("company_id like '%#{company.id}%'").where(seller_id: current_company.id).first
         total_price = @proposal.price*@proposal.trading_parcel.weight
-        if available_credit_limit < total_price
+        if @group.present? && @group.market_limit < total_price
+          new_limit = @group.market_limit + (total_price - @group.market_limit)
+          @group.update_attributes(group_market_limit: new_limit)
+        end
+        if !@group.present? && available_credit_limit < total_price
           credit_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
           if credit_limit.nil?
             CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, credit_limit: total_price)
@@ -123,7 +128,7 @@ class ProposalsController < ApplicationController
             credit_limit.update_attributes(credit_limit: new_limit)
           end
         end
-        if available_market_limit < total_price
+        if !@group.present? && available_market_limit < total_price
           market_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
           if market_limit.nil?
             CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, market_limit: total_price)
@@ -167,11 +172,14 @@ class ProposalsController < ApplicationController
     errors = []
     flag = false
     credit_limit = get_available_credit_limit(proposal.buyer, current_company).to_f
-    if credit_limit < (proposal.price*proposal.trading_parcel.weight)
+    @group = CompaniesGroup.where("company_id like '%#{proposal.buyer_id}%'").where(seller_id: current_company.id).first
+    total_price = proposal.price*proposal.trading_parcel.weight
+    if !@group.present? && credit_limit < total_price
       flag = true
     end
-    if check_for_group_overdue_limit(current_company, proposal.trading_parcel.company) || check_for_group_market_limit(current_company, proposal.trading_parcel.company)
-      errors <<  'This buyer does not meet your group overdue limits.'
+    if @group.present? && (@group.group_market_limit < total_price)
+      new_limit = @group.group_market_limit + (total_price - @group.group_market_limit)
+      errors <<  "Your existing market_limit for this buyer group was: #{@group.group_market_limit}.  This transaction would increase it to #{ new_limit }"
     end
     # if proposal.buyer.is_blocked_by_supplier(proposal.trading_parcel.try(:company_id))
     #   errors << 'This buyer is blocked by you, Do you want to unblock it.'
@@ -180,7 +188,7 @@ class ProposalsController < ApplicationController
     #   errors << 'You cannot buy anything. Your group customer have overdue.'
     # end
     market_limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
-    if market_limit.present? && market_limit.market_limit < (proposal.price*proposal.trading_parcel.weight)
+    if !@group.present? && market_limit.present? && market_limit.market_limit < (proposal.price*proposal.trading_parcel.weight)
       available_market_limit = market_limit.market_limit
       total_price = proposal.price*proposal.trading_parcel.weight 
       if market_limit.nil?
@@ -188,10 +196,13 @@ class ProposalsController < ApplicationController
       else 
         new_limit = market_limit.market_limit + (total_price - available_market_limit)
       end
-      errors << 'Your existing market_limit limit for this buyer was: #{ available_market_limit }. This transaction would increase it to #{ new_limit } %>'
+      errors << "Your existing market_limit limit for this buyer was: #{ available_market_limit }. This transaction would increase it to #{ new_limit } %>"
+    end
+    if check_for_group_overdue_limit(current_company, proposal.trading_parcel.company) || check_for_group_market_limit(current_company, proposal.trading_parcel.company)
+      errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
     end
     if proposal.buyer.is_overdue || proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, proposal.trading_parcel.try(:company_id)), proposal.trading_parcel.try(:company_id))
-      errors << 'This buyer is blocked from purchasing from your side due to number of days late on a payment or amount payable to the market.'
+      errors << "Buyer is currently a later payer and the number of days overdue exceeds your overdue limit."
     end
     if errors.present? 
       respond_to do |format|
