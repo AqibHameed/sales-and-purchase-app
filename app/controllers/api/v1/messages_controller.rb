@@ -28,6 +28,21 @@ module Api
         end
       end
 
+      def unread_count
+        if current_company
+          all_messages = []
+          messages = Message.joins(:sender).order("companies.name").where(receiver_id: current_company.id).where.not("message_type in (?)", ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
+          messages.group_by(&:proposal_id).each do |proposal_id, messages|
+            all_messages << messages.last
+          end
+          unread_count = all_messages.flatten.map{ |m| m if m.proposal.present? && !m.proposal.negotiations.present? && m.proposal.status == 'negotiated' }.compact.uniq.count
+          data = { count: unread_count}
+          render json: { success: true, inbox: data, response_code: 200 }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
       def show
         if current_company
           if params[:id].present?

@@ -334,6 +334,7 @@ Rails.application.routes.draw do
       resources :messages do
         collection do
           get :limit_messages
+          get :unread_count
         end
       end
       resources :proposals do
