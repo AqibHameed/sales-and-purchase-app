@@ -17,11 +17,12 @@ class ProposalsController < ApplicationController
     # @proposal.check_sub_company_limit(current_customer)
 
     if @proposal.errors.any?
-        flash[:notice] = @proposal.errors.full_messages.first
-        redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
+      flash[:notice] = @proposal.errors.full_messages.first
+      redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
     else
       if @proposal.save
         # Sent an email to supplier
+        CustomerMailer.send_proposal(@proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
         Message.create_new(@proposal)
         flash[:notice] = "Proposal sent to supplier."
         redirect_to trading_customers_path
@@ -50,6 +51,8 @@ class ProposalsController < ApplicationController
   def update
     if @proposal.update_attributes(proposal_params)
       # Email sent to action for column user
+      receiver_emails = @proposal.seller.customers.map{|c| c.email}
+      CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
       Message.create_new_negotiate(@proposal, current_company)
       flash[:notice] = "Proposal sent successfully."
       redirect_to trading_customers_path

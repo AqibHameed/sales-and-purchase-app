@@ -44,4 +44,24 @@ class CustomerMailer < ApplicationMailer
     @last_negotiated = proposal.negotiations.order('created_at ASC' ).last
     mail(:to => receiver_emails, from: sender_email, :subject => '[SafeTrade] You have a new proposal.')
   end
+
+  def send_proposal(proposal , sender, sender_company)
+    @proposal = proposal
+    @sender = sender_company
+    receiver_emails = proposal.seller.customers.map{|c| c.email}
+    mail(:to => receiver_emails, from: sender.email, :subject => '[SafeTrade] You have a new proposal.')
+  end
+
+  def unregistered_users_mail_to_company(seller, seller_company, transaction)
+    @transaction = transaction
+    @seller = seller_company
+    mail(to: transaction.buyer.email, from: seller.email, subject: '[SafeTrade] You have a new direct sell.')
+  end
+
+  def mail_to_registered_users(seller, seller_company, transaction)
+    @transaction = transaction
+    @seller = seller_company
+    all_user_emails = transaction.buyer.customers.map{|c| c.email}
+    mail(to: all_user_emails, from: seller.email, subject: '[SafeTrade] You have a new direct sell.')
+  end
 end

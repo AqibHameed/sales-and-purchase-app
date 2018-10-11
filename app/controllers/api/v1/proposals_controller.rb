@@ -8,23 +8,24 @@ module Api
       def create
         if current_company
           parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
-            if parcel.present?
-              proposal = Proposal.new(proposal_params)
-              proposal.buyer_id = current_company.id
-              proposal.seller_id = parcel.company_id
-              proposal.notes = parcel.comment
-              proposal.action_for = parcel.company_id
-              proposal.buyer_comment = params[:comment]
-              if proposal.save
-                # proposal.negotiations.create(price: proposal_params[:price], credit: proposal_params[:credit], total_value: proposal_params[:total_value], percent: proposal_params[:percent], comment: parcel.comment, from: 'buyer')
-                Message.create_new(proposal)
-                render json: { success: true, message: 'Proposal Submitted Successfully' }
-              else
-                render json: { success: false, errors: proposal.errors.full_messages }
-              end
+          if parcel.present?
+            proposal = Proposal.new(proposal_params)
+            proposal.buyer_id = current_company.id
+            proposal.seller_id = parcel.company_id
+            proposal.notes = parcel.comment
+            proposal.action_for = parcel.company_id
+            proposal.buyer_comment = params[:comment]
+            if proposal.save
+              # proposal.negotiations.create(price: proposal_params[:price], credit: proposal_params[:credit], total_value: proposal_params[:total_value], percent: proposal_params[:percent], comment: parcel.comment, from: 'buyer')
+              CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
+              Message.create_new(proposal)
+              render json: { success: true, message: 'Proposal Submitted Successfully' }
             else
-              render json: { success: false, message: 'Parcel does not exists for this id.' }
+              render json: { success: false, errors: proposal.errors.full_messages }
             end
+          else
+            render json: { success: false, message: 'Parcel does not exists for this id.' }
+          end
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
@@ -109,9 +110,9 @@ module Api
             # proposal.update_attributes(negotiated: true)
             receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
             receiver_emails = receiver.customers.map{ |c| c.email }
-            CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver
+            CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
+            Message.create_new_negotiate(@proposal, current_company)
             get_proposal_details(@proposal)
-            # Message.create_new_negotiate(proposal, current_company)
             render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
           else
             render :json => {:success => false, :message=> 'Proposal is not negotiated successfully..', response_code: 201 }

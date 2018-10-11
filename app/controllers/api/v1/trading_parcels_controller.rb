@@ -176,6 +176,11 @@ module Api
         buyer = Company.where(id: transaction.buyer_id).first
         available_credit_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
         if transaction.save
+          if transaction.buyer.customers.count < 1
+            CustomerMailer.unregistered_users_mail_to_company(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
+          else
+            CustomerMailer.mail_to_registered_users(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
+          end
           transaction.set_due_date
           transaction.generate_and_add_uid
           ## set limit ##
