@@ -112,17 +112,23 @@ class Api::V1::CompaniesController < ApplicationController
               count(companies.id) as transaction_count,
               companies.name,
               sum(t.remaining_amount) as remaining_amount
-      ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{current_company.id} and t.paid = 0)")
+      ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{current_company.id} and t.paid = 0 and t.due_date != #{Date.today} )")
       .group(:id)
       .order(:id)
 
       result = []
       if transactions.present?
         transactions.uniq.each do |t|
-          result << t
+          data = {
+            id: t.id,
+            name: t.name,
+            transaction_count: t.transaction_count,
+            remaining_amount: t.remaining_amount,
+            overdue_status: current_company.has_overdue_that_seller_setlimit(t.id)
+          }
+          result << data
         end
       end
-
       @companies = Kaminari.paginate_array(result).page(params[:page]).per(params[:count])
       render json: { success: true, pagination: set_pagination(:companies), companies: @companies }
     else

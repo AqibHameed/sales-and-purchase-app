@@ -8,7 +8,7 @@ class Company < ApplicationRecord
   has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction", dependent: :destroy
   has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction", dependent: :destroy
   has_many :buyer_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit", dependent: :destroy
-  has_many :seller_days_limits, :foreign_key => "buyer_id", :class_name => "DaysLimit", dependent: :destroy
+  has_many :seller_days_limits, :foreign_key => "seller_id", :class_name => "DaysLimit", dependent: :destroy
   has_many :company_group_seller, :foreign_key => "seller_id", :class_name => "CompaniesGroup", dependent: :destroy
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
@@ -101,6 +101,24 @@ class Company < ApplicationRecord
       true
     else
       false
+    end
+  end
+
+  def has_overdue_that_seller_setlimit(buyer_id)
+    days_limit = self.seller_days_limits.where(buyer_id: buyer_id).first
+    transaction = Transaction.where("seller_id = ? AND buyer_id = ? AND paid = ?", self.id, buyer_id, false)
+    transaction.each do |t|
+      overdue_days  = (Date.today - t.due_date.to_date).to_i
+      if days_limit.present?
+        limit = days_limit.days_limit
+      else
+        limit = 15
+      end
+      if overdue_days > limit
+        return true
+      else
+        return false
+      end
     end
   end
 
