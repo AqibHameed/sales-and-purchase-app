@@ -1,3 +1,6 @@
+<% last_negotiation = proposal.negotiations.last %>
+<% last_buyer_negotiation = proposal.negotiations.where(from: 'buyer').last %>
+<% last_seller_negotiation = proposal.negotiations.where(from: 'seller').last %>
 <h3>Proposal Details</h3>
 <div class="table">
   <table class="table table-bordered table-striped table-responsive tablesorter">
@@ -73,32 +76,32 @@
       <td> List Total Price </td>
       <td><%= proposal.trading_parcel.total_value.nil? ? 'N/A' : number_with_precision(proposal.trading_parcel.total_value, precision: 2) %></td>
     </tr>
-
+  
     <tr>
       <td> Offer Credit </td>
-      <td><%= proposal.credit.nil? ? 'N/A' : proposal.credit %></td>
+      <td><%= last_negotiation.present? ? last_negotiation.credit : (proposal.credit.nil? ? 'N/A' : proposal.credit) %></td>
     </tr>
     <tr>
       <td> Offer Percent </td>
-      <td><%= proposal.percent.nil? ? 'N/A' : proposal.percent %></td>
+      <td><%= last_negotiation.present? ? last_negotiation.percent : (proposal.percent.nil? ? 'N/A' : proposal.percent) %></td>
     </tr>
     <tr>
       <td> Offer Avg. Price </td>
-      <td><%= proposal.price.nil? ? 'N/A' : proposal.price %></td>
+      <td><%= last_negotiation.present? ? last_negotiation.price : (proposal.price.nil? ? 'N/A' : proposal.price ) %></td>
     </tr>
     <tr>
       <td> Offer Total Price </td>
-      <td><%= proposal.total_value.nil? ? 'N/A' : proposal.total_value %></td>
+      <td><%= last_negotiation.present? ? last_negotiation.total_value : (proposal.total_value.nil? ? 'N/A' : proposal.total_value) %></td>
     </tr>
     <% if current_company.id == proposal.seller_id %>
       <tr>
         <td> Buyer Comment </td>
-        <td><%= proposal.buyer_comment.nil? ? 'N/A' : proposal.buyer_comment %></td>
+        <td><%= last_buyer_negotiation.present? ? last_buyer_negotiation.comment : (proposal.buyer_comment.nil? ? 'N/A' : proposal.buyer_comment) %></td>
       </tr>
     <% elsif current_company.id == proposal.buyer_id %>
       <tr>
         <td> Seller Comment </td>
-        <td><%= proposal.notes.nil? ? 'N/A' : proposal.notes %></td>
+        <td><%= last_seller_negotiation.present? ? last_seller_negotiation.comment : (proposal.notes.nil? ? 'N/A' : proposal.notes ) %></td>
       </tr>
     <% end %>
   </table>

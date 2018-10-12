@@ -52,6 +52,15 @@ class ProposalsController < ApplicationController
 
   def update
     if @proposal.update_attributes(proposal_params)
+      comment = (current_company == @proposal.buyer) ? @proposal.buyer_comment : @proposal.notes
+      negotiation_params = {
+        price: @proposal.price,
+        percent: @proposal.percent,
+        credit: @proposal.credit,
+        total_value: @proposal.total_value,
+        comment: comment
+      }
+      @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
       # Email sent to action for column user
       receiver_emails = @proposal.seller.customers.map{|c| c.email}
       CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
