@@ -13,6 +13,7 @@ module Api
           parcel.price = params[:trading_parcel][:avg_price]
           parcel.no_of_stones = 0 if params[:trading_parcel][:no_of_stones].blank? || params[:trading_parcel][:no_of_stones].nil?
           if parcel.save
+            parcel.send_mail_to_demanded
             render json: { success: true, message: 'Parcel created successfully' }
           else
             render json: { success: false, errors: parcel.errors.full_messages, response_code: 200 }
@@ -181,6 +182,8 @@ module Api
           else
             CustomerMailer.mail_to_registered_users(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
           end
+          all_user_ids = transaction.buyer.customers.map{|c| c.id}.uniq
+          current_company.send_notification('direct sell', all_user_ids)
           transaction.set_due_date
           transaction.generate_and_add_uid
           ## set limit ##

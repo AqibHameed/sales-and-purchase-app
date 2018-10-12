@@ -41,6 +41,7 @@ class CustomerMailer < ApplicationMailer
   end
 
   def send_negotiation(proposal , receiver_emails, sender_email)
+    @proposal = proposal
     @last_negotiated = proposal.negotiations.order('created_at ASC' ).last
     mail(:to => receiver_emails, from: sender_email, :subject => '[SafeTrade] You have a new proposal.')
   end

@@ -84,6 +84,8 @@ class TradingParcel < ApplicationRecord
         TenderMailer.parcel_up_email(self, demand).deliver rescue logger.info "Error sending email"
       end
     end
+    demanded_ids = Demand.where.not(company_id: company_id).where(description: self.try(:description)).map {|e| e.company_id }.uniq
+    self.company.send_notification('demanded parcel uploaded', demanded_ids)
   end
 
   def self.send_won_parcel_email(proposal)

@@ -1,3 +1,4 @@
+<% email_template = EmailTemplate.where(type_of_event: 'direct sell').first %>
 <p>Purchase Recorded</p>
 </br>
 <p> Seller: <%= @seller %> has added the following transaction on SafeTrade: </p>
@@ -10,7 +11,9 @@
 <p>7. Total Amount: <%= @transaction.total_amount %></p>
 <p>8. Credit Period: <%= @transaction.credit %></p>
 <p>9. Invoice Date: <%= @transaction.created_at %></p>
+<p><%= email_template.before_here %> <%= link_to 'here', transaction_url(@transaction) %> <%= email_template.after_here.html_safe %>
 <p><%= @seller%> uses SafeTrade for business protection against late and risky payers. You can join as well, immediately and for free. Download SafeTrade now:</p>
+
 </br>
 <p>Regards,</p>
 </br>

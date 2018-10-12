@@ -17,8 +17,10 @@ module Api
             proposal.buyer_comment = params[:comment]
             if proposal.save
               # proposal.negotiations.create(price: proposal_params[:price], credit: proposal_params[:credit], total_value: proposal_params[:total_value], percent: proposal_params[:percent], comment: parcel.comment, from: 'buyer')
-              CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
+              CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver  rescue logger.info "Error sending email"
               Message.create_new(proposal)
+              receiver_ids = proposal.seller.customers.map{|c| c.id}.uniq
+              current_company.send_notification('proposal', receiver_ids)
               render json: { success: true, message: 'Proposal Submitted Successfully' }
             else
               render json: { success: false, errors: proposal.errors.full_messages }
@@ -112,6 +114,8 @@ module Api
             receiver_emails = receiver.customers.map{ |c| c.email }
             CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
             Message.create_new_negotiate(@proposal, current_company)
+            receiver_ids = receiver.customers.map{ |c| c.id }.uniq
+            current_company.send_notification('negotiation', receiver_ids)
             get_proposal_details(@proposal)
             render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
           else

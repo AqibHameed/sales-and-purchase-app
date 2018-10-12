@@ -60,7 +60,7 @@ class BrokersController < ApplicationController
   def send_invite
     @broker_invite = BrokerInvite.new(broker_invite_params)
     if @broker_invite.save
-      CustomerMailer.broker_invite_email(@broker_invite).deliver #rescue logger.info "Error sending email"
+      CustomerMailer.broker_invite_email(@broker_invite).deliver rescue logger.info "Error sending email"
       flash[:success] = "Invite sent successfully"
       redirect_to dashboard_brokers_path
     else

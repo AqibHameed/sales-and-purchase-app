@@ -560,6 +560,16 @@ class Company < ApplicationRecord
     Message.accept_limit_increase(buyer_id, parcel)
   end
 
+  def send_notification(type_of_event, customers_to_notify)
+    customers_to_notify.each do |customer|
+      android_devices = Device.where(device_type: 'android', customer_id: customer)
+      ios_devices = Device.where(device_type: 'ios', customer_id: customer)
+      full_message = PushNotification.where(type_of_event: type_of_event).first
+      android_registration_ids = android_devices.map { |e| e.token }
+      Notification.send_android_notifications(android_registration_ids, full_message, nil)
+    end
+  end
+
   ##### End of Credit Scores #####
 
   rails_admin do
