@@ -183,7 +183,7 @@ class TradingParcelsController < ApplicationController
         CustomerMailer.mail_to_registered_users(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
       end
       all_user_ids = transaction.buyer.customers.map{|c| c.id}.uniq
-      current_company.send_notification('direct sell', all_user_ids)
+      current_company.send_notification('New Direct Sell', all_user_ids)
       transaction.set_due_date
       transaction.generate_and_add_uid
       ## set limit ##

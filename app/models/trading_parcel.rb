@@ -85,7 +85,7 @@ class TradingParcel < ApplicationRecord
       end
     end
     demanded_ids = Demand.where.not(company_id: company_id).where(description: self.try(:description)).map {|e| e.company_id }.uniq
-    self.company.send_notification('demanded parcel uploaded', demanded_ids)
+    self.company.send_notification('New Parcel Uploaded', demanded_ids)
   end
 
   def self.send_won_parcel_email(proposal)

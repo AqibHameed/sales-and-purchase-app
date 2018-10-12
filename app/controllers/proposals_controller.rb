@@ -25,7 +25,7 @@ class ProposalsController < ApplicationController
         CustomerMailer.send_proposal(@proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
         Message.create_new(@proposal)
         receiver_ids = @proposal.seller.customers.map{|c| c.id}
-        current_company.send_notification('proposal', receiver_ids)
+        current_company.send_notification('New Proposal', receiver_ids)
         flash[:notice] = "Proposal sent to supplier."
         redirect_to trading_customers_path
       else
@@ -57,7 +57,7 @@ class ProposalsController < ApplicationController
       CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
       Message.create_new_negotiate(@proposal, current_company)
       receiver_ids = @proposal.seller.customers.map{|c| c.id}
-      current_company.send_notification('negotiation', receiver_ids)
+      current_company.send_notification('New Negotiation', receiver_ids)
       flash[:notice] = "Proposal sent successfully."
       redirect_to trading_customers_path
     else
