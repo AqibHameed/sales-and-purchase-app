@@ -12,6 +12,7 @@ module Api
             all_messages << messages.last
           end
           @messages = Kaminari.paginate_array(all_messages).page(params[:page]).per(params[:count])
+
           render json: { pagination: set_pagination(:messages), messages: messages_data(@messages, params[:status], params[:description], params[:company]), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -116,7 +117,13 @@ module Api
             elsif message.proposal.status == 'rejected'
               status = 'rejected'
             elsif message.proposal.negotiations.present?
-              status = 'negotiated'
+              who =  (current_company == message.proposal.buyer) ? 'buyer' : 'seller'
+              last_self_negotiation = message.proposal.negotiations.last
+              if last_self_negotiation.present? && last_self_negotiation.from == who
+                status = 'negotiated'
+              else
+                status = nil
+              end
             else
               status = nil
             end

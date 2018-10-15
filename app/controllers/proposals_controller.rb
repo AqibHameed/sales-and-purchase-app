@@ -60,7 +60,13 @@ class ProposalsController < ApplicationController
         total_value: @proposal.total_value,
         comment: comment
       }
-      @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
+      who = (current_company == @proposal.buyer) ? 'buyer' : 'seller'
+      last_negotiation = @proposal.negotiations.present? ? @proposal.negotiations.last : nil
+      if last_negotiation.present? && last_negotiation.from == who
+        last_negotiation.update_attributes(negotiation_params)
+      else
+        @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
+      end
       # Email sent to action for column user
       receiver_emails = @proposal.seller.customers.map{|c| c.email}
       CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"

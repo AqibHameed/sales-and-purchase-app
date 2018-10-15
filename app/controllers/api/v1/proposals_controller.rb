@@ -108,7 +108,14 @@ module Api
             render :json => {:success => false, :message=> 'Negotiation is not updated successfully..', response_code: 201 }
           end
         else
-          if @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))   
+          @proposal = Proposal.where(id: params[:id]).first
+          who = (current_company == @proposal.buyer) ? 'buyer' : 'seller'
+          last_negotiation = @proposal.negotiations.present? ? @proposal.negotiations.last : nil
+          if last_negotiation.present? && last_negotiation.from == who
+            last_negotiation.update_attributes(negotiation_params)
+            get_proposal_details(@proposal)
+            render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
+          elsif @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))   
             # proposal.update_attributes(negotiated: true)
             receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
             receiver_emails = receiver.customers.map{ |c| c.email }
@@ -205,7 +212,7 @@ module Api
             offered_total_value: last_negotiation.try(:total_value).to_f,
             offered_credit: last_negotiation.try(:credit),
             offered_comment: last_negotiation.try(:comment),
-            offered_from: last_negotiation.try(:from),
+            offered_from: last_negotiation.try(:from) == 'seller' ? proposal.seller.name : proposal.buyer.name,
             is_mine: last_negotiation.whose == current_company
           }
           negotiations = []
@@ -217,7 +224,7 @@ module Api
               offered_price: negotiation.price.to_f,
               offered_total_value: negotiation.total_value.to_f,
               offered_comment: negotiation.comment,
-              offered_from: negotiation.from,
+              offered_from:  negotiation.from == 'seller' ? proposal.seller.name : proposal.buyer.name,
               is_mine: last_negotiation.whose == current_company
             }
           end

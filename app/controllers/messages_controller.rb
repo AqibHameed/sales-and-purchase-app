@@ -4,7 +4,11 @@ class MessagesController < ApplicationController
   before_action :check_authenticate_receiver, only: [:show]
 
   def index
-    @messages = Message.where(receiver_id: current_company.id)
+    @messages = []
+    all_messages = Message.joins(:sender).order("companies.name").where(receiver_id: current_company.id)
+    all_messages.group_by(&:proposal_id).each do |proposal_id, messages|
+      @messages << messages.last
+    end
   end
 
   def show
