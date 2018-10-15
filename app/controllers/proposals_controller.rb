@@ -69,7 +69,7 @@ class ProposalsController < ApplicationController
       end
       # Email sent to action for column user
       receiver_emails = @proposal.seller.customers.map{|c| c.email}
-      CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
+      CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver #rescue logger.info "Error sending email"
       Message.create_new_negotiate(@proposal, current_company)
       receiver_ids = @proposal.seller.customers.map{|c| c.id}
       current_company.send_notification('New Negotiation', receiver_ids)
