@@ -75,13 +75,13 @@ module Api
               end
               errors << "Your existing market limit for this buyer was: #{ number_to_currency(available_market_limit) }. This transaction would increase it to #{number_to_currency(new_limit) }"
             end
-            if !@company_group.present? && (@proposal.buyer.is_overdue || @proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, proposal.trading_parcel.try(:company_id)), proposal.trading_parcel.try(:company_id)))
+            if !@company_group.present? && (@proposal.buyer.is_overdue || @proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, @proposal.trading_parcel.try(:company_id)), @proposal.trading_parcel.try(:company_id)))
               errors << "Buyer is currently a later payer and the number of days overdue exceeds your overdue limit."
             end
             if errors.present?
               render :json => { :success => false, :errors => errors }
             else
-              accpet_proposal(proposal)
+              accpet_proposal(@proposal)
               render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
             end
           end
@@ -212,7 +212,7 @@ module Api
             offered_total_value: last_negotiation.try(:total_value).to_f,
             offered_credit: last_negotiation.try(:credit),
             offered_comment: last_negotiation.try(:comment),
-            offered_from: last_negotiation.try(:from) == 'seller' ? proposal.seller.name : proposal.buyer.name,
+            offered_from: last_negotiation.try(:from) == 'seller' ? proposal.seller.name + '(seller)' : proposal.buyer.name + '(buyer)',
             is_mine: last_negotiation.whose == current_company
           }
           negotiations = []
@@ -224,7 +224,7 @@ module Api
               offered_price: negotiation.price.to_f,
               offered_total_value: negotiation.total_value.to_f,
               offered_comment: negotiation.comment,
-              offered_from:  negotiation.from == 'seller' ? proposal.seller.name : proposal.buyer.name,
+              offered_from:  negotiation.from == 'seller' ? proposal.seller.name + '(seller)' : proposal.buyer.name + '(buyer)',
               is_mine: last_negotiation.whose == current_company
             }
           end
