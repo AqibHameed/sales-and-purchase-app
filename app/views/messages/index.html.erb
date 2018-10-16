@@ -7,13 +7,18 @@
         <th></th>
         <th>From</th>
         <th>Subject</th>
-        <th></th>
+        <th>Status</th>
       </tr>
       <% @messages.each.with_index(1) do |message, i|%>
         <tr>
           <td><%= index_count(params[:page].to_i) + i %></td>
           <td><%= message.sender.try(:name) %></td>
           <td><%= message.try(:subject) %></td>
+          <td>
+          <% if message.proposal.present? %>
+            <%=  message.proposal.accepted? ? 'Accepted' : (message.proposal.rejected? ? 'Rejected' : ((message.proposal.negotiated? && message.proposal.negotiations.present?) ? 'Negotiated' : 'New Message')) %>
+          <% end %>
+          </td>
           <% if message.proposal_id.present? %>
             <td><%= link_to 'view', proposal_path(id: message.proposal_id), data: {turbolinks: false}%></td>
           <% else %>
