@@ -11,9 +11,9 @@ module Api
           messages.group_by(&:proposal_id).each do |proposal_id, messages|
             all_messages << messages.last
           end
-          @messages = Kaminari.paginate_array(all_messages).page(params[:page]).per(params[:count])
+          @messages = Kaminari.paginate_array(messages_data(all_messages, params[:status], params[:description], params[:company])).page(params[:page]).per(params[:count])
 
-          render json: { pagination: set_pagination(:messages), messages: messages_data(@messages, params[:status], params[:description], params[:company]), response_code: 200 }
+          render json: { pagination: set_pagination(:messages), messages: @messages, response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end

@@ -206,7 +206,7 @@ class ProposalsController < ApplicationController
       else
         new_limit = limit.credit_limit + (total_price - credit_limit)
       end 
-      errors << "Your existing credit limit for this buyer was: #{number_to_currency(credit_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
+      errors << "Your existing credit limit for this buyer was: #{number_to_currency(limit.credit_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
     end
     if @company_group.present? && (@company_group.group_market_limit < total_price)
       new_limit = @company_group.group_market_limit + (total_price - @company_group.group_market_limit)
