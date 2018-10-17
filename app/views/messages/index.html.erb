@@ -7,6 +7,7 @@
         <th></th>
         <th>From</th>
         <th>Subject</th>
+        <th>Date</th>
         <th>Status</th>
       </tr>
       <% @messages.each.with_index(1) do |message, i|%>
@@ -14,6 +15,7 @@
           <td><%= index_count(params[:page].to_i) + i %></td>
           <td><%= message.sender.try(:name) %></td>
           <td><%= message.try(:subject) %></td>
+          <td><%= message.created_at.strftime("%d-%m-%Y")%>
           <td>
           <% if message.proposal.present? %>
             <%=  message.proposal.accepted? ? 'Accepted' : (message.proposal.rejected? ? 'Rejected' : ((message.proposal.negotiated? && message.proposal.negotiations.present?) ? 'Negotiated' : 'New Message')) %>
