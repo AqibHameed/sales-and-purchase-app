@@ -332,10 +332,10 @@ class Api::V1::CompaniesController < ApplicationController
         data = {
           invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
           paid_date: date, 
-          late_days: late_days,
+          late_days: late_days.abs,
           buyer_days_limit: buyer_days_limit(company),
           market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
-          supplier_connected: company.buyer_credit_limits.count,
+          supplier_connected: company.supplier_connected,
           outstandings: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
           overdue_amount: company.buyer_transactions.present? ? company.buyer_transactions.where(seller_id: current_company.id).where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
           given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,

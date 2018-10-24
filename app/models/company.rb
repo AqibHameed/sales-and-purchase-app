@@ -560,6 +560,11 @@ class Company < ApplicationRecord
     Message.accept_limit_increase(buyer_id, parcel)
   end
 
+  def supplier_connected
+    @connected_supplier = self.buyer_transactions.where('(due_date > ? or due_date < ?) and paid = ?', Date.today, Date.today, false).map{|t| t.seller}
+    return @connected_supplier.uniq.count 
+  end
+
   def send_notification(type_of_event, customers_to_notify)
     customers_to_notify.each do |customer|
       android_devices = Device.where(device_type: 'android', customer_id: customer)
