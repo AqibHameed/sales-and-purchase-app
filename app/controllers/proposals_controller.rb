@@ -159,7 +159,7 @@ class ProposalsController < ApplicationController
           if market_limit.nil?
             CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, market_limit: total_price)
           else
-            new_limit = market_limit.market_limit + (total_price - available_market_limit)
+            new_limit = market_limit.market_limit.to_i + (total_price.to_i - available_market_limit.to_i)
             market_limit.update_attributes(market_limit: new_limit)
           end
         end
