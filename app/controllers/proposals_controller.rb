@@ -150,7 +150,7 @@ class ProposalsController < ApplicationController
           if credit_limit.nil?
             CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, credit_limit: total_price)
           else
-            new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
+            new_limit = credit_limit.credit_limit + total_price
             credit_limit.update_attributes(credit_limit: new_limit)
           end
         end
@@ -159,7 +159,7 @@ class ProposalsController < ApplicationController
           if market_limit.nil?
             CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, market_limit: total_price)
           else
-            new_limit = market_limit.market_limit + (total_price - available_market_limit)
+            new_limit = market_limit.market_limit.to_i + (total_price.to_i - available_market_limit.to_i)
             market_limit.update_attributes(market_limit: new_limit)
           end
         end
@@ -202,11 +202,13 @@ class ProposalsController < ApplicationController
     if credit_limit < total_price
       limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
       if limit.nil?
+        existing_limit = 0
         new_limit = total_price
       else
-        new_limit = limit.credit_limit + (total_price - credit_limit)
+        existing_limit = limit.credit_limit
+        new_limit = limit.credit_limit + total_price
       end 
-      errors << "Your existing credit limit for this buyer was: #{number_to_currency(limit.credit_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
+      errors << "Your existing credit limit for this buyer was: #{number_to_currency(existing_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
     end
     if @company_group.present? && (@company_group.group_market_limit < total_price)
       new_limit = @company_group.group_market_limit + (total_price - @company_group.group_market_limit)
