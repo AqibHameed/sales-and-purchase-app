@@ -150,7 +150,7 @@ class ProposalsController < ApplicationController
           if credit_limit.nil?
             CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, credit_limit: total_price)
           else
-            new_limit = credit_limit.credit_limit + (total_price - available_credit_limit)
+            new_limit = credit_limit.credit_limit + total_price
             credit_limit.update_attributes(credit_limit: new_limit)
           end
         end
@@ -206,7 +206,7 @@ class ProposalsController < ApplicationController
         new_limit = total_price
       else
         existing_limit = limit.credit_limit
-        new_limit = limit.credit_limit + (total_price - credit_limit)
+        new_limit = limit.credit_limit + total_price
       end 
       errors << "Your existing credit limit for this buyer was: #{number_to_currency(existing_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
     end
