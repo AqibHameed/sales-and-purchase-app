@@ -15,13 +15,13 @@ class ProposalsController < ApplicationController
   def create
     @proposal = Proposal.new(proposal_params)
     # @proposal.check_sub_company_limit(current_customer)
-
     if @proposal.errors.any?
       flash[:notice] = @proposal.errors.full_messages.first
       redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
     else
       if @proposal.save
         # Sent an email to supplier
+        @proposal.negotiations.create(price: @proposal.price, percent: @proposal.percent, credit: @proposal.credit, total_value: @proposal.total_value, comment: @proposal.buyer_comment, from: 'buyer')
         CustomerMailer.send_proposal(@proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
         Message.create_new(@proposal)
         receiver_ids = @proposal.seller.customers.map{|c| c.id}
@@ -50,7 +50,25 @@ class ProposalsController < ApplicationController
     @info = @proposal.trading_parcel.parcel_size_infos
   end
 
-  def update
+  def update    
+    if !@proposal.negotiations.where(from: 'seller').present? && current_company == @proposal.seller
+      if params[:flag] == "true"
+        update_proposal(@proposal)
+      else
+        errors = get_errors_for_accept_or_negotiate(@proposal)
+        if errors.present?
+          check_credit_negotiate(@proposal, errors)
+        else
+          update_proposal(@proposal)
+        end
+      end
+    else
+      update_proposal(@proposal)
+    end
+  end
+
+  def update_proposal(proposal)
+    @proposal = proposal
     if @proposal.update_attributes(proposal_params)
       comment = (current_company == @proposal.buyer) ? @proposal.buyer_comment : @proposal.notes
       negotiation_params = {
@@ -195,6 +213,26 @@ class ProposalsController < ApplicationController
   end
 
   def check_credit_accept(proposal)
+    errors = get_errors_for_accept_or_negotiate(proposal)
+    if errors.present? 
+      respond_to do |format|
+        format.js { render 'proposals/credit_warning', locals: { proposal: proposal, errors: errors, flag: false }}
+      end
+    else
+      accpet_proposal(proposal)
+    end
+  end
+
+  def check_credit_negotiate(proposal, errors)
+    if errors.present? 
+      respond_to do |format|
+        format.js { render 'proposals/credit_warning', locals: { proposal: proposal, errors: errors, flag: true, credit: params[:credit],
+        price: params[:proposal][:price], notes: params[:proposal][:notes], buyer_comment: params[:proposal][:buyer_comment], total_value: params[:proposal][:total_value], percent: params[:proposal][:percent]  }}
+      end
+    end
+  end
+
+  def get_errors_for_accept_or_negotiate(proposal)
     errors = []
     credit_limit = get_available_credit_limit(proposal.buyer, current_company).to_f
     @company_group = CompaniesGroup.where("company_id like '%#{proposal.buyer_id}%'").where(seller_id: current_company.id).first
@@ -231,13 +269,7 @@ class ProposalsController < ApplicationController
     if !@company_group.present? && (proposal.buyer.is_overdue || proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, proposal.trading_parcel.try(:company_id)), proposal.trading_parcel.try(:company_id)))
       errors << "Buyer is currently a later payer and the number of days overdue exceeds your overdue limit."
     end
-    if errors.present? 
-      respond_to do |format|
-        format.js { render 'proposals/credit_warning', locals: { proposal: proposal, available_credit_limit: credit_limit, errors: errors }}
-      end
-    else
-      accpet_proposal(proposal)
-    end
+    return errors
   end
 
   def proposal_params

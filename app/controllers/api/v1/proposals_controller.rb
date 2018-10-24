@@ -16,7 +16,7 @@ module Api
             proposal.action_for = parcel.company_id
             proposal.buyer_comment = params[:comment]
             if proposal.save
-              # proposal.negotiations.create(price: proposal_params[:price], credit: proposal_params[:credit], total_value: proposal_params[:total_value], percent: proposal_params[:percent], comment: parcel.comment, from: 'buyer')
+              @proposal.negotiations.create(price: @proposal.price, percent: @proposal.percent, credit: @proposal.credit, total_value: @proposal.total_value, comment: @proposal.buyer_comment, from: 'buyer')
               CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
               Message.create_new(proposal)
               receiver_ids = proposal.seller.customers.map{|c| c.id}.uniq
@@ -39,7 +39,6 @@ module Api
       end
 
       def accept_and_decline
-        errors = []
         credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
         @company_group = CompaniesGroup.where("company_id like '%#{@proposal.buyer_id}%'").where(seller_id: current_company.id).first
         total_price = @proposal.price*@proposal.trading_parcel.weight
@@ -48,38 +47,7 @@ module Api
             accpet_proposal(@proposal)
             render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
           else
-            if credit_limit < total_price
-              limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
-              if limit.nil?
-                existing_limit = 0
-                new_limit = total_price
-              else
-                existing_limit = limit.credit_limit
-                new_limit = limit.credit_limit + total_price
-              end 
-              errors << "Your existing credit limit for this buyer was: #{number_to_currency(existing_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
-            end
-            if @company_group.present? && (@company_group.group_market_limit < total_price)
-              new_limit = @company_group.group_market_limit + (total_price - @company_group.group_market_limit)
-              errors <<  "Your existing market_limit for this buyer group was: #{number_to_currency(@company_group.group_market_limit)}.  This transaction would increase it to #{ number_to_currency(new_limit)}"
-            end
-            if @company_group.present? && (check_for_group_overdue_limit(current_company, @proposal.trading_parcel.company) || check_for_group_market_limit(current_company, @proposal.trading_parcel.company))
-              errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
-            end
-            market_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
-            if !@company_group.present? && market_limit.present? && market_limit.market_limit < (@proposal.price*@proposal.trading_parcel.weight)
-              available_market_limit = market_limit.market_limit
-              total_price = @proposal.price*@proposal.trading_parcel.weight 
-              if market_limit.nil?
-                new_limit = total_price
-              else 
-                new_limit = market_limit.market_limit + (total_price - available_market_limit)
-              end
-              errors << "Your existing market limit for this buyer was: #{ number_to_currency(available_market_limit) }. This transaction would increase it to #{number_to_currency(new_limit) }"
-            end
-            if !@company_group.present? && (@proposal.buyer.is_overdue || @proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, @proposal.trading_parcel.try(:company_id)), @proposal.trading_parcel.try(:company_id)))
-              errors << "Buyer is currently a later payer and the number of days overdue exceeds your overdue limit."
-            end
+            errors = get_errors_for_accept_or_negotiate(@proposal)
             if errors.present?
               render :json => { :success => false, :errors => errors }
             else
@@ -110,24 +78,42 @@ module Api
             render :json => {:success => false, :message=> 'Negotiation is not updated successfully..', response_code: 201 }
           end
         else
-          @proposal = Proposal.where(id: params[:id]).first
-          who = (current_company == @proposal.buyer) ? 'buyer' : 'seller'
-          last_negotiation = @proposal.negotiations.present? ? @proposal.negotiations.last : nil
-          if last_negotiation.present? && last_negotiation.from == who
-            last_negotiation.update_attributes(negotiation_params)
+          if !@proposal.negotiations.where(from: 'seller').present? && current_company == @proposal.seller
+            if params[:confirm] == "true"
+              update_proposal(@proposal)
+            else
+              errors = get_errors_for_accept_or_negotiate(@proposal)
+              if errors.present?
+                render :json => { :success => false, :errors => errors }
+              else
+                update_proposal(@proposal)
+              end
+            end
           else
-            @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))   
-            # proposal.update_attributes(negotiated: true)
+            update_proposal(@proposal)
           end
-          receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
-          receiver_emails = receiver.customers.map{ |c| c.email }
-          CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
-          Message.create_new_negotiate(@proposal, current_company)
-          receiver_ids = receiver.customers.map{ |c| c.id }.uniq
-          current_company.send_notification('New Negotiation', receiver_ids)
-          get_proposal_details(@proposal)
-          render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
         end        
+      end
+
+      def update_proposal(proposal)
+        @proposal = proposal
+        @proposal = Proposal.where(id: params[:id]).first
+        who = (current_company == @proposal.buyer) ? 'buyer' : 'seller'
+        last_negotiation = @proposal.negotiations.present? ? @proposal.negotiations.last : nil
+        if last_negotiation.present? && last_negotiation.from == who
+          last_negotiation.update_attributes(negotiation_params)
+        else
+          @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))   
+          # proposal.update_attributes(negotiated: true)
+        end
+        receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
+        receiver_emails = receiver.customers.map{ |c| c.email }
+        CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
+        Message.create_new_negotiate(@proposal, current_company)
+        receiver_ids = receiver.customers.map{ |c| c.id }.uniq
+        current_company.send_notification('New Negotiation', receiver_ids)
+        get_proposal_details(@proposal)
+        render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
       end
 
       private
@@ -153,6 +139,47 @@ module Api
         render json: { errors: "Not authenticated", response_code: 201 } and return unless current_company
       end
 
+      def get_errors_for_accept_or_negotiate(proposal)
+        errors = []
+        @proposal = proposal
+        credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
+        @company_group = CompaniesGroup.where("company_id like '%#{@proposal.buyer_id}%'").where(seller_id: current_company.id).first
+        total_price = @proposal.price*@proposal.trading_parcel.weight
+        if credit_limit < total_price
+          limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
+          if limit.nil?
+            existing_limit = 0
+            new_limit = total_price
+          else
+            existing_limit = limit.credit_limit
+            new_limit = limit.credit_limit + total_price
+          end 
+          errors << "Your existing credit limit for this buyer was: #{number_to_currency(existing_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
+        end
+        if @company_group.present? && (@company_group.group_market_limit < total_price)
+          new_limit = @company_group.group_market_limit + (total_price - @company_group.group_market_limit)
+          errors <<  "Your existing market_limit for this buyer group was: #{number_to_currency(@company_group.group_market_limit)}.  This transaction would increase it to #{ number_to_currency(new_limit)}"
+        end
+        if @company_group.present? && (check_for_group_overdue_limit(current_company, @proposal.trading_parcel.company) || check_for_group_market_limit(current_company, @proposal.trading_parcel.company))
+          errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
+        end
+        market_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
+        if !@company_group.present? && market_limit.present? && market_limit.market_limit < (@proposal.price*@proposal.trading_parcel.weight)
+          available_market_limit = market_limit.market_limit
+          total_price = @proposal.price*@proposal.trading_parcel.weight 
+          if market_limit.nil?
+            new_limit = total_price
+          else 
+            new_limit = market_limit.market_limit + (total_price - available_market_limit)
+          end
+          errors << "Your existing market limit for this buyer was: #{ number_to_currency(available_market_limit) }. This transaction would increase it to #{number_to_currency(new_limit) }"
+        end
+        if !@company_group.present? && (@proposal.buyer.is_overdue || @proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, @proposal.trading_parcel.try(:company_id)), @proposal.trading_parcel.try(:company_id)))
+          errors << "Buyer is currently a later payer and the number of days overdue exceeds your overdue limit."
+        end
+        return errors
+      end
+
       def get_proposal_details(proposal)        
         last_negotiation = proposal.negotiations.order('created_at ASC' ).last
         if proposal.buyer == current_company
@@ -161,7 +188,7 @@ module Api
           offered_last_negotiation = proposal.negotiations.where(from: 'buyer').order('created_at ASC').last
         end
         if proposal.status == 'negotiated' 
-          if proposal.negotiations.present?
+          if proposal.negotiations.where(from: 'seller').present?
             status = "negotiated"
           else
             status = nil
