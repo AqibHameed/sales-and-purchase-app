@@ -51,11 +51,13 @@ module Api
             if credit_limit < total_price
               limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
               if limit.nil?
+                existing_limit = 0
                 new_limit = total_price
               else
+                existing_limit = limit.credit_limit
                 new_limit = limit.credit_limit + (total_price - credit_limit)
               end 
-              errors << "Your existing credit limit for this buyer was: #{number_to_currency(limit.credit_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
+              errors << "Your existing credit limit for this buyer was: #{number_to_currency(existing_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
             end
             if @company_group.present? && (@company_group.group_market_limit < total_price)
               new_limit = @company_group.group_market_limit + (total_price - @company_group.group_market_limit)
