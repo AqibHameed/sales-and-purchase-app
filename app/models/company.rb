@@ -562,7 +562,11 @@ class Company < ApplicationRecord
 
   def supplier_connected
     @connected_supplier = self.buyer_transactions.where('(due_date > ? or due_date < ?) and paid = ?', Date.today, Date.today, false).map{|t| t.seller}
-    return @connected_supplier.uniq.count 
+    if @connected_supplier.present?
+      return @connected_supplier.uniq.count 
+    else
+      return 0
+    end
   end
 
   def send_notification(type_of_event, customers_to_notify)
