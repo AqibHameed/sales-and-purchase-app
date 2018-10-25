@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180913083539) do
+ActiveRecord::Schema.define(version: 20181012053239) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.boolean "is_anonymous", default: false
     t.boolean "add_polished", default: false
     t.boolean "is_broker", default: false
+    t.string "email"
   end
 
   create_table "companies_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -370,6 +371,14 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.integer "tender_id"
   end
 
+  create_table "email_templates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "type_of_event"
+    t.string "before_here"
+    t.string "after_here"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "historical_records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "seller_id"
     t.integer "buyer_id"
@@ -417,6 +426,19 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.integer "proposal_id"
     t.index ["receiver_id"], name: "index_messages_on_receiver_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
+  end
+
+  create_table "negotiations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "proposal_id"
+    t.float "percent", limit: 24
+    t.integer "credit"
+    t.float "price", limit: 24
+    t.float "total_value", limit: 24
+    t.string "comment"
+    t.integer "from"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["proposal_id"], name: "index_negotiations_on_proposal_id"
   end
 
   create_table "news", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -532,15 +554,15 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.integer "buyer_id"
     t.integer "seller_id"
     t.integer "trading_parcel_id"
-    t.decimal "price", precision: 10
+    t.decimal "price", precision: 12, scale: 2
     t.integer "credit"
     t.text "notes"
     t.integer "status", default: 0
     t.integer "action_for"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "total_value", default: 0
-    t.integer "percent", default: 0
+    t.decimal "total_value", precision: 12, scale: 2, default: "0.0"
+    t.decimal "percent", precision: 12, scale: 2, default: "0.0"
     t.string "buyer_comment"
     t.integer "seller_price"
     t.integer "seller_credit"
@@ -551,6 +573,13 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.integer "buyer_total_value"
     t.integer "buyer_percent"
     t.boolean "negotiated", default: false
+  end
+
+  create_table "push_notifications", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "type_of_event"
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "rails_admin_histories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -857,13 +886,13 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.integer "no_of_stones"
     t.decimal "weight", precision: 16, scale: 2
     t.integer "credit_period"
-    t.decimal "price", precision: 10
+    t.decimal "price", precision: 12, scale: 2
     t.integer "company_id"
     t.bigint "customer_id"
     t.bigint "trading_document_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "cost"
+    t.decimal "cost", precision: 12, scale: 2
     t.string "box_value"
     t.string "sight"
     t.string "source"
@@ -880,7 +909,7 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.boolean "sale_demanded", default: false
     t.decimal "percent", precision: 16, scale: 2
     t.text "comment"
-    t.integer "total_value"
+    t.decimal "total_value", precision: 12, scale: 2
     t.string "shape"
     t.string "color"
     t.string "clarity"
@@ -919,6 +948,7 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.boolean "ready_for_buyer"
     t.string "description"
     t.boolean "buyer_reject", default: false
+    t.boolean "cancel", default: false
   end
 
   create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -997,4 +1027,5 @@ ActiveRecord::Schema.define(version: 20180913083539) do
     t.index ["yes_no_buyer_interest_id"], name: "index_yes_no_buyer_winners_on_yes_no_buyer_interest_id"
   end
 
+  add_foreign_key "negotiations", "proposals"
 end
