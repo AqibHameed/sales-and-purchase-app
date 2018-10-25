@@ -57,7 +57,8 @@ class SuppliersController < ApplicationController
   end
 
   def upload_company_list
-    Company.import(params[:file])
+    importer = ImportCompanyService.new(params[:file])
+    importer.import
     redirect_to add_company_list_suppliers_path, notice: "Company List imported."
   end
 

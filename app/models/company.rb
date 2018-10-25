@@ -12,24 +12,8 @@ class Company < ApplicationRecord
   has_many :company_group_seller, :foreign_key => "seller_id", :class_name => "CompaniesGroup", dependent: :destroy
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
-  after_create :add_dummy_data
+  # after_create :add_dummy_data
   validates :name, presence: true, uniqueness: { case_sensitive: false }
-
-  def self.import(file)
-    data_file = Spreadsheet.open(open(file))
-    worksheet = data_file.worksheet(0)
-    unless worksheet.nil?
-      worksheet.each_with_index do |row, i|
-        unless i == 0
-          if row[0].nil? && row[1].nil?
-            return true
-          else
-            Company.where(name: row[0].strip , county: row[1].strip).first_or_create
-          end
-        end
-      end
-    end
-  end
   
   def get_owner
     Customer.unscoped do
@@ -375,10 +359,10 @@ class Company < ApplicationRecord
 
   def add_dummy_data
     # Add Dummy Companies
-    dummy_co_1 = Company.where(name: 'Dummy co. 1', county: 'India').first_or_create
-    dummy_co_2 = Company.where(name: 'Dummy co. 2', county: 'India').first_or_create
-    dummy_co_3 = Company.where(name: 'Dummy co. 3', county: 'India').first_or_create
-
+    dummy_co_1 = Company.where(name: 'Dummy co. 1', county: 'India').first
+    dummy_co_2 = Company.where(name: 'Dummy co. 2', county: 'India').first
+    dummy_co_3 = Company.where(name: 'Dummy co. 3', county: 'India').first
+    
     rough_parcel1 = {
       company_id: id,
       credit_period: 30,
@@ -418,7 +402,7 @@ class Company < ApplicationRecord
     trading_parcel1.save(:validate => false)
     trading_parcel2 = TradingParcel.new(rough_parcel2)
     trading_parcel2.save(:validate => false)
-
+    
     polished_parcel = {
       no_of_stones: 0,
       weight: 10,
@@ -447,16 +431,16 @@ class Company < ApplicationRecord
     trading_parcel3 = TradingParcel.new(polished_parcel)
     trading_parcel3.save(:validate => false)
 
-    demand1 = { description: 'Dummy Parcel for Demo ', demand_supplier_id:1, block: 0,
+    demand1 = { description: 'Dummy Parcel for Demo', demand_supplier_id:1, block: 0,
         deleted: 0, company_id: id
       }
     demand2 = {
-        description: 'Dummy Parcel for Demo ',
+        description: 'Dummy Parcel for Demo',
         demand_supplier_id: 2, block: 0, deleted: 0,
         company_id: id
       }
     demand3 = {
-        description: 'Dummy Parcel for Demo ', demand_supplier_id: 3, block: 0, deleted: 0,
+        description: 'Dummy Parcel for Demo', demand_supplier_id: 3, block: 0, deleted: 0,
         company_id: id
       }
     Demand.create(demand1)
@@ -508,6 +492,7 @@ class Company < ApplicationRecord
     Transaction.create(transaction2)
     Transaction.create(transaction3)
     # CompaniesGroup.new
+
     company_group = {
       group_name: 'Dummy Group',
       seller_id: id,

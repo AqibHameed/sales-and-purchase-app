@@ -11,3 +11,9 @@ roles = ['Buyer', 'Seller', 'Supplier', 'Broker']
 roles.each do |role|
   Role.create(name: role)
 end
+
+Admin.create!(email: 'admin@prismlab.co', password: 'password', password_confirmation: 'password')
+
+Company.create!(name: 'Dummy co. 1', county: 'India')
+Company.create!(name: 'Dummy co. 2', county: 'India')
+Company.create!(name: 'Dummy co. 3', county: 'India')

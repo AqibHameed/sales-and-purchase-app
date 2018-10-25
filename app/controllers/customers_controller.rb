@@ -208,7 +208,7 @@ class CustomersController < ApplicationController
       end
     else
       # Not showing Polished now
-      parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished') #.page(params[:page]).per(25)
+      parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished') #.page(params[:page]).per(25)
     end
     required_parcels = []
     dtc_parcels = []

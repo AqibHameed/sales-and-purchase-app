@@ -86,7 +86,8 @@ class ProposalsController < ApplicationController
         @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
       end
       # Email sent to action for column user
-      receiver_emails = @proposal.seller.customers.map{|c| c.email}
+      receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
+      receiver_emails = receiver.customers.map{ |c| c.email }
       CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
       Message.create_new_negotiate(@proposal, current_company)
       receiver_ids = @proposal.seller.customers.map{|c| c.id}

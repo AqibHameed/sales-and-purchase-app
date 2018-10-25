@@ -94,9 +94,9 @@ module Api
           if params[:demand_supplier_id].present? 
             source = DemandSupplier.where(id: params[:demand_supplier_id]).first.name
           end
-          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished')
-          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished').where(source: source) if source.present?
-          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo - Please Delete', diamond_type: 'Polished').where("description LIKE ?", params[:description]) if params[:description].present?
+          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished')
+          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished').where(source: source) if source.present?
+          parcels = TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished').where("description LIKE ?", params[:description]) if params[:description].present?
           # parcels = TradingParcel.where(sold: false)
 
           parcels = parcels.where(id: params[:parcel_id]) if params[:parcel_id].present?
