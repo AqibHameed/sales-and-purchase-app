@@ -43,16 +43,24 @@ module Api
         @company_group = CompaniesGroup.where("company_id like '%#{@proposal.buyer_id}%'").where(seller_id: current_company.id).first
         total_price = @proposal.price*@proposal.trading_parcel.weight
         if params[:perform] == 'accept'
-          if params[:confirm] == 'true'
-            accpet_proposal(@proposal)
-            render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
+          if current_company == @proposal.buyer
+            @proposal.status = 1
+            if @proposal.save(validate: false)
+              Message.buyer_accept_proposal(@proposal, current_company)
+              render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
+            end
           else
-            errors = get_errors_for_accept_or_negotiate(@proposal)
-            if errors.present?
-              render :json => { :success => false, :errors => errors }
-            else
+            if params[:confirm] == 'true'
               accpet_proposal(@proposal)
               render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
+            else
+              errors = get_errors_for_accept_or_negotiate(@proposal)
+              if errors.present?
+                render :json => { :success => false, :errors => errors }
+              else
+                accpet_proposal(@proposal)
+                render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
+              end
             end
           end
         elsif params[:perform] == 'reject'
@@ -97,14 +105,20 @@ module Api
 
       def update_proposal(proposal)
         @proposal = proposal
-        @proposal = Proposal.where(id: params[:id]).first
+        update_parameters = {
+          price: params[:price],
+          percent: params[:percent],
+          credit: params[:credit],
+          total_value: params[:total_value]
+        }
+        (current_company == @proposal.buyer) ? update_parameters.merge({buyer_comment: params[:comment]}) : negotiation_params.merge({notes: params[:comment]})
+        @proposal.update_attributes(update_parameters)
         who = (current_company == @proposal.buyer) ? 'buyer' : 'seller'
         last_negotiation = @proposal.negotiations.present? ? @proposal.negotiations.last : nil
         if last_negotiation.present? && last_negotiation.from == who
           last_negotiation.update_attributes(negotiation_params)
         else
           @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))   
-          # proposal.update_attributes(negotiated: true)
         end
         receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
         receiver_emails = receiver.customers.map{ |c| c.email }
@@ -141,18 +155,22 @@ module Api
 
       def get_errors_for_accept_or_negotiate(proposal)
         errors = []
-        @proposal = proposal
-        credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
-        @company_group = CompaniesGroup.where("company_id like '%#{@proposal.buyer_id}%'").where(seller_id: current_company.id).first
-        total_price = @proposal.price*@proposal.trading_parcel.weight
-        if credit_limit < total_price
-          limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
+        credit_limit = get_available_credit_limit(proposal.buyer, current_company).to_f
+        available_market_limit  = get_available_credit_limit(proposal.buyer, current_company).to_f
+        @company_group = CompaniesGroup.where("company_id like '%#{proposal.buyer_id}%'").where(seller_id: current_company.id).first
+        if !params[:proposal].nil? && params[:proposal][:total_value].present?
+          total_price =  params[:proposal][:total_value].to_f
+        else
+          total_price = proposal.price*proposal.trading_parcel.weight.to_f
+        end
+        if credit_limit < total_price.to_f
+          limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
           if limit.nil?
             existing_limit = 0
             new_limit = total_price
           else
             existing_limit = limit.credit_limit
-            new_limit = limit.credit_limit + total_price
+            new_limit = limit.credit_limit.to_f + total_price.to_f - credit_limit.to_f
           end 
           errors << "Your existing credit limit for this buyer was: #{number_to_currency(existing_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}."
         end
@@ -160,21 +178,21 @@ module Api
           new_limit = @company_group.group_market_limit + (total_price - @company_group.group_market_limit)
           errors <<  "Your existing market_limit for this buyer group was: #{number_to_currency(@company_group.group_market_limit)}.  This transaction would increase it to #{ number_to_currency(new_limit)}"
         end
-        if @company_group.present? && (check_for_group_overdue_limit(current_company, @proposal.trading_parcel.company) || check_for_group_market_limit(current_company, @proposal.trading_parcel.company))
-          errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
-        end
-        market_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
-        if !@company_group.present? && market_limit.present? && market_limit.market_limit < (@proposal.price*@proposal.trading_parcel.weight)
-          available_market_limit = market_limit.market_limit
-          total_price = @proposal.price*@proposal.trading_parcel.weight 
+        market_limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
+        if !@company_group.present? && available_market_limit.present? && available_market_limit < total_price.to_f
           if market_limit.nil?
+            existing_market_limit = 0
             new_limit = total_price
           else 
-            new_limit = market_limit.market_limit + (total_price - available_market_limit)
+            existing_market_limit = market_limit.market_limit
+            new_limit = market_limit.market_limit + (total_price- available_market_limit)
           end
-          errors << "Your existing market limit for this buyer was: #{ number_to_currency(available_market_limit) }. This transaction would increase it to #{number_to_currency(new_limit) }"
+          errors << "Your existing market limit for this buyer was: #{ number_to_currency(existing_market_limit) }. This transaction would increase it to #{number_to_currency(new_limit) }"
         end
-        if !@company_group.present? && (@proposal.buyer.is_overdue || @proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, @proposal.trading_parcel.try(:company_id)), @proposal.trading_parcel.try(:company_id)))
+        if @company_group.present? && (check_for_group_overdue_limit(current_company, proposal.trading_parcel.company) || check_for_group_market_limit(current_company, proposal.trading_parcel.company))
+          errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
+        end
+        if !@company_group.present? && (proposal.buyer.is_overdue || proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, proposal.trading_parcel.try(:company_id)), proposal.trading_parcel.try(:company_id)))
           errors << "Buyer is currently a later payer and the number of days overdue exceeds your overdue limit."
         end
         return errors
@@ -266,8 +284,7 @@ module Api
         @proposal = proposal
         ActiveRecord::Base.transaction do
           @proposal.status = 1
-          if @proposal.save(validate: false)
-            
+          if @proposal.save(validate: false)  
             @available_credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
             @total_price = @proposal.price*@proposal.trading_parcel.weight
             available_market_limit = get_market_limit_from_credit_limit_table(@proposal.buyer, current_company)
