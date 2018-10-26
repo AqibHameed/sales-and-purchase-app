@@ -117,4 +117,10 @@ Rails.application.configure do
     :port => 587,
     :enable_starttls_auto => true
   }
+  Rails.application.config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :email_prefix => "[Safetrade Error] ",
+    :sender_address => %{"notifier" <contact@safetrade.ai>},
+    :exception_recipients => %w{rordev@ongraph.com}
+  }
 end

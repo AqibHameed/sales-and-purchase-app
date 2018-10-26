@@ -3,7 +3,7 @@ class Api::V1::SessionsController < Devise::SessionsController
   skip_before_action :verify_authenticity_token
 
   def create
-    customer = Customer.where(email: params[:customer][:email]).first
+    customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:email], params[:customer][:email]).first
     return invalid_login_attempt unless customer
     if customer.valid_password?(params[:customer][:password])
       if customer.confirmed?
