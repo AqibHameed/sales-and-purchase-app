@@ -185,7 +185,7 @@ module Api
             new_limit = total_price
           else 
             existing_market_limit = market_limit.market_limit
-            new_limit = market_limit.market_limit + (total_price- available_market_limit)
+            new_limit = market_limit.market_limit.to_f + (total_price.to_f - available_market_limit.to_f)
           end
           errors << "Your existing market limit for this buyer was: #{ number_to_currency(existing_market_limit) }. This transaction would increase it to #{number_to_currency(new_limit) }"
         end
