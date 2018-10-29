@@ -1,4 +1,6 @@
 class Transaction < ApplicationRecord
+  include LiveMonitor
+  
   belongs_to :trading_parcel
 
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
@@ -9,6 +11,8 @@ class Transaction < ApplicationRecord
   validate :validate_invoice_date
   after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
+  after_create :secure_center
+  after_update :secure_center
 
   attr_accessor :weight
 

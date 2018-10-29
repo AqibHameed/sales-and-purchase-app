@@ -313,38 +313,52 @@ class Api::V1::CompaniesController < ApplicationController
 
   def live_monitoring
     if current_company
-      company = Company.where(id: params[:id]).first
-      if company.present?
-        if company.buyer_transactions.present? && company.buyer_transactions.last.paid_date.nil?
-          date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
-        elsif company.buyer_transactions.present? && !company.buyer_transactions.last.paid_date.nil?
-          date =  company.buyer_transactions.last.paid_date
-        end
-        if company.buyer_transactions.present? && company.buyer_transactions.order('created_at ASC').last.due_date.to_date.present?
-          late_days = (Date.today - company.buyer_transactions.order('created_at ASC').last.due_date.to_date).to_i
-        else
-          late_days = 0
-        end
-        @group = CompaniesGroup.where("company_id like '%#{company.id}%'").where(seller_id: current_company.id).first
-        @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
-        @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
-        data = {
-          invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
-          paid_date: date, 
-          late_days: late_days.abs,
-          buyer_days_limit: buyer_days_limit(company),
-          market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
-          supplier_connected: company.supplier_connected,
-          outstandings: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
-          overdue_amount: company.buyer_transactions.present? ? company.buyer_transactions.where(seller_id: current_company.id).where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
-          given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
-          given_market_limit:  @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
-          given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 0),
-          last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.last.created_at : nil
-        }
-        render json: { success: true, details: data }
+      secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).first
+      if secure_center.present?
+        render json: { success: true, details: secure_center }
       else
-        render json: { errors: "Company with this id does not present.", response_code: 201 }
+        company = Company.where(id: params[:id]).first
+        if company.present?
+          if company.buyer_transactions.present? && company.buyer_transactions.last.paid_date.nil?
+            date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
+          elsif company.buyer_transactions.present? && !company.buyer_transactions.last.paid_date.nil?
+            date =  company.buyer_transactions.last.paid_date
+          end
+          if company.buyer_transactions.present? && company.buyer_transactions.order('created_at ASC').last.due_date.to_date.present?
+            late_days = (Date.today - company.buyer_transactions.order('created_at ASC').last.due_date.to_date).to_i
+          else
+            late_days = 0
+          end
+          @group = CompaniesGroup.where("company_id like '%#{company.id}%'").where(seller_id: current_company.id).first
+          @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
+          @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
+          data = {
+            invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
+            paid_date: date, 
+            late_days: late_days.abs,
+            buyer_days_limit: buyer_days_limit(company, current_company),
+            market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
+            supplier_connected: company.supplier_connected,
+            outstandings: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
+            overdue_amount: company.buyer_transactions.present? ? company.buyer_transactions.where(seller_id: current_company.id).where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
+            given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
+            given_market_limit:  @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
+            given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 0),
+            last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.last.created_at : nil
+          }
+          secure_center = SecureCenter.where("seller_id = ?  AND buyer_id = ?", current_company.id, company.id).first
+          if secure_center
+            secure_center.update_attributes(data) 
+          else
+            data.merge!(buyer_id: company.id)
+            data.merge!(seller_id: current_company.id)
+            sc = SecureCenter.new(data)
+            sc.save
+          end
+          render json: { success: true, details: sc}
+        else
+          render json: { errors: "Company with this id does not present.", response_code: 201 }
+        end
       end
     else
       render json: { errors: "Not authenticated", response_code: 201 }

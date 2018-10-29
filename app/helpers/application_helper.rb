@@ -201,7 +201,7 @@ module ApplicationHelper
     #     cl = credit_limit(buyer.id, supplier.id)
     #   end
     # else
-      cl = credit_limit(buyer.id, supplier.id)
+      cl = credit_limit1(buyer.id, supplier.id)
     # end
     if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
       number_with_precision(0, precision: 2)
@@ -210,7 +210,7 @@ module ApplicationHelper
     end
   end
 
-  def credit_limit(buyer_id, supplier_id)
+  def credit_limit1(buyer_id, supplier_id)
     CreditLimit.where(buyer_id: buyer_id, seller_id: supplier_id).first
   end
 
@@ -643,7 +643,7 @@ module ApplicationHelper
     ]
   end
 
-  def buyer_days_limit(company)
+  def buyer_days_limit(company, current_company)
     count = 0
     transactions = company.buyer_transactions.where(seller_id: current_company.id)
     transactions.each do |t|
@@ -653,4 +653,5 @@ module ApplicationHelper
     end
     return count
   end
+
 end
