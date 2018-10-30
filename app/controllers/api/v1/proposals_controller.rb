@@ -87,7 +87,7 @@ module Api
           end
         else
           if !@proposal.negotiations.where(from: 'seller').present? && current_company == @proposal.seller
-            if params[:confirm] == "true"
+            if params[:confirm] == true
               update_proposal(@proposal)
             else
               errors = get_errors_for_accept_or_negotiate(@proposal)
