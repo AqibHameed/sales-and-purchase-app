@@ -160,7 +160,7 @@ class ProposalsController < ApplicationController
       @proposal.status = 1
       if @proposal.save(validate: false)
         available_credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
-        available_market_limit = get_market_limit_from_credit_limit_table(@proposal.buyer, current_company)
+        available_market_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
         @group = CompaniesGroup.where("company_id like '%#{@proposal.buyer_id}%'").where(seller_id: current_company.id).first
         total_price = @proposal.price*@proposal.trading_parcel.weight
         if @group.present? && @group.group_market_limit < total_price

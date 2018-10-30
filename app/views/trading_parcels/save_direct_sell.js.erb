@@ -2,12 +2,13 @@ $('#credit_warning').modal('show');
 <% credit_limit = CreditLimit.where(buyer_id: buyer_id, seller_id: current_company.id).first %>
 <% total_price = price %>
 <% if credit_limit.nil? %>
+  <% existing_limit = 0.to_f %>
   <% new_limit = total_price %>
 <% else %>
-  <%# new_limit = credit_limit.credit_limit + (total_price - available_credit_limit) %>
-  <% new_limit = used_limit + total_price %>
+  <% existing_limit = credit_limit.credit_limit.to_f %>
+  <% new_limit = credit_limit.credit_limit + (total_price - available_credit_limit) %>
 <% end %>
-$('#credit_warning .modal-body').html('<h1>  You have set a credit limit of  <%= used_limit %>. This transaction will increase it to  <%= new_limit %>.  Do you want to continue ?</h1><div class="row text-center mt10"><%=link_to "Yes", direct_sell_trading_parcels_path(trading_parcel: {my_transaction_attributes: { buyer_id: buyer_id, created_at: created_at, paid: paid}}, check: false, id: parcel_id), class: "btn btn-primary",remote: true, method: :post %><button type="button" class="btn btn-default hide-credit-limit-modal" data-value= <%= @parcel.id%>>No</button></div>')
+$('#credit_warning .modal-body').html('<h1>  You have set a credit limit of  <%= existing_limit %>. This transaction will increase it to  <%= new_limit %>.  Do you want to continue ?</h1><div class="row text-center mt10"><%=link_to "Yes", direct_sell_trading_parcels_path(trading_parcel: {my_transaction_attributes: { buyer_id: buyer_id, created_at: created_at, paid: paid}}, check: false, id: parcel_id), class: "btn btn-primary",remote: true, method: :post %><button type="button" class="btn btn-default hide-credit-limit-modal" data-value= <%= @parcel.id%>>No</button></div>')
 
 $('.hide-credit-limit-modal').click(function() {
   id = $('.hide-credit-limit-modal').data('value')

@@ -287,14 +287,14 @@ module Api
           if @proposal.save(validate: false)  
             @available_credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
             @total_price = @proposal.price*@proposal.trading_parcel.weight
-            available_market_limit = get_market_limit_from_credit_limit_table(@proposal.buyer, current_company)
+            available_market_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
             @group = CompaniesGroup.where("company_id like '%#{@proposal.buyer_id}%'").where(seller_id: current_company.id).first
             if @available_credit_limit < @total_price
               credit_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
               if credit_limit.nil?
                 CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, credit_limit: @total_price)
               else
-                @new_limit = credit_limit.credit_limit + @total_price
+                @new_limit = credit_limit.credit_limit.to_f + @total_price.to_f  -  @available_credit_limit.to_f
                 credit_limit.update_attributes(credit_limit: @new_limit)
               end
             end
@@ -307,7 +307,7 @@ module Api
               if market_limit.nil?
                 CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, market_limit: @total_price)
               else
-                new_limit = market_limit.market_limit.to_i + (@total_price.to_i - available_market_limit.to_i)
+                new_limit = market_limit.market_limit.to_f + (@total_price.to_f - available_market_limit.to_f)
                 market_limit.update_attributes(market_limit: new_limit)
               end
             end
