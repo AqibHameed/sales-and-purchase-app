@@ -376,15 +376,18 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def save_secure_center(company)
-    if company.buyer_transactions.present? && company.buyer_transactions.last.paid_date.nil?
-      date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
-    elsif company.buyer_transactions.present? && !company.buyer_transactions.last.paid_date.nil?
-      date =  company.buyer_transactions.last.paid_date
-    end
-    if company.buyer_transactions.present? && company.buyer_transactions.order('created_at ASC').last.due_date.to_date.present?
-      late_days = (Date.today - company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).order('created_at ASC').last.due_date.to_date).to_i
-    else
-      late_days = 0
+    if company.buyer_transactions.present?
+      if company.buyer_transactions.last.paid_date.nil?
+        date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
+      else
+        date =  company.buyer_transactions.last.paid_date
+      end
+      transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).last
+      if transaction.present? && transaction.due_date.present?
+        late_days = (Date.today - transaction.due_date.to_date).to_i
+      else
+        late_days = 0
+      end
     end
     @group = CompaniesGroup.where("company_id like '%#{company.id}%'").where(seller_id: current_company.id).first
     @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
@@ -392,7 +395,7 @@ class Api::V1::CompaniesController < ApplicationController
     data = {
       invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
       paid_date: date, 
-      late_days: late_days.abs,
+      late_days: late_days.present? ? late_days.abs : 0,
       buyer_days_limit: buyer_days_limit(company, current_company),
       market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
       supplier_connected: company.supplier_connected,
