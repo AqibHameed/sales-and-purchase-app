@@ -382,7 +382,7 @@ class Api::V1::CompaniesController < ApplicationController
       date =  company.buyer_transactions.last.paid_date
     end
     if company.buyer_transactions.present? && company.buyer_transactions.order('created_at ASC').last.due_date.to_date.present?
-      late_days = (Date.today - company.buyer_transactions.order('created_at ASC').last.due_date.to_date).to_i
+      late_days = (Date.today - company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).order('created_at ASC').last.due_date.to_date).to_i
     else
       late_days = 0
     end
