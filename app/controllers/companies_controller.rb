@@ -24,6 +24,23 @@ class CompaniesController < ApplicationController
     @company = Company.all
   end
 
+  def secure_center
+    @secure_center = SecureCenter.new
+  end
+
+  def download_secure_center
+    if params[:company].present?
+      @company = Company.where(name: params[:company]).first
+      @secure_centers = SecureCenter.where("seller_id = ? AND buyer_id = ?", current_company.id, @company.id)
+      respond_to do |format|
+        format.xlsx 
+      end
+    else
+      flash[:notice] = "Please select a company!!!"
+      render :secure_center
+    end
+  end
+
   ### Not in use
   def check_company
     if Company.where(name: params[:name]).exists?

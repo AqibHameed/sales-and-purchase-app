@@ -448,6 +448,10 @@ module ApplicationHelper
     DemandSupplier.where.not(name: 'POLISHED').map { |e| e.name }
   end
 
+  def company_list_for_secure_center(current_company)
+    Company.where.not(name: current_company.name).map { |e| e.name}
+  end
+
   def link_to_request(current_company, seller)
     if current_company.sent_broker_request(seller)
       'Requested'

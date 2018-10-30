@@ -1,0 +1,34 @@
+<div class="form-wrapper">
+  <%= form_for @secure_center, url: download_secure_center_companies_path(format: "xlsx"), method: :get do |f| %>
+    <% if @secure_center.errors.any? %>
+        <div class="alert alert-danger">
+          <h2><%= pluralize(@secure_center.errors.count, "error") %> prohibited this invitation to send:</h2>
+          <ul>
+            <% @secure_center.errors.each do |atr, msg| %>
+              <li>
+                <% if atr.to_s.include? "base" %>
+                  <%= msg %>
+                <% else %>
+                  <%= @secure_center.errors.full_message(atr, msg) %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+    <div class="form-row">
+      <div class="label">Company: </div>
+      <div class="field demand_desc">
+        <%= select_tag "company", options_for_select(company_list_for_secure_center(current_company)), prompt: 'Please select', class: 'input form-control', style: "width: 330px;" %>
+      </div>
+    </div>
+    <div class="clear20"></div>
+    <div class="form-row">
+      <div class="label"></div>
+      <div class="field">
+        <%=f.submit 'Send', class: 'login-btn btn-02' %>
+      </div>
+    </div>
+  <% end %>
+  <div class="clear20"></div>
+</div>

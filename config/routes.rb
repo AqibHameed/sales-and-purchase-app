@@ -138,6 +138,8 @@ Rails.application.routes.draw do
       post :company_limits
       get :check_company
       get :country_company_list
+      get :secure_center
+      get :download_secure_center
     end
   end
 
@@ -296,6 +298,7 @@ Rails.application.routes.draw do
       get '/history', to: 'companies#history'
       get '/seller_companies', to: 'companies#seller_companies'
       get '/secure_center', to: 'companies#live_monitoring'
+      get '/download_secure_center', to: 'companies#download_secure_center'
       resources :tenders do
         collection do
           get :upcoming

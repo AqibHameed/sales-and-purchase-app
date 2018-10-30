@@ -73,3 +73,6 @@ gem 'meta_request'
 gem 'bootstrap-datepicker-rails'
 gem 'firebase'
 gem "google-cloud-firestore"
+gem 'rubyzip', '>= 1.2.1'
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx_rails'

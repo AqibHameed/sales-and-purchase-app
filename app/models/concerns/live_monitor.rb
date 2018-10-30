@@ -30,7 +30,7 @@ module LiveMonitor
 	          invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count,
 	          paid_date: date, 
 	          late_days: late_days.abs,
-	          buyer_days_limit: buyer_days_limit(company),
+	          buyer_days_limit: buyer_days_limit(company, current_company),
 	          market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
 	          supplier_connected: company.supplier_connected,
 	          outstandings: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
@@ -40,22 +40,17 @@ module LiveMonitor
 	          given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 0),
 	          last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.last.created_at : nil
 	        }
-	        secure_center = SecureCenter.where("seller_id = ?  AND buyer_id = ?", current_company.id, buyer_id).first
-	        if secure_center
-	          secure_center.update_attributes(data) 
-	        else
-	        	data.merge!(buyer_id: buyer_id)
-	        	data.merge!(seller_id: current_company.id)
-	        	sc = SecureCenter.new(data)
-	          sc.save
-	        end
+        	data.merge!(buyer_id: buyer_id)
+        	data.merge!(seller_id: current_company.id)
+        	secure_center = SecureCenter.new(data)
+                secure_center.save
 	      end
       end
     end  
   end
 
 
-  def buyer_days_limit(company)
+  def buyer_days_limit(company, current_company)
     count = 0
     transactions = company.buyer_transactions.where(seller_id: current_company.id)
     transactions.each do |t|

@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Secure Centers") do |sheet|
+  sheet.add_row ["Invoices overdue", "Paid date" , "Late days", "Buyer days limit", "Market limit", "Supplier connected", "Outstandings", "Overdue amount", "Given credit limit", "Given market limit", "Given overdue limit", "Last bought on" ]
+  @secure_centers.each do |secure_center|
+    sheet.add_row [secure_center.invoices_overdue, secure_center.paid_date, secure_center.late_days, secure_center.buyer_days_limit, secure_center.market_limit, secure_center.supplier_connected, secure_center.outstandings, secure_center.overdue_amount, secure_center.given_credit_limit, secure_center.given_market_limit, secure_center.given_overdue_limit, secure_center.last_bought_on]
+  end
+end
