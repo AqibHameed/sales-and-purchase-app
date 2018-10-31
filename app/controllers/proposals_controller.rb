@@ -82,17 +82,18 @@ class ProposalsController < ApplicationController
       last_negotiation = @proposal.negotiations.present? ? @proposal.negotiations.last : nil
       if last_negotiation.present? && last_negotiation.from == who
         last_negotiation.update_attributes(negotiation_params)
+        flash[:notice] = "Proposal updated successfully."
       else
         @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))
+        # Email sent to action for column user
+        receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
+        receiver_emails = receiver.customers.map{ |c| c.email }
+        CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
+        Message.create_new_negotiate(@proposal, current_company)
+        receiver_ids = @proposal.seller.customers.map{|c| c.id}
+        current_company.send_notification('New Negotiation', receiver_ids)
+        flash[:notice] = "Proposal sent successfully."
       end
-      # Email sent to action for column user
-      receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
-      receiver_emails = receiver.customers.map{ |c| c.email }
-      CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
-      Message.create_new_negotiate(@proposal, current_company)
-      receiver_ids = @proposal.seller.customers.map{|c| c.id}
-      current_company.send_notification('New Negotiation', receiver_ids)
-      flash[:notice] = "Proposal sent successfully."
       redirect_to trading_customers_path
     else
       error = @proposal.errors.full_messages.first

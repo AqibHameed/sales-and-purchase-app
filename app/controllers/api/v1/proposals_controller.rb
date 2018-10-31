@@ -111,23 +111,25 @@ module Api
           credit: params[:credit],
           total_value: params[:total_value]
         }
-        (current_company == @proposal.buyer) ? update_parameters.merge({buyer_comment: params[:comment]}) : negotiation_params.merge({notes: params[:comment]})
+        (current_company == @proposal.buyer) ? update_parameters.merge({buyer_comment: params[:comment]}) : update_parameters.merge({notes: params[:comment]})
         @proposal.update_attributes(update_parameters)
         who = (current_company == @proposal.buyer) ? 'buyer' : 'seller'
         last_negotiation = @proposal.negotiations.present? ? @proposal.negotiations.last : nil
         if last_negotiation.present? && last_negotiation.from == who
           last_negotiation.update_attributes(negotiation_params)
+          get_proposal_details(@proposal)
+          render :json => {:success => true, :message=> ' Proposal is updated successfully. ', :proposal => @data, response_code: 200 }    
         else
-          @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'}))   
-        end
-        receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
-        receiver_emails = receiver.customers.map{ |c| c.email }
-        CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
-        Message.create_new_negotiate(@proposal, current_company)
-        receiver_ids = receiver.customers.map{ |c| c.id }.uniq
-        current_company.send_notification('New Negotiation', receiver_ids)
-        get_proposal_details(@proposal)
-        render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }  
+          @proposal.negotiations.create((current_company == @proposal.buyer) ? negotiation_params.merge({from: 'buyer'}) : negotiation_params.merge({from: 'seller'})) 
+          receiver =  (current_company == @proposal.buyer) ? @proposal.seller : @proposal.buyer
+          receiver_emails = receiver.customers.map{ |c| c.email }
+          CustomerMailer.send_negotiation(@proposal, receiver_emails, current_customer.email).deliver rescue logger.info "Error sending email"
+          Message.create_new_negotiate(@proposal, current_company)
+          receiver_ids = receiver.customers.map{ |c| c.id }.uniq
+          current_company.send_notification('New Negotiation', receiver_ids)
+          get_proposal_details(@proposal)
+          render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }    
+        end 
       end
 
       private
