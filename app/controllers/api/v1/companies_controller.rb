@@ -400,11 +400,11 @@ class Api::V1::CompaniesController < ApplicationController
       buyer_days_limit: buyer_days_limit(company, current_company),
       market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
       supplier_connected: company.supplier_connected,
-      outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
-      overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).sum : 0,
+      outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
+      overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
       given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
       given_market_limit:  @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
-      given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 0),
+      given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 30),
       last_bought_on: company_transactions.present? ? company_transactions.last.created_at : nil
     }
     data.merge!(buyer_id: company.id)
