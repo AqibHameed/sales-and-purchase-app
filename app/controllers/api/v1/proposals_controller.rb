@@ -46,6 +46,7 @@ module Api
           if current_company == @proposal.buyer
             @proposal.status = 1
             if @proposal.save(validate: false)
+              accpet_proposal(@proposal)
               Message.buyer_accept_proposal(@proposal, current_company)
               render :json => {:success => true, :message=> ' Proposal is accepted. ', response_code: 201 }
             end

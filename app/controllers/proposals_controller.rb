@@ -107,8 +107,8 @@ class ProposalsController < ApplicationController
       if params[:check] == "true"
         check_credit_accept(@proposal)
       else
-        accpet_proposal(@proposal)
         Message.accept_proposal(@proposal, current_company)
+        accpet_proposal(@proposal) 
       end
     end
   end
@@ -129,7 +129,7 @@ class ProposalsController < ApplicationController
     @proposal.status = 1
     if @proposal.save(validate: false)
       Message.buyer_accept_proposal(@proposal, current_company)
-      redirect_to trading_customers_path
+      accpet_proposal(@proposal)
     end
   end
 
