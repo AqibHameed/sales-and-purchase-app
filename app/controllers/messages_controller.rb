@@ -5,7 +5,7 @@ class MessagesController < ApplicationController
 
   def index
     @messages = []
-    all_messages = Message.joins(:sender).order("companies.name").where(receiver_id: current_company.id)
+    all_messages = Message.joins(:sender).order("created_at").where(receiver_id: current_company.id)
     all_messages.group_by(&:proposal_id).each do |proposal_id, messages|
       @messages << messages.last
     end
