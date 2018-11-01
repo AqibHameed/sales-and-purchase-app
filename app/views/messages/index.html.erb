@@ -18,7 +18,7 @@
           <td><%= message.created_at.strftime("%d-%m-%Y")%>
           <td>
           <% if message.proposal.present? %>
-            <%=  message.proposal.accepted? ? 'Accepted' : (message.proposal.rejected? ? 'Rejected' : ((message.proposal.negotiated? && message.proposal.negotiations.where(from: 'seller').present?) ? 'Negotiated' : 'New Message')) %>
+            <%=  message.proposal.accepted? ? 'Accepted' : (message.proposal.rejected? ? 'Rejected' : ( check_for_negotiation(message.proposal, current_company) ? 'Negotiated' : 'New Message')) %>
           <% end %>
           </td>
           <% if message.proposal_id.present? %>

@@ -61,4 +61,12 @@ module CustomersHelper
     last = Demand.order("created_at DESC").where(:id => ids).first
     return last.created_at
   end
+
+  def check_for_negotiation(proposal, current_company)
+    if proposal.negotiations.present? && proposal.negotiations.last.whose == current_company
+      true
+    else
+      false
+    end
+  end
 end
