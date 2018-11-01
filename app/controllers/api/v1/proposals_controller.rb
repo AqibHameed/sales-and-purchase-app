@@ -129,7 +129,7 @@ module Api
         @proposal.update_attributes(update_parameters)
         who = (current_company == @proposal.buyer) ? 'buyer' : 'seller'
         last_negotiation = @proposal.negotiations.present? ? @proposal.negotiations.last : nil
-        if last_negotiation.present? && last_negotiation.from == who
+        if last_negotiation.present? && last_negotiation.from == who && @proposal.negotiated?
           last_negotiation.update_attributes(negotiation_params)
           get_proposal_details(@proposal)
           render :json => {:success => true, :message=> ' Proposal is updated successfully. ', :proposal => @data, response_code: 200 }    
