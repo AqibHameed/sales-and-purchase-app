@@ -76,15 +76,28 @@ module Api
         end      
       end
 
-      def negotiate
+      def negotiate   
         if params[:negotiation_id].present?
           negotiation = Negotiation.where(id: params[:negotiation_id]).first
           render :json => {:success => false, :message=> 'Negotiation does not exists for the negotiation id.', response_code: 201 } and return unless negotiation
           render :json => {:success => false, :message=> 'This negotiation is not yours.', response_code: 201 } and return unless negotiation.whose == current_company
-          if negotiation.update_attributes(negotiation_params)
-            render :json => {:success => true, :message=> ' Negotiation is updated successfully. ', :negotiation => negotiation, response_code: 200 }  
+          if negotiation.proposal.negotiations.last == negotiation && negotiation.proposal.negotiated?
+            if negotiation.update_attributes(negotiation_params)
+              @proposal = negotiation.proposal
+              update_parameters = {
+                price: params[:price],
+                percent: params[:percent],
+                credit: params[:credit],
+                total_value: params[:total_value]
+              }
+              (current_company == @proposal.buyer) ? update_parameters.merge({buyer_comment: params[:comment]}) : update_parameters.merge({notes: params[:comment]})
+              @proposal.update_attributes(update_parameters)
+              render :json => {:success => true, :message=> ' Negotiation is updated successfully. ', :negotiation => negotiation, response_code: 200 }  
+            else
+              render :json => {:success => false, :message=> 'Negotiation is not updated successfully.', response_code: 201 }
+            end
           else
-            render :json => {:success => false, :message=> 'Negotiation is not updated successfully..', response_code: 201 }
+            render :json => {:success => false, :message=> 'It is proceeded, So Now you can not update it.', response_code: 201 }
           end
         else
           if !@proposal.negotiations.where(from: 'seller').present? && current_company == @proposal.seller

@@ -2,7 +2,7 @@ module LiveMonitor
 
   extend ActiveSupport::Concern
 
-   def secure_center
+  def secure_center
     current_company = Company.where(id: seller_id).first
     if current_company
     	if self.class.name == "CompaniesGroup"
