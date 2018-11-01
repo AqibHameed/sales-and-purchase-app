@@ -7,26 +7,32 @@ module Api
 
       def create
         if current_company
-          parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
-          if parcel.present?
-            proposal = Proposal.new(proposal_params)
-            proposal.buyer_id = current_company.id
-            proposal.seller_id = parcel.company_id
-            proposal.notes = parcel.comment
-            proposal.action_for = parcel.company_id
-            proposal.buyer_comment = params[:comment]
-            if proposal.save
-              proposal.negotiations.create(price: proposal.price, percent: proposal.percent, credit: proposal.credit, total_value: proposal.total_value, comment: proposal.buyer_comment, from: 'buyer')
-              CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
-              Message.create_new(proposal)
-              receiver_ids = proposal.seller.customers.map{|c| c.id}.uniq
-              current_company.send_notification('New Proposal', receiver_ids)
-              render json: { success: true, message: 'Proposal Submitted Successfully' }
-            else
-              render json: { success: false, errors: proposal.errors.full_messages }
-            end
+          existing_proposal = Proposal.where(id: params[:id]).first
+          if existing_proposal.present?
+            existing_proposal.update_attributes(proposal_params)
+            render json: { success: true, message: 'Proposal Updated Successfully' }
           else
-            render json: { success: false, message: 'Parcel does not exists for this id.' }
+            parcel = TradingParcel.where(id: params[:trading_parcel_id]).first      
+            if parcel.present?
+              proposal = Proposal.new(proposal_params)
+              proposal.buyer_id = current_company.id
+              proposal.seller_id = parcel.company_id
+              proposal.notes = parcel.comment
+              proposal.action_for = parcel.company_id
+              proposal.buyer_comment = params[:comment]
+              if proposal.save
+                proposal.negotiations.create(price: proposal.price, percent: proposal.percent, credit: proposal.credit, total_value: proposal.total_value, comment: proposal.buyer_comment, from: 'buyer')
+                CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
+                Message.create_new(proposal)
+                receiver_ids = proposal.seller.customers.map{|c| c.id}.uniq
+                current_company.send_notification('New Proposal', receiver_ids)
+                render json: { success: true, message: 'Proposal Submitted Successfully' }
+              else
+                render json: { success: false, errors: proposal.errors.full_messages }
+              end
+            else
+              render json: { success: false, message: 'Parcel does not exists for this id.' }
+            end
           end
         else
           render json: { errors: "Not authenticated", response_code: 201 }

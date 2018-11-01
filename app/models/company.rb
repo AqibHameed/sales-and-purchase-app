@@ -546,7 +546,7 @@ class Company < ApplicationRecord
   end
 
   def supplier_connected
-    @connected_supplier = self.buyer_transactions.where('(due_date > ? or due_date < ?) and paid = ?', Date.today, Date.today, false).map{|t| t.seller}
+    @connected_supplier = self.buyer_transactions.where('due_date != ? and paid = ?', Date.today, false).map{|t| t.seller}
     if @connected_supplier.present?
       return @connected_supplier.uniq.count 
     else
