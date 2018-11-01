@@ -209,7 +209,7 @@ module Api
           errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
         end
         if !@company_group.present? && (proposal.buyer.is_overdue || proposal.buyer.check_market_limit_overdue(get_market_limit(current_company, proposal.trading_parcel.try(:company_id)), proposal.trading_parcel.try(:company_id)))
-          errors << "Buyer is currently a later payer and the number of days overdue exceeds your overdue limit."
+          errors << "Buyer is currently later than your overdue days limit."
         end
         return errors
       end
