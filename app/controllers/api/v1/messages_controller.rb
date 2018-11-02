@@ -7,7 +7,7 @@ module Api
       def index
         all_messages = []
         if current_company
-          messages = Message.joins(:sender).order("created_at").where(receiver_id: current_company.id).where.not("message_type in (?)", ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
+          messages = Message.joins(:sender).order("created_at desc").where(receiver_id: current_company.id).where.not("message_type in (?)", ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
           messages.group_by(&:proposal_id).each do |proposal_id, messages|
             all_messages << messages.last
           end
