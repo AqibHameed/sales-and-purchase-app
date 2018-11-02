@@ -554,8 +554,6 @@ class Company < ApplicationRecord
       return 0
     end
   end
-    end
-  end
 
   def send_notification(type_of_event, customers_to_notify)
     customers_to_notify.each do |customer|
