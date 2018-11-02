@@ -46,7 +46,8 @@ module Api
               id: c.id,
               first_name: c.first_name,
               last_name: c.last_name,
-              email: c.email
+              email: c.email,
+              is_requested: c.is_requested
             }
           end
           render json: { success: true, requested_customers: @requested_customers, response_code: 201 }
