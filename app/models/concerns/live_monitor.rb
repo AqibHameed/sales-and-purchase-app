@@ -36,7 +36,7 @@ module LiveMonitor
 		      late_days: late_days.present? ? late_days.abs : 0,
 		      buyer_days_limit: buyer_days_limit(company, current_company),
 		      market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
-		      # supplier_connected: company.supplier_connected,
+		      supplier_connected: company.supplier_connected,
 		      outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
 		      overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
 		      given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
