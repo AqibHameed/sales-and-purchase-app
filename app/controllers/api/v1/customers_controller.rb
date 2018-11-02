@@ -1,7 +1,7 @@
 module Api
   module V1
     class CustomersController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password]
+      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request]
       before_action :current_customer
 
       def profile
@@ -34,6 +34,31 @@ module Api
           render json: { success: true, message: 'Password Updated Successfully', response_code: 200 }
         else
           render json: { success: true, message: 'Invalid Parameters', response_code: 200 }
+        end
+      end
+
+      def approve_reject_customer_request
+        customer = Customer.where(id: params[:id]).first
+        if customer.present?
+          if params[:perform] == 'accept'
+            if customer.update_attributes(is_requested: false)
+              CustomerMailer.approve_access(customer).deliver
+              render json: { success: true, message: 'Access Granted', response_code: 200 }
+            else
+              render json: { success: false, message: 'Some thing went wrong.', response_code: 201 }
+            end
+          elsif params[:perform] == 'reject'
+            if customer.update_attributes(is_requested: true)
+              CustomerMailer.remove_access(customer).deliver
+              render json: { success: true, message: 'Access Denied successfully!!', response_code: 200 }
+            else
+              render json: { success: false, message: 'Some thing went wrong.', response_code: 201 }
+            end
+          else
+            render json: { success: false, message: 'Invalid Action', response_code: 201 }
+          end
+        else
+          render json: { success: false, message: 'Invalid Customer ID', response_code: 201 }
         end
       end
 
