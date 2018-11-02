@@ -37,6 +37,24 @@ module Api
         end
       end
 
+      def get_user_requests
+        if current_company
+          @requested_customers = []
+          @customers = current_company.customers.where.not(id: current_customer.id)
+          @customers.each do |c|
+            @requested_customers << {
+              id: c.id,
+              first_name: c.first_name,
+              last_name: c.last_name,
+              email: c.email
+            }
+          end
+          render json: { success: true, requested_customers: @requested_customers, response_code: 201 }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
       def approve_reject_customer_request
         customer = Customer.where(id: params[:id]).first
         if customer.present?
