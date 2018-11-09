@@ -2,7 +2,7 @@ module Api
   module V1
     class TendersController <ApiController
       # before_action :current_customer
-      skip_before_action :verify_authenticity_token, only: [:stone_parcel]
+      skip_before_action :verify_authenticity_token, only: [:stone_parcel, :index]
 
       def index
         col_str = ""
@@ -11,13 +11,10 @@ module Api
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
-        if current_customer
-          tender = Tender.active.where(col_str).order("open_date")
-        else
-          tender = Tender.active.where(col_str).order("open_date")
-        end
-        @tenders = tender.page(params[:page]).per(params[:count])
-        render json: { success: true, pagination: set_pagination(:tenders), tenders: tender_data(@tenders), response_code: 200 }
+        @tenders = Tender.tenders_state(params[:state]).where(col_str).order("open_date")
+       # @tenders = tender.page(params[:page]).pcoer(params[:count])
+        #render json: { success: true, pagination: set_pagination(:tenders), tenders: tender_data(@tenders), response_code: 200 }
+        render json: { success: true,  tenders: tender_data(@tenders), response_code: 200 }
       end
 
       def upcoming
