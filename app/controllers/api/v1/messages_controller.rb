@@ -124,10 +124,10 @@ module Api
               if last_self_negotiation.present? && last_self_negotiation.from == who
                 status = 'negotiated'
               else
-                status = nil
+                status = 'new'
               end
             else
-              status = nil
+              status = 'new'
             end
             data = {
               id: message.id,
