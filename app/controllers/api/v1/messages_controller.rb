@@ -98,9 +98,9 @@ module Api
         @messages = messages
         if status.present?
           if status == 'negotiated'
-            @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.negotiations.present? && m.proposal.status == status }.compact
+            @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == status && (m.proposal.negotiations.last.whose == current_company)}.compact
           elsif status == 'new'
-            @messages = @messages.map{ |m| m if m.proposal.present? && !m.proposal.negotiations.present? && m.proposal.status == 'negotiated' }.compact
+            @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == 'negotiated' && !(m.proposal.negotiations.last.whose == current_company) }.compact
           else  
             @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == status }.compact
           end
@@ -124,10 +124,10 @@ module Api
               if last_self_negotiation.present? && last_self_negotiation.from == who
                 status = 'negotiated'
               else
-                status = nil
+                status = 'new'
               end
             else
-              status = nil
+              status = 'new'
             end
             data = {
               id: message.id,
