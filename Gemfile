@@ -45,6 +45,13 @@ group :development do
   gem "thin"
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem "letter_opener"
+
+  gem "capistrano", "~> 3.7"
+  gem "capistrano-rails", "~> 1.2"
+  gem "capistrano-passenger", "~> 0.2.0"
+  gem "capistrano-yarn"
+  #Add this if you"re using rbenv
+  gem "capistrano-rbenv", "~> 2.1"
 end
 
 gem "whenever"
