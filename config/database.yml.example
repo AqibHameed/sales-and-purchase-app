@@ -1,0 +1,25 @@
+default: &default
+  adapter: mysql2
+  host: localhost
+  pool: 50
+  port: 3306
+  username: root
+
+development:
+  <<: *default
+  database: dialuck_development
+  password: 123
+
+test:
+  <<: *default
+  database: dialuck_test
+
+staging:
+  <<: *default
+  database: dialuck_staging
+  password: root
+
+production:
+  <<: *default
+  database: dialuck_production
+  password: root
