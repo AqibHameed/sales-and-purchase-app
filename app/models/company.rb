@@ -367,7 +367,7 @@ class Company < ApplicationRecord
       company_id: id,
       credit_period: 30,
       diamond_type: 'Rough',
-      description: 'Dummy Parcel for Demo',
+      description: 'Test Parcel for Demo Purpose',
       weight: 10,
       price: 10,
       source: 'OutSide Goods',
@@ -384,7 +384,7 @@ class Company < ApplicationRecord
       company_id: id,
       credit_period: 30,
       diamond_type: 'Rough',
-      description: 'Dummy Parcel for Demo',
+      description: 'Test Demo Parcel for Trasaction',
       weight: 10,
       price: 10,
       source: 'OutSide Goods',
@@ -402,50 +402,17 @@ class Company < ApplicationRecord
     trading_parcel1.save(:validate => false)
     trading_parcel2 = TradingParcel.new(rough_parcel2)
     trading_parcel2.save(:validate => false)
-    
-    polished_parcel = {
-      no_of_stones: 0,
-      weight: 10,
-      credit_period: 30,
-      price: 10,
-      company_id: id,
-      cost: 10,
-      box_value: '0',
-      source: 'POLISHED',
-      diamond_type: 'Polished',
-      sale_demanded: true,
-      percent: 0,
-      comment: 'This is Dummy Polished Parcel',
-      total_value: 240,
-      shape: 'Round',
-      color: 'M',
-      clarity: 'SI3',
-      cut: 'Good',
-      polish: 'Excellent',
-      symmetry: 'Excellent',
-      fluorescence: 'None',
-      lab: 'GCAL',
-      city: 'Kabul',
-      country: 'Afghanistan'
-    }
-    trading_parcel3 = TradingParcel.new(polished_parcel)
-    trading_parcel3.save(:validate => false)
 
-    demand1 = { description: 'Dummy Parcel for Demo', demand_supplier_id:1, block: 0,
-        deleted: 0, company_id: id
-      }
+    demand1 = { description: 'Dummy Parcel for Demo', demand_supplier_id:3, block: 0,
+      deleted: 0, company_id: id
+    }
     demand2 = {
-        description: 'Dummy Parcel for Demo',
-        demand_supplier_id: 2, block: 0, deleted: 0,
-        company_id: id
-      }
-    demand3 = {
-        description: 'Dummy Parcel for Demo', demand_supplier_id: 3, block: 0, deleted: 0,
-        company_id: id
-      }
+      description: 'Test Parcel for Demo Purpose',
+      demand_supplier_id: 3, block: 0, deleted: 0,
+      company_id: dummy_co_1.id
+    }
     Demand.create(demand1)
-    Demand.create(demand2)
-    Demand.create(demand3)
+    Demand.where(description: 'Test Parcel for Demo Purpose').first_or_create(demand2)
 
     transaction1 =
       {

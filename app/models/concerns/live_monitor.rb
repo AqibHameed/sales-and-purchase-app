@@ -14,6 +14,7 @@ module LiveMonitor
 	      company = Company.where(id: buyer_id).first
 	      if company.present?
 	      	if company.buyer_transactions.present?
+	      		company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
 		        if company.buyer_transactions.last.paid_date.nil?
 		          date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
 		        else
@@ -27,27 +28,26 @@ module LiveMonitor
 		        end
 		      end
 	        @group = CompaniesGroup.where("company_id like '%#{company.id}%'").where(seller_id: current_company.id).first
-		    @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
-		    @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
-		    company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
-		    data = {
-		      invoices_overdue:  company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.today, false).count : 0,
-		      paid_date: date, 
-		      late_days: late_days.present? ? late_days.abs : 0,
-		      buyer_days_limit: buyer_days_limit(company, current_company),
-		      market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
-		      supplier_connected: company.supplier_connected,
-		      outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
-		      overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
-		      given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
-		      given_market_limit:  @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
-		      given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 30),
-		      last_bought_on: company_transactions.present? ? company_transactions.last.created_at : nil
-		    }
-        	data.merge!(buyer_id: buyer_id)
-        	data.merge!(seller_id: current_company.id)
-        	secure_center = SecureCenter.new(data)
-                secure_center.save
+			    @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
+			    @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
+			    data = {
+			      invoices_overdue:  company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count : 0,
+			      paid_date: date, 
+			      late_days: late_days.present? ? late_days.abs : 0,
+			      buyer_days_limit: buyer_days_limit(company, current_company),
+			      market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
+			      supplier_connected: company.supplier_connected,
+			      outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
+			      overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
+			      given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
+			      given_market_limit:  @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
+			      given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 30),
+			      last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.last.created_at : nil
+			    }
+	        	data.merge!(buyer_id: buyer_id)
+	        	data.merge!(seller_id: current_company.id)
+	        	secure_center = SecureCenter.new(data)
+	                secure_center.save
 	      end
       end
     end  

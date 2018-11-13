@@ -14,6 +14,27 @@ end
 
 Admin.create!(email: 'admin@prismlab.co', password: 'password', password_confirmation: 'password')
 
-Company.create!(name: 'Dummy co. 1', county: 'India')
+dummy_co_1 = Company.create!(name: 'Dummy co. 1', county: 'India')
 Company.create!(name: 'Dummy co. 2', county: 'India')
 Company.create!(name: 'Dummy co. 3', county: 'India')
+
+# dummy_co_1 = Company.where(name: 'Dummy co. 1', county: 'India').first
+parcel_details = {
+      company_id: dummy_co_1.id,
+      credit_period: 30,
+      diamond_type: 'Rough',
+      description: 'Dummy Parcel for Demo',
+      weight: 10,
+      price: 10,
+      source: 'OutSide Goods',
+      box: 2,
+      cost: 10,
+      box_value: '12',
+      sight: '07/18',
+      percent: 0,
+      comment: 'This is a Demo Parcel',
+      total_value: 100,
+      sale_demanded: true
+    }
+trading_parcel = TradingParcel.new(parcel_details)
+trading_parcel.save(:validate => false)
