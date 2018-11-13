@@ -32,6 +32,8 @@ gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
 gem "jquery-monthpicker-rails", "~> 1.0.0"
 gem 'countdown'
 gem 'exception_notification'
+gem 'faker'
+gem  'ffaker'
 
 group :assets do
   gem 'sass-rails'
@@ -47,7 +49,7 @@ group :development do
   gem "letter_opener"
   gem 'spring'
   gem "better_errors"
-  gem 'factory_girl_rails'
+  gem 'factory_girl_rails', :require => false
 end
 
 gem "whenever"
@@ -89,9 +91,11 @@ group :test do
   gem 'shoulda-callback-matchers', '~> 1.1.1'
   gem 'simplecov', require: false
   gem 'rspec-activemodel-mocks'
+  gem 'rails-controller-testing'
 end
 
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_bot_rails'
+  gem 'pry'
 end

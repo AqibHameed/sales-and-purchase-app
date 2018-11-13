@@ -7,6 +7,8 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'devise'
 
+
+
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
@@ -53,7 +55,7 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
 
   config.include(Shoulda::Callback::Matchers::ActiveModel)
-  config.include ControllerMacros
+  config.include(ControllerMacros, :type => :controller)
 
 end
 
