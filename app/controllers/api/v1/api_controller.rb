@@ -129,7 +129,7 @@ class Api::V1::ApiController < ApplicationController
     # @companies = Company.all
     if current_company
       if params[:name].present?
-        company = Company.where('name LIKE ?', "%#{params[:name]}%")
+        company = Company.where('name LIKE ?', "#{params[:name]}%")
       else
         company = Company.where.not(id: current_company.id)
       end
