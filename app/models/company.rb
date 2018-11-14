@@ -403,12 +403,12 @@ class Company < ApplicationRecord
     trading_parcel2 = TradingParcel.new(rough_parcel2)
     trading_parcel2.save(:validate => false)
 
-    demand1 = { description: 'Dummy Parcel for Demo', demand_supplier_id:3, block: 1,
+    demand1 = { description: 'Dummy Parcel for Demo', demand_supplier_id:3, block: 0,
       deleted: 0, company_id: id
     }
     demand2 = {
       description: 'Test Parcel for Demo Purpose',
-      demand_supplier_id: 3, block: 1, deleted: 0,
+      demand_supplier_id: 3, block: 0, deleted: 0,
       company_id: dummy_co_1.id
     }
     Demand.create(demand1)
