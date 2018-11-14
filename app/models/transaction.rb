@@ -11,8 +11,8 @@ class Transaction < ApplicationRecord
   validate :validate_invoice_date
   after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
-  # after_create :secure_center
-  # after_update :secure_center
+  after_create :secure_center
+  after_update :secure_center
 
   attr_accessor :weight
 
