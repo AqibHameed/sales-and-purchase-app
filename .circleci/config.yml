@@ -42,16 +42,6 @@ jobs:
              sudo service mysql start
              sleep 2
              ps aux | grep mysql
-      - run:
-           name: Create non-admin user
-           command: |
-             sudo mysql -u root -e "CREATE user umair IDENTIFIED BY 'password';"
-
-      - run:
-           name: get socket
-           command: |
-             mysqladmin variables | grep socket
-
 
       # Download and cache dependencies
       - restore_cache:
@@ -63,11 +53,11 @@ jobs:
            mkdir -p config && echo 'test:
               adapter: mysql2
               database: circle_ruby_test
-              username: umair
+              username: root
               host: localhost
               port: 33060
               password: password
-              socket: /var/run/mysqld/mysqlx.sock
+              socket: /var/run/mysqld/mysqld.sock
            ' > config/database.yml
 
       - run:
