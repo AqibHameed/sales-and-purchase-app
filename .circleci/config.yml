@@ -48,10 +48,10 @@ jobs:
           - v1-dependencies-
       - run: |-
            mkdir -p config && echo 'test:
-              adapter:mysql2
-              database:circle_ruby_test
-              username:ubuntu
-              password:ubuntu
+              adapter: mysql2
+              database: circle_ruby_test
+              username: ubuntu
+              password: ubuntu
               host: localhost
               port: 3306
               socket: /var/run/mysqld/mysqld.sock
