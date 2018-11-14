@@ -8,13 +8,6 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/ruby:2.3-node-browsers
-      - image: circleci/mysql:5.7
-      # env vars below from https://discuss.circleci.com/t/cannot-connect-to-mysql-using-default-credentials/13314/5
-        environment:
-          - MYSQL_ALLOW_EMPTY_PASSWORD=true
-          - MYSQL_ROOT_HOST=%
-          - MYSQL_USER=ubuntu
-          - MYSQL_PASSWORD=ubuntu
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -33,12 +26,12 @@ jobs:
             sudo apt-get install mysql-client
             sudo apt-get -y install mysql-server
 
-#      - run:
-#           name: Start database server
-#           command: |
-#             sudo service mysql start
-#             sleep 2
-#             ps aux | grep mysql
+      - run:
+           name: Start database server
+           command: |
+             sudo service mysql start
+             sleep 2
+             ps aux | grep mysql
 
       # Download and cache dependencies
       - restore_cache:
@@ -50,10 +43,11 @@ jobs:
            mkdir -p config && echo 'test:
               adapter: mysql2
               database: circle_ruby_test
-              username: ubuntu
-              password: ubuntu
+              username: root
+              password: root
               host: localhost
-              port: 3306
+              port: 33060
+              socket: /var/run/mysqld/mysqld.sock
            ' > config/database.yml
 
       - run:
