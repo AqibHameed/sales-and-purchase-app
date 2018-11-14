@@ -61,7 +61,6 @@ jobs:
               host: localhost
               port: 3306
               password: password
-              socket: /var/run/mysqld/mysqlx.sock
            ' > config/database.yml
 
       - run:
