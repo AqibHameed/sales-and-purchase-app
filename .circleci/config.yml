@@ -7,7 +7,11 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-       - image: circleci/ruby:2.3-node-browsers
+      - image: circleci/ruby:2.3-node-browsers
+      - image: circleci/mysql:5.7
+          environment:
+            - MYSQL_USER= root
+            - MYSQL_PASSWORD= 123
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -25,6 +29,13 @@ jobs:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
+      - run: |-
+           mkdir -p config && echo 'test:
+              adapter: mysql2
+              database: circle_ruby_test
+              username: ubuntu
+              host: localhost
+          ' > config/database.yml
 
       - run:
           name: install dependencies
