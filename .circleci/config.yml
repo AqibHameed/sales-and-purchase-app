@@ -9,9 +9,9 @@ jobs:
       # specify the version you desire here
       - image: circleci/ruby:2.3-node-browsers
       - image: circleci/mysql:5.7
-          environment:
-            - MYSQL_USER= root
-            - MYSQL_PASSWORD= 123
+        environment:
+          - MYSQL_USER= root
+          - MYSQL_PASSWORD= 123
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -35,7 +35,7 @@ jobs:
               database: circle_ruby_test
               username: ubuntu
               host: localhost
-          ' > config/database.yml
+           ' > config/database.yml
 
       - run:
           name: install dependencies
