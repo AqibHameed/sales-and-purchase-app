@@ -16,88 +16,93 @@ RSpec.describe ProposalsController, type: :controller do
   end
 
 
-  describe "When seller accept the proposal" do
+  describe "#accept" do
 
-    it "should process transaction if buyer is less than the limit" do
+    context "When seller accept the proposal" do
 
-      buyer = create_buyer
-      proposal = buyer_create_proposal(buyer)
-      message = create_message(buyer, proposal)
-      put :accept, params: {id: proposal.id}
-      message = Message.find_by(sender_id: @customer.company.id, receiver_id: buyer.company.id, proposal_id: proposal.id)
 
-      expect(message).to be_present
-      expect(message).to be_valid
-      expect(message.subject).to eq("Your proposal is accepted.")
+      it "does process transaction if seller set limit is less than the buyer amount" do
 
-      credit_limit = CreditLimit.find_by(seller_id: @customer.company.id, buyer_id: buyer.company.id)
+        buyer = create_buyer
+        proposal = buyer_create_proposal(buyer)
+        message = create_message(buyer, proposal)
+        put :accept, params: {id: proposal.id}
+        message = Message.find_by(sender_id: @customer.company.id, receiver_id: buyer.company.id, proposal_id: proposal.id)
 
-      expect(message).to be_present
-      expect(message).to be_valid
+        expect(message).to be_present
+        expect(message).to be_valid
+        expect(message.subject).to eq("Your proposal is accepted.")
 
-      transaction = Transaction.find_by(buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id)
+        credit_limit = CreditLimit.find_by(seller_id: @customer.company.id, buyer_id: buyer.company.id)
 
-      expect(message).to be_present
-      expect(message).to be_valid
+        expect(credit_limit).to be_present
+        expect(credit_limit).to be_valid
 
-    end
+        transaction = Transaction.find_by(buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id)
 
-    it "should give error message if buyer is higher than the limit, click yes to continue" do
-      buyer = create_buyer
-      proposal = buyer_create_proposal(buyer)
-      message = create_message(buyer, proposal)
-      put :accept, params: {id: proposal.id}
-      message = Message.find_by(sender_id: @customer.company.id, receiver_id: buyer.company.id, proposal_id: proposal.id)
+        expect(transaction).to be_present
+        expect(transaction).to be_valid
 
-      expect(message).to be_present
-      expect(message).to be_valid
-      expect(message.subject).to eq("Your proposal is accepted.")
+      end
 
-      credit_limit = CreditLimit.find_by(seller_id: @customer.company.id, buyer_id: buyer.company.id)
+      it "does give error message if seller set limit is higher than the buyer amount, click yes to continue" do
+        buyer = create_buyer
+        proposal = buyer_create_proposal(buyer)
+        message = create_message(buyer, proposal)
+        put :accept, params: {id: proposal.id}
+        message = Message.find_by(sender_id: @customer.company.id, receiver_id: buyer.company.id, proposal_id: proposal.id)
 
-      expect(message).to be_present
-      expect(message).to be_valid
+        expect(message).to be_present
+        expect(message).to be_valid
+        expect(message.subject).to eq("Your proposal is accepted.")
 
-      transaction = Transaction.find_by(buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id)
+        credit_limit = CreditLimit.find_by(seller_id: @customer.company.id, buyer_id: buyer.company.id)
 
-      expect(message).to be_present
-      expect(message).to be_valid
-    end
+        expect(credit_limit).to be_present
+        expect(credit_limit).to be_valid
 
-    it "should be cancel if click on No" do
-      buyer = create_buyer
-      proposal = buyer_create_proposal(buyer)
-      message = create_message(buyer, proposal)
-      put :accept, params: {id: proposal.id, check: true, format: :js}
+        transaction = Transaction.find_by(buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id)
 
-      message = Message.find_by(sender_id: @customer.company.id, receiver_id: buyer.company.id, proposal_id: proposal.id)
+        expect(transaction).to be_present
+        expect(transaction).to be_valid
+      end
 
-      expect(message).to be_nil
+      it "does cancel if click on No" do
+        buyer = create_buyer
+        proposal = buyer_create_proposal(buyer)
+        message = create_message(buyer, proposal)
+        put :accept, params: {id: proposal.id, check: true, format: :js}
 
-      credit_limit = CreditLimit.find_by(seller_id: @customer.company.id, buyer_id: buyer.company.id)
-      expect(message).to be_nil
+        message = Message.find_by(sender_id: @customer.company.id, receiver_id: buyer.company.id, proposal_id: proposal.id)
 
-      transaction = Transaction.find_by(buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id)
-      expect(message).to be_nil
+        expect(message).to be_nil
 
-    end
+        credit_limit = CreditLimit.find_by(seller_id: @customer.company.id, buyer_id: buyer.company.id)
+        expect(credit_limit).to be_nil
 
-    it "should return 200 status code" do
-      buyer = create_buyer
-      proposal = buyer_create_proposal(buyer)
-      message = create_message(buyer, proposal)
-      put :accept, params: {id: proposal.id, check: true, format: :js}
-      expect(response.status).to eq(200)
+        transaction = Transaction.find_by(buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id)
+        expect(transaction).to be_nil
+
+      end
+
+      it "does return 200 status code" do
+        buyer = create_buyer
+        proposal = buyer_create_proposal(buyer)
+        message = create_message(buyer, proposal)
+        put :accept, params: {id: proposal.id, check: true, format: :js}
+        expect(response.status).to eq(200)
+      end
+
     end
 
   end
 
-  describe "proposals/show.html.erb" do
+  describe "#show" do
     render_views
 
-    context "check buttons exist" do
+    context "when it check buttons exist" do
 
-      it "should have three buttons, Accept, Reject, Negotiation" do
+      it "does have three buttons, Accept, Reject, Negotiation" do
 
         buyer = create_buyer
         proposal = buyer_create_proposal(buyer)
@@ -110,15 +115,23 @@ RSpec.describe ProposalsController, type: :controller do
         response.body.should have_link('Negotiate')
       end
 
+      it "does return 200 status code" do
+        buyer = create_buyer
+        proposal = buyer_create_proposal(buyer)
+        message = create_message(buyer, proposal)
+        put :show, params: {id: proposal.id}
+        expect(response.status).to eq(200)
+      end
+
     end
 
   end
 
   describe "#reject" do
 
-    context "reject the proposal" do
+    context "when reject the proposal" do
 
-      it "should reject the proposal" do
+      it "does rejected" do
         buyer = create_buyer
         proposal = buyer_create_proposal(buyer)
         message = create_message(buyer, proposal)
@@ -137,9 +150,9 @@ RSpec.describe ProposalsController, type: :controller do
 
   describe "#update" do
 
-    context "negotiation on proposal" do
+    context "when negotiation on proposal" do
 
-      it "should negotiate the proposal" do
+      it "does negotiated" do
         buyer = create_buyer
         proposal = buyer_create_proposal(buyer)
         message = create_message(buyer, proposal)
