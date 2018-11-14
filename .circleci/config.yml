@@ -31,8 +31,11 @@ jobs:
            command: |
              sudo service mysql start
              sleep 2
-             sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
              ps aux | grep mysql
+      - run:
+           name: Start database server
+           command: |
+             sudo cat /etc/mysql/debian.cnf
 
 
       # Download and cache dependencies
@@ -45,8 +48,8 @@ jobs:
            mkdir -p config && echo 'test:
               adapter: mysql2
               database: circle_ruby_test
-              username: myuser
-              password: password
+              username: circleci
+              password: 
               host: localhost
               port: 3306
               socket: /var/run/mysqld/mysqld.sock
