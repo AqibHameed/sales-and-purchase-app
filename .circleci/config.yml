@@ -31,7 +31,9 @@ jobs:
            command: |
              sudo service mysql start
              sleep 2
+             sudo mysql -u root -e "CREATE user myuser IDENTIFIED BY 'password';"
              ps aux | grep mysql
+
 
       # Download and cache dependencies
       - restore_cache:
@@ -43,8 +45,8 @@ jobs:
            mkdir -p config && echo 'test:
               adapter: mysql2
               database: circle_ruby_test
-              username: circleci
-              password: circleci
+              username: myuser
+              password: password
               host: localhost
               port: 3306
               socket: /var/run/mysqld/mysqld.sock
