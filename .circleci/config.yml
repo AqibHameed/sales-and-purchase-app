@@ -33,12 +33,12 @@ jobs:
             sudo apt-get install mysql-client
             sudo apt-get -y install mysql-server
 
-      - run:
-           name: Start database server
-           command: |
-             sudo service mysql start
-             sleep 2
-             ps aux | grep mysql
+#      - run:
+#           name: Start database server
+#           command: |
+#             sudo service mysql start
+#             sleep 2
+#             ps aux | grep mysql
 
       # Download and cache dependencies
       - restore_cache:
