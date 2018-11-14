@@ -12,7 +12,7 @@ class Company < ApplicationRecord
   has_many :company_group_seller, :foreign_key => "seller_id", :class_name => "CompaniesGroup", dependent: :destroy
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
-  after_create :add_dummy_data
+  # after_create :add_dummy_data
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   
   def get_owner
@@ -370,7 +370,7 @@ class Company < ApplicationRecord
       description: 'Test Parcel for Demo Purpose',
       weight: 10,
       price: 10,
-      source: 'OutSide Goods',
+      source: 'OUTSIDE GOODS',
       box: 2,
       cost: 10,
       box_value: '12',
@@ -387,7 +387,7 @@ class Company < ApplicationRecord
       description: 'Test Demo Parcel for Trasaction',
       weight: 10,
       price: 10,
-      source: 'OutSide Goods',
+      source: 'OUTSIDE GOODS',
       box: 2,
       cost: 10,
       box_value: '12',
