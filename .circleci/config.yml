@@ -48,8 +48,8 @@ jobs:
            mkdir -p config && echo 'test:
               adapter: mysql2
               database: circle_ruby_test
-              username: circleci
-              password: 
+              username: root
+              password:
               host: localhost
               port: 3306
               socket: /var/run/mysqld/mysqld.sock
