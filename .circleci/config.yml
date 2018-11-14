@@ -53,9 +53,9 @@ jobs:
            mkdir -p config && echo 'test:
               adapter: mysql2
               database: circle_ruby_test
+              username: root
               host: localhost
               port: 33060
-              password: password
               socket: /var/run/mysqld/mysqld.sock
            ' > config/database.yml
 
