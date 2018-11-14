@@ -3,7 +3,11 @@ require 'rails_helper'
 RSpec.describe ProposalsController, type: :controller do
 
   before(:all) do
-    create_user
+    company = Company.create(name: Faker::Name.name)
+    @customer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
+                                password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
+                                role: "Buyer/Seller", confirmed_at: Time.now, company: company)
+    create(:customer_role, customer: @customer)
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
   end
 

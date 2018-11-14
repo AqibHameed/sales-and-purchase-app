@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :customer do
-    first_name { "Gemini" + ('a'..'z').to_a.shuffle.join }
+    first_name { "Gemini" + rand(1...1000).to_s}
     last_name FFaker::Name.last_name
     email FFaker::Internet.email
     password  FFaker::DizzleIpsum.words(4).join('!').first(8)
