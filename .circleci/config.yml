@@ -16,12 +16,6 @@ jobs:
           DB_DATABASE: circle_ruby_test
           DB_USERNAME: root
           DB_PASSWORD: password
-      - image: mysql:8.0
-        environment:               # THESE 2 VARIABLES ARE REQUIRED!!!!
-
-          MYSQL_ROOT_HOST: "%"
-          MYSQL_ROOT_PASSWORD: password
-
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -35,17 +29,22 @@ jobs:
       - run:
           name: Install Dockerize
           command: |
-            wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.6.0
+            sudo apt-get update
+            sudo apt-get install -y libzip-dev
+            sudo apt-get install -y zlib1g-dev libicu-dev g++
+            sudo apt-get install mysql-client
+            sudo apt-get -y install mysql-server
+
       - run:
-          name: Wait for MySQL to be ready
-          command: |
-            dockerize -wait tcp://localhost:3306 -timeout 1m
+           name: Start database server
+           command: |
+             sudo service mysql start
+             sleep 2
+             ps aux | grep mysql
       - run:
-          name: Install MySQL client
-          command: |
-            sudo apt install mysql-client
+           name: Create non-admin user
+           command: |
+             sudo mysql -u root -e "CREATE user umair IDENTIFIED BY 'password';"
 
       # Download and cache dependencies
       - restore_cache:
@@ -57,7 +56,7 @@ jobs:
            mkdir -p config && echo 'test:
               adapter: mysql2
               database: circle_ruby_test
-              username: root
+              username: umair
               host: localhost
               port: 33060
               password: password
