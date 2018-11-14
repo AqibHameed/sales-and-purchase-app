@@ -17,6 +17,7 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: password
 
+
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -45,6 +46,12 @@ jobs:
            name: Create non-admin user
            command: |
              sudo mysql -u root -e "CREATE user umair IDENTIFIED BY 'password';"
+
+      - run:
+           name: get socket
+           command: |
+             mysqladmin variables | grep socket
+
 
       # Download and cache dependencies
       - restore_cache:
