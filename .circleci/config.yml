@@ -45,8 +45,8 @@ jobs:
       - run:
            name: Start database server
            command: |
-             sudo mysqld_safe --skip-grant-tables --skip-networking &
-             mysql -u root
+             ps aux | grep mysql
+
 
 
       # Download and cache dependencies
