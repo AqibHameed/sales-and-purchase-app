@@ -24,6 +24,8 @@ jobs:
             sudo apt-get install -y libzip-dev
             sudo apt-get install -y zlib1g-dev libicu-dev g++
             sudo apt-get install mysql-client
+            sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password "root"'
+            sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password "root"'
             sudo apt-get -y install mysql-server
 
       - run:
@@ -36,18 +38,6 @@ jobs:
            name: Start database server
            command: |
              sudo cat /etc/mysql/debian.cnf
-      - run:
-           name: Start database server
-           command: |
-             export DEBIAN_FRONTEND=noninteractive
-             sudo apt-get -y remove mysql-server
-             sudo apt-get -y autoremove
-             sudo apt-get -y install software-properties-common
-             sudo apt-add-repository -y 'deb http://ppa.launchpad.net/ondrej/mysql-experimental/ubuntu precise main'
-             sudo apt-get update
-             sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password "root"'
-             sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password "root"'
-             sudo apt-get -y install mysql-server
       - run:
            name: Start database server
            command: |
