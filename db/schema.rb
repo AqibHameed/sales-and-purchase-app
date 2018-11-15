@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181012053239) do
+ActiveRecord::Schema.define(version: 20181101105030) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -630,6 +630,25 @@ ActiveRecord::Schema.define(version: 20181012053239) do
     t.integer "auction_id"
   end
 
+  create_table "secure_centers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "seller_id"
+    t.integer "buyer_id"
+    t.integer "invoices_overdue"
+    t.date "paid_date"
+    t.integer "late_days"
+    t.integer "buyer_days_limit"
+    t.decimal "market_limit", precision: 10
+    t.integer "supplier_connected"
+    t.decimal "outstandings", precision: 10
+    t.decimal "overdue_amount", precision: 10
+    t.decimal "given_credit_limit", precision: 10
+    t.decimal "given_market_limit", precision: 10
+    t.decimal "given_overdue_limit", precision: 10
+    t.date "last_bought_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "seller_scores", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "company_id"
     t.float "late_payment", limit: 24, default: 0.0, null: false
@@ -785,7 +804,7 @@ ActiveRecord::Schema.define(version: 20181012053239) do
     t.float "avg_selling_price", limit: 24
   end
 
-  create_table "tenders", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "tenders", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name"
     t.text "description"
     t.datetime "open_date"
@@ -824,6 +843,10 @@ ActiveRecord::Schema.define(version: 20181012053239) do
     t.string "country"
     t.string "city"
     t.string "tender_type", default: "", null: false
+    t.datetime "bidding_start"
+    t.datetime "bidding_end"
+    t.string "timezone"
+    t.integer "supplier_mine_id"
     t.string "diamond_type"
     t.string "sight_document_file_name"
     t.string "sight_document_content_type"
@@ -838,14 +861,10 @@ ActiveRecord::Schema.define(version: 20181012053239) do
     t.string "sight_no_field"
     t.string "price_no_field"
     t.string "credit_no_field"
-    t.datetime "bidding_start"
-    t.datetime "bidding_end"
-    t.string "timezone"
     t.string "reserved_field"
     t.datetime "bid_open"
     t.datetime "bid_close"
     t.integer "round_duration"
-    t.integer "supplier_mine_id"
     t.string "sight_reserved_field"
     t.integer "rounds_between_duration"
     t.datetime "round_open_time"
@@ -931,7 +950,7 @@ ActiveRecord::Schema.define(version: 20181012053239) do
     t.integer "seller_id"
     t.integer "trading_parcel_id"
     t.datetime "due_date"
-    t.decimal "price", precision: 10
+    t.decimal "price", precision: 12, scale: 2
     t.integer "credit"
     t.boolean "paid"
     t.datetime "created_at", null: false
@@ -974,11 +993,11 @@ ActiveRecord::Schema.define(version: 20181012053239) do
     t.index ["versioned_type", "versioned_id"], name: "index_versions_on_versioned_type_and_versioned_id"
   end
 
-  create_table "winners", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.bigint "tender_id"
-    t.bigint "customer_id"
-    t.bigint "bid_id"
-    t.bigint "stone_id"
+  create_table "winners", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "tender_id"
+    t.integer "customer_id"
+    t.integer "bid_id"
+    t.integer "stone_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "sight_id"

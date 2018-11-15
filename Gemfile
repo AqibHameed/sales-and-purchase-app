@@ -29,6 +29,8 @@ gem 'momentjs-rails', '>= 2.9.0'
 gem "jquery-monthpicker-rails", "~> 1.0.0"
 gem 'countdown'
 gem 'exception_notification'
+gem 'faker'
+gem  'ffaker'
 
 group :assets do
   gem 'sass-rails'
@@ -42,6 +44,9 @@ group :development do
   gem "thin"
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem "letter_opener"
+  gem 'spring'
+  gem "better_errors"
+  gem 'factory_girl_rails', :require => false
 end
 
 gem "whenever"
@@ -73,3 +78,21 @@ gem "google-cloud-firestore"
 gem 'rubyzip', '>= 1.2.1'
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'
+
+group :test do
+  gem 'capybara'
+  gem 'minitest'
+  gem 'spring-commands-rspec'
+  gem 'shoulda-matchers'
+  gem 'database_cleaner'
+  gem 'shoulda-callback-matchers', '~> 1.1.1'
+  gem 'simplecov', require: false
+  gem 'rspec-activemodel-mocks'
+  gem 'rails-controller-testing'
+end
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'pry'
+end
