@@ -2,12 +2,12 @@ ENV["RAILS_ENV"] ||= 'test'
 require_relative 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'capybara/poltergeist'
 # require 'rspec/autorun' unless defined? Zeus
 # require 'database_cleaner'
 require 'shoulda/matchers'
 require 'devise'
-
-
+Capybara.javascript_driver = :poltergeist
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

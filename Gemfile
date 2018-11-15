@@ -56,7 +56,7 @@ gem "whenever"
 gem 'protected_attributes_continued'
 gem 'turbolinks', '~> 5.0.0'
 gem 'rubocop', require: false
-gem 'puma',  '3.6.2'
+gem 'puma',  '3.8.0'
 gem 'country_select', require: 'country_select_without_sort_alphabetical'
 gem 'jquery-datatables-rails', '~> 3.4.0'
 gem 'fcm'
@@ -96,6 +96,8 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'selenium-webdriver'
+  gem 'poltergeist'
   gem 'factory_bot_rails'
   gem 'pry'
 end

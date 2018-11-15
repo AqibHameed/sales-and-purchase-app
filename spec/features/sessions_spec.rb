@@ -6,7 +6,7 @@ RSpec.feature "Sessions", type: :feature do
     sign_in_user
   end
 
-  context 'After Sign in seller ' do
+  context 'After Sign in seller ', js: true do
     scenario 'should visit the perposal' do
       buyer = create_buyer
       proposal = buyer_create_proposal(buyer)
