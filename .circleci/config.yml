@@ -39,7 +39,7 @@ jobs:
       - run:
            name: Start database server
            command: |
-             mysql -uroot
+             mysql -uroot -p
              use mysql;
              update user set password=PASSWORD("mynewpassword") where User='root';
              flush privileges;
