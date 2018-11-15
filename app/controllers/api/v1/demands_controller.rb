@@ -152,12 +152,13 @@ module Api
           per = i.percent.to_f
           @info << { size: size, percent: per }
         end
-        proposal = Proposal.where(buyer_id: current_company.id, trading_parcel_id: parcel.id).last
+
+        proposal = parcel.proposals.where(buyer_id: current_company.id).last
         if proposal.present?
           proposal_send = true
           proposal_status = proposal.status #negotiation_status(current_company)
             
-          negotiation = proposal.negotiations.where(from: 'buyer').first
+          negotiation = proposal.negotiations.find_by(from: 'buyer')
           if negotiation
             my_offer = {
               id: negotiation.id,
@@ -207,7 +208,8 @@ module Api
         respose_hash.merge!(my_offer: my_offer) if my_offer
 
         if category == "demanded"
-          demand = Demand.where(description: parcel.description, company_id: current_company.id).first
+          #demand = Demand.where(description: parcel.description, company_id: current_company.id).first
+          demand = current_company.demands.find_by(description: parcel.description)
           respose_hash.merge(demand_id: demand.id)
         else
           respose_hash

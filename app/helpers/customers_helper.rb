@@ -1,7 +1,7 @@
 module CustomersHelper
 
   def check_parcel_visibility(parcel, company)
-    demanded = Demand.where(company_id: current_company.id, description: parcel.description, deleted: false).first
+    demanded = current_company.demands.find_by(description: parcel.description, deleted: false)
     if parcel.company_id == company.id && demanded.present?
       true
     else
@@ -12,8 +12,9 @@ module CustomersHelper
       # elsif parcel.sale_all == true
       #   true
       elsif parcel.sale_demanded == true
-        demands = Demand.where(description: parcel.description, company_id: company.id)
+        demands = company.demands.where(description: parcel.description)
         polished_demand = PolishedDemand.where(description: parcel.description, company_id: company.id)
+
         if demands.exists? || polished_demand.exists?
           true
         else

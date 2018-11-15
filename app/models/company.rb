@@ -65,7 +65,8 @@ class Company < ApplicationRecord
   end
 
   def check_market_limit_overdue(market_limit_overdue, supplier_id)
-    cl = CreditLimit.where(seller_id: supplier_id, buyer_id: self.id).first
+    #cl = CreditLimit.where(seller_id: supplier_id, buyer_id: self.id).first
+    cl = CreditLimit.find_by(seller_id: supplier_id, buyer_id: self.id)
     if cl.nil? || cl.market_limit.nil?
       return false
     else
