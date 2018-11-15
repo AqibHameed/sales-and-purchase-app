@@ -7,6 +7,9 @@ require 'capybara/poltergeist'
 # require 'database_cleaner'
 require 'shoulda/matchers'
 require 'devise'
+include ActionView::Helpers::NumberHelper
+
+
 Capybara.javascript_driver = :poltergeist
 
 # Requires supporting ruby files with custom matchers and macros, etc,

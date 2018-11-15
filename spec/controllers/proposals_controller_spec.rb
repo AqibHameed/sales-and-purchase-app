@@ -125,6 +125,21 @@ RSpec.describe ProposalsController, type: :controller do
         companies_groups.group_market_limit.should be < proposal.total_value
       end
 
+      it "does match the warning messages" do
+        buyer = create_buyer
+        proposal = buyer_create_proposal(buyer)
+        message = create_message(buyer, proposal)
+
+        put :accept, params: {id: proposal.id, check: true, format: :js}
+        existing_limit = 0;
+        existing_market_limit = 0;
+        new_limit = proposal.price*proposal.trading_parcel.weight.to_f;
+
+        response.body.should have_content("Your existing credit limit for this buyer was: #{number_to_currency(existing_limit)}. This transaction would increase it to #{number_to_currency(new_limit)}.")
+        response.body.should have_content("Your existing market limit for this buyer was: #{ number_to_currency(existing_market_limit) }. This transaction would increase it to #{number_to_currency(new_limit) }")
+
+      end
+
       it "does return 200 status code" do
         buyer = create_buyer
         proposal = buyer_create_proposal(buyer)
