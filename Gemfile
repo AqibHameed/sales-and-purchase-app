@@ -45,6 +45,12 @@ group :development do
   gem 'spring'
   gem "better_errors"
   gem 'factory_girl_rails', :require => false
+
+  gem "capistrano", "~> 3.7"
+  gem "capistrano-rails", "~> 1.2"
+  gem "capistrano3-puma"
+  gem "capistrano-yarn"
+  gem "capistrano-rbenv", "~> 2.1"
 end
 
 gem "whenever"
