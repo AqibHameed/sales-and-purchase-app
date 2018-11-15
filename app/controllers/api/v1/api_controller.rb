@@ -186,6 +186,20 @@ class Api::V1::ApiController < ApplicationController
     query = '&'+uri.query unless uri.query.blank?
   end
 
+  def get_trading_pracels source, description, parcel_id
+    if parcel_id
+      TradingParcel.find parcel_id
+    elsif source and description
+      TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished').where("description LIKE ? or source=? ", description, source)
+    elsif source
+      TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished').where(source: source)
+    elsif description
+      TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished').where("description LIKE ?", description)
+    else
+      TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished')
+    end
+  end
+
   protected
 
   def current_company
