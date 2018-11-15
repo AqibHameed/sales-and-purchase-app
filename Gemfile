@@ -96,7 +96,6 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'selenium-webdriver'
   gem 'poltergeist'
   gem 'factory_bot_rails'
   gem 'pry'

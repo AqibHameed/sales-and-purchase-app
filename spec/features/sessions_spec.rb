@@ -1,18 +1,21 @@
 require 'rails_helper'
 
 RSpec.feature "Sessions", type: :feature do
+
   before(:each) do
     create_user
+    buyer = create_buyer
+    buyer_create_proposal(buyer)
+    message = create_message(buyer, @proposal)
     sign_in_user
   end
 
-  context 'After Sign in seller ', js: true do
-    scenario 'should visit the perposal' do
-      buyer = create_buyer
-      proposal = buyer_create_proposal(buyer)
-      message = create_message(buyer, proposal)
-      visit proposal_path(proposal.id)
+  context 'After Sign in seller ' do
+    scenario 'seller should accept the proposal' do
+      visit proposal_url(@proposal.id)
+      accept_button = page.find(:xpath, "//a[contains(@href,'/proposals/#{@proposal.id}/accept?check=true\')]")
     end
+
     scenario 'should be able to read messages from inbox' do
       inbox = page.find(:xpath, "//a[contains(@href,'/messages')]")
       inbox.click
@@ -23,7 +26,7 @@ end
 
 def create_user
   company = Company.create(name: Faker::Name.name)
-  @customer = Customer.create(first_name: 'mister', last_name: 'padana', email: 'aqibpadana@gmail.com',
+  @customer = Customer.create!(first_name: 'mister', last_name: 'padana', email: FFaker::Internet.email,
                               password: '123123123', mobile_no: Faker::PhoneNumber.phone_number,
                               role: "Buyer/Seller", confirmed_at: Time.now, company: company)
   create(:customer_role, customer: @customer)
@@ -40,7 +43,7 @@ def create_buyer
 end
 
 def buyer_create_proposal(buyer)
-  create(:proposal, buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
+  @proposal = create(:proposal, buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
 end
 
 def create_message(buyer, proposal)
