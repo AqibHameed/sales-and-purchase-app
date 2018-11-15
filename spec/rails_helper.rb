@@ -6,6 +6,7 @@ require 'rspec/rails'
 # require 'database_cleaner'
 require 'shoulda/matchers'
 require 'devise'
+include ActionView::Helpers::NumberHelper
 
 
 
