@@ -41,7 +41,7 @@ jobs:
       - run:
            name: Start database server
            command: |
-             sudo cat /etc/mysql/debian.cnf
+             sudo mysqld_safe --skip-grant-tables --skip-networking &
 
 
       # Download and cache dependencies
