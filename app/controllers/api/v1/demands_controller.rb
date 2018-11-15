@@ -155,7 +155,7 @@ module Api
         proposal = Proposal.where(buyer_id: current_company.id, trading_parcel_id: parcel.id).last
         if proposal.present?
           proposal_send = true
-          proposal_status = proposal.negotiation_status(current_company)
+          proposal_status = proposal.status #negotiation_status(current_company)
             
           negotiation = proposal.negotiations.where(from: 'buyer').first
           if negotiation
