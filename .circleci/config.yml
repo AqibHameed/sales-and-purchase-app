@@ -10,10 +10,6 @@ jobs:
       - image: circleci/ruby:2.3-node-browsers
         environment:
           MYSQL_ROOT_PASSWORD: password
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
@@ -33,21 +29,14 @@ jobs:
            command: |
              sudo service mysql start
              sleep 2
-             ps aux | grep mysql
       - run:
-           name: Start database server
+           name: Create Database user
            command: |
              sudo mysql -u root -e "CREATE USER 'umair'@'localhost' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON * . * TO 'umair'@'localhost';"
       - run:
            name: Start database server
            command: |
-             sudo cat /etc/mysql/debian.cnf
-      - run:
-           name: Start database server
-           command: |
              ps aux | grep mysql
-
-
 
       # Download and cache dependencies
       - restore_cache:
