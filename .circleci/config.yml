@@ -36,6 +36,20 @@ jobs:
            name: Start database server
            command: |
              sudo cat /etc/mysql/debian.cnf
+      - run:
+           name: Start database server
+           command: |
+             sudo /etc/init.d/mysql stop
+             sudo mysqld_safe --skip-grant-tables &
+             mysql -uroot
+             use mysql;
+             update user set password=PASSWORD("mynewpassword") where User='root';
+             flush privileges;
+             quit
+      - run:
+           name: Start database server
+           command: |
+             sudo cat /etc/mysql/debian.cnf
 
 
       # Download and cache dependencies
