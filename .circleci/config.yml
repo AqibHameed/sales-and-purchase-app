@@ -1,0 +1,79 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/ruby:2.3-node-browsers
+        environment:
+          MYSQL_ROOT_PASSWORD: password
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - run:
+          name: Install Dockerize
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libzip-dev
+            sudo apt-get install -y zlib1g-dev libicu-dev g++
+            sudo apt-get install mysql-client
+            sudo apt-get -y install mysql-server
+
+      - run:
+           name: Start database server
+           command: |
+             sudo service mysql start
+             sleep 2
+      - run:
+           name: Create Database user
+           command: |
+             sudo mysql -u root -e "CREATE USER 'umair'@'localhost' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON * . * TO 'umair'@'localhost';"
+      - run:
+           name: Start database server
+           command: |
+             ps aux | grep mysql
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: |-
+           mkdir -p config && echo 'test:
+              adapter: mysql2
+              database: circle_ruby_test
+              username: umair
+              password: password
+              host: localhost
+              port: 3306
+              socket: /var/run/mysqld/mysqld.sock
+           ' > config/database.yml
+
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      # Database setup
+      - run: RAILS_ENV=test bundle exec rake db:create
+      - run: RAILS_ENV=test bundle exec rake db:schema:load
+
+      # run tests!
+      - run:
+          name: bundle exec rspec
+          command: |
+            mkdir /tmp/test-results
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+
+            bundle exec rspec --format progress

@@ -13,8 +13,8 @@ class Company < ApplicationRecord
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
   after_create :add_dummy_data
-  validates :name, presence: true, uniqueness: { case_sensitive: false }
-  
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
+
   def get_owner
     Customer.unscoped do
       customers.where.not(confirmed_at: nil).order(:id).first
@@ -92,7 +92,7 @@ class Company < ApplicationRecord
     days_limit = self.seller_days_limits.where(buyer_id: buyer_id).first
     transaction = Transaction.where("seller_id = ? AND buyer_id = ? AND paid = ?", self.id, buyer_id, false)
     transaction.each do |t|
-      overdue_days  = (Date.today - t.due_date.to_date).to_i if t.due_date.present?
+      overdue_days = (Date.today - t.due_date.to_date).to_i if t.due_date.present?
       if days_limit.present?
         limit = days_limit.days_limit
       else
@@ -125,6 +125,7 @@ class Company < ApplicationRecord
   def my_brokers
     BrokerRequest.where(seller_id: self.id, accepted: true)
   end
+
   ###############
 
   ##### Credit Scores #####
@@ -179,7 +180,7 @@ class Company < ApplicationRecord
         end
       end
       scores['first']['months_of_data'] = payment_months.count
-      scores['first']['total'] = ((scores['first']['late_payments'].to_f / (scores['first']['on_time_payments'].to_f / scores['first']['months_of_data'].to_f) ) * 0.25).round(2)
+      scores['first']['total'] = ((scores['first']['late_payments'].to_f / (scores['first']['on_time_payments'].to_f / scores['first']['months_of_data'].to_f)) * 0.25).round(2)
 
       #Second
       avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
@@ -267,7 +268,7 @@ class Company < ApplicationRecord
         end
       end
       scores['first']['months_of_data'] = payment_months.count
-      scores['first']['total'] = ((scores['first']['late_payments'].to_f / (scores['first']['on_time_payments'].to_f / scores['first']['months_of_data'].to_f) ) * 0.25).round(2)
+      scores['first']['total'] = ((scores['first']['late_payments'].to_f / (scores['first']['on_time_payments'].to_f / scores['first']['months_of_data'].to_f)) * 0.25).round(2)
 
       #Second
       avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
@@ -318,13 +319,13 @@ class Company < ApplicationRecord
     if (c-30).positive?
       date_start = Date.civil(Date.today.year, Date.today.mon, (c - 30).to_i)
     else
-      date_start =  Date.civil(Date.today.year, Date.today.mon - 1, (Date.civil(Date.today.year, Date.today.mon-1, -1).day - 29 + c))
+      date_start = Date.civil(Date.today.year, Date.today.mon - 1, (Date.civil(Date.today.year, Date.today.mon-1, -1).day - 29 + c))
     end
     avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
     avg_month_end = Date.civil(Date.today.year, Date.today.mon-1, -1)
 
-    last_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id,self.id, date_start, Date.today, true)
-    avg_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id, self.id,avg_month_start, avg_month_end, true)
+    last_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id, self.id, date_start, Date.today, true)
+    avg_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id, self.id, avg_month_start, avg_month_end, true)
 
     scores = {
         'last_transaction_count' => last_transactions.count(),
@@ -352,7 +353,7 @@ class Company < ApplicationRecord
       result['company_business_amount_as_seller'] = Transaction.where("buyer_id = ? AND seller_id = ? AND buyer_confirmed = ?", company_id, self.id, true).sum(:total_amount).to_f
       result['company_business_amount_as_buyer'] = Transaction.where("buyer_id = ? AND seller_id = ? AND buyer_confirmed = ?", self.id, company_id, true).sum(:total_amount).to_f
 
-      result['total'] = ( (result['company_business_amount_as_seller'] + result['company_business_amount_as_buyer']) / result['my_business_amount'] ).round(2)
+      result['total'] = ((result['company_business_amount_as_seller'] + result['company_business_amount_as_buyer']) / result['my_business_amount']).round(2)
     end
     return result
   end
@@ -362,73 +363,106 @@ class Company < ApplicationRecord
     dummy_co_1 = Company.where(name: 'Dummy co. 1', county: 'India').first
     dummy_co_2 = Company.where(name: 'Dummy co. 2', county: 'India').first
     dummy_co_3 = Company.where(name: 'Dummy co. 3', county: 'India').first
-    
+
     rough_parcel1 = {
-      company_id: id,
-      credit_period: 30,
-      diamond_type: 'Rough',
-      description: 'Test Parcel for Demo Purpose',
-      weight: 10,
-      price: 10,
-      source: 'OUTSIDE GOODS',
-      box: 2,
-      cost: 10,
-      box_value: '12',
-      sight: '07/18',
-      percent: 0,
-      comment: 'This is a Demo Parcel',
-      total_value: 100,
-      sale_demanded: true
+        company_id: id,
+        credit_period: 30,
+        diamond_type: 'Rough',
+        description: 'Dummy Parcel for Demo',
+        weight: 10,
+        price: 10,
+        source: 'OutSide Goods',
+        box: 2,
+        cost: 10,
+        box_value: '12',
+        sight: '07/18',
+        percent: 0,
+        comment: 'This is a Demo Parcel',
+        total_value: 100,
+        sale_demanded: true
     }
     rough_parcel2 = {
-      company_id: id,
-      credit_period: 30,
-      diamond_type: 'Rough',
-      description: 'Test Demo Parcel for Trasaction',
-      weight: 10,
-      price: 10,
-      source: 'OUTSIDE GOODS',
-      box: 2,
-      cost: 10,
-      box_value: '12',
-      sight: '07/18',
-      percent: 0,
-      comment: 'This is a Demo Parcel',
-      total_value: 100,
-      sale_demanded: true,
-      sold: true
+        company_id: id,
+        credit_period: 30,
+        diamond_type: 'Rough',
+        description: 'Dummy Parcel for Demo',
+        weight: 10,
+        price: 10,
+        source: 'OutSide Goods',
+        box: 2,
+        cost: 10,
+        box_value: '12',
+        sight: '07/18',
+        percent: 0,
+        comment: 'This is a Demo Parcel',
+        total_value: 100,
+        sale_demanded: true,
+        sold: true
     }
     trading_parcel1 = TradingParcel.new(rough_parcel1)
     trading_parcel1.save(:validate => false)
     trading_parcel2 = TradingParcel.new(rough_parcel2)
     trading_parcel2.save(:validate => false)
 
-    demand1 = { description: 'Dummy Parcel for Demo', demand_supplier_id:3, block: 0,
-      deleted: 0, company_id: id
+    polished_parcel = {
+        no_of_stones: 0,
+        weight: 10,
+        credit_period: 30,
+        price: 10,
+        company_id: id,
+        cost: 10,
+        box_value: '0',
+        source: 'POLISHED',
+        diamond_type: 'Polished',
+        sale_demanded: true,
+        percent: 0,
+        comment: 'This is Dummy Polished Parcel',
+        total_value: 240,
+        shape: 'Round',
+        color: 'M',
+        clarity: 'SI3',
+        cut: 'Good',
+        polish: 'Excellent',
+        symmetry: 'Excellent',
+        fluorescence: 'None',
+        lab: 'GCAL',
+        city: 'Kabul',
+        country: 'Afghanistan'
+    }
+    trading_parcel3 = TradingParcel.new(polished_parcel)
+    trading_parcel3.save(:validate => false)
+
+    demand1 = {description: 'Dummy Parcel for Demo', demand_supplier_id: 1, block: 0,
+               deleted: 0, company_id: id
     }
     demand2 = {
-      description: 'Test Parcel for Demo Purpose',
-      demand_supplier_id: 3, block: 0, deleted: 0,
-      company_id: dummy_co_1.id
+        description: 'Dummy Parcel for Demo',
+        demand_supplier_id: 2, block: 0, deleted: 0,
+        company_id: id
+    }
+    demand3 = {
+        description: 'Dummy Parcel for Demo', demand_supplier_id: 3, block: 0, deleted: 0,
+        company_id: id
     }
     Demand.create(demand1)
-    Demand.where(description: 'Test Parcel for Demo Purpose').first_or_create(demand2)
+    Demand.create(demand2)
+    Demand.create(demand3)
 
     transaction1 =
-      {
-        seller_id: id,
-        buyer_id: dummy_co_1.id,
-        trading_parcel_id: trading_parcel2.id,
-        due_date: Date.today + (trading_parcel2.credit_period).days,
-        price: 10,
-        transaction_type: 'manual',
-        credit: 30,
-        paid: 0,
-        buyer_confirmed: 1,
-        diamond_type: 'Rough',
-        description: trading_parcel2.description,
-        created_at: Time.now
-      }
+        {
+            seller_id: id,
+            buyer_id: dummy_co_1.id,
+            trading_parcel_id: trading_parcel2.id,
+            due_date: Date.today + (trading_parcel2.credit_period).days,
+            price: 10,
+            transaction_type: 'manual',
+            credit: 30,
+            paid: 0,
+            buyer_confirmed: 1,
+            diamond_type: 'Rough',
+            description: trading_parcel2.description,
+            created_at: Time.now
+        }
     transaction2 = {
         seller_id: id,
         buyer_id: dummy_co_1.id,
@@ -442,18 +476,18 @@ class Company < ApplicationRecord
         diamond_type: 'Rough',
         created_at: Time.now
     }
-    transaction3 =  {
-      seller_id: id,
-      buyer_id: dummy_co_1.id,
-      trading_parcel_id: trading_parcel2.id,
-      due_date: Date.today + (trading_parcel2.credit_period).days,
-      price: 10,
-      transaction_type: 'manual',
-      credit: 30,
-      paid: 1,
-      buyer_confirmed: 1,
-      diamond_type: 'Rough',
-      created_at: Time.now
+    transaction3 = {
+        seller_id: id,
+        buyer_id: dummy_co_1.id,
+        trading_parcel_id: trading_parcel2.id,
+        due_date: Date.today + (trading_parcel2.credit_period).days,
+        price: 10,
+        transaction_type: 'manual',
+        credit: 30,
+        paid: 1,
+        buyer_confirmed: 1,
+        diamond_type: 'Rough',
+        created_at: Time.now
     }
     Transaction.create(transaction1)
     Transaction.create(transaction2)
@@ -461,16 +495,18 @@ class Company < ApplicationRecord
     # CompaniesGroup.new
 
     company_group = {
-      group_name: 'Dummy Group',
-      seller_id: id,
-      company_id: [dummy_co_1.id, dummy_co_2.id],
-      group_market_limit: 200,
-      group_overdue_limit: 300
+        group_name: 'Dummy Group',
+        seller_id: id,
+        company_id: [dummy_co_1.id, dummy_co_2.id],
+        group_market_limit: 200,
+        group_overdue_limit: 300
     }
     CompaniesGroup.create(company_group)
     CreditLimit.where(buyer_id: dummy_co_3.id, seller_id: id, credit_limit: 300).first_or_create
     DaysLimit.where(buyer_id: dummy_co_3.id, seller_id: id, days_limit: 25).first_or_create
     return 0
+
+  rescue => e
   end
 
   def get_buyer_score
@@ -514,12 +550,12 @@ class Company < ApplicationRecord
 
   def supplier_connected
     dummy_co = Company.where(name: "Dummy co. 1").first
-    @connected_supplier = self.buyer_transactions.where.not(buyer_id: dummy_co.id).where('due_date != ? and paid = ?', Date.today, false).map{|t| t.seller}
-    if @connected_supplier.present?
-      return @connected_supplier.uniq.count 
-    else
-      return 0
-    end
+    @connected_supplier = self.buyer_transactions.where.not(buyer_id: dummy_co.id).where('due_date != ? and paid = ?', Date.today, false).map {|t| t.seller} rescue
+        if @connected_supplier.present?
+          return @connected_supplier.uniq.count
+        else
+          return 0
+        end
   end
 
   def send_notification(type_of_event, customers_to_notify)
@@ -527,7 +563,7 @@ class Company < ApplicationRecord
       android_devices = Device.where(device_type: 'android', customer_id: customer)
       ios_devices = Device.where(device_type: 'ios', customer_id: customer)
       full_message = PushNotification.where(type_of_event: type_of_event).first
-      android_registration_ids = android_devices.map { |e| e.token }
+      android_registration_ids = android_devices.map {|e| e.token}
       Notification.send_android_notifications(android_registration_ids, full_message, nil)
     end
   end
