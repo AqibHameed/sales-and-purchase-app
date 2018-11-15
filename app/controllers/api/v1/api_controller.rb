@@ -129,11 +129,13 @@ class Api::V1::ApiController < ApplicationController
     # @companies = Company.all
     if current_company
       if params[:name].present?
-        company = Company.where('name LIKE ?', "%#{params[:name]}%")
+        company = Company.where('name LIKE ?', "#{params[:name]}%").where.not(id: current_company.id)
+        any_where = Company.where('name LIKE ?', "%#{params[:name]}%").where.not(id: current_company.id)
+        company = (company + any_where).uniq
       else
         company = Company.where.not(id: current_company.id)
       end
-      @companies = company.page(params[:page]).per(params[:count])
+      @companies = Kaminari.paginate_array(company).page(params[:page]).per(params[:count])
       render json: { pagination: set_pagination(:companies), companies: companies_data(@companies), response_code: 200 }
     else
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized

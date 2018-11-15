@@ -67,7 +67,7 @@ class TradingParcel < ApplicationRecord
   end
 
   def demand_count(parcel, company, is_polished)
-    count = is_polished ? PolishedDemand.where(description: parcel.description, block: false, deleted: false).where.not(company_id: company.id).count: Demand.where(description: parcel.description, block: false, deleted: false).where.not(company_id: company.id).count
+    count = is_polished ? PolishedDemand.where(description: parcel.description, block: false, deleted: false).where.not(company_id: company.id).count : Demand.where(description: parcel.description, deleted: false).where.not(company_id: company.id).count
     return count
   end
 

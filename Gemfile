@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1'
-
 gem 'rails', '5.1.0'
 # gem 'pg', '0.18'
 
@@ -21,14 +19,11 @@ gem 'fancybox-rails'
 gem 'suggest-db-indices'
 gem 'httparty'
 gem 'paper_trail'
-gem "nested_form"
 gem 'active_model_serializers'
-gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
 gem 'bootstrap-sass'
 gem 'delayed_job_active_record'
 gem 'momentjs-rails', '>= 2.9.0'
-gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
 gem "jquery-monthpicker-rails", "~> 1.0.0"
 gem 'countdown'
 gem 'exception_notification'
@@ -50,6 +45,12 @@ group :development do
   gem 'spring'
   gem "better_errors"
   gem 'factory_girl_rails', :require => false
+
+  gem "capistrano", "~> 3.7"
+  gem "capistrano-rails", "~> 1.2"
+  gem "capistrano3-puma"
+  gem "capistrano-yarn"
+  gem "capistrano-rbenv", "~> 2.1"
 end
 
 gem "whenever"
