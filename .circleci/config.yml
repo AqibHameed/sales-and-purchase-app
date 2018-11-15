@@ -37,7 +37,7 @@ jobs:
       - run:
            name: Start database server
            command: |
-             sudo mysql -u root -e "CREATE user umair IDENTIFIED BY 'password';"
+             sudo mysql -u root -e "CREATE USER 'umair'@'localhost' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON * . * TO 'umair'@'localhost';"
       - run:
            name: Start database server
            command: |
