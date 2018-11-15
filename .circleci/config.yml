@@ -8,6 +8,8 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/ruby:2.3-node-browsers
+        environment:
+          MYSQL_ROOT_PASSWORD: password
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -24,8 +26,6 @@ jobs:
             sudo apt-get install -y libzip-dev
             sudo apt-get install -y zlib1g-dev libicu-dev g++
             sudo apt-get install mysql-client
-            sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password "root"'
-            sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password "root"'
             sudo apt-get -y install mysql-server
 
       - run:
@@ -34,6 +34,10 @@ jobs:
              sudo service mysql start
              sleep 2
              ps aux | grep mysql
+      - run:
+           name: Start database server
+           command: |
+             sudo mysql -u root -e "CREATE user umair IDENTIFIED BY 'password';"
       - run:
            name: Start database server
            command: |
