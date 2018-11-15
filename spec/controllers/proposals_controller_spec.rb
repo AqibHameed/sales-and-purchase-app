@@ -18,6 +18,8 @@ RSpec.describe ProposalsController, type: :controller do
 
   describe "#accept" do
 
+    render_views
+
     context "When seller accept the proposal" do
 
 
@@ -67,11 +69,15 @@ RSpec.describe ProposalsController, type: :controller do
         expect(transaction).to be_valid
       end
 
+
       it "does cancel if click on No" do
+
         buyer = create_buyer
         proposal = buyer_create_proposal(buyer)
         message = create_message(buyer, proposal)
+
         put :accept, params: {id: proposal.id, check: true, format: :js}
+
 
         message = Message.find_by(sender_id: @customer.company.id, receiver_id: buyer.company.id, proposal_id: proposal.id)
 
@@ -83,6 +89,40 @@ RSpec.describe ProposalsController, type: :controller do
         transaction = Transaction.find_by(buyer_id: buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id)
         expect(transaction).to be_nil
 
+      end
+
+      it "does less than the market limit" do
+        buyer = create_buyer
+        proposal = buyer_create_proposal(buyer)
+        message = create_message(buyer, proposal)
+
+        companies_groups = create(:companies_group, company_id: [buyer.company.id], seller_id: @customer.id)
+
+        put :accept, params: {id: proposal.id, check: true, format: :js}
+
+        companies_groups.group_market_limit.should be < proposal.total_value
+      end
+
+      it "does less than the over_due limit " do
+
+        buyer = create_buyer
+        proposal = buyer_create_proposal(buyer)
+        message = create_message(buyer, proposal)
+
+        companies_groups = create(:companies_group, company_id: [buyer.company.id], seller_id: @customer.id)
+
+        days_limit = companies_groups.group_overdue_limit
+        date = Date.today - days_limit.days
+        all_members = companies_groups.company_id
+
+        put :accept, params: {id: proposal.id, check: true, format: :js}
+
+
+        over_due = Transaction.where("buyer_id IN (?) AND due_date < ? AND paid = ?", all_members, date, false).present?
+
+        expect(over_due).to eq(false)
+
+        companies_groups.group_market_limit.should be < proposal.total_value
       end
 
       it "does return 200 status code" do
