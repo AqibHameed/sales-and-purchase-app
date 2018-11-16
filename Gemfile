@@ -96,8 +96,16 @@ group :test do
 end
 
 group :development, :test do
-  gem 'rspec-rails'
-  gem 'poltergeist'
+  gem 'byebug' # , platforms: [:mri, :mingw, :x64_mingw]
+  gem 'capybara-email'
+  gem 'capybara-screenshot'
   gem 'factory_bot_rails'
-  gem 'pry'
+  gem 'faker'
+  gem "chromedriver-helper"
+  gem 'selenium-webdriver'
+  gem 'rspec-rails'
+  gem 'simplecov', require: false
+  gem 'sinatra'
+  gem 'webmock'
+  gem 'xray-rails'
 end

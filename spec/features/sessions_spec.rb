@@ -10,13 +10,16 @@ RSpec.feature "Sessions", type: :feature do
     sign_in_user
   end
 
-  context 'After Sign in seller 'do
-    scenario 'seller should accept the proposal'do
-      visit proposal_url(@proposal.id)
-      # click_link 'Accept'
+  context 'After Sign in seller ' do
+    scenario 'seller should accept the proposal', js: true do
+      visit proposal_path(@proposal.id)
+      click_link 'Accept'
+      # wait_for_ajax
+      page.evaluate_script('jQuery.active')
+      byebug
     end
 
-    scenario 'should be able to read messages from inbox' do
+    scenario 'should be able to read messages from inbox', js: true do
       inbox = page.find(:xpath, "//a[contains(@href,'/messages')]")
       inbox.click
       page.find('#tenderList')
