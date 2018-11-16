@@ -17,7 +17,7 @@ set :use_sudo,        false
 
 # Default value for :format is :pretty
 set :format, :pretty
-set :keep_releases, 3
+set :keep_releases, 2
 
 namespace :puma do
   desc 'Create Directories for Puma Pids and Socket'
