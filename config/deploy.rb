@@ -4,6 +4,7 @@ lock "3.11.0"
 set :application, "idt"
 set :repo_url, "git@bitbucket.org:IDTONLINE/idt.git"
 set :linked_files, fetch(:linked_files, []).push('config/database.yml')
+set :linked_files, fetch(:linked_files, []).push('config/application.yml')
 set :linked_dirs, %w{log tmp/backup tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 set :puma_threads,    [4, 16]

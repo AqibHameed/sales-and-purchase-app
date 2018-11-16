@@ -148,19 +148,20 @@ module Api
         if proposal.present?
           proposal_send = true
           proposal_status = proposal.status #negotiation_status(current_company)
-
-          negotiation = proposal.negotiations.find_by(from: 'buyer')
-          if negotiation
-            my_offer = {
-                id: negotiation.id,
-                offered_percent: negotiation.percent.to_f,
-                offered_credit: negotiation.credit,
-                offered_price: negotiation.price.to_f,
-                offered_total_value: negotiation.total_value.to_f,
-                offered_comment: negotiation.comment,
-                offered_from: negotiation.from,
-                is_mine: negotiation.whose == current_company
-            }
+          if proposal.new_proposal?
+            negotiation = proposal.negotiations.find_by(from: 'buyer')
+            if negotiation
+              my_offer = {
+                  id: negotiation.id,
+                  offered_percent: negotiation.percent.to_f,
+                  offered_credit: negotiation.credit,
+                  offered_price: negotiation.price.to_f,
+                  offered_total_value: negotiation.total_value.to_f,
+                  offered_comment: negotiation.comment,
+                  offered_from: negotiation.from,
+                  is_mine: negotiation.whose == current_company
+              }
+            end
           end
         else
           proposal_send = false

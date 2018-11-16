@@ -8,7 +8,7 @@ class Proposal < ApplicationRecord
   after_create :set_buyer_offers
 
 
-  enum status: [ :negotiated, :accepted, :rejected ]
+  enum status: [ :negotiated, :accepted, :rejected, :new_proposal]
 
   def set_buyer_offers
     self.buyer_percent = self.percent
