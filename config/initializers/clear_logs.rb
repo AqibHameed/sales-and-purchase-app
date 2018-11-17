@@ -1,5 +1,5 @@
-if Rails.env.production?
-  MAX_LOG_SIZE = 5000.megabytes
+if Rails.env.staging?
+  MAX_LOG_SIZE = 500.megabytes
 
   logs = File.join(Rails.root, 'log', '*.log')
   if Dir[logs].any? {|log| File.size?(log).to_i > MAX_LOG_SIZE}
