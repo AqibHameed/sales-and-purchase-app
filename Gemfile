@@ -92,7 +92,6 @@ group :test do
   gem 'shoulda-matchers'
   gem 'database_cleaner'
   gem 'shoulda-callback-matchers', '~> 1.1.1'
-  gem 'simplecov', require: false
   gem 'rspec-activemodel-mocks'
   gem 'rails-controller-testing'
 end
