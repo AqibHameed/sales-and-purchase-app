@@ -36,7 +36,7 @@ module Api
           messages.group_by(&:proposal_id).each do |proposal_id, messages|
             all_messages << messages.last
           end
-          unread_count = all_messages.flatten.map{ |m| m if m.proposal.present? && !m.proposal.negotiations.where(from: 'seller').present? && m.proposal.status == 'negotiated' }.compact.uniq.count
+          unread_count = all_messages.flatten.map{ |m| m if m.proposal.present? && !m.proposal.negotiations.where(from: 'seller').present? &&( m.proposal.status == 'negotiated' or m.proposal.status == 'new_proposal') }.compact.uniq.count
           data = { count: unread_count}
           render json: { success: true, inbox: data, response_code: 200 }
         else
