@@ -57,7 +57,7 @@ gem "whenever"
 gem 'protected_attributes_continued'
 gem 'turbolinks', '~> 5.0.0'
 gem 'rubocop', require: false
-gem 'puma',  '3.6.2'
+gem 'puma',  '3.8.0'
 gem 'country_select', require: 'country_select_without_sort_alphabetical'
 gem 'jquery-datatables-rails', '~> 3.4.0'
 gem 'fcm'
@@ -97,7 +97,17 @@ group :test do
 end
 
 group :development, :test do
-  gem 'rspec-rails'
+  gem 'byebug' # , platforms: [:mri, :mingw, :x64_mingw]
+  gem 'capybara-email'
+  gem 'capybara-screenshot'
+  gem 'waiting_rspec_matchers'
   gem 'factory_bot_rails'
-  gem 'pry'
+  gem 'faker'
+  gem "chromedriver-helper"
+  gem 'selenium-webdriver'
+  gem 'rspec-rails'
+  gem 'simplecov', require: false
+  gem 'sinatra'
+  gem 'webmock'
+  gem 'xray-rails'
 end

@@ -1,5 +1,5 @@
 $('#credit_warning').modal('show')
-$('#credit_warning .modal-body').html('<% errors.each do |error| %><h1><%= error %></h1></br><% end %></br><h1>Would you like to continue?</h1><div class="row text-center mt10"><% if flag.present? && flag == true %><%= link_to "Yes", "javascript:void(0)", class: "update_btn btn btn-primary" %><% else %><%=link_to "Yes", accept_proposal_path(id: proposal.id, check: false), class: "btn btn-primary", method: :put%><% end %><button type="button" class="btn btn-default" data-dismiss="modal">No</button></div>')
+$('#credit_warning .modal-body').html('<% errors.each do |error| %><h1><%= error %></h1></br><% end %></br><h1>Would you like to continue?</h1><div class="row text-center mt10"><% if flag.present? && flag == true %><%= link_to "Yes", "javascript:void(0)", class: "update_btn btn btn-primary", id: 'yes' %><% else %><%=link_to "Yes", accept_proposal_path(id: proposal.id, check: false), class: "btn btn-primary", method: :put, id: 'yes'%><% end %><button type="button" class="btn btn-default" data-dismiss="modal" id="no">No</button></div>')
 $(document).on('click', '.update_btn', function(){
   $('#flag').val('true');
   $('#edit_proposal_<%= proposal.id%>').submit();

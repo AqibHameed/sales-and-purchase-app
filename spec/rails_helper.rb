@@ -2,11 +2,41 @@ ENV["RAILS_ENV"] ||= 'test'
 require_relative 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+# require 'capybara/poltergeist'
 # require 'rspec/autorun' unless defined? Zeus
 # require 'database_cleaner'
 require 'shoulda/matchers'
 require 'devise'
 include ActionView::Helpers::NumberHelper
+
+# Capybara.register_driver :poltergeist do |app|
+#   Capybara::Poltergeist::Driver.new(app, {
+#       # js_errors: false,
+#       js_errors: true, #setting this to true outputs all my console.logs to Terminal
+#       phantomjs_options: ['--ignore-ssl-errors=yes', '--ssl-protocol=any'],
+#       debug: false,
+#       timeout: 500,
+#       phantomjs: File.absolute_path(Phantomjs.path)
+#   })
+# end
+# Capybara.javascript_driver = :poltergeist
+# Capybara.default_driver = :poltergeist
+
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, browser: :chrome)
+end
+
+Capybara.register_driver :headless_chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+      chromeOptions: { args: %w(headless disable-gpu) }
+  )
+
+  Capybara::Selenium::Driver.new app,
+                                 browser: :chrome,
+                                 desired_capabilities: capabilities
+end
+
+Capybara.javascript_driver = :headless_chrome
 
 
 
@@ -32,12 +62,18 @@ RSpec.configure do |config|
 
   config.use_transactional_fixtures = true
 
-
+  config.include WaitingRspecMatchers
   config.infer_spec_type_from_file_location!
 
   config.before :suite do
     # DatabaseCleaner.strategy = :transaction
     # DatabaseCleaner.clean_with :truncation
+  end
+
+  config.around do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
 
   config.before :each do
