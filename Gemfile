@@ -29,6 +29,7 @@ gem 'countdown'
 gem 'exception_notification'
 gem 'faker'
 gem  'ffaker'
+gem 'capistrano-rails-logs-tail'
 
 group :assets do
   gem 'sass-rails'
@@ -51,7 +52,6 @@ group :development do
   gem "capistrano3-puma"
   gem "capistrano-yarn"
   gem "capistrano-rbenv", "~> 2.1"
-  gem 'capistrano-rails-logs-tail'
 end
 
 gem "whenever"
@@ -103,7 +103,6 @@ group :development, :test do
   gem 'capybara-screenshot'
   gem 'waiting_rspec_matchers'
   gem 'factory_bot_rails'
-  gem 'faker'
   gem "chromedriver-helper"
   gem 'selenium-webdriver'
   gem 'rspec-rails'
