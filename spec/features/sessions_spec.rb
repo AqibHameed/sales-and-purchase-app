@@ -15,12 +15,6 @@ RSpec.feature "Sessions", type: :feature do
       visit proposal_path(@proposal.id)
       click_link 'Accept'
     end
-
-    scenario 'should be able to read messages from inbox', js: true do
-      inbox = page.find(:xpath, "//a[contains(@href,'/messages')]")
-      inbox.click
-      page.find('#tenderList')
-    end
   end
 end
 
