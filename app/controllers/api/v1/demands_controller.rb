@@ -148,6 +148,7 @@ module Api
         if proposal.present?
           proposal_send = true
           proposal_status = proposal.status #negotiation_status(current_company)
+          my_offer = nil
           if proposal.new_proposal?
             negotiation = proposal.negotiations.find_by(from: 'buyer')
             if negotiation
@@ -197,7 +198,7 @@ module Api
             }
         }
 
-        respose_hash.merge!(my_offer: my_offer) if my_offer
+        respose_hash.merge!(my_offer: my_offer)
 
         if category == "demanded"
           #demand = Demand.where(description: parcel.description, company_id: current_company.id).first
