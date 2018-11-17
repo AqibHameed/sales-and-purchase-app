@@ -51,6 +51,7 @@ group :development do
   gem "capistrano3-puma"
   gem "capistrano-yarn"
   gem "capistrano-rbenv", "~> 2.1"
+  gem 'capistrano-rails-logs-tail'
 end
 
 gem "whenever"
