@@ -29,6 +29,7 @@ gem 'countdown'
 gem 'exception_notification'
 gem 'faker'
 gem  'ffaker'
+gem 'capistrano-rails-logs-tail'
 
 group :assets do
   gem 'sass-rails'
@@ -91,7 +92,6 @@ group :test do
   gem 'shoulda-matchers'
   gem 'database_cleaner'
   gem 'shoulda-callback-matchers', '~> 1.1.1'
-  gem 'simplecov', require: false
   gem 'rspec-activemodel-mocks'
   gem 'rails-controller-testing'
 end
@@ -102,7 +102,6 @@ group :development, :test do
   gem 'capybara-screenshot'
   gem 'waiting_rspec_matchers'
   gem 'factory_bot_rails'
-  gem 'faker'
   gem "chromedriver-helper"
   gem 'selenium-webdriver'
   gem 'rspec-rails'
