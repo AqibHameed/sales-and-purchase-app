@@ -106,7 +106,6 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'rspec-rails'
   gem 'simplecov', require: false
-  gem 'sinatra'
   gem 'webmock'
   gem 'xray-rails'
 end

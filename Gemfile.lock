@@ -350,7 +350,6 @@ GEM
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mustermann (1.0.3)
     mysql2 (0.4.9)
     nested_form (0.3.2)
     net-scp (1.2.1)
@@ -396,8 +395,6 @@ GEM
     rack-pjax (1.0.0)
       nokogiri (~> 1.5)
       rack (>= 1.1)
-    rack-protection (2.0.4)
-      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.1.0)
@@ -537,11 +534,6 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    sinatra (2.0.4)
-      mustermann (~> 1.0)
-      rack (~> 2.0)
-      rack-protection (= 2.0.4)
-      tilt (~> 2.0)
     sixarm_ruby_unaccent (1.2.0)
     slop (3.6.0)
     sort_alphabetical (1.1.0)
@@ -688,7 +680,6 @@ DEPENDENCIES
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers
   simplecov
-  sinatra
   spreadsheet
   spring
   spring-commands-rspec
