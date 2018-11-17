@@ -14,11 +14,6 @@ class ProposalsController < ApplicationController
 
   def create
     @proposal = Proposal.new(proposal_params)
-    # @proposal.check_sub_company_limit(current_customer)
-    if @proposal.errors.any?
-      flash[:notice] = @proposal.errors.full_messages.first
-      redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
-    else
       if @proposal.save
         # Sent an email to supplier
         @proposal.negotiations.create(price: @proposal.price, percent: @proposal.percent, credit: @proposal.credit, total_value: @proposal.total_value, comment: @proposal.buyer_comment, from: 'buyer')
@@ -33,7 +28,6 @@ class ProposalsController < ApplicationController
         flash[:notice] = error
         redirect_to trading_parcel_path(id: params[:proposal][:trading_parcel_id])
       end
-    end
   end
 
   def index

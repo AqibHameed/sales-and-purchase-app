@@ -1,18 +1,18 @@
 module Api
   module V1
     class MessagesController < ApiController
+      include MessagesHelper
       skip_before_action :verify_authenticity_token, only: [:create]
       before_action :current_customer, only: [:index, :show, :create]
       
       def index
         all_messages = []
         if current_company
-          messages = Message.joins(:sender).order("created_at desc").where(receiver_id: current_company.id).where.not("message_type in (?)", ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
-          messages.group_by(&:proposal_id).each do |proposal_id, messages|
+          messages = Message.customer_messages(current_company.id).group_by(&:proposal_id)
+          messages.each do |proposal_id, messages|
             all_messages << messages.last
           end
           @messages = Kaminari.paginate_array(messages_data(all_messages, params[:status], params[:description], params[:company])).page(params[:page]).per(params[:count])
-
           render json: { pagination: set_pagination(:messages), messages: @messages, response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -32,15 +32,14 @@ module Api
       def unread_count
         if current_company
           all_messages = []
-          messages = Message.joins(:sender).order("companies.name").where(receiver_id: current_company.id).where.not("message_type in (?)", ['Limit Increase Request' , 'Limit Increase Accept', 'Limit Increase Reject'])
-          messages.group_by(&:proposal_id).each do |proposal_id, messages|
+          messages = Message.customer_messages(current_company.id).group_by(&:proposal_id)
+          messages.each do |proposal_id, messages|
             all_messages << messages.last
           end
-          unread_count = all_messages.flatten.map{ |m| m if m.proposal.present? && !m.proposal.negotiations.where(from: 'seller').present? &&( m.proposal.status == 'negotiated' or m.proposal.status == 'new_proposal') }.compact.uniq.count
-          data = { count: unread_count}
-          render json: { success: true, inbox: data, response_code: 200 }
+          data = {count: new_messages(all_messages).count}
+          render json: {success: true, inbox: data, response_code: 200}
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
+          render json: {errors: "Not authenticated", response_code: 201}
         end
       end
 
@@ -98,11 +97,11 @@ module Api
         @messages = messages
         if status.present?
           if status == 'negotiated'
-            @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == status && (m.proposal.negotiations.last.whose == current_company)}.compact
+            @messages = negotiated_messages(messages)
           elsif status == 'new'
-            @messages = @messages.map{ |m| m if m.proposal.present? && (m.proposal.status == 'negotiated' or m.proposal.status == 'new_proposal' ) && !(m.proposal.negotiations.last.whose == current_company) }.compact
+            @messages = new_messages(messages)
           else  
-            @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == status }.compact
+            @messages = @messages.map{ |m| m if m.proposal && m.proposal.status == status }.compact
           end
         end
         if description.present?
