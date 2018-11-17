@@ -580,6 +580,8 @@ GEM
     unf_ext (0.0.7.5)
     unicode-display_width (1.4.0)
     unicode_utils (1.4.0)
+    waiting_rspec_matchers (0.3)
+      rspec-expectations (~> 3.0)
     warden (1.2.7)
       rack (>= 1.0)
     webmock (3.4.2)
@@ -686,6 +688,7 @@ DEPENDENCIES
   thin
   turbolinks (~> 5.0.0)
   uglifier
+  waiting_rspec_matchers
   webmock
   whenever
   xray-rails

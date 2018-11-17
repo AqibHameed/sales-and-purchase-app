@@ -62,7 +62,7 @@ RSpec.configure do |config|
 
   config.use_transactional_fixtures = true
 
-
+  config.include WaitingRspecMatchers
   config.infer_spec_type_from_file_location!
 
   config.before :suite do

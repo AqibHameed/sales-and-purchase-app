@@ -14,9 +14,6 @@ RSpec.feature "Sessions", type: :feature do
     scenario 'seller should accept the proposal', js: true do
       visit proposal_path(@proposal.id)
       click_link 'Accept'
-      # wait_for_ajax
-      page.evaluate_script('jQuery.active')
-      byebug
     end
 
     scenario 'should be able to read messages from inbox', js: true do

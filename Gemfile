@@ -99,6 +99,7 @@ group :development, :test do
   gem 'byebug' # , platforms: [:mri, :mingw, :x64_mingw]
   gem 'capybara-email'
   gem 'capybara-screenshot'
+  gem 'waiting_rspec_matchers'
   gem 'factory_bot_rails'
   gem 'faker'
   gem "chromedriver-helper"
