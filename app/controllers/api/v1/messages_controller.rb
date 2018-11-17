@@ -100,7 +100,7 @@ module Api
           if status == 'negotiated'
             @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == status && (m.proposal.negotiations.last.whose == current_company)}.compact
           elsif status == 'new'
-            @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == 'negotiated' && !(m.proposal.negotiations.last.whose == current_company) }.compact
+            @messages = @messages.map{ |m| m if m.proposal.present? && (m.proposal.status == 'negotiated' or m.proposal.status == 'new_proposal' ) && !(m.proposal.negotiations.last.whose == current_company) }.compact
           else  
             @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.status == status }.compact
           end
