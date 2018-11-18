@@ -1,0 +1,5 @@
+<%if resource.errors.present? %>
+$("#devise-error-messages").html("<%=j render "devise_error_message" %>")
+<%else %>
+window.location = "<%= response.redirect_url %>";
+<%end %>
