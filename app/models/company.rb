@@ -550,8 +550,8 @@ class Company < ApplicationRecord
   end
 
   def supplier_connected
-    dummy_co = Company.where(name: "Dummy co. 1").first
-    self.buyer_transactions.select(:seller_id).where.not(buyer_id: dummy_co.id).where(paid: true).uniq.count
+    #dummy_co = Company.where(name: "Dummy co. 1").first
+    self.buyer_transactions.select(:seller_id).where(paid: true).uniq.count
   end
 
   def send_notification(type_of_event, customers_to_notify)
