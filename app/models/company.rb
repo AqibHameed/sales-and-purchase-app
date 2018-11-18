@@ -554,6 +554,14 @@ class Company < ApplicationRecord
     self.buyer_transactions.select(:seller_id).where(paid: true).uniq.count
   end
 
+  def supplier_paid
+    supplier_connected
+  end
+
+  def supplier_unpaid
+    buyer_transactions.select(:seller_id).where(paid: false).uniq.count
+  end
+
   def send_notification(type_of_event, customers_to_notify)
     customers_to_notify.each do |customer|
       android_devices = Device.where(device_type: 'android', customer_id: customer)
