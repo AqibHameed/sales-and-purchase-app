@@ -1,6 +1,7 @@
 class RegistrationsController < Devise::RegistrationsController
   layout false
-  
+  respond_to :html, :js
+
   def create
     # company = Company.where(name: sign_up_params[:company_name]).first_or_create
     if sign_up_params[:company_id].present?
@@ -38,7 +39,7 @@ class RegistrationsController < Devise::RegistrationsController
           respond_with resource, location: after_sign_up_path_for(resource)
         end
       else
-        set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
+        flash[:notice] =find_message "signed_up_but_#{resource.inactive_message}"
         expire_data_after_sign_in!
         respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
