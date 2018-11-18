@@ -551,12 +551,7 @@ class Company < ApplicationRecord
 
   def supplier_connected
     dummy_co = Company.where(name: "Dummy co. 1").first
-    @connected_supplier = self.buyer_transactions.where.not(buyer_id: dummy_co.id).where('due_date != ? and paid = ?', Date.today, false).map {|t| t.seller} rescue
-        if @connected_supplier.present?
-          return @connected_supplier.uniq.count
-        else
-          return 0
-        end
+    self.buyer_transactions.select(:seller_id).where.not(buyer_id: dummy_co.id).where(paid: true).uniq.count
   end
 
   def send_notification(type_of_event, customers_to_notify)
