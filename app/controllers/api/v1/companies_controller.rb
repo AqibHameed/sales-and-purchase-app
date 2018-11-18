@@ -1,4 +1,5 @@
 class Api::V1::CompaniesController < ApplicationController
+  include LiveMonitor
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
@@ -130,14 +131,14 @@ class Api::V1::CompaniesController < ApplicationController
         end
       end
       @companies = Kaminari.paginate_array(result).page(params[:page]).per(params[:count])
-      render json: { success: true, pagination: set_pagination(:companies), companies: @companies }
+      render json: {success: true, pagination: set_pagination(:companies), companies: @companies}
     else
-      render json: { errors: "Not authenticated", response_code: 201 }
+      render json: {errors: "Not authenticated", response_code: 201}
     end
   end
 
-  def history   
-    transactions = [] 
+  def history
+    transactions = []
     if current_company
       company = Company.where(name: params[:company]).first
       unless company.present?
@@ -161,13 +162,13 @@ class Api::V1::CompaniesController < ApplicationController
     @array = []
     no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
     @transactions = []
-    @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ? and cancel = ?' , current_company.id, current_company.id, 'Polished', false)
+    @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ? and cancel = ?', current_company.id, current_company.id, 'Polished', false)
     if company.present?
-      @all_polished_transaction = @all_polished_transaction.where('buyer_id = ?' , company.id)
+      @all_polished_transaction = @all_polished_transaction.where('buyer_id = ?', company.id)
     end
     if activity.present?
-      @all_polished_transaction = @all_polished_transaction.where('buyer_id = ?' , current_company.id) if activity == 'bought'
-      @all_polished_transaction = @all_polished_transaction.where('seller_id = ?' , current_company.id) if activity == 'sold'
+      @all_polished_transaction = @all_polished_transaction.where('buyer_id = ?', current_company.id) if activity == 'bought'
+      @all_polished_transaction = @all_polished_transaction.where('seller_id = ?', current_company.id) if activity == 'sold'
     end
     if status.present?
       @transactions << @all_polished_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
@@ -220,9 +221,9 @@ class Api::V1::CompaniesController < ApplicationController
         end
         if t.paid == false && t.due_date.present?
           other = {
-            seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-            buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
-            market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
+              seller_days_limit: (current_company.id == t.buyer_id) ? get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
+              buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
+              market_limit: (current_company.id == t.buyer_id) ? number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
           }
           data.merge!(other)
         end
@@ -240,7 +241,7 @@ class Api::V1::CompaniesController < ApplicationController
     @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) AND cancel = ?', current_company.id, current_company.id, false)
 
     if company.present?
-      @all_rough_transaction = @all_rough_transaction.where('buyer_id = ?' , company.id)
+      @all_rough_transaction = @all_rough_transaction.where('buyer_id = ?', company.id)
     end
 
     if activity.present?
@@ -376,38 +377,7 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def save_secure_center(company)
-    if company.buyer_transactions.present?
-      company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
-      if company.buyer_transactions.last.paid_date.nil?
-        date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
-      else
-        date =  company.buyer_transactions.last.paid_date
-      end
-      transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).last
-      if transaction.present? && transaction.due_date.present?
-        late_days = (Date.today - transaction.due_date.to_date).to_i
-      else
-        late_days = 0
-      end
-    end
-    @group = CompaniesGroup.where("company_id like '%#{company.id}%'").where(seller_id: current_company.id).first
-    @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
-    @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
-    data = {
-      invoices_overdue:  company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count : 0,
-      paid_date: date, 
-      late_days: late_days.present? ? late_days.abs : 0,
-      buyer_days_limit: buyer_days_limit(company, current_company),
-      market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
-      supplier_paid: company.supplier_paid,
-      supplier_unpaid:company.supplier_unpaid,
-      outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
-      overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
-      given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
-      given_market_limit:  @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
-      given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 30),
-      last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.last.created_at : nil
-    }
+    data = get_secure_center_data(company, current_company)
     data.merge!(buyer_id: company.id)
     data.merge!(seller_id: current_company.id)
     secure_center = SecureCenter.new(data)

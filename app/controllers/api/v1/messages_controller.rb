@@ -145,7 +145,7 @@ module Api
             if message.proposal.present? && message.proposal.trading_parcel.present? 
               offered_price = message.proposal.price.to_f
               offered_percent = ((offered_price.to_f/message.proposal.trading_parcel.price.to_f)-1).to_f*100
-              data.merge!(calculation: offered_percent.to_i)
+              data.merge!(calculation: offered_percent.round(2))
             end
             @data << data  
           end
