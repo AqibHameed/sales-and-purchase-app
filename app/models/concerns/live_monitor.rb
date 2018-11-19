@@ -33,9 +33,9 @@ module LiveMonitor
         date = company.buyer_transactions.last.paid_date
       end
 
-      transactions = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).order(:due_date).first
+      transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).order(:due_date).first
       if transaction.present? && transaction.due_date.present?
-        late_days = (Date.today - transaction.due_date).to_i
+        late_days = (Date.today.to_date - transaction.due_date.to_date).to_i
       else
         late_days = 0
       end
