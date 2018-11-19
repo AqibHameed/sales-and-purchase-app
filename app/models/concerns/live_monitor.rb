@@ -23,7 +23,8 @@ module LiveMonitor
     end
   end
 
-  def get_secure_center_data(company, current_company)
+  def   get_secure_center_data(company, current_company)
+
     if company.buyer_transactions.present?
       company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
       if company.buyer_transactions.last.paid_date.nil?
@@ -31,7 +32,8 @@ module LiveMonitor
       else
         date = company.buyer_transactions.last.paid_date
       end
-      transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).last
+
+      transactions = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).order(:due_date).first
       if transaction.present? && transaction.due_date.present?
         late_days = (Date.today - transaction.due_date.to_date).to_i
       else
