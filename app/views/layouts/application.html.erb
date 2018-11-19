@@ -20,7 +20,9 @@
         <%#= render :partial => "layouts/unauthenticate_navigation" %>
       <% end %>
       <div class="clear20"></div>
-      <%= render partial:  'layouts/supplier/flash' %>
+      <div id="flash-message">
+        <%= render partial: 'layouts/supplier/flash' %>
+      </div>
       <div class='container'>
         <% if customer_signed_in? %>
           <%=link_to (image_tag "inbox.png", width: 65, id: 'inbox-image'), messages_path, class: 'pull-right', data: {turbolinks: false}, id: 'inbox-link' %>

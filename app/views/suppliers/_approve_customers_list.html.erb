@@ -35,10 +35,11 @@
       </td>
       <td class="credit_limit">
         <span class="table-head-in-td">Total Limit</span>
-        <a href="javascript:void(0)" class="given_limit" id='credit_edit'>
-          <%= number_to_currency(get_credit_limit(company, current_company)) %>
-          <i class="fa fa-edit pull-right" id='credit_edit'></i>
-        </a>
+        <%= number_to_currency(get_credit_limit(company, current_company)) %>
+
+        <!--<a href="javascript:void(0)" class="given_limit" id='credit_edit'>-->
+          <!--<i class="fa fa-edit pull-right" id='credit_edit'></i>-->
+        <!--</a>-->
         <span class="edit_field hide">
           <%=number_field_tag "limit", '', 'data-id'=> company.id, placeholder: 'Enter credit limit' %>
           <%=link_to 'Add', 'javascript:void(0)', class: " save_btn_2"%>
@@ -62,10 +63,11 @@
       </td>
         <td class="market_limit">
           <span class="table-head-in-td">Market Limit</span>
-          <a href="javascript:void(0)" class="given_market_limit" id='market_limit_edit'>
-            <%= number_to_currency(get_market_limit_from_credit_limit_table(company, current_company)) %>
-            <i class="fa fa-edit pull-right" id='market_limit_edit'></i>
-          </a>
+          <%= number_to_currency(get_market_limit_from_credit_limit_table(company, current_company)) %>
+
+          <!--<a href="javascript:void(0)" class="given_market_limit" id='market_limit_edit'>-->
+            <!--<i class="fa fa-edit pull-right" id='market_limit_edit'></i>-->
+          <!--</a>-->
           <a href="javascript:void(0)" class="edit_market_limit hide">
             <%=text_field_tag "market_limit", '', 'data-id'=> company.id, placeholder: 'Enter Market limit' %>
             <i class="fa fa-check-square-o save_market_limit_btn"></i>

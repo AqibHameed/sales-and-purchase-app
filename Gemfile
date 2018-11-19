@@ -39,7 +39,6 @@ group :assets do
 end
 
 group :development do
-  gem 'pry-byebug'
   gem "thin"
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem "letter_opener"
@@ -97,6 +96,7 @@ group :test do
 end
 
 group :development, :test do
+  gem 'pry-byebug'
   gem 'byebug' # , platforms: [:mri, :mingw, :x64_mingw]
   gem 'capybara-email'
   gem 'capybara-screenshot'

@@ -122,22 +122,29 @@ class SuppliersController < ApplicationController
 
   def save_add_limit
     buyers = params[:credit_limit][:buyer_id].reject { |c| c.empty? }
-    buyers.each do |buyer|
-      cl = CreditLimit.where(buyer_id: buyer, seller_id: current_company.id).first
-      if cl.nil?
-        cl = CreditLimit.new
-        cl.buyer_id = buyer
-        cl.seller_id = current_company.id
-        cl.credit_limit = params[:credit_limit][:credit_limit]
-        cl.market_limit = params[:credit_limit][:market_limit]
-        cl.save
-      else
-        cl.credit_limit = params[:credit_limit][:credit_limit]
-        cl.market_limit = params[:credit_limit][:market_limit]
-        cl.save
+    if params[:credit_limit][:market_limit] < params[:credit_limit][:credit_limit]
+      respond_to do |format|
+        format.js
       end
+    else
+      buyers.each do |buyer|
+        cl = CreditLimit.where(buyer_id: buyer, seller_id: current_company.id).first
+        if cl.nil?
+          cl = CreditLimit.new
+          cl.buyer_id = buyer
+          cl.seller_id = current_company.id
+          cl.credit_limit = params[:credit_limit][:credit_limit]
+          cl.market_limit = params[:credit_limit][:market_limit]
+          cl.save
+        else
+          cl.credit_limit = params[:credit_limit][:credit_limit]
+          cl.market_limit = params[:credit_limit][:market_limit]
+          cl.save
+        end
+      end
+      redirect_to credit_suppliers_path
     end
-    redirect_to credit_suppliers_path
+
   end
 
   def credit_request
@@ -247,6 +254,7 @@ class SuppliersController < ApplicationController
     #   end
     # else
     #   cl.credit_limit  = total_limit.to_f
+
     # end
     if cl.errors.any?
       render json: { message: cl.errors.full_messages.first, value: nil, errors: true }
