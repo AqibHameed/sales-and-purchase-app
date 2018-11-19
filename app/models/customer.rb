@@ -61,7 +61,7 @@ class Customer < ApplicationRecord
 
   def check_for_confirmation
     owner = company.customers.where("confirmed_at is NOT NULL").first
-    unless owner.blank?
+    if company.customers.count > 1 && owner.present?
       self.skip_confirmation!
       self.is_requested = true
       self.save(validate: false)
