@@ -105,6 +105,7 @@ group :development, :test do
   gem "chromedriver-helper"
   gem 'selenium-webdriver'
   gem 'rspec-rails'
+  gem "binding_of_caller"
   gem 'simplecov', require: false
   gem 'webmock'
   gem 'xray-rails'

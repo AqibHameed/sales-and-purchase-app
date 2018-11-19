@@ -35,7 +35,8 @@
       <% else %>
         <div class="label">Email/Mobile No.</div>
         <div class="field">
-          <%= f.text_field :login %>
+          <% login = params[:customer][:login] rescue "" %>
+          <%= f.text_field :login, value: login %>
            <%= hidden_field_tag 'admin[login]' %>
         </div>
         <div class="clear10"></div>

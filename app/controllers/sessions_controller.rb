@@ -1,5 +1,6 @@
 class SessionsController <  Devise::SessionsController
   skip_before_action :check_request_access, only: [:destroy]
+  layout false, only: [:create]
 
   def get_resource
     if customer = Customer.where("(email = ? OR mobile_no = ?) AND verified = ?", params[:customer][:login], params[:customer][:login], true).present?
@@ -28,7 +29,8 @@ class SessionsController <  Devise::SessionsController
             redirect_to trading_customers_path, notice: 'Signed in successfully.'
           end
         else
-          redirect_to login_path, notice: 'Invalid email or password'
+          flash[:notice] = 'Invalid email or password'
+          render 'home/login'
         end
       # else
       #   redirect_to '/', notice: 'You are not verified. Please contact admin.'
@@ -39,10 +41,12 @@ class SessionsController <  Devise::SessionsController
         sign_in(:admin, resource)
         redirect_to '/admins', notice: 'Signed in successfully.' 
       else
-        redirect_to login_path, notice: 'Invalid email or password'
+        flash[:notice] = 'Invalid email or password'
+        render 'home/login'
       end
     else
-      redirect_to login_path, notice: "Incorrect Email or Mobile no."
+      flash[:notice] = 'Incorrect Email or Mobile no.'
+      render 'home/login'
     end
   end
 end
