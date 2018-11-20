@@ -319,7 +319,7 @@ class Tender < ApplicationRecord
 
   #Determines if tender is open or not
   def open?
-    self.close_date > DateTime.now rescue false
+    self.close_date > DateTime.current rescue false
   end
 
   def update_winner_list_from_uploaded_file
@@ -847,7 +847,7 @@ class Tender < ApplicationRecord
   end
 
   def before_bidding_start
-   if DateTime.now.to_i < self.round_open_time.to_i
+   if DateTime.current.to_i < self.round_open_time.to_i
     return true
   else
     return false
@@ -855,7 +855,7 @@ class Tender < ApplicationRecord
   end
 
   def bidding_start
-    if DateTime.now.to_i >  self.round_open_time.to_i  && (DateTime.now.to_i <  (self.round_open_time.to_i + self.round_duration.minutes))
+    if DateTime.current.to_i >  self.round_open_time.to_i  && (DateTime.current.to_i <  (self.round_open_time.to_i + self.round_duration.minutes))
       return true
     else
       return false
@@ -863,7 +863,7 @@ class Tender < ApplicationRecord
   end
 
   def break_time
-    if (DateTime.now.to_i >  (self.round_open_time.to_i + self.round_duration.minutes)) && (DateTime.now.to_i < (self.round_open_time.to_i + self.round_duration.minutes + self.rounds_between_duration.minutes))
+    if (DateTime.current.to_i >  (self.round_open_time.to_i + self.round_duration.minutes)) && (DateTime.current.to_i < (self.round_open_time.to_i + self.round_duration.minutes + self.rounds_between_duration.minutes))
       return true
     else
       return false
@@ -1142,7 +1142,7 @@ class Tender < ApplicationRecord
       #        bootstrap_wysihtml5 true
       #      end
       field :open_date do
-        default_value Date.today
+        default_value Date.current
       end
       field :close_date
       field :bid_open

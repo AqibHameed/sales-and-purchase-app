@@ -96,7 +96,7 @@
               <%=link_to 'Reject', reject_transaction_path(transaction), data: {turbolinks: false}, class: link %>
             </td>
           <% else %>   
-            <% if current_company.id == transaction.seller_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && transaction.due_date.present? && transaction.due_date > Date.today  %>
+            <% if current_company.id == transaction.seller_id && transaction.transaction_type == 'manual' && !transaction.buyer_confirmed && transaction.due_date.present? && transaction.due_date > Date.current  %>
               <% if transaction.cancel == true %>
                 <td>Canceled</td>
               <% else %>

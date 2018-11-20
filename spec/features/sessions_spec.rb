@@ -22,7 +22,7 @@ def create_user
   company = Company.create(name: Faker::Name.name)
   @customer = Customer.create!(first_name: 'mister', last_name: 'padana', email: FFaker::Internet.email,
                               password: '123123123', mobile_no: Faker::PhoneNumber.phone_number,
-                              role: "Buyer/Seller", confirmed_at: Time.now, company: company)
+                              role: "Buyer/Seller", confirmed_at: Time.current, company: company)
   create(:customer_role, customer: @customer)
   @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
 end
@@ -31,7 +31,7 @@ def create_buyer
   company = Company.create(name: Faker::Name.name)
   buyer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                           password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                          role: "Buyer/Seller", confirmed_at: Time.now, company: company)
+                          role: "Buyer/Seller", confirmed_at: Time.current, company: company)
   create(:customer_role, customer: buyer)
   buyer
 end

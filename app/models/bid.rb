@@ -18,7 +18,7 @@ class Bid < ApplicationRecord
   before_save :set_bid_date_and_lot_no, :set_tender_id
 
   def set_bid_date_and_lot_no
-    self.bid_date = DateTime.now
+    self.bid_date = DateTime.current
   #  self.lot_no = self.stone.lot_no
   end
 

@@ -113,7 +113,7 @@ class Api::V1::CompaniesController < ApplicationController
               count(companies.id) as transaction_count,
               companies.name,
               sum(t.remaining_amount) as remaining_amount
-      ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{current_company.id} and t.paid = 0 and t.due_date != #{Date.today} )")
+      ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{current_company.id} and t.paid = 0 and t.due_date != #{Date.current} )")
       .group(:id)
       .order(:id)
 
@@ -160,7 +160,7 @@ class Api::V1::CompaniesController < ApplicationController
 
   def get_polished_transaction(company, search, status, activity)
     @array = []
-    no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
+    no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).count
     @transactions = []
     @all_polished_transaction = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and diamond_type = ? and cancel = ?', current_company.id, current_company.id, 'Polished', false)
     if company.present?
@@ -171,8 +171,8 @@ class Api::V1::CompaniesController < ApplicationController
       @all_polished_transaction = @all_polished_transaction.where('seller_id = ?', current_company.id) if activity == 'sold'
     end
     if status.present?
-      @transactions << @all_polished_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
-      @transactions << @all_polished_transaction.where("due_date < ? && paid = ?", Date.today, false) if status.include? 'overdue'
+      @transactions << @all_polished_transaction.where("due_date > ? && paid = ?", Date.current, false) if status.include? 'pending'
+      @transactions << @all_polished_transaction.where("due_date < ? && paid = ?", Date.current, false) if status.include? 'overdue'
       @transactions << @all_polished_transaction.where("buyer_confirmed = ?", false) if status.include? 'awaiting confirmation'
       @transactions << @all_polished_transaction.where("paid = ?", true) if status.include? 'completed'
       @transactions << @all_polished_transaction if status.include? 'all'
@@ -222,7 +222,7 @@ class Api::V1::CompaniesController < ApplicationController
         if t.paid == false && t.due_date.present?
           other = {
               seller_days_limit: (current_company.id == t.buyer_id) ? get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-              buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
+              buyer_days_limit: (Date.current - t.created_at.to_date).to_i,
               market_limit: (current_company.id == t.buyer_id) ? number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
           }
           data.merge!(other)
@@ -235,7 +235,7 @@ class Api::V1::CompaniesController < ApplicationController
 
   def get_rough_transaction(company, search, status, activity)
     @array = []
-    no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count
+    no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).count
 
     @transactions = []
     @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) AND cancel = ?', current_company.id, current_company.id, false)
@@ -250,9 +250,9 @@ class Api::V1::CompaniesController < ApplicationController
     end
 
     if status.present?
-      @transactions << @all_rough_transaction.where("due_date > ? && paid = ?", Date.today, false) if status.include? 'pending'
+      @transactions << @all_rough_transaction.where("due_date > ? && paid = ?", Date.current, false) if status.include? 'pending'
       @transactions << @all_rough_transaction.where("buyer_confirmed = ?", false) if status.include? 'awaiting confirmation'
-      @transactions << @all_rough_transaction.where("due_date < ? && paid = ?", Date.today, false) if status.include? 'overdue'
+      @transactions << @all_rough_transaction.where("due_date < ? && paid = ?", Date.current, false) if status.include? 'overdue'
       @transactions << @all_rough_transaction.where("paid = ?", true) if status.include? 'completed'
       @transactions << @all_rough_transaction if status.include? 'all'
     else
@@ -301,7 +301,7 @@ class Api::V1::CompaniesController < ApplicationController
         if t.paid == false && t.due_date.present?
           other = {
             seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-            buyer_days_limit: (Date.today - t.created_at.to_date).to_i,
+            buyer_days_limit: (Date.current - t.created_at.to_date).to_i,
             market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
           }
           data.merge!(other)

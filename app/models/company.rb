@@ -41,7 +41,7 @@ class Company < ApplicationRecord
     else
       number_of_days = dl.days_limit.to_i
     end
-    date = Date.today - number_of_days.days
+    date = Date.current - number_of_days.days
     if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
       true
     else
@@ -81,7 +81,7 @@ class Company < ApplicationRecord
   end
 
   def is_overdue
-    date = Date.today
+    date = Date.current
     if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?
       true
     else
@@ -93,7 +93,7 @@ class Company < ApplicationRecord
     days_limit = self.seller_days_limits.where(buyer_id: buyer_id).first
     transaction = Transaction.where("seller_id = ? AND buyer_id = ? AND paid = ?", self.id, buyer_id, false)
     transaction.each do |t|
-      overdue_days = (Date.today - t.due_date.to_date).to_i if t.due_date.present?
+      overdue_days = (Date.current - t.due_date.to_date).to_i if t.due_date.present?
       if days_limit.present?
         limit = days_limit.days_limit
       else
@@ -184,10 +184,10 @@ class Company < ApplicationRecord
       scores['first']['total'] = ((scores['first']['late_payments'].to_f / (scores['first']['on_time_payments'].to_f / scores['first']['months_of_data'].to_f)) * 0.25).round(2)
 
       #Second
-      avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
-      avg_month_end = Date.civil(Date.today.year, Date.today.mon-1, -1)
-      month_start = Date.civil(Date.today.year, Date.today.mon)
-      month_end = Date.civil(Date.today.year, Date.today.mon, -1)
+      avg_month_start = Date.civil(Date.current.year, Date.current.mon-3)
+      avg_month_end = Date.civil(Date.current.year, Date.current.mon-1, -1)
+      month_start = Date.civil(Date.current.year, Date.current.mon)
+      month_end = Date.civil(Date.current.year, Date.current.mon, -1)
       avg_unpaid = Transaction.where("buyer_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, avg_month_start, avg_month_end, false, true).count()
       scores['second']['avg_3_month_pending_count'] = (avg_unpaid.to_f/3).round(2)
       if avg_unpaid > 0
@@ -272,10 +272,10 @@ class Company < ApplicationRecord
       scores['first']['total'] = ((scores['first']['late_payments'].to_f / (scores['first']['on_time_payments'].to_f / scores['first']['months_of_data'].to_f)) * 0.25).round(2)
 
       #Second
-      avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
-      avg_month_end = Date.civil(Date.today.year, Date.today.mon-1, -1)
-      month_start = Date.civil(Date.today.year, Date.today.mon)
-      month_end = Date.civil(Date.today.year, Date.today.mon, -1)
+      avg_month_start = Date.civil(Date.current.year, Date.current.mon-3)
+      avg_month_end = Date.civil(Date.current.year, Date.current.mon-1, -1)
+      month_start = Date.civil(Date.current.current, Date.current.mon)
+      month_end = Date.civil(Date.current.year, Date.current.mon, -1)
       avg_unpaid = Transaction.where("seller_id = ? AND created_at >= ? AND created_at <= ? AND paid = ? AND buyer_confirmed = ?", self.id, avg_month_start, avg_month_end, false, true).count()
       scores['second']['avg_3_month_pending_count'] = (avg_unpaid.to_f/3).round(2)
       if avg_unpaid > 0
@@ -314,18 +314,18 @@ class Company < ApplicationRecord
   end
 
   def get_activity
-    c = Date.today.day
+    c = Date.current.day
     #TODO - set default value for start date
     date_start = 0
     if (c-30).positive?
-      date_start = Date.civil(Date.today.year, Date.today.mon, (c - 30).to_i)
+      date_start = Date.civil(Date.current.year, Date.current.mon, (c - 30).to_i)
     else
-      date_start = Date.civil(Date.today.year, Date.today.mon - 1, (Date.civil(Date.today.year, Date.today.mon-1, -1).day - 29 + c))
+      date_start = Date.civil(Date.current.year, Date.current.mon - 1, (Date.civil(Date.current.year, Date.current.mon-1, -1).day - 29 + c))
     end
-    avg_month_start = Date.civil(Date.today.year, Date.today.mon-3)
-    avg_month_end = Date.civil(Date.today.year, Date.today.mon-1, -1)
+    avg_month_start = Date.civil(Date.current.year, Date.current.mon-3)
+    avg_month_end = Date.civil(Date.current.year, Date.current.mon-1, -1)
 
-    last_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id, self.id, date_start, Date.today, true)
+    last_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id, self.id, date_start, Date.current, true)
     avg_transactions = Transaction.where("( seller_id = ? or buyer_id = ? ) AND created_at >= ? AND created_at <= ? AND buyer_confirmed = ?", self.id, self.id, avg_month_start, avg_month_end, true)
 
     scores = {
@@ -454,7 +454,7 @@ class Company < ApplicationRecord
             seller_id: id,
             buyer_id: dummy_co_1.id,
             trading_parcel_id: trading_parcel2.id,
-            due_date: Date.today + (trading_parcel2.credit_period).days,
+            due_date: Date.current + (trading_parcel2.credit_period).days,
             price: 10,
             transaction_type: 'manual',
             credit: 30,
@@ -468,7 +468,7 @@ class Company < ApplicationRecord
         seller_id: id,
         buyer_id: dummy_co_1.id,
         trading_parcel_id: trading_parcel2.id,
-        due_date: Date.today - (trading_parcel2.credit_period).days,
+        due_date: Date.current - (trading_parcel2.credit_period).days,
         price: 10,
         transaction_type: 'manual',
         credit: 30,
@@ -481,7 +481,7 @@ class Company < ApplicationRecord
         seller_id: id,
         buyer_id: dummy_co_1.id,
         trading_parcel_id: trading_parcel2.id,
-        due_date: Date.today + (trading_parcel2.credit_period).days,
+        due_date: Date.current + (trading_parcel2.credit_period).days,
         price: 10,
         transaction_type: 'manual',
         credit: 30,
@@ -519,7 +519,7 @@ class Company < ApplicationRecord
   end
 
   def self.add_historical_data(buyer_id, seller_id, credit_limit, market_limit, overdue_limit)
-    historical_record = HistoricalRecord.new(buyer_id: buyer_id, seller_id: seller_id, total_limit: credit_limit, market_limit: market_limit, overdue_limit: overdue_limit, date: Date.today)
+    historical_record = HistoricalRecord.new(buyer_id: buyer_id, seller_id: seller_id, total_limit: credit_limit, market_limit: market_limit, overdue_limit: overdue_limit, date: Date.current)
     historical_record.save
     return historical_record.id
   end
@@ -537,9 +537,9 @@ class Company < ApplicationRecord
     else
       number_of_days = dl.days_limit.to_i
     end
-    date = Date.today - number_of_days.days
+    date = Date.current - number_of_days.days
     oldest_transaction = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", buyer_id, date, false).order(:due_date).first
-    new_limit = Date.today - oldest_transaction.due_date.to_date + 5
+    new_limit = Date.current - oldest_transaction.due_date.to_date + 5
     if dl
       dl.days_limit = new_limit
       dl.save

@@ -23,7 +23,7 @@ module Api
 
       def notifications
         if current_customer
-          notifications = CustomerNotification.where(customer_id: current_customer.id).where("created_at > ?", Time.now - 4.weeks)
+          notifications = CustomerNotification.where(customer_id: current_customer.id).where("created_at > ?", Time.current - 4.weeks)
           render json: { success: true, notifications: notification_history_data(notifications), response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized

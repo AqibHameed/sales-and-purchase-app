@@ -102,7 +102,7 @@ class AuctionsController < ApplicationController
 
   def move_to_next_round
     @next_round = @auction.current_auction_round
-    @next_round.update(started_at: Time.now) if @next_round.started_at.blank?
+    @next_round.update(started_at: Time.current) if @next_round.started_at.blank?
   end
 
   def only_single_customer_left_for_the_stone? bids, stone_id

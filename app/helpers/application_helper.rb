@@ -94,32 +94,32 @@ module ApplicationHelper
     if condition == '0'
       transactions = Transaction.where('credit = ? and buyer_id =?', 0, customer.id)
       count = transactions.count
-      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", customer.id, Date.today, false, true, 0).sum(:total_amount)
-      overdue = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", customer.id, Date.today, false, true, 0).sum(:total_amount)
+      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", customer.id, Date.current, false, true, 0).sum(:total_amount)
+      overdue = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", customer.id, Date.current, false, true, 0).sum(:total_amount)
       complete = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", customer.id, true, true, 0).sum(:total_amount)
     elsif condition =='less_30'
       transactions = Transaction.where('credit >= ? and credit <= ? and buyer_id =?',1, 30, customer.id)
       count = transactions.count
-      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.today, false, true, 1, 0).sum(:total_amount)
-      overdue = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.today, false, true, 1, 30).sum(:total_amount)
+      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.current, false, true, 1, 0).sum(:total_amount)
+      overdue = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.current, false, true, 1, 30).sum(:total_amount)
       complete = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, true, true, 1, 30).sum(:total_amount)
     elsif condition =='60'
       transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 30, 60, customer.id)
       count = transactions.count
-      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.today, false, true, 30, 60).sum(:total_amount)
-      overdue = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.today, false, true, 30, 60).sum(:total_amount)
+      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.current, false, true, 30, 60).sum(:total_amount)
+      overdue = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.current, false, true, 30, 60).sum(:total_amount)
       complete = Transaction.where("buyer_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, true, true, 30, 60).sum(:total_amount)
     elsif condition =='90'
       transactions = Transaction.where('credit > ? and credit <= ? and buyer_id =?', 60, 90, customer.id)
       count = transactions.count
-      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.today, false, true, 60, 90).sum(:total_amount)
-      overdue = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.today, false, true, 60, 90).sum(:total_amount)
+      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.current, false, true, 60, 90).sum(:total_amount)
+      overdue = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, Date.current, false, true, 60, 90).sum(:total_amount)
       complete = Transaction.where("buyer_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", customer.id, true, true, 60, 90).sum(:total_amount)
     else
       transactions = Transaction.where('credit > ? and buyer_id =?', 90,customer.id)
       count = transactions.count
-      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", customer.id, Date.today, false, true, 90).sum(:total_amount)
-      overdue = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", customer.id, Date.today, false, true, 90).sum(:total_amount)
+      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", customer.id, Date.current, false, true, 90).sum(:total_amount)
+      overdue = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", customer.id, Date.current, false, true, 90).sum(:total_amount)
       complete = Transaction.where("buyer_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", customer.id, true, true, 90).sum(:total_amount)
     end
     count_percent=((count/total.to_f)*100).to_i rescue 0
@@ -141,32 +141,32 @@ module ApplicationHelper
     if condition == '0'
       transactions = Transaction.where('credit = ? and seller_id =?', 0, company.id)
       count = transactions.count
-      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", company.id, Date.today, false, true, 0).sum(:total_amount)
-      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", company.id, Date.today, false, true, 0).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", company.id, Date.current, false, true, 0).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", company.id, Date.current, false, true, 0).sum(:total_amount)
       complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit = ?", company.id, true, true, 0).sum(:total_amount)
     elsif condition == 'less_30'
       transactions = Transaction.where('credit >= ? and credit <= ? and seller_id =?', 1, 30, company.id)
       count = transactions.count
-      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", company.id, Date.today, false, true, 1, 30).sum(:total_amount)
-      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", company.id, Date.today, false, true, 1, 30).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", company.id, Date.current, false, true, 1, 30).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", company.id, Date.current, false, true, 1, 30).sum(:total_amount)
       complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", company.id, true, true,1,30).sum(:total_amount)
     elsif condition == '60'
       transactions = Transaction.where('credit > ? and credit <= ? and seller_id =?', 30, 60, company.id)
       count = transactions.count
-      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.today, false, true,30,60).sum(:total_amount)
-      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.today, false, true,30,60).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.current, false, true,30,60).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.current, false, true,30,60).sum(:total_amount)
       complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, true, true,30,60).sum(:total_amount)
     elsif condition == '90'
       transactions = Transaction.where('credit > ? and credit <= ? and seller_id =?', 60, 90, company.id)
       count = transactions.count
-      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ?  and credit <= ?", company.id, Date.today, false, true, 60, 90).sum(:total_amount)
-      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.today, false, true, 60, 90).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit > ?  and credit <= ?", company.id, Date.current, false, true, 60, 90).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, Date.current, false, true, 60, 90).sum(:total_amount)
       complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ? and credit <= ?", company.id, true, true, 60, 90).sum(:total_amount)
     else
       transactions = Transaction.where('credit > ? and seller_id =?', 90, company.id)
       count = transactions.count
-      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >?", company.id, Date.today, false, true, 90).sum(:total_amount)
-      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", company.id, Date.today, false, true, 90).sum(:total_amount)
+      pending = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >?", company.id, Date.current, false, true, 90).sum(:total_amount)
+      overdue = Transaction.where("seller_id =? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", company.id, Date.current, false, true, 90).sum(:total_amount)
       complete = Transaction.where("seller_id = ? AND paid = ? AND buyer_confirmed = ? AND credit > ?", company.id, true, true, 90).sum(:total_amount)
     end
     count_percent = ((count/total.to_f)*100).to_i rescue 0
@@ -271,8 +271,8 @@ module ApplicationHelper
   end
 
   def get_market_limit(buyer, supplier)
-    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.today, false, true)
-    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.today, false, true)
+    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
+    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
 
     @amount = []
     pendings.each do |t|
@@ -340,9 +340,9 @@ module ApplicationHelper
     else
       if transaction.due_date.nil? || transaction.due_date.blank?
         'N/A'
-      elsif (transaction.due_date > Date.today) && (transaction.paid == false)
+      elsif (transaction.due_date > Date.current) && (transaction.paid == false)
         'Pending Payment'
-      elsif (transaction.due_date < Date.today) && (transaction.paid == false)
+      elsif (transaction.due_date < Date.current) && (transaction.paid == false)
         'Overdue'
       end
     end
@@ -582,8 +582,8 @@ module ApplicationHelper
   end
 
   def get_market_limit_for_group(buyer, seller)
-    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, seller.id, Date.today, false, true)
-    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, seller.id, Date.today, false, true)
+    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, seller.id, Date.current, false, true)
+    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, seller.id, Date.current, false, true)
     @amount = []
     pendings.each do |t|
       @amount << t.remaining_amount
@@ -619,7 +619,7 @@ module ApplicationHelper
     @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).first
     if @group.present?
       days_limit = @group.group_overdue_limit
-      date = Date.today - days_limit.days
+      date = Date.current - days_limit.days
       all_members = @group.company_id
       if Transaction.where("buyer_id IN (?) AND due_date < ? AND paid = ?", all_members, date, false).present?
         return true
@@ -652,7 +652,7 @@ module ApplicationHelper
     count = 0
     transactions = company.buyer_transactions.where(seller_id: current_company.id)
     transactions.each do |t|
-      if t.due_date.present? && (Date.today - t.due_date.to_date).to_i > 30
+      if t.due_date.present? && (Date.current - t.due_date.to_date).to_i > 30
         count = count + 1
       end
     end

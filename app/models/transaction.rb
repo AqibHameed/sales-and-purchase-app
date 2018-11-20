@@ -55,8 +55,8 @@ class Transaction < ApplicationRecord
     trading_parcel = proposal.trading_parcel
     Transaction.create(buyer_id: proposal.buyer_id, seller_id: proposal.seller_id,
                       trading_parcel_id: proposal.trading_parcel_id, price: proposal.price,
-                      credit: proposal.credit, due_date: Date.today + (trading_parcel.credit_period).days,
-                      paid: false, buyer_confirmed: true, created_at: Time.now, diamond_type: trading_parcel.diamond_type)
+                      credit: proposal.credit, due_date: Date.current + (trading_parcel.credit_period).days,
+                      paid: false, buyer_confirmed: true, created_at: Time.current, diamond_type: trading_parcel.diamond_type)
   end
 
   # def update_credit_limit
@@ -104,19 +104,19 @@ class Transaction < ApplicationRecord
   end
 
   def self.pending_sent_transaction(company_id)
-    total_pending_sent = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", company_id, Date.today, false, true)
+    total_pending_sent = Transaction.where("seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", company_id, Date.current, false, true)
   end
 
   def self.pending_received_transaction(company_id)
-    total_pending_received = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", company_id, Date.today, false, true)
+    total_pending_received = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", company_id, Date.current, false, true)
   end
 
   def self.overdue_received_transaction(company_id)
-    total_overdue_received = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?", company_id, Date.today, false, true)
+    total_overdue_received = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?", company_id, Date.current, false, true)
   end
 
   def self.overdue_sent_transaction(company_id)
-    total_overdue_sent = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?", company_id, Date.today, false, true)
+    total_overdue_sent = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?", company_id, Date.current, false, true)
   end
 
   def self.complete_received_transaction(company_id)
@@ -132,7 +132,7 @@ class Transaction < ApplicationRecord
       invoice_date = t.created_at
       credit_days = t.buyer.credit_days_by_supplier(t.supplier)
       overdue_date = invoice_date + credit_days.days
-      if Date.today == overdue_date
+      if Date.current == overdue_date
         TenderMailer.send_overdue_transaction_mail(t).deliver rescue logger.info "Error sending email"
       end
     end

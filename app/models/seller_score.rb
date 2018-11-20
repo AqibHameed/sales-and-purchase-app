@@ -18,8 +18,8 @@ class SellerScore < ApplicationRecord
         seller_score.due_date = self.calculate_due_date(company.id)
         seller_score.credit_used = self.calculate_credit_used(company.id)
         seller_score.actual = true
-        seller_score.created_at = Time.now
-        seller_score.updated_at = Time.now
+        seller_score.created_at = Time.current
+        seller_score.updated_at = Time.current
 
         seller_score.save
       end
@@ -114,7 +114,7 @@ class SellerScore < ApplicationRecord
         due_date < ? AND
         paid = ? AND
         buyer_confirmed = ? ",
-               company_id, Date.today, false, true
+               company_id, Date.current, false, true
     ).first
 
     return (result.current_risk.to_f).round(2)

@@ -73,7 +73,7 @@ class TendersController < ApplicationController
 
   def index
     col_str = ""
-    upcomimg_str = "open_date > '#{Time.now}'"
+    upcomimg_str = "open_date > '#{Time.current}'"
     if params[:comapany] || params[:tender] || params[:status]
       col_str =  "tenders.name LIKE '%#{params[:tender]}%'"  unless params[:tender].blank?
       col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:company]}" : " AND tenders.supplier_id = #{params[:company]}" unless params[:company].blank?
@@ -105,7 +105,7 @@ class TendersController < ApplicationController
       # @notes = current_customer.notes.where(tender_id: @tender.id).collect(&:key)
       companies = current_customer.suppliers
       #@tender = companies.eager_load(tenders: [:stones]).where("tenders.id=#{params[:id].to_i}").first.try(:tenders).find(params[:id])
-      if @tender.open_date < Time.now && Time.now < @tender.close_date
+      if @tender.open_date < Time.current && Time.current < @tender.close_date
         @round = 1
       end
       @notes = current_customer.notes.where(tender_id: @tender.try(:id)).collect(&:key)
@@ -302,7 +302,7 @@ class TendersController < ApplicationController
   end
 
   def history
-    @tenders = Tender.where('close_date < ?', Date.today)
+    @tenders = Tender.where('close_date < ?', Date.current)
     @supplier = Supplier.all
     @mine = SupplierMine.all
     # if current_customer
@@ -330,14 +330,14 @@ class TendersController < ApplicationController
   end
 
   def trading_history
-    @pending_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ?',current_company.id, current_company.id, Date.today, false)
-    @overdue_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ?',current_company.id, current_company.id, Date.today, false)
+    @pending_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ?',current_company.id, current_company.id, Date.current, false)
+    @overdue_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ?',current_company.id, current_company.id, Date.current, false)
     @completed_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) and paid = ?',current_company.id, current_company.id, true)
   end
 
   def polished_trading_history
-    @polished_pending_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.today, false, 'Polished')
-    @polished_overdue_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.today, false, 'Polished')
+    @polished_pending_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date > ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.current, false, 'Polished')
+    @polished_overdue_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and due_date < ? and paid = ? and diamond_type = ?',current_company.id, current_company.id, Date.current, false, 'Polished')
     @polished_completed_transactions = Transaction.includes(:trading_parcel).where('(buyer_id = ? or seller_id = ?) and paid = ? and diamond_type = ?',current_company.id, current_company.id, true, 'Polished')
   end
 

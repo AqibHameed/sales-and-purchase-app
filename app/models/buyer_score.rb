@@ -118,7 +118,7 @@ class BuyerScore < ApplicationRecord
         due_date < ? AND
         paid = ? AND
         buyer_confirmed = ? ",
-               company_id, Date.today, false, true
+               company_id, Date.current, false, true
     ).first
 
     return (result.current_risk.to_f).round(2)

@@ -16,7 +16,7 @@ class News < ApplicationRecord
       field :title
       field :url
       field :date do
-        default_value Date.today
+        default_value Date.current
       end
       field :category, :enum do
         default_value 'News'

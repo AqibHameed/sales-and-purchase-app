@@ -20,7 +20,7 @@ class Auction < ApplicationRecord
   end
 
   def is_ready_to_start?
-    !started && (time <= Time.now)
+    !started && (time <= Time.current)
   end
 
   def last_round

@@ -296,8 +296,8 @@ class CustomersController < ApplicationController
   end
 
   def transactions
-    @pending_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ?", current_company.id, Date.today, false).page params[:page]
-    @overdue_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ?", current_company.id, Date.today, false).page params[:page]
+    @pending_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ?", current_company.id, Date.current, false).page params[:page]
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ?", current_company.id, Date.current, false).page params[:page]
     @complete_transactions = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ?", current_company.id, true).page params[:page]
     @rejected_transactions = Proposal.includes(:trading_parcel).where("status = ? AND buyer_id = ?", 2, current_company.id).page params[:page]
   end

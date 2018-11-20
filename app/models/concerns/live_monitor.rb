@@ -33,9 +33,9 @@ module LiveMonitor
         date = company.buyer_transactions.last.paid_date
       end
 
-      transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).order(:due_date).first
+      transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).order(:due_date).first
       if transaction.present? && transaction.due_date.present?
-        late_days = (Date.today.to_date - transaction.due_date.to_date).to_i
+        late_days = (Date.current.to_date - transaction.due_date.to_date).to_i
       else
         late_days = 0
       end
@@ -47,15 +47,15 @@ module LiveMonitor
 
 
     {
-        invoices_overdue: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.today, false).count : 0,
+        invoices_overdue: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).count : 0,
         paid_date: date,
         late_days: late_days.present? ? late_days.abs : 0,
         buyer_days_limit: buyer_days_limit(company, current_company),
         market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
         supplier_paid: company.supplier_paid,
         supplier_unpaid: company.supplier_unpaid,
-        outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
-        overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.today, false).map(&:remaining_amount).compact.sum : 0,
+        outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.current, false).map(&:remaining_amount).compact.sum : 0,
+        overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.current, false).map(&:remaining_amount).compact.sum : 0,
         given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
         given_market_limit: @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
         given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 30),
@@ -68,7 +68,7 @@ module LiveMonitor
     count = 0
     transactions = company.buyer_transactions.where(seller_id: current_company.id)
     transactions.each do |t|
-      if t.due_date.present? && (Date.today - t.due_date.to_date).to_i > 30
+      if t.due_date.present? && (Date.current - t.due_date.to_date).to_i > 30
         count = count + 1
       end
     end

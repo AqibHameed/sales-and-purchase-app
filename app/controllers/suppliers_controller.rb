@@ -90,8 +90,8 @@ class SuppliersController < ApplicationController
   end
 
   def transactions
-    @pending_transactions = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
-    @overdue_transactions = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.today, false).page params[:page]
+    @pending_transactions = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date >= ? AND paid = ?", current_customer.id, Date.current, false).page params[:page]
+    @overdue_transactions = Transaction.includes(:trading_parcel).where("seller_id = ? AND due_date < ? AND paid = ?", current_customer.id, Date.current, false).page params[:page]
     @complete_transactions = Transaction.includes(:trading_parcel).where("seller_id = ? AND paid = ?", current_customer.id, true).page params[:page]
     @rejected_transactions = Proposal.includes(:trading_parcel).where("status = ? AND seller_id = ?", 2, current_customer.id).page params[:page]
   end
@@ -230,7 +230,7 @@ class SuppliersController < ApplicationController
     cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_initialize
     unless cl.id.nil?
       dl = DaysLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first
-      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.credit_limit, market_limit: cl.market_limit, overdue_limit: dl.present? ? dl.days_limit : 0, date: Date.today)
+      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.credit_limit, market_limit: cl.market_limit, overdue_limit: dl.present? ? dl.days_limit : 0, date: Date.current)
     end
     cl.credit_limit = params[:limit].to_f
     cl.errors.add(:credit_limit, "should not be negative ") if params[:limit].to_f < 0
@@ -275,7 +275,7 @@ class SuppliersController < ApplicationController
       dl.days_limit = params[:limit]
     else
       cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first
-      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.present? ? cl.credit_limit : 0, market_limit: cl.present? ? cl.market_limit : 0, overdue_limit: dl.days_limit, date: Date.today)
+      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.present? ? cl.credit_limit : 0, market_limit: cl.present? ? cl.market_limit : 0, overdue_limit: dl.days_limit, date: Date.current)
 
       dl.days_limit = dl.days_limit + params[:limit].to_i
     end
@@ -292,7 +292,7 @@ class SuppliersController < ApplicationController
     cl = CreditLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first_or_create
     unless cl.id.nil?
       dl = DaysLimit.where(buyer_id: params[:buyer_id], seller_id: current_company.id).first
-      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.credit_limit, market_limit: cl.market_limit, overdue_limit: dl.present? ? dl.days_limit : 0, date: Date.today)
+      historical_record = HistoricalRecord.new(buyer_id: params[:buyer_id], seller_id: current_company.id, total_limit: cl.credit_limit, market_limit: cl.market_limit, overdue_limit: dl.present? ? dl.days_limit : 0, date: Date.current)
     end
     cl.credit_limit = 0 unless cl.credit_limit.present?
     cl.market_limit = params[:market_limit]

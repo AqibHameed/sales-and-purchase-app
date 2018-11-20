@@ -143,7 +143,7 @@ class TradingParcelsController < ApplicationController
       save_transaction(transaction, @parcel)
     elsif params[:check].present? && params[:check] == "true"
       if registered_users < 1
-        if params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.today
+        if params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.current
           save_transaction(transaction, @parcel)
         else
           if buyer.buyer_transactions.count < 1

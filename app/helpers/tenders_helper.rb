@@ -1,6 +1,6 @@
 module TendersHelper
   def time_remaining(close_date)
-    if close_date < Time.now
+    if close_date < Time.current
       'Closed'
     else
       time_ago_in_words(close_date)
