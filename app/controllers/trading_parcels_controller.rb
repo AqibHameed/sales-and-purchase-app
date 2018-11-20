@@ -191,15 +191,12 @@ class TradingParcelsController < ApplicationController
       credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
       if available_limit < total_price
         if credit_limit.nil?
-          credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
+          credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price, market_limit: total_price)
         else
           new_limit = credit_limit.credit_limit + (total_price - available_limit)
-          credit_limit.update_attributes(credit_limit: new_limit)
+          new_market_limit =  credit_limit.market_limit + total_price - available_limit
+          credit_limit.update_attributes(market_limit: new_market_limit, credit_limit: new_limit)
         end
-      end
-      if available_limit < total_price
-        new_market_limit =  credit_limit.market_limit + total_price - available_limit
-        credit_limit.update_attributes(market_limit: new_market_limit)
       end
       parcel.update_attributes(sold: true)
       redirect_to trading_customers_path, notice: 'Transaction added successfully'
