@@ -138,8 +138,6 @@ module Api
                 save_transaction(transaction, @parcel)
               elsif params[:available_credit_limit].present? && params[:available_credit_limit] == true 
                 save_transaction(transaction, @parcel)
-              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == false
-              elsif params[:available_market_overdue].present? && params[:available_market_overdue] == false
               elsif params[:available_market_overdue].present? && params[:available_market_overdue] == true
                 check_credit_limit(transaction, @parcel)
               else
