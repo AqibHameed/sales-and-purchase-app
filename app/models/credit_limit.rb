@@ -9,7 +9,7 @@ class CreditLimit < ApplicationRecord
   validate :verify_market_limit_is_greater_than_credit_limit?
 
   def verify_market_limit_is_greater_than_credit_limit?
-    errors.add(:market_limit, 'Should be greater than credit limit') if market_limit < credit_limit
+    errors.add(:market_limit, 'Should be greater than credit limit') if credit_limit > market_limit
   end
 
 end

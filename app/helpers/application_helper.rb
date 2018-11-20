@@ -267,7 +267,7 @@ module ApplicationHelper
       @amount << t.remaining_amount
     end
     transaction_amt = @amount.sum
-    number_with_precision(transaction_amt, precision: 2)
+    return  number_with_precision(transaction_amt, precision: 2)
   end
 
   def get_market_limit(buyer, supplier)
