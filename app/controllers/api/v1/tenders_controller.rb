@@ -132,9 +132,9 @@ module Api
             if stone_rating.nil?
               stone_rating = StoneRating.new(comments: params[:comments], valuation: params[:valuation], parcel_rating: params[:parcel_rating], stone_id: stone_parcel.id, customer_id: current_customer.id)
             else
-              stone_rating.comments = params[:comments]
-              stone_rating.parcel_rating = params[:parcel_rating]
-              stone_rating.valuation = params[:valuation]
+              stone_rating.comments = params[:comments] unless params[:comments].blank?
+              stone_rating.parcel_rating = params[:parcel_rating] unless params[:parcel_rating].blank?
+              stone_rating.valuation = params[:valuation] unless params[:valuation].blank?
             end
             if stone_rating.save
               render :json => {stone_parcel: rating_stone_parcel(stone_rating), response_code: 200}
