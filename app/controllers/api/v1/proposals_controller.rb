@@ -314,7 +314,7 @@ module Api
             if @available_credit_limit < @total_price
               credit_limit = CreditLimit.where(buyer_id: @proposal.buyer_id, seller_id: current_company.id).first
               if credit_limit.nil?
-                CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, credit_limit: @total_price)
+                CreditLimit.create(buyer_id: @proposal.buyer_id, seller_id: current_company.id, credit_limit: @total_price, market_limit: @total_price)
               else
                 @new_limit = credit_limit.credit_limit.to_f + @total_price.to_f  -  @available_credit_limit.to_f
                 credit_limit.update_attributes(credit_limit: @new_limit)
