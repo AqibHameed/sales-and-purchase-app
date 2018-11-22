@@ -2,7 +2,8 @@ module Api
   module V1
     class TendersController <ApiController
       before_action :current_customer
-      skip_before_action :verify_authenticity_token, only: [:stone_parcel, :index]
+      protect_from_forgery with: :null_session
+      skip_before_action :verify_authenticity_token, only: [:index]
 
       def index
         col_str = ""
@@ -117,7 +118,7 @@ module Api
       end
 
       def tender_parcel
-        stones = Stone.include(:stone_ratings).where(tender_id: params[:tender_id])
+        stones = Stone.includes(:stone_ratings).where(tender_id: params[:tender_id])
         render json: {success: true, tender_parcels: stone_data(stones), response_code: 200}
       end
 
