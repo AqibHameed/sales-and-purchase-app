@@ -117,7 +117,7 @@ module Api
       end
 
       def tender_parcel
-        stones = Stone.where(tender_id: params[:tender_id])
+        stones = Stone.include(:stone_ratings).where(tender_id: params[:tender_id])
         render json: {success: true, tender_parcels: stone_data(stones), response_code: 200}
       end
 
@@ -275,24 +275,24 @@ module Api
       def stone_data(stones)
         @stones = []
         stones.each do |stone|
-          stone_rating = StoneRating.where(customer_id: current_customer.try(:id), stone_id: stone.id).first
+          stone_rating = stone.stone_ratings.where(customer_id: current_customer.try(&:id)).last
           @stones << {
               id: stone.id,
               stone_type: stone.stone_type,
               no_of_stones: stone.no_of_stones,
-              :size => stone.size,
-              :weight => stone.weight,
-              :purity => stone.purity,
-              :color => stone.color,
-              :polished => stone.polished,
-              :deec_no => stone.deec_no,
-              :lot_no => stone.lot_no,
-              :description => stone.description,
-              :comments => stone_rating.try(:comments),
-              :valuation => stone_rating.try(:valuation),
-              :parcel_rating => stone_rating.try(:parcel_rating),
-              :images => parcel_images(stone),
-              :winners_data => historical_data(stone.try(:tender).try(:id), stone)
+              size: stone.size,
+              weight: stone.weight,
+              purity: stone.purity,
+              color: stone.color,
+              polished: stone.polished,
+              deec_no: stone.deec_no,
+              lot_no: stone.lot_no,
+              description: stone.description,
+              comments: stone_rating.try(:comments),
+              valuation: stone_rating.try(:valuation),
+              parcel_rating: stone_rating.try(:parcel_rating),
+              images: parcel_images(stone),
+              winners_data: historical_data(stone.try(:tender).try(:id), stone)
           }
         end
         @stones

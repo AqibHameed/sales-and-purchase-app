@@ -112,7 +112,7 @@ RSpec.describe ProposalsController, type: :controller do
         companies_groups = create(:companies_group, company_id: [buyer.company.id], seller_id: @customer.id)
 
         days_limit = companies_groups.group_overdue_limit
-        date = Date.today - days_limit.days
+        date = Date.current - days_limit.days
         all_members = companies_groups.company_id
 
         put :accept, params: {id: proposal.id, check: true, format: :js}
