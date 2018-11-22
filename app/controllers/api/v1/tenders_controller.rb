@@ -117,7 +117,7 @@ module Api
       end
 
       def tender_parcel
-        stones = Stone.include(:stone_ratings).where(tender_id: params[:tender_id])
+        stones = Stone.includes(:stone_ratings).where(tender_id: params[:tender_id])
         render json: {success: true, tender_parcels: stone_data(stones), response_code: 200}
       end
 
