@@ -189,7 +189,7 @@ module Api
           credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
           if available_limit < total_price
             if credit_limit.nil?
-              credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price)
+              credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price, market_limit: total_price)
             else
               new_limit = credit_limit.credit_limit.to_f + (total_price.to_f - available_limit.to_f)
               new_market_limit =  credit_limit.market_limit.to_f + total_price.to_f - available_limit.to_f
