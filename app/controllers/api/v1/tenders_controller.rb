@@ -2,7 +2,7 @@ module Api
   module V1
     class TendersController <ApiController
       # before_action :current_customer
-      skip_before_action :verify_authenticity_token, only: [:stone_parcel, :index]
+      skip_before_action :verify_authenticity_token, only: [:index]
 
       def index
         col_str = ""
