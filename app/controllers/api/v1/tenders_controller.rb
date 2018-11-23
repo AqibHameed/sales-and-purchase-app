@@ -1,7 +1,8 @@
 module Api
   module V1
     class TendersController <ApiController
-      # before_action :current_customer
+      before_action :current_customer
+      protect_from_forgery with: :null_session
       skip_before_action :verify_authenticity_token, only: [:index]
 
       def index
