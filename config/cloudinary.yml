@@ -3,6 +3,11 @@ production:
   api_key: <%= ENV['api_key'] %>
   api_secret: <%= ENV['api_secret'] %>
 
+staging:
+  cloud_name: <%= ENV['cloud_name'] %>
+  api_key: <%= ENV['api_key'] %>
+  api_secret: <%= ENV['api_secret'] %>
+
 development:
   cloud_name: <%= ENV['cloud_name'] %>
   api_key: <%= ENV['api_key'] %>
