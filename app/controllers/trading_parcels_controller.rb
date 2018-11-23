@@ -2,6 +2,7 @@ class TradingParcelsController < ApplicationController
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
   include ApplicationHelper
+  include LimitsHelper
 
   before_action :authenticate_customer!
   # before_action :authenticate_admin!
@@ -174,8 +175,8 @@ class TradingParcelsController < ApplicationController
   end
 
   def save_transaction(transaction, parcel)
-    buyer = Company.where(id: transaction.buyer_id).first
-    available_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
+    #buyer = Company.where(id: transaction.buyer_id).first
+    #available_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
     if transaction.save
       if transaction.buyer.customers.count < 1
         CustomerMailer.unregistered_users_mail_to_company(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
@@ -187,17 +188,19 @@ class TradingParcelsController < ApplicationController
       transaction.set_due_date
       transaction.generate_and_add_uid
       ## set limit ##
-      total_price = parcel.total_value
-      credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
-      if available_limit < total_price
-        if credit_limit.nil?
-          credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price, market_limit: total_price)
-        else
-          new_limit = credit_limit.credit_limit + (total_price - available_limit)
-          new_market_limit =  credit_limit.market_limit + total_price - available_limit
-          credit_limit.update_attributes(market_limit: new_market_limit, credit_limit: new_limit)
-        end
-      end
+
+      create_or_update_limits(transaction, parcel) if transaction.paid  == false
+      # total_price = parcel.total_value
+      # credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+      # if available_limit < total_price
+      #   if credit_limit.nil?
+      #     credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price, market_limit: total_price)
+      #   else
+      #     new_limit = credit_limit.credit_limit + (total_price - available_limit)
+      #     new_market_limit =  credit_limit.market_limit + total_price - available_limit
+      #     credit_limit.update_attributes(market_limit: new_market_limit, credit_limit: new_limit)
+      #   end
+      # end
       parcel.update_attributes(sold: true)
       redirect_to trading_customers_path, notice: 'Transaction added successfully'
     else
