@@ -10,10 +10,10 @@ module Api
 
       def add_credit_limit
         if current_company
-          cl = CreditLimit.where(seller_id: current_company.id, buyer_id: params[:buyer_id]).first_or_initialize
+          limit = CreditLimit.where(seller_id: current_company.id, buyer_id: params[:buyer_id]).first_or_initialize
           # total_clms = CreditLimit.where(seller_id: current_company.id).sum(:credit_limit)
-          cl.credit_limit = params[:limit].to_f
-          cl.errors.add(:credit_limit, "should not be negative ") if params[:limit].to_f < 0
+          limit.credit_limit = params[:limit].to_f
+          limit.errors.add(:credit_limit, "should not be negative ") if params[:limit].to_f < 0
 
           # if current_customer.parent_id.present?
           #   sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: current_company.id)
@@ -35,13 +35,13 @@ module Api
           # else
           #   cl.credit_limit  = total_limit.to_f
           # end
-          if cl.errors.any?
-            render json: { success: false, errors: cl.errors.full_messages.first }
+          if limit.errors.any?
+            render json: { success: false, errors: limit.errors.full_messages.first }
           else
-            if cl.save
-              render json: { success: true, message: 'Credit Limit updated.', limit: cl.credit_limit }
+            if limit.save
+              render json: { success: true, message: 'Credit Limit updated.', limit: limit.credit_limit }
             else
-              render json: { success: false, message: cl.errors.full_messages.first }
+              render json: { success: false, message: limit.errors.full_messages.first }
             end
           end
         else

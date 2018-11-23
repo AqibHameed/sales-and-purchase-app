@@ -1,6 +1,8 @@
 module Api
   module V1
+
     class TradingParcelsController <ApiController
+      include LimitsHelper
       skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy, :request_limit_increase, :accept_limit_increase, :reject_limit_increase]
 
       def create
@@ -120,6 +122,7 @@ module Api
       end
 
       def direct_sell
+
         if current_customer
           @parcel = TradingParcel.new(trading_parcel_params)
           @parcel.company_id = current_company.id
@@ -172,8 +175,8 @@ module Api
       end
 
       def save_transaction(transaction, parcel)
-        buyer = Company.where(id: transaction.buyer_id).first
-        available_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
+        #buyer = Company.where(id: transaction.buyer_id).first
+        #available_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
         if transaction.save
           if transaction.buyer.customers.count < 1
             CustomerMailer.unregistered_users_mail_to_company(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
@@ -184,18 +187,9 @@ module Api
           current_company.send_notification('New Direct Sell', all_user_ids)
           transaction.set_due_date
           transaction.generate_and_add_uid
-          ## set limit ##
-          total_price = parcel.total_value
-          credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
-          if available_limit < total_price
-            if credit_limit.nil?
-              credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price, market_limit: total_price)
-            else
-              new_limit = credit_limit.credit_limit.to_f + (total_price.to_f - available_limit.to_f)
-              new_market_limit =  credit_limit.market_limit.to_f + total_price.to_f - available_limit.to_f
-              credit_limit.update_attributes(market_limit: new_market_limit, credit_limit: new_limit)
-            end
-          end
+
+          create_or_update_limits(transaction, parcel) if transaction.paid  == false
+
           parcel.update_attributes(sold: true)
           render json: { success: true, notice: 'Transaction added successfully'}
         else
