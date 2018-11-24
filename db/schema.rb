@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181118150721) do
+ActiveRecord::Schema.define(version: 20181124161413) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -166,8 +166,8 @@ ActiveRecord::Schema.define(version: 20181118150721) do
   create_table "credit_limits", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "seller_id"
     t.integer "buyer_id"
-    t.decimal "credit_limit", precision: 10
-    t.decimal "market_limit", precision: 10
+    t.decimal "credit_limit", precision: 10, default: "0"
+    t.decimal "market_limit", precision: 10, default: "0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "star", default: false
