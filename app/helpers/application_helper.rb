@@ -229,6 +229,71 @@ module ApplicationHelper
     number_with_precision((total.to_f - used.to_f), precision: 2)
   end
 
+  def get_available_market_limit(buyer, credit_limit)
+    total = get_market_limit(credit_limit)
+    used  =  get_used_market_limit(buyer)
+    (total.to_f - used.to_f).round(2)
+  end
+
+  def get_market_limit(credit_limit)
+    if  credit_limit.market_limit.blank?
+      number_with_precision(0, precision: 2)
+    else
+      number_with_precision((credit_limit.market_limit), precision: 2)
+    end
+  end
+
+
+  def get_available_credit_limit_companies_group(buyer, supplier, companies_group)
+    total = get_credit_limit_companies_group(companies_group)
+    used  =  get_used_credit_limit(buyer, supplier)
+    number_with_precision((total.to_f - used.to_f), precision: 2)
+  end
+
+  def get_available_market_limit_companies_group(buyer, companies_group)
+    total = get_market_limit_companies_group(companies_group)
+    used  =  get_used_market_limit(buyer)
+    number_with_precision((total.to_f - used.to_f), precision: 2)
+  end
+
+  # def get_used_credit_limit_companies_group(buyer, supplier, companies_group)
+  #   transactions = Transaction.where(buyer_id: buyer.id, seller_id: supplier.id, paid: false, buyer_confirmed: true)
+  #   @amount = []
+  #   transactions.each do |t|
+  #     @amount << t.remaining_amount
+  #   end
+  #   transaction_amt = @amount.sum
+  #   return  number_with_precision(transaction_amt, precision: 2)
+  #
+  # end
+
+  def get_credit_limit_companies_group(company_group)
+    if company_group.credit_limit.nil? || company_group.credit_limit.blank?
+      number_with_precision(0, precision: 2)
+    else
+      number_with_precision((company_group.credit_limit), precision: 2)
+    end
+  end
+
+  def get_used_market_limit(buyer)
+    transactions = Transaction.where(buyer_id: buyer.id, paid: false, buyer_confirmed: true)
+    @amount = []
+    transactions.each do |t|
+      @amount << t.remaining_amount
+    end
+    transaction_amt = @amount.sum
+    return  number_with_precision(transaction_amt, precision: 2)
+  end
+
+  def get_market_limit_companies_group(company_group)
+    if  company_group.group_market_limit.blank?
+      number_with_precision(0, precision: 2)
+    else
+      number_with_precision((company_group.group_market_limit), precision: 2)
+    end
+  end
+
+
   def get_number_of_customers(supplier, amount,check)
     count = 0
     count1 = 0
@@ -270,20 +335,20 @@ module ApplicationHelper
     return  number_with_precision(transaction_amt, precision: 2)
   end
 
-  def get_market_limit(buyer, supplier)
-    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
-    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
-
-    @amount = []
-    pendings.each do |t|
-      @amount << t.remaining_amount
-    end
-    overdues.each do |o|
-      @amount << o.remaining_amount
-    end
-    pending_amt = @amount.sum
-    number_with_precision(pending_amt, precision: 2)
-  end
+  # def get_used_market_limit(buyer)
+  #   pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
+  #   overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
+  #
+  #   @amount = []
+  #   pendings.each do |t|
+  #     @amount << t.remaining_amount
+  #   end
+  #   overdues.each do |o|
+  #     @amount << o.remaining_amount
+  #   end
+  #   pending_amt = @amount.sum
+  #   number_with_precision(pending_amt, precision: 2)
+  # end
 
   def get_market_limit_from_credit_limit_table(buyer, supplier)
     CreditLimit.where(seller_id: supplier.id, buyer_id: buyer.id).first.market_limit.to_i rescue 0
@@ -582,8 +647,8 @@ module ApplicationHelper
   end
 
   def get_market_limit_for_group(buyer, seller)
-    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, seller.id, Date.current, false, true)
-    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND seller_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, seller.id, Date.current, false, true)
+    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
+    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
     @amount = []
     pendings.each do |t|
       @amount << t.remaining_amount

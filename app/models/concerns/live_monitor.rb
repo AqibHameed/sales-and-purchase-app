@@ -45,7 +45,6 @@ module LiveMonitor
     @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
     @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
 
-
     {
         invoices_overdue: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).count : 0,
         paid_date: date,
@@ -57,7 +56,7 @@ module LiveMonitor
         outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.current, false).map(&:remaining_amount).compact.sum : 0,
         overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.current, false).map(&:remaining_amount).compact.sum : 0,
         given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
-        given_market_limit: @group.present? ? @group.group_market_limit : (@credit_limit.present? ? @credit_limit.market_limit : 0),
+        given_market_limit: @credit_limit.present? ? @credit_limit.market_limit : 0,
         given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 30),
         last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.last.created_at : nil
     }
