@@ -26,10 +26,10 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def current_customer
-    token = request.headers['Authorization'].presence
-    if token
-      @current_customer ||= Customer.find_by_authentication_token(token)
-    end
+     token = request.headers['Authorization'].presence
+     if token
+       @current_customer ||= Customer.find_by_authentication_token(token)
+     end
   end
 
   def blocked_customers
@@ -250,9 +250,9 @@ class Api::V1::CompaniesController < ApplicationController
     end
 
     if status.present?
-      @transactions << @all_rough_transaction.where("due_date > ? && paid = ?", Date.current, false) if status.include? 'pending'
+      @transactions << @all_rough_transaction.where("due_date > ? && paid = ? && buyer_confirmed = true", Date.current, false) if status.include? 'pending'
       @transactions << @all_rough_transaction.where("buyer_confirmed = ?", false) if status.include? 'awaiting confirmation'
-      @transactions << @all_rough_transaction.where("due_date < ? && paid = ?", Date.current, false) if status.include? 'overdue'
+      @transactions << @all_rough_transaction.where("due_date < ? && paid = ? && buyer_confirmed = true", Date.current, false) if status.include? 'overdue'
       @transactions << @all_rough_transaction.where("paid = ?", true) if status.include? 'completed'
       @transactions << @all_rough_transaction if status.include? 'all'
     else
