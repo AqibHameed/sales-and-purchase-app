@@ -229,18 +229,25 @@ module ApplicationHelper
     number_with_precision((total.to_f - used.to_f), precision: 2)
   end
 
-  def get_available_market_limit(buyer, credit_limit)
-    total = get_market_limit(credit_limit)
-    used  =  get_used_market_limit(buyer)
-    (total.to_f - used.to_f).round(2)
+  def get_market_limit(buyer, supplier)
+    pendings = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
+    overdues = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ?",buyer.id, Date.current, false, true)
+
+    @amount = []
+    pendings.each do |t|
+      @amount << t.remaining_amount
+    end
+    overdues.each do |o|
+      @amount << o.remaining_amount
+    end
+    pending_amt = @amount.sum
+    number_with_precision(pending_amt, precision: 2)
   end
 
-  def get_market_limit(credit_limit)
-    if  credit_limit.market_limit.blank?
-      number_with_precision(0, precision: 2)
-    else
-      number_with_precision((credit_limit.market_limit), precision: 2)
-    end
+  def get_available_market_limit(buyer, credit_limit)
+    total = (credit_limit.market_limit).roun(2)
+    used  =  get_used_market_limit(buyer)
+    (total.to_f - used.to_f).round(2)
   end
 
 
