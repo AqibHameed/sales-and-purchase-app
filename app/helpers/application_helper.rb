@@ -245,7 +245,7 @@ module ApplicationHelper
   end
 
   def get_available_market_limit(buyer, credit_limit)
-    total = (credit_limit.market_limit).roun(2)
+    total = credit_limit.market_limit.present? ? credit_limit.market_limit.round(2) : 0
     used  =  get_used_market_limit(buyer)
     (total.to_f - used.to_f).round(2)
   end
