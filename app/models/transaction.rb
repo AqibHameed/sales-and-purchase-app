@@ -11,8 +11,7 @@ class Transaction < ApplicationRecord
   validate :validate_invoice_date
   after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
-  after_create :secure_center
-  after_update :secure_center
+  after_save :secure_center
 
   attr_accessor :weight
 
@@ -30,9 +29,9 @@ class Transaction < ApplicationRecord
       used_amt = @amount.sum
       get_weight = weight.blank? ? 1 : weight
       if diamond_type == 'Rough'
-        total_price = price.to_f * weight.to_f
+        total_price = price.to_f * weight
       else
-        total_price = price.to_f * weight.to_f
+        total_price = price.to_f * weight
       end
       available_limit = credit_limit.to_f - used_amt.to_f
       if total_price.to_f > available_limit

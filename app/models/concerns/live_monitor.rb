@@ -3,23 +3,26 @@ module LiveMonitor
   extend ActiveSupport::Concern
 
   def secure_center
-    current_company = Company.where(id: seller_id).first
-    if current_company
-      if self.class.name == "CompaniesGroup"
-        buyer_ids = company_id
-      else
-        buyer_ids = [buyer_id]
-      end
-      buyer_ids.each do |buyer_id|
-        company = Company.where(id: buyer_id).first
-        if company.present?
-          data = get_secure_center_data(company, current_company)
-          data.merge!(buyer_id: buyer_id)
-          data.merge!(seller_id: current_company.id)
-          secure_center = SecureCenter.new(data)
-          secure_center.save
+    if self.class.name == "CompaniesGroup"
+      buyer_ids = company_id
+    else
+      buyer_ids = buyer_id
+    end
+    secure_center = SecureCenter.find_by("seller_id = ? AND buyer_id = ? ", seller_id, buyer_ids)
+
+    unless secure_center.present?
+
+        current_company = Company.where(id: seller_id).first
+        if current_company
+            company = Company.where(id: buyer_ids).first
+            if company.present?
+              data = get_secure_center_data(company, current_company)
+              data.merge!(buyer_id: buyer_ids)
+              data.merge!(seller_id: current_company.id)
+              secure_center = SecureCenter.new(data)
+              secure_center.save
+            end
         end
-      end
     end
   end
 
@@ -27,8 +30,10 @@ module LiveMonitor
 
     if company.buyer_transactions.present?
       company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
+
       if company.buyer_transactions.last.paid_date.nil?
         date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
+
       else
         date = company.buyer_transactions.last.paid_date
       end
