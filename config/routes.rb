@@ -325,8 +325,7 @@ Rails.application.routes.draw do
       end
       resources :limits do
         collection do
-          post :add_credit_limit
-          post :add_market_limit
+          post :add_limits
           post :add_overdue_limit
           post :block
           post :unblock
