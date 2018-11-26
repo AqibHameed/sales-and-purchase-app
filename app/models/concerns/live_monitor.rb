@@ -30,12 +30,9 @@ module LiveMonitor
 
     if company.buyer_transactions.present?
       company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
+      transactions = company.buyer_transactions.joins(:partial_payment).order('updated_at ASC')
 
-      if company.buyer_transactions.last.paid_date.nil?
-        date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
-      else
-        date = company.buyer_transactions.last.paid_date
-      end
+      date = transactions.last.partial_payment.last if transactions.present?
 
       transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).order(:due_date).first
       if transaction.present? && transaction.due_date.present?
