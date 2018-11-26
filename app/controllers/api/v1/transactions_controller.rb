@@ -12,10 +12,13 @@ module Api
             @transaction = Transaction.where(id: @payment.transaction_id).first
             if @transaction.present?
               amount = @transaction.remaining_amount
-              @transaction.update_column(:remaining_amount, amount - @payment.amount)
+              @transaction.remaining_amount = amount - @payment.amount
+              #@transaction.update_column(:remaining_amount, amount - @payment.amount)
               if @transaction.remaining_amount == 0
-                @transaction.update_column(:paid, true)
+                @transaction.paid = true
+                #@transaction.update_column(:paid, true)
               end
+              @transaction.save
               TenderMailer.payment_received_email(@transaction, @payment).deliver rescue logger.info "Error sending email"
               render json: { success: true, message: "Payment is made successfully.", response_code: 201 }
             else
