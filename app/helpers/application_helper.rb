@@ -224,9 +224,11 @@ module ApplicationHelper
   end
 
   def get_available_credit_limit(buyer, supplier)
-    total = get_credit_limit(buyer, supplier)
+    credit_limit = CreditLimit.find_by(buyer_id: buyer.id, seller_id: supplier.id)
+
+    total = credit_limit.present? ? credit_limit.credit_limit : 0.0
     used  =  get_used_credit_limit(buyer, supplier)
-    number_with_precision((total.to_f - used.to_f), precision: 2)
+    available_credit_limit = total.to_f - used.to_f
   end
 
   def get_market_limit(buyer, supplier)
@@ -245,34 +247,23 @@ module ApplicationHelper
   end
 
   def get_available_market_limit(buyer, credit_limit)
-    total = credit_limit.market_limit.present? ? credit_limit.market_limit.round(2) : 0
+    total = credit_limit.market_limit
     used  =  get_used_market_limit(buyer)
-    (total.to_f - used.to_f).round(2)
+    available_market_limit = total.to_f - used.to_f
   end
 
 
   def get_available_credit_limit_companies_group(buyer, supplier, companies_group)
-    total = get_credit_limit_companies_group(companies_group)
+    total = companies_group.credit_limit
     used  =  get_used_credit_limit(buyer, supplier)
-    number_with_precision((total.to_f - used.to_f), precision: 2)
+    available_credit_limit = total.to_f - used.to_f
   end
 
   def get_available_market_limit_companies_group(buyer, companies_group)
-    total = get_market_limit_companies_group(companies_group)
+    total = companies_group.group_market_limit
     used  =  get_used_market_limit(buyer)
     number_with_precision((total.to_f - used.to_f), precision: 2)
   end
-
-  # def get_used_credit_limit_companies_group(buyer, supplier, companies_group)
-  #   transactions = Transaction.where(buyer_id: buyer.id, seller_id: supplier.id, paid: false, buyer_confirmed: true)
-  #   @amount = []
-  #   transactions.each do |t|
-  #     @amount << t.remaining_amount
-  #   end
-  #   transaction_amt = @amount.sum
-  #   return  number_with_precision(transaction_amt, precision: 2)
-  #
-  # end
 
   def get_credit_limit_companies_group(company_group)
     if company_group.credit_limit.nil? || company_group.credit_limit.blank?
@@ -283,13 +274,7 @@ module ApplicationHelper
   end
 
   def get_used_market_limit(buyer)
-    transactions = Transaction.where(buyer_id: buyer.id, paid: false, buyer_confirmed: true)
-    @amount = []
-    transactions.each do |t|
-      @amount << t.remaining_amount
-    end
-    transaction_amt = @amount.sum
-    return  number_with_precision(transaction_amt, precision: 2)
+    Transaction.includes(:trading_parcel).where(buyer_id: [buyer], paid: false, buyer_confirmed: true).sum(:remaining_amount)
   end
 
   def get_market_limit_companies_group(company_group)
@@ -333,13 +318,7 @@ module ApplicationHelper
   end
 
   def get_used_credit_limit(buyer, supplier)
-    transactions = Transaction.where(buyer_id: buyer.id, seller_id: supplier.id, paid: false, buyer_confirmed: true)
-    @amount = []
-    transactions.each do |t|
-      @amount << t.remaining_amount
-    end
-    transaction_amt = @amount.sum
-    return  number_with_precision(transaction_amt, precision: 2)
+    transactions = Transaction.where(buyer_id: buyer.id, seller_id: supplier.id, paid: false, buyer_confirmed: true).sum(:remaining_amount)
   end
 
   # def get_used_market_limit(buyer)

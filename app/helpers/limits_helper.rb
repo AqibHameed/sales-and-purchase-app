@@ -5,19 +5,8 @@ module LimitsHelper
     total_price = parcel.total_value
 
     # if companies_group.present?
-    #   available_credit_limit = get_available_credit_limit_companies_group(transaction.buyer, current_company, companies_group).to_f
     #
-    #   available_market_limit = get_available_market_limit_companies_group(transaction.buyer, companies_group).to_f
-    #
-    #   if available_credit_limit < total_price
-    #
-    #     if available_credit_limit > 0
-    #       new_limit = companies_group.credit_limit.to_f + (total_price.to_f - available_limit.to_f)
-    #     else
-    #       new_limit = companies_group.credit_limit.to_f + total_price.to_f
-    #     end
-    #     companies_group.update_attributes(credit_limit: new_limit)
-    #   end
+    #   available_market_limit = get_available_market_limit_companies_group(companies_group.company_id, companies_group).to_f
     #
     #   if available_market_limit < total_price
     #

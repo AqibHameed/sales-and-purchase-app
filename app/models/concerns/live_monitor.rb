@@ -32,7 +32,7 @@ module LiveMonitor
       company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
       transactions = company_transactions.joins(:partial_payment).order('updated_at ASC')
 
-      transactions.present? ? date = transactions.last.partial_payment.last.updated_at : date = nil
+      date = transactions.present? ? transactions.last.partial_payment.last.updated_at :  nil
 
       transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).order(:due_date).first
       if transaction.present? && transaction.due_date.present?
@@ -47,7 +47,7 @@ module LiveMonitor
     @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
 
     {
-        invoices_overdue: company.buyer_transactions.present? ? company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).count : 0,
+        invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).count,
         paid_date: date,
         late_days: late_days.present? ? late_days.abs : 0,
         buyer_days_limit: buyer_days_limit(company, current_company),
