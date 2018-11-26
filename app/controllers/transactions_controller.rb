@@ -35,10 +35,13 @@ class TransactionsController < ApplicationController
     if @payment.save
       @transaction = Transaction.find(@payment.transaction_id)
       amount = @transaction.remaining_amount
-      @transaction.update_column(:remaining_amount, amount - @payment.amount)
+      @transaction.remaining_amount = amount - @payment.amount
+      #@transaction.update_column(:remaining_amount, amount - @payment.amount)
       if @transaction.remaining_amount == 0
-        @transaction.update_column(:paid, true)
+        #@transaction.update_column(:paid, true)
+        @transaction.paid = true
       end
+      @transaction.save
       TenderMailer.payment_received_email(@transaction, @payment).deliver rescue logger.info "Error sending email"
       redirect_to trading_history_path
     else
