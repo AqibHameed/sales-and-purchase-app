@@ -8,9 +8,9 @@ module LiveMonitor
     else
       buyer_ids = buyer_id
     end
-    secure_center = SecureCenter.find_by("seller_id = ? AND buyer_id = ? ", seller_id, buyer_ids)
+    #secure_center = SecureCenter.find_by("seller_id = ? AND buyer_id = ? ", seller_id, buyer_ids)
 
-    unless secure_center.present?
+   # unless secure_center.present?
 
         current_company = Company.where(id: seller_id).first
         if current_company
@@ -23,7 +23,7 @@ module LiveMonitor
               secure_center.save
             end
         end
-    end
+   # end
   end
 
   def   get_secure_center_data(company, current_company)
