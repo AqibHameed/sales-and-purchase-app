@@ -27,10 +27,12 @@ module LiveMonitor
   end
 
   def   get_secure_center_data(company, current_company)
+    company_transactions = company.buyer_transactions
 
-    if company.buyer_transactions.present?
-      company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
+    if company_transactions.present?
+      company_transactions_with_current_seller = company_transactions.where(seller_id: current_company.id)
       transactions = company_transactions.joins(:partial_payment).order('updated_at ASC')
+      last_bought_on = company_transactions.where.not(paid: false).order('updated_at ASC').last
 
       date = transactions.present? ? transactions.last.partial_payment.last.updated_at :  nil
 
@@ -43,23 +45,23 @@ module LiveMonitor
     end
 
     @group = CompaniesGroup.where("company_id like '%#{company.id}%'").where(seller_id: current_company.id).first
-    @credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first
-    @days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first
+    @credit_limit = CreditLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
+    @days_limit = DaysLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
 
     {
-        invoices_overdue:  company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).count,
+        invoices_overdue:  company_transactions.where("due_date < ? AND paid = ?", Date.current, false).count,
         paid_date: date,
         late_days: late_days.present? ? late_days.abs : 0,
         buyer_days_limit: buyer_days_limit(company, current_company),
         market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
         supplier_paid: company.supplier_paid,
         supplier_unpaid: company.supplier_unpaid,
-        outstandings: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ?", Date.current, false).map(&:remaining_amount).compact.sum : 0,
-        overdue_amount: company_transactions.present? ? company_transactions.where("due_date < ? AND paid = ?", Date.current, false).map(&:remaining_amount).compact.sum : 0,
+        outstandings: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("paid = ?", false).sum(:remaining_amount) : 0,
+        overdue_amount: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("due_date < ? AND paid = ?", Date.current, false).sum(:remaining_amount) : 0,
         given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
         given_market_limit: @credit_limit.present? ? @credit_limit.market_limit : 0,
-        given_overdue_limit: @group.present? ? @group.group_overdue_limit : (@days_limit.present? ? @days_limit.days_limit : 30),
-        last_bought_on: company.buyer_transactions.present? ? company.buyer_transactions.last.created_at : nil
+        given_overdue_limit: @days_limit.present? ? @days_limit.days_limit : 30,
+        last_bought_on: last_bought_on.present? ? last_bought_on.updated_at : nil
     }
   end
 

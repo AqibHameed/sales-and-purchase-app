@@ -35,7 +35,7 @@ module LimitsHelper
           else
             new_limit = credit_limit.credit_limit.to_f + total_price.to_f
           end
-          credit_limit.update_attributes(credit_limit: new_limit)
+          credit_limit.update_attributes(credit_limit: new_limit.round(2))
         end
 
         if available_market_limit < total_price
@@ -45,7 +45,7 @@ module LimitsHelper
           else
             new_market_limit = credit_limit.market_limit.to_f + total_price.to_f
           end
-          credit_limit.update_attributes(market_limit: new_market_limit)
+          credit_limit.update_attributes(market_limit: new_market_limit.round(2))
 
         end
 
