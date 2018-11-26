@@ -28,14 +28,13 @@ module LiveMonitor
 
   def   get_secure_center_data(company, current_company)
 
-    if company.buyer_transactions.present?
-      company_transactions = company.buyer_transactions.where(seller_id: current_company.id)
+    if current_company.buyer_transactions.present?
+      company_transactions = current_company.buyer_transactions.where(buyer_id: company.id)
 
-      if company.buyer_transactions.last.paid_date.nil?
-        date = company.buyer_transactions.last.partial_payment.order('created_at ASC').last.created_at if company.buyer_transactions.last.partial_payment.present?
-
+      if company_transactions.last.paid_date.nil?
+        date = company_transactions.last.partial_payment.order('created_at ASC').last.created_at if company_transactions.last.partial_payment.present?
       else
-        date = company.buyer_transactions.last.paid_date
+        date = company_transactions.last.paid_date
       end
 
       transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).order(:due_date).first
