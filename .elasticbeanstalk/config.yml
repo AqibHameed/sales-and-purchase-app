@@ -1,10 +1,10 @@
 branch-defaults:
-  limits:
+  master:
     environment: production
     group_suffix: null
 global:
   application_name: idt-production
-  branch: master
+  branch: staing
   default_ec2_keyname: umair
   default_platform: Ruby 2.3 (Puma)
   default_region: ap-southeast-1
@@ -16,6 +16,13 @@ global:
   repository: null
   sc: git
   workspace_type: Application
-packages:
-  yum:
-    git: []
+container-commands:
+  01_db_create:
+    command: rake db:create
+    leader_only: true
+  02_db_crmigrate:
+    command: rake db:migrate
+    leader_only: true
+  03_compile_assets:
+    command: rake assets:precompile
+    leader_only: false
