@@ -193,34 +193,17 @@ module ApplicationHelper
   end
 
   def get_credit_limit(buyer, supplier)
-    # if current_customer.parent_id?
-    #   sub_company_limit = SubCompanyCreditLimit.find_by(sub_company_id: supplier.id)
-    #   # if sub_company_limit.try(:credit_type) == "Yours"
-    #     # cl = credit_limit(buyer.id, current_customer.parent_id)
-    #   else
-    #     cl = credit_limit(buyer.id, supplier.id)
-    #   end
-    # else
-      cl = credit_limit1(buyer.id, supplier.id)
-    # end
-    if cl.nil? || cl.credit_limit.nil? || cl.credit_limit.blank?
-      number_with_precision(0, precision: 2)
-    else
-      number_with_precision((cl.credit_limit), precision: 2)
-    end
+    credit = credit_limit1(buyer.id, supplier.id)
+    credit.present? ? credit.credit_limit : 0.0
   end
 
   def credit_limit1(buyer_id, supplier_id)
-    CreditLimit.where(buyer_id: buyer_id, seller_id: supplier_id).first
+    CreditLimit.find_by(buyer_id: buyer_id, seller_id: supplier_id)
   end
 
   def get_days_limit(buyer, supplier)
-    dl = DaysLimit.where(buyer_id: buyer.id, seller_id: supplier.id).first
-    if dl.nil? || dl.days_limit.nil? || dl.days_limit.blank?
-      pluralize(30, 'day')
-    else
-      pluralize(dl.days_limit.to_i, 'day')
-    end
+    days_limit = DaysLimit.find_by(buyer_id: buyer.id, seller_id: supplier.id)
+    days_limit.present? ? pluralize(days_limit.days_limit.to_i, 'day') : pluralize(30, 'day')
   end
 
   def get_available_credit_limit(buyer, supplier)
@@ -229,6 +212,10 @@ module ApplicationHelper
     total = credit_limit.present? ? credit_limit.credit_limit : 0.0
     used  =  get_used_credit_limit(buyer, supplier)
     available_credit_limit = total.to_f - used.to_f
+    if available_credit_limit < 0
+      available_credit_limit = 0.0
+    end
+    available_credit_limit
   end
 
   def get_market_limit(buyer, supplier)
@@ -250,6 +237,10 @@ module ApplicationHelper
     total = credit_limit.market_limit
     used  =  get_used_market_limit(buyer)
     available_market_limit = total.to_f - used.to_f
+    if available_market_limit < 0
+       available_market_limit = 0.0
+    end
+    available_market_limit
   end
 
 
@@ -337,7 +328,7 @@ module ApplicationHelper
   # end
 
   def get_market_limit_from_credit_limit_table(buyer, supplier)
-    CreditLimit.where(seller_id: supplier.id, buyer_id: buyer.id).first.market_limit.to_i rescue 0
+    CreditLimit.find_by(seller_id: supplier.id, buyer_id: buyer.id).market_limit.to_f rescue 0
   end
 
   def overall_credit_received(company)

@@ -77,19 +77,19 @@ module Api
       def credit_limit_list
         if current_company
           if params[:company_id].present?
-            company = Company.where(id: params[:company_id]).first
+            company = Company.find_by(id: params[:company_id])
             if company.nil?
               render json: {success: false, errors: "Company not found", response_code: 201}
             else
               @data = {
                   id: company.id.to_s,
                   name: company.try(:name),
-                  total_limit: get_credit_limit(company, current_company),
-                  used_limit: get_used_credit_limit(company, current_company),
-                  available_limit: get_available_credit_limit(company, current_company),
+                  total_limit: get_credit_limit(company, current_company).round(2),
+                  used_limit: get_used_credit_limit(company, current_company).round(2),
+                  available_limit: get_available_credit_limit(company, current_company).round(2),
                   overdue_limit: get_days_limit(company, current_company),
                   market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
-                  supplier_connected: supplier_connected(company, current_company).to_s
+                  supplier_connected: company.supplier_paid
               }
               render json: {success: true, limits: @data, response_code: 200}
             end
@@ -117,12 +117,12 @@ module Api
               @data << {
                   id: c.id.to_s,
                   name: c.try(:name),
-                  total_limit: get_credit_limit(c, current_company),
-                  used_limit: get_used_credit_limit(c, current_company),
-                  available_limit: get_available_credit_limit(c, current_company),
+                  total_limit: get_credit_limit(c, current_company).round(2),
+                  used_limit: get_used_credit_limit(c, current_company).round(2),
+                  available_limit: get_available_credit_limit(c, current_company).round(2),
                   overdue_limit: get_days_limit(c, current_company),
                   market_limit: get_market_limit_from_credit_limit_table(c, current_company).to_s,
-                  supplier_connected: supplier_connected(c, current_company).to_s}
+                  supplier_connected: c.supplier_paid}
             end
             @companies = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])
             render json: {success: true, pagination: set_pagination(:companies), limits: @companies, response_code: 200}
