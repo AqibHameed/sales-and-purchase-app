@@ -1,10 +1,10 @@
 branch-defaults:
   limits:
-    environment: myapp-env
+    environment: production
     group_suffix: null
 global:
   application_name: idt-production
-  branch: null
+  branch: staing
   default_ec2_keyname: umair
   default_platform: Ruby 2.3 (Puma)
   default_region: ap-southeast-1
