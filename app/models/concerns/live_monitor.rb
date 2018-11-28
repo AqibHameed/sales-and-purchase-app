@@ -16,7 +16,7 @@ module LiveMonitor
         if current_company
             company = Company.where(id: buyer_ids).first
             if company.present?
-              data = get_secure_center_data(company, current_company)
+              data = get_secure_center_record(company, current_company)
               data.merge!(buyer_id: buyer_ids)
               data.merge!(seller_id: current_company.id)
               secure_center = SecureCenter.new(data)
