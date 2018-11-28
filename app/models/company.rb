@@ -551,7 +551,7 @@ class Company < ApplicationRecord
 
   def supplier_connected
     #dummy_co = Company.where(name: "Dummy co. 1").first
-    self.buyer_transactions.select(:seller_id).where("due_date>= #{(Date.current - 90.day)}").where(paid: true).uniq.count
+    self.buyer_transactions.select(:seller_id).where("due_date>= ? AND paid = ?", Date.current - 90.day, true).uniq.count
   end
 
   def supplier_paid
