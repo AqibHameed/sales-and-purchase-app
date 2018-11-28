@@ -314,9 +314,10 @@ class Api::V1::CompaniesController < ApplicationController
 
   def live_monitoring
     if current_company
-      secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
-      if secure_center.present?
-        render json: { success: true, details: secure_center }
+      @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
+      if @secure_center.present?
+        render status: :ok, template: "api/v1/companies/secure_center"
+        #render json: { success: true, details: secure_center }
       else
         company = Company.where(id: params[:id]).first
         if company.present?

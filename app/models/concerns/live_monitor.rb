@@ -87,7 +87,7 @@ module LiveMonitor
     if company_transactions.present?
       company_transactions_with_current_seller = company_transactions.where(seller_id: current_company.id)
       transactions = company_transactions.joins(:partial_payment).order('updated_at ASC')
-      last_bought_on = company_transactions.where.not(paid: false).order('updated_at ASC').last
+      last_bought_on = company_transactions.where.(paid: true).order('updated_at ASC').last
 
       date = transactions.present? ? transactions.last.partial_payment.last.updated_at :  nil
       transaction = company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).order(:due_date).first
@@ -109,13 +109,14 @@ module LiveMonitor
         market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_i,
         supplier_paid: company.supplier_paid,
         supplier_unpaid: company.supplier_unpaid,
-        outstandings: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("due_date < ? AND paid = ? AND remaining_amount > 2000", Date.current, false).sum(:remaining_amount) : 0,
-        overdue_amount: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("due_date < ? AND paid = ?", Date.current, false).sum(:remaining_amount) : 0,
+        outstandings: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("due_date < ? AND paid = ? AND remaining_amount > 2000", Date.current, false).sum(:remaining_amount).round(2) : 0.0,
+        overdue_amount: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("due_date < ? AND paid = ?", Date.current, false).sum(:remaining_amount).round(2) : 0,
         given_credit_limit: @credit_limit.present? ? @credit_limit.credit_limit : 0,
         given_market_limit: @credit_limit.present? ? @credit_limit.market_limit : 0,
         given_overdue_limit: @days_limit.present? ? @days_limit.days_limit : 30,
         last_bought_on: last_bought_on.present? ? last_bought_on.updated_at : nil,
-        percentage: company.transaction_percentage(company.supplier_unpaid)
+        percentage: company.transaction_percentage(company.supplier_unpaid),
+        activity_bought: company_transactions.present? ? company_transactions.where("due_date != ? AND paid = ? AND cancel = ? AND remaining_amount > 2000", Date.current, false, false).sum(:remaining_amount).round(2) : 0.0
     }
   end
 
