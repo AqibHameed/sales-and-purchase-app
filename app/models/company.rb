@@ -551,11 +551,23 @@ class Company < ApplicationRecord
 
   def supplier_connected
     #dummy_co = Company.where(name: "Dummy co. 1").first
-    self.buyer_transactions.select(:seller_id).where("created_at>= #{(Date.current - 90.day)}").where(paid: true).uniq.count
+    self.buyer_transactions.select(:seller_id).where("due_date>= #{(Date.current - 90.day)}").where(paid: true).uniq.count
   end
 
   def supplier_paid
     supplier_connected
+  end
+
+  def transaction_percentage(connected_supplier)
+    date_previous_90_days = Date.current - 90.day
+    transactions_last_90_days = self.buyer_transactions.select(:seller_id).where("due_date>= ? AND paid = ?", date_previous_90_days, false).uniq.count
+
+    if transactions_last_90_days > 0
+      percentage = (connected_supplier / transactions_last_90_days) * 100
+    else
+      percentage = 0
+    end
+    percentage
   end
 
   def supplier_unpaid

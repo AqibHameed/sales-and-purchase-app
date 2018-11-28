@@ -26,10 +26,10 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def current_customer
-     token = request.headers['Authorization'].presence
-     if token
+      token = request.headers['Authorization'].presence
+      if token
        @current_customer ||= Customer.find_by_authentication_token(token)
-     end
+      end
   end
 
   def blocked_customers
@@ -320,7 +320,8 @@ class Api::V1::CompaniesController < ApplicationController
       else
         company = Company.where(id: params[:id]).first
         if company.present?
-          render json: { success: true, details: save_secure_center(company)}
+          @secure_center = save_secure_center(company)
+          render status: :ok, template: "api/v1/companies/secure_center"
         else
           render json: { errors: "Company with this id does not present.", response_code: 201 }
         end
@@ -377,7 +378,7 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def save_secure_center(company)
-    data = get_secure_center_data(company, current_company)
+    data = get_secure_center_record(company, current_company)
     data.merge!(buyer_id: company.id)
     data.merge!(seller_id: current_company.id)
     secure_center = SecureCenter.new(data)
