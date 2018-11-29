@@ -116,8 +116,7 @@ module LiveMonitor
         given_overdue_limit: @days_limit.present? ? @days_limit.days_limit : 30,
         last_bought_on: last_bought_on.present? ? last_bought_on.updated_at : nil,
         buyer_percentage: company.buyer_transaction_percentage,
-        system_percentage: company.system_transaction_percentage,
-        activity_bought: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("due_date != ? AND paid = ? AND cancel = ? AND remaining_amount > 2000", Date.current, false, false).sum(:remaining_amount).round(2) : 0.0
+        system_percentage: company.system_transaction_percentage
     }
   end
 
