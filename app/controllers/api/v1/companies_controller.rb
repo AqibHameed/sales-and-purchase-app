@@ -26,10 +26,10 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def current_customer
-      token = request.headers['Authorization'].presence
-      if token
-       @current_customer ||= Customer.find_by_authentication_token(token)
-      end
+       token = request.headers['Authorization'].presence
+       if token
+         @current_customer ||= Customer.find_by_authentication_token(token)
+       end
   end
 
   def blocked_customers
@@ -46,7 +46,7 @@ class Api::V1::CompaniesController < ApplicationController
         credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
         days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
         credit_limit.credit_limit = 0
-        credit_limit.market_limit = 0
+        #credit_limit.market_limit = 0
         credit_limit.save
         days_limit.days_limit = 30
         days_limit.save
@@ -222,8 +222,8 @@ class Api::V1::CompaniesController < ApplicationController
         if t.paid == false && t.due_date.present?
           other = {
               seller_days_limit: (current_company.id == t.buyer_id) ? get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-              buyer_days_limit: (Date.current - t.created_at.to_date).to_i,
-              market_limit: (current_company.id == t.buyer_id) ? number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
+              buyer_days_limit: (Date.current - t.created_at.to_date).to_i
+              #market_limit: (current_company.id == t.buyer_id) ? number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
           }
           data.merge!(other)
         end
@@ -301,8 +301,8 @@ class Api::V1::CompaniesController < ApplicationController
         if t.paid == false && t.due_date.present?
           other = {
             seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-            buyer_days_limit: (Date.current - t.created_at.to_date).to_i,
-            market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
+            buyer_days_limit: (Date.current - t.created_at.to_date).to_i
+            #market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
           }
           data.merge!(other)
         end
