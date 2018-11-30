@@ -26,7 +26,7 @@ module LimitsHelper
         credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price, market_limit: total_price)
       else
         available_credit_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
-        available_market_limit = get_available_market_limit(transaction.buyer, credit_limit).to_f
+        #available_market_limit = get_available_market_limit(transaction.buyer, credit_limit).to_f
 
         if available_credit_limit < total_price
 
@@ -38,16 +38,16 @@ module LimitsHelper
           credit_limit.update_attributes(credit_limit: new_limit.round(2))
         end
 
-        if available_market_limit < total_price
-
-          if available_market_limit > 0
-            new_market_limit = credit_limit.market_limit.to_f + (total_price.to_f - available_market_limit.to_f)
-          else
-            new_market_limit = credit_limit.market_limit.to_f + total_price.to_f
-          end
-          credit_limit.update_attributes(market_limit: new_market_limit.round(2))
-
-        end
+        # if available_market_limit < total_price
+        #
+        #   if available_market_limit > 0
+        #     new_market_limit = credit_limit.market_limit.to_f + (total_price.to_f - available_market_limit.to_f)
+        #   else
+        #     new_market_limit = credit_limit.market_limit.to_f + total_price.to_f
+        #   end
+        #   credit_limit.update_attributes(market_limit: new_market_limit.round(2))
+        #
+        # end
 
       end
 

@@ -18,7 +18,6 @@ module Api
           companies_group = CompaniesGroup.new
           companies_group.group_name = params[:group_name]
           companies_group.company_id = params[:company_id]
-          companies_group.group_market_limit = params[:group_market_limit]
           companies_group.group_overdue_limit = params[:group_overdue_limit]
           companies_group.seller_id = current_company.id
           if companies_group.save
@@ -37,7 +36,6 @@ module Api
         if current_company && current_company.id == companies_group.seller_id
           companies_group.group_name = params[:group_name]
           companies_group.company_id = params[:company_id]
-          companies_group.group_market_limit = params[:group_market_limit]
           companies_group.group_overdue_limit = params[:group_overdue_limit]
           if companies_group.save
             CompaniesGroup.remove_credit_limits(params[:company_id], current_company)
@@ -75,7 +73,6 @@ module Api
                 used_limit: get_used_credit_limit(company, current_company),
                 available_limit: get_available_credit_limit(company, current_company),
                 overdue_limit: get_days_limit(company, current_company),
-                market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
                 supplier_connected: supplier_connected(company, current_company).to_s
               }
             end
@@ -98,7 +95,7 @@ module Api
                 used_limit: get_used_credit_limit(company, current_company),
                 available_limit: get_available_credit_limit(company, current_company),
                 overdue_limit: get_days_limit(company, current_company),
-                market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
+                #market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
                 supplier_connected: supplier_connected(company, current_company).to_s
               }
             end
