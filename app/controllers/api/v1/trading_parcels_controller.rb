@@ -3,6 +3,9 @@ module Api
 
     class TradingParcelsController <ApiController
       include LimitsHelper
+      include SecureCenterHelper
+      include LiveMonitor
+
       skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy, :request_limit_increase, :accept_limit_increase, :reject_limit_increase]
 
       def create
@@ -350,7 +353,8 @@ module Api
         end
         if available_credit_limit < parcel.total_value.to_f
           parcel.destroy
-          render json: { sucess: false, message: "You have set a credit limit of #{existing_limit}. This transaction will increase it to #{new_limit}. Do you wish to continue?" }
+          secure_center_record(current_company.id, transaction.buyer_id, new_limit, nil)
+          #render json: { sucess: false, message: "You have set a credit limit of #{existing_limit}. This transaction will increase it to #{new_limit}. Do you wish to continue?" }
         else
           save_transaction(transaction, parcel)
         end
