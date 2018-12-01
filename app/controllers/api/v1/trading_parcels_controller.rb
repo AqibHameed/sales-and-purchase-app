@@ -346,10 +346,10 @@ module Api
         used  =  get_used_credit_limit(buyer, current_company).to_f
         if credit_limit.nil?
           existing_limit = 0.to_f
-          new_limit = parcel.total_value
+          @credit_limit = parcel.total_value
         else
           existing_limit = credit_limit.credit_limit.to_f
-          new_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
+          @credit_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
         end
         if available_credit_limit < parcel.total_value.to_f
           parcel.destroy
