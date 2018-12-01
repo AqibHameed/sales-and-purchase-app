@@ -221,7 +221,7 @@ module Api
           days_limit = DaysLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).last.try(&:days_limit)
           days_limit = days_limit ? days_limit: 0
           date = Date.current - days_limit
-          transaction = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).order(:due_date).first
+          transaction = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?",  proposal.buyer_id, date, false).order(:due_date).first
           if transaction.present? && transaction.due_date.present?
             @days_limit = (Date.current.to_date - transaction.due_date.to_date).to_i
           else
