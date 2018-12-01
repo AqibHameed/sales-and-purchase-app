@@ -218,7 +218,8 @@ module Api
           #errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
         end
         if !@company_group.present? && (proposal.buyer.is_overdue)
-          days_limit = DaysLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).last.days_limit
+          days_limit = DaysLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).last.try(&:days_limit)
+          days_limit = days_limit ? days_limit: 0
           date = Date.current - days_limit
           transaction = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).order(:due_date).first
           if transaction.present? && transaction.due_date.present?
