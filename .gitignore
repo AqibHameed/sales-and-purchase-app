@@ -45,7 +45,6 @@ bower.json
 .powenv
 
 # Ignore application configuration
-/config/application.yml
 .env
 .byebug_history
 .gitignore
