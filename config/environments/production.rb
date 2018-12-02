@@ -120,8 +120,8 @@ Rails.application.configure do
 
   Rails.application.config.middleware.use ExceptionNotification::Rack,
   :email => {
-    :email_prefix => "[Safetrade Error] ",
+    :email_prefix => "[Production Safetrade Error] ",
     :sender_address => %{"notifier" <contact@safetrade.ai>},
-    :exception_recipients =>  %w{rordev@ongraph.com, umair.raza101@gmail.com, maneet@safetrade.ai}
+    :exception_recipients =>  %w{umair.raza101@gmail.com, maneet@safetrade.ai}
   }
 end
