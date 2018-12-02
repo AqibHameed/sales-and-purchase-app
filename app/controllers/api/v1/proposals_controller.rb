@@ -203,29 +203,20 @@ module Api
           errors <<  @credit_limit
         end
 
-        if @company_group.present? && (check_for_group_overdue_limit(current_company, proposal.trading_parcel.company))
-          @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).first
-          days_limit = @group.group_overdue_limit
-          date = Date.current - days_limit.days
-          all_members = @group.company_id
-          transaction = Transaction.where("buyer_id IN (?) AND due_date < ? AND paid = ?", all_members, date, false).order(:due_date).first
-          if transaction.present? && transaction.due_date.present?
-            @days_limit = (Date.current.to_date - transaction.due_date.to_date).to_i
+        if @company_group.present?
+          if check_for_group_overdue_limit(current_company, proposal.trading_parcel.company)
+            @days_limit = "over your limit"
           else
-            @days_limit = 0
+            @days_limit = "under your limit"
           end
           errors << @days_limit
-          #errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
         end
-        if !@company_group.present? && (proposal.buyer.is_overdue)
-          days_limit = DaysLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).last.try(&:days_limit)
-          days_limit = days_limit ? days_limit: 0
-          date = Date.current - days_limit
-          transaction = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?",  proposal.buyer_id, date, false).order(:due_date).first
-          if transaction.present? && transaction.due_date.present?
-            @days_limit = (Date.current.to_date - transaction.due_date.to_date).to_i
+        if !@company_group.present?
+
+          if current_company.has_overdue_that_seller_setlimit(proposal.buyer.id)
+            @days_limit = "over your limit"
           else
-            @days_limit = 0
+            @days_limit = "under your limit"
           end
           errors << @days_limit
         end
