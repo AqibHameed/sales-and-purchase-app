@@ -192,15 +192,18 @@ module Api
           total_price = proposal.price*proposal.trading_parcel.weight.to_f
         end
         if available_credit_limit < total_price.to_f
-          limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
-          if limit.nil?
-            existing_limit = 0
-            @credit_limit = total_price
-          else
-            existing_limit = limit.credit_limit
-            @credit_limit = limit.credit_limit.to_f + total_price.to_f - available_credit_limit.to_f
-          end 
+          @credit_limit = true
+          # limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
+          # if limit.nil?
+          #   existing_limit = 0
+          #   @credit_limit = total_price
+          # else
+          #   existing_limit = limit.credit_limit
+          #   @credit_limit = limit.credit_limit.to_f + total_price.to_f - available_credit_limit.to_f
+          # end
           errors <<  @credit_limit
+        else
+          @credit_limit = false
         end
 
         if @company_group.present?
