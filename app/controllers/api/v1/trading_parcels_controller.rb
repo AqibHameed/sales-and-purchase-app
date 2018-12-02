@@ -3,6 +3,9 @@ module Api
 
     class TradingParcelsController <ApiController
       include LimitsHelper
+      include SecureCenterHelper
+      include LiveMonitor
+
       skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy, :request_limit_increase, :accept_limit_increase, :reject_limit_increase]
 
       def create
@@ -150,13 +153,13 @@ module Api
                   else
                     if buyer.buyer_transactions.count < 1
                       if params[:check_transactions].present? && params[:check_transactions] == true
-                        check_overdue_and_market_limit(transaction, @parcel)
+                        check_credit_limit(transaction, @parcel)
                       elsif params[:check_transactions].present? && params[:check_transactions] == "false"
                       else
                         render json: { sucess: false, message: "No Information Available about this Company. Do you want to continue ?" }
                       end
                     else
-                      check_overdue_and_market_limit(transaction, @parcel)
+                      check_credit_limit(transaction, @parcel)
                     end
                   end
                 else
@@ -213,14 +216,11 @@ module Api
         buyer = Company.where(id: params[:buyer_id]).first
         render json: { errors: 'Buyer does not exist.' } and return unless buyer.present?
         days_limit = DaysLimit.where(buyer_id: buyer.id, seller_id: current_company.id).first.days_limit
-        market_limit = CreditLimit.where(buyer_id: buyer.id, seller_id: current_company.id).first.market_limit
         if !params[:accept].present? 
-          render json: { message: "You are increasing limits for #{parcel.company.name}: Overdue Limit will now be 30 from #{days_limit}. Market Limit will now be $1,000 from $#{market_limit}. Do you wish to continue?"}
+          render json: { message: "You are increasing limits for #{parcel.company.name}: Overdue Limit will now be 30 from #{days_limit}. Do you wish to continue?"}
         elsif params[:accept] == 'true'
           if buyer.has_overdue_transaction_of_30_days(current_company.id)          
             current_company.increase_overdue_limit(buyer.id, parcel)
-          elsif buyer.check_market_limit_overdue(get_market_limit(buyer, current_company), current_company.id)
-            current_company.increase_market_limit(get_market_limit(buyer, current_company), buyer.id, parcel)
           end
           render json: { success: true, message: "This request is accepted successfully." }
         else 
@@ -323,7 +323,7 @@ module Api
             used_limit: get_used_credit_limit(c, current_company),
             available_limit: get_available_credit_limit(c, current_company),
             overdue_limit: get_days_limit(c, current_company),
-            market_limit: get_market_limit_from_credit_limit_table(c, current_company).to_s,
+            #market_limit: get_market_limit_from_credit_limit_table(c, current_company).to_s,
             supplier_connected: supplier_connected(c, current_company).to_s
           }
         end
@@ -346,30 +346,20 @@ module Api
         used  =  get_used_credit_limit(buyer, current_company).to_f
         if credit_limit.nil?
           existing_limit = 0.to_f
-          new_limit = parcel.total_value
+          @credit_limit = parcel.total_value
         else
           existing_limit = credit_limit.credit_limit.to_f
-          new_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
+          @credit_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
         end
         if available_credit_limit < parcel.total_value.to_f
           parcel.destroy
-          render json: { sucess: false, message: "You have set a credit limit of #{existing_limit}. This transaction will increase it to #{new_limit}. Do you wish to continue?" }
+          secure_center_record(current_company.id, transaction.buyer_id, new_limit, nil)
+          #render json: { sucess: false, message: "You have set a credit limit of #{existing_limit}. This transaction will increase it to #{new_limit}. Do you wish to continue?" }
         else
           save_transaction(transaction, parcel)
         end
       end
 
-      def check_overdue_and_market_limit(transaction, parcel)
-        buyer = Company.where(id: transaction.buyer_id).first
-        market_limit = CreditLimit.where(seller_id: current_company.id, buyer_id: buyer.id).first
-        available_market_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
-        if available_market_limit < parcel.total_value.to_f || current_company.has_overdue_transaction_of_30_days(transaction.buyer_id)
-          parcel.destroy
-          render json: { sucess: false, message: "This Company does not meet your risk parameters. Do you wish to cancel the transaction?" }
-        else
-          check_credit_limit(transaction, parcel)
-        end
-      end
     end
   end
 end

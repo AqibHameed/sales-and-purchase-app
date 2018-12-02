@@ -13,7 +13,7 @@ module Api
           buyer_limits = CreditLimit.find_by(buyer_id: params[:limit]['buyer_id'], seller_id: current_company.id)
           buyer_limits = CreditLimit.new(seller_id: current_company.id, buyer_id: params[:limit]['buyer_id']) if buyer_limits.nil?
           buyer_limits.credit_limit = params[:limit]['credit_limit'] unless params[:limit]['credit_limit'].blank?
-          buyer_limits.market_limit = params[:limit]['market_limit'] unless params[:limit]['market_limit'].blank?
+          #buyer_limits.market_limit = params[:limit]['market_limit'] unless params[:limit]['market_limit'].blank?
           if buyer_limits.save
             render json: {success: true, message: 'Limits updated.'}
           else
@@ -88,7 +88,7 @@ module Api
                   used_limit: get_used_credit_limit(company, current_company).round(2),
                   available_limit: get_available_credit_limit(company, current_company).round(2),
                   overdue_limit: get_days_limit(company, current_company),
-                  market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
+                  #market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
                   supplier_connected: company.supplier_paid
               }
               render json: {success: true, limits: @data, response_code: 200}
@@ -99,7 +99,7 @@ module Api
             @array = []
             credit_limit.each do |c|
               if c.buyer.present?
-                if c.credit_limit > 0 || (!c.market_limit.nil? && c.market_limit > 0)
+                if c.credit_limit > 0
                   @array << c.buyer_id
                 end
               end
@@ -121,7 +121,7 @@ module Api
                   used_limit: get_used_credit_limit(c, current_company).round(2),
                   available_limit: get_available_credit_limit(c, current_company).round(2),
                   overdue_limit: get_days_limit(c, current_company),
-                  market_limit: get_market_limit_from_credit_limit_table(c, current_company).to_s,
+                  #market_limit: get_market_limit_from_credit_limit_table(c, current_company).to_s,
                   supplier_connected: c.supplier_paid}
             end
             @companies = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])

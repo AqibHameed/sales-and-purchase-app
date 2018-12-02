@@ -551,11 +551,40 @@ class Company < ApplicationRecord
 
   def supplier_connected
     #dummy_co = Company.where(name: "Dummy co. 1").first
-    self.buyer_transactions.select(:seller_id).where("created_at>= #{(Date.current - 90.day)}").where(paid: true).uniq.count
+    self.buyer_transactions.select(:seller_id).uniq.count
   end
 
   def supplier_paid
     supplier_connected
+  end
+
+  def buyer_transaction_percentage
+    date_previous_90_days = Date.current - 90.day
+    company_transactions = self.buyer_transactions.select(:seller_id).where("due_date>= ?", date_previous_90_days)
+    paid_transaction_last_90_days = PartialPayment.where(transaction_id: company_transactions.pluck(:id)).sum(:amount)
+
+    invoice_amount_last_90_days = company_transactions.sum(:total_amount)
+
+    if invoice_amount_last_90_days > 0
+      percentage = (paid_transaction_last_90_days / invoice_amount_last_90_days) * 100
+    else
+      percentage = 0
+    end
+    percentage
+  end
+
+  def system_transaction_percentage
+      date_previous_90_days = Date.current - 90.day
+      all_company_transactions = Transaction.select(:seller_id).where("due_date>= ? AND remaining_amount < 2000", date_previous_90_days)
+      invoice_amount_last_90_days = Transaction.select(:seller_id).where("due_date>= ?", date_previous_90_days).sum(:total_amount)
+      paid_all_transaction_last_90_days = PartialPayment.where(transaction_id: all_company_transactions.pluck(:id)).sum(:amount)
+
+      if invoice_amount_last_90_days > 0
+        percentage = (paid_all_transaction_last_90_days / invoice_amount_last_90_days) * 100
+      else
+        percentage = 0
+      end
+      percentage
   end
 
   def supplier_unpaid

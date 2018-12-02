@@ -118,9 +118,9 @@ module Api
           is_overdue = true
         end
 
-        if current_company.check_market_limit_overdue(get_market_limit(current_company, parcel.try(:company_id)), parcel.try(:company_id))
-          is_overdue = true
-        end
+        # if current_company.check_market_limit_overdue(get_market_limit(current_company, parcel.try(:company_id)), parcel.try(:company_id))
+        #   is_overdue = true
+        # end
         @info = []
         parcel.parcel_size_infos.each do |i|
           size = i.size

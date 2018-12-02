@@ -7,6 +7,7 @@ class Api::V1::CompaniesController < ApplicationController
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
   include ApplicationHelper
+  include SecureCenterHelper
 
   def list_company
     @array =[]
@@ -26,10 +27,10 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def current_customer
-     token = request.headers['Authorization'].presence
-     if token
-       @current_customer ||= Customer.find_by_authentication_token(token)
-     end
+       token = request.headers['Authorization'].presence
+       if token
+         @current_customer ||= Customer.find_by_authentication_token(token)
+       end
   end
 
   def blocked_customers
@@ -46,7 +47,6 @@ class Api::V1::CompaniesController < ApplicationController
         credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
         days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
         credit_limit.credit_limit = 0
-        credit_limit.market_limit = 0
         credit_limit.save
         days_limit.days_limit = 30
         days_limit.save
@@ -222,8 +222,7 @@ class Api::V1::CompaniesController < ApplicationController
         if t.paid == false && t.due_date.present?
           other = {
               seller_days_limit: (current_company.id == t.buyer_id) ? get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-              buyer_days_limit: (Date.current - t.created_at.to_date).to_i,
-              market_limit: (current_company.id == t.buyer_id) ? number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
+              buyer_days_limit: (Date.current - t.created_at.to_date).to_i
           }
           data.merge!(other)
         end
@@ -301,8 +300,7 @@ class Api::V1::CompaniesController < ApplicationController
         if t.paid == false && t.due_date.present?
           other = {
             seller_days_limit: (current_company.id == t.buyer_id) ?  get_days_limit(current_company, t.seller).to_i : get_days_limit(t.buyer, current_company).to_i,
-            buyer_days_limit: (Date.current - t.created_at.to_date).to_i,
-            market_limit: (current_company.id == t.buyer_id) ?  number_to_currency(get_market_limit_from_credit_limit_table(current_company, t.seller)).to_i : get_market_limit_from_credit_limit_table(t.buyer, current_company).to_i
+            buyer_days_limit: (Date.current - t.created_at.to_date).to_i
           }
           data.merge!(other)
         end
@@ -314,13 +312,16 @@ class Api::V1::CompaniesController < ApplicationController
 
   def live_monitoring
     if current_company
-      secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
-      if secure_center.present?
-        render json: { success: true, details: secure_center }
+      #secure_center_record(current_company.id, params[:id])
+      @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
+      if @secure_center.present?
+        render status: :ok, template: "api/v1/companies/secure_center"
+        #render json: { success: true, details: secure_center }
       else
         company = Company.where(id: params[:id]).first
         if company.present?
-          render json: { success: true, details: save_secure_center(company)}
+          @secure_center = save_secure_center(company)
+          render status: :ok, template: "api/v1/companies/secure_center"
         else
           render json: { errors: "Company with this id does not present.", response_code: 201 }
         end
@@ -377,11 +378,12 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def save_secure_center(company)
-    data = get_secure_center_data(company, current_company)
+    data = get_secure_center_record(company, current_company)
     data.merge!(buyer_id: company.id)
     data.merge!(seller_id: current_company.id)
     secure_center = SecureCenter.new(data)
     secure_center.save
     return secure_center
   end
+
 end
