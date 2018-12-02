@@ -658,19 +658,20 @@ module ApplicationHelper
   end
 
   def check_for_group_overdue_limit(buyer, seller)
-    @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).first
+    @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).last
     if @group.present?
       days_limit = @group.group_overdue_limit
       date = Date.current - days_limit.days
       all_members = @group.company_id
-      if Transaction.where("buyer_id IN (?) AND due_date < ? AND paid = ?", all_members, date, false).present?
-        return true
-      else
-        return false
+      transaction =  Transaction.where("buyer_id IN (?) AND due_date < ? AND paid = ?", all_members, date, false).order(:due_date).first
+      if transaction.present? && transaction.due_date.present?
+        overdue_limit = (Date.current.to_date - transaction.due_date.to_date).to_i
+        if overdue_limit.to_i > days_limit
+          return true
+        end
       end
-    else
-      return false
     end
+    return false
   end
 
   def country_list()

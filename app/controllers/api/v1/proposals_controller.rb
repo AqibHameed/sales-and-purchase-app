@@ -192,41 +192,28 @@ module Api
           total_price = proposal.price*proposal.trading_parcel.weight.to_f
         end
         if available_credit_limit < total_price.to_f
-          limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
-          if limit.nil?
-            existing_limit = 0
-            @credit_limit = total_price
-          else
-            existing_limit = limit.credit_limit
-            @credit_limit = limit.credit_limit.to_f + total_price.to_f - available_credit_limit.to_f
-          end 
+          @credit_limit = true
+          # limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
+          # if limit.nil?
+          #   existing_limit = 0
+          #   @credit_limit = total_price
+          # else
+          #   existing_limit = limit.credit_limit
+          #   @credit_limit = limit.credit_limit.to_f + total_price.to_f - available_credit_limit.to_f
+          # end
           errors <<  @credit_limit
+        else
+          @credit_limit = false
         end
 
-        if @company_group.present? && (check_for_group_overdue_limit(current_company, proposal.trading_parcel.company))
-          @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).first
-          days_limit = @group.group_overdue_limit
-          date = Date.current - days_limit.days
-          all_members = @group.company_id
-          transaction = Transaction.where("buyer_id IN (?) AND due_date < ? AND paid = ?", all_members, date, false).order(:due_date).first
-          if transaction.present? && transaction.due_date.present?
-            @days_limit = (Date.current.to_date - transaction.due_date.to_date).to_i
-          else
-            @days_limit = 0
-          end
+        if @company_group.present?
+
+          @days_limit = check_for_group_overdue_limit(current_company, proposal.trading_parcel.company)
           errors << @days_limit
-          #errors <<  "Buyer Group is currently a later payer and the number of days overdue exceeds your overdue limit."
         end
-        if !@company_group.present? && (proposal.buyer.is_overdue)
-          days_limit = DaysLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).last.try(&:days_limit)
-          days_limit = days_limit ? days_limit: 0
-          date = Date.current - days_limit
-          transaction = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?",  proposal.buyer_id, date, false).order(:due_date).first
-          if transaction.present? && transaction.due_date.present?
-            @days_limit = (Date.current.to_date - transaction.due_date.to_date).to_i
-          else
-            @days_limit = 0
-          end
+        if !@company_group.present?
+
+          @days_limit = current_company.has_overdue_seller_setlimit(proposal.buyer.id)
           errors << @days_limit
         end
         return errors

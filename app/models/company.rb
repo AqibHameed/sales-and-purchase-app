@@ -90,7 +90,7 @@ class Company < ApplicationRecord
   end
 
   def has_overdue_that_seller_setlimit(buyer_id)
-    days_limit = self.seller_days_limits.where(buyer_id: buyer_id).first
+    days_limit = self.seller_days_limits.where(buyer_id: buyer_id).last
     transaction = Transaction.where("seller_id = ? AND buyer_id = ? AND paid = ?", self.id, buyer_id, false)
     transaction.each do |t|
       overdue_days = (Date.current - t.due_date.to_date).to_i if t.due_date.present?
@@ -100,6 +100,20 @@ class Company < ApplicationRecord
         limit = 15
       end
       if overdue_days.to_i > limit
+        return true
+      end
+    end
+    return false
+  end
+
+  def has_overdue_seller_setlimit(buyer_id)
+    days_limit = self.seller_days_limits.where(buyer_id: buyer_id).last.try(&:days_limit)
+    days_limit = days_limit ? days_limit: 0
+    date = Date.current - days_limit
+    transaction = Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?",  buyer_id, date, false).order(:due_date).first
+    if transaction.present? && transaction.due_date.present?
+      overdue_limit = (Date.current.to_date - transaction.due_date.to_date).to_i
+      if overdue_limit.to_i > days_limit
         return true
       end
     end
