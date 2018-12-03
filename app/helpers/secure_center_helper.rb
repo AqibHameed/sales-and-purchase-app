@@ -4,13 +4,13 @@ module SecureCenterHelper
 
      @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company, buyer_id).last
      if @secure_center.present?
-       render json: {status: :ok, template: "api/v1/shared/limits_alert"}
+       render status: :ok, template: "api/v1/shared/limits_alert"
        #render json: { success: true, details: secure_center }
      else
        company = Company.where(id: buyer_id).first
        if company.present?
          @secure_center = save_secure_center(company)
-         render json:{status: :ok, template: "api/v1/shared/limits_alert"}
+         render status: :ok, template: "api/v1/shared/limits_alert"
        else
          render json: { errors: "Company with this id does not present.", response_code: 201 }
        end
