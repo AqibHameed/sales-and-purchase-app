@@ -118,7 +118,7 @@ module Api
             else
               errors = get_errors_for_accept_or_negotiate(@proposal)
               if errors.present?
-                secure_center_record(current_company.id, @proposal.buyer_id, credit_limit, overdue_limit)
+                secure_center_record(current_company.id, @proposal.buyer_id)
                 #render :json => { :success => false, :errors => errors }
               else
                 update_proposal(@proposal)
