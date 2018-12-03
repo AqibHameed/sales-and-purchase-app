@@ -309,7 +309,7 @@ module ApplicationHelper
   end
 
   def get_used_credit_limit(buyer, supplier)
-    transactions = Transaction.where(buyer_id: buyer.id, seller_id: supplier.id, paid: false, buyer_confirmed: true).sum(:remaining_amount)
+    transactions = Transaction.where(buyer_id: buyer.id, seller_id: supplier.id, paid: false, buyer_confirmed: true).sum(:remaining_amount).to_f
   end
 
   # def get_used_market_limit(buyer)
