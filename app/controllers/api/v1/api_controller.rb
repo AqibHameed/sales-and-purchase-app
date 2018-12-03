@@ -8,6 +8,9 @@ class Api::V1::ApiController < ApplicationController
   include ApplicationHelper
   include CustomersHelper
 
+  respond_to :json
+
+
   def current_customer
     token = request.headers['Authorization'].presence
     if token
