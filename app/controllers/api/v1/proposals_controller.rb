@@ -1,9 +1,9 @@
 module Api
   module V1
     class ProposalsController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:create, :negotiate]
-      before_action :set_proposal, only: [ :negotiate, :show, :accept_and_decline ]
-      before_action :verify_current_company, only: [ :negotiate, :show, :create, :accept_and_decline ]
+      skip_before_action :verify_authenticity_token, only: [:create, :negotiate, :update]
+      before_action :set_proposal, only: [ :negotiate, :show, :accept_and_decline, :update]
+      before_action :verify_current_company, only: [ :negotiate, :show, :create, :accept_and_decline, :update]
 
       include SecureCenterHelper
       include LiveMonitor
@@ -157,6 +157,10 @@ module Api
           get_proposal_details(@proposal)
           render :json => {:success => true, :message=> ' Proposal is negotiated successfully. ', :proposal => @data, response_code: 200 }    
         end 
+      end
+
+      def update
+        update_proposal(@proposal)
       end
 
       private
