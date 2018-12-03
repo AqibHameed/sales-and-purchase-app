@@ -84,7 +84,7 @@ module Api
               @data = {
                   id: company.id.to_s,
                   name: company.try(:name),
-                  total_limit: get_credit_limit(company, current_company).round(2),
+                  total_limit: get_credit_limit(company, current_company).round(2).to_s,
                   used_limit: get_used_credit_limit(company, current_company).round(2),
                   available_limit: get_available_credit_limit(company, current_company).round(2),
                   overdue_limit: get_days_limit(company, current_company),
