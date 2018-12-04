@@ -7,6 +7,7 @@ module Api
 
       include SecureCenterHelper
       include LiveMonitor
+      include ApplicationHelper
 
       def create
         if current_company
@@ -197,14 +198,6 @@ module Api
         end
         if available_credit_limit < total_price.to_f
           @credit_limit = true
-          # limit = CreditLimit.where(buyer_id: proposal.buyer_id, seller_id: current_company.id).first
-          # if limit.nil?
-          #   existing_limit = 0
-          #   @credit_limit = total_price
-          # else
-          #   existing_limit = limit.credit_limit
-          #   @credit_limit = limit.credit_limit.to_f + total_price.to_f - available_credit_limit.to_f
-          # end
           errors <<  @credit_limit
         else
           @credit_limit = false

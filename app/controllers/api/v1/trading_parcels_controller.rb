@@ -5,6 +5,7 @@ module Api
       include LimitsHelper
       include SecureCenterHelper
       include LiveMonitor
+      include ApplicationHelper
 
       skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy, :request_limit_increase, :accept_limit_increase, :reject_limit_increase]
 
@@ -122,7 +123,61 @@ module Api
         else
           render json: { errors: 'Parcel does not exist.' }
         end
-      end
+        end
+=begin
+ @apiVersion 1.0.0
+ @api {post} api/v1/trading_parcels/direct_sell
+ @apiSampleRequest off
+ @apiName direct sell
+ @apiGroup DirectSell
+ @apiDescription direct sell with buyer
+ @apiParamExample {json} Request-Example:
+ {
+  "trading_parcel":
+    {
+    "description":"Z -7+5T",
+    "my_transaction_attributes":
+                               {
+                                 "buyer_id":"3600",
+                                 "paid":false,
+                                 "created_at":"04/12/2018"
+                               },
+     "no_of_stones":10,
+     "carats":1.0,
+     "credit_period":20,
+     "price":2200.0,
+     "company":"SafeTrade",
+     "cost":2000.0,
+     "sight":"12/2018",
+     "source":"DTC",
+     "percent":10.0,
+     "comment":"",
+     "total_value":2200.0
+
+    }
+}
+ @apiSuccessExample {json} SuccessResponse:
+ [
+  {
+    "success": false,
+    "details": {
+        "id": 706,
+        "invoices_overdue": 0,
+        "paid_date": null,
+        "buyer_id": 3600,
+        "seller_id": 7188,
+        "outstandings": 0,
+        "overdue_amount": 0,
+        "last_bought_on": "2018-11-24",
+        "buyer_percentage": 0,
+        "system_percentage": 6,
+        "supplier_connected": 1,
+        "credit_limit": true,
+        "overdue_limit": false
+    }
+  }
+ ]
+=end
 
       def direct_sell
 
@@ -340,24 +395,32 @@ module Api
       end
 
       def check_credit_limit(transaction, parcel)
+        alert =[]
         buyer = Company.where(id: transaction.buyer_id).first
         available_credit_limit = get_available_credit_limit(buyer, current_company).to_f
-        credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
-        used  =  get_used_credit_limit(buyer, current_company).to_f
-        if credit_limit.nil?
-          existing_limit = 0.to_f
-          @credit_limit = parcel.total_value
-        else
-          existing_limit = credit_limit.credit_limit.to_f
-          @credit_limit = credit_limit.credit_limit + (parcel.total_value - available_credit_limit)
-        end
+        @company_group = CompaniesGroup.where("company_id like '%#{transaction.buyer_id}%'").where(seller_id: current_company.id).first
         if available_credit_limit < parcel.total_value.to_f
+          @credit_limit = true
+          alert << @credit_limit
+        end
+
+        if @company_group.present?
+          @days_limit = check_for_group_overdue_limit(current_company, transaction.buyer)
+          alert << @days_limit
+        end
+
+        if !@company_group.present?
+          @days_limit = current_company.has_overdue_seller_setlimit(transaction.buyer_id)
+          alert << @days_limit
+        end
+        if alert.present?
           parcel.destroy
           secure_center_record(current_company.id, transaction.buyer_id)
           #render json: { sucess: false, message: "You have set a credit limit of #{existing_limit}. This transaction will increase it to #{new_limit}. Do you wish to continue?" }
         else
           save_transaction(transaction, parcel)
         end
+
       end
 
     end
