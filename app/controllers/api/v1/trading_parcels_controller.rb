@@ -197,10 +197,8 @@ module Api
               registered_users = buyer.customers.count
               if transaction.paid == true
                 save_transaction(transaction, @parcel)
-              elsif params[:available_credit_limit].present? && params[:available_credit_limit] == true 
+              elsif (params[:over_credit_limit].present? && params[:over_credit_limit] == true) || (params[:overdue_days_limit].present? && params[:overdue_days_limit] == true)
                 save_transaction(transaction, @parcel)
-              elsif params[:available_market_overdue].present? && params[:available_market_overdue] == true
-                check_credit_limit(transaction, @parcel)
               else
                 if registered_users < 1
                   if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.current)
@@ -402,16 +400,26 @@ module Api
         if available_credit_limit < parcel.total_value.to_f
           @credit_limit = true
           alert << @credit_limit
+        else
+          @credit_limit = false
         end
 
         if @company_group.present?
-          @days_limit = check_for_group_overdue_limit(current_company, transaction.buyer)
-          alert << @days_limit
+          if check_for_group_overdue_limit(current_company, transaction.buyer)
+            @days_limit = true
+            alert << @days_limit
+          else
+            @days_limit = false
+          end
         end
 
         if !@company_group.present?
-          @days_limit = current_company.has_overdue_seller_setlimit(transaction.buyer_id)
-          alert << @days_limit
+          if current_company.has_overdue_seller_setlimit(transaction.buyer_id)
+            @days_limit = true
+            alert << @days_limit
+          else
+             @days_limit = false
+          end
         end
         if alert.present?
           parcel.destroy
