@@ -205,13 +205,21 @@ module Api
 
         if @company_group.present?
 
-          @days_limit = check_for_group_overdue_limit(current_company, proposal.trading_parcel.company)
-          errors << @days_limit
+          if check_for_group_overdue_limit(current_company, proposal.trading_parcel.company)
+            @days_limit = true
+            errors << @days_limit
+          else
+            @days_limit = false
+          end
         end
         if !@company_group.present?
 
-          @days_limit = current_company.has_overdue_seller_setlimit(proposal.buyer.id)
-          errors << @days_limit
+          if current_company.has_overdue_seller_setlimit(proposal.buyer.id)
+             @days_limit = true
+            errors << @days_limit
+          else
+             @days_limit = false
+          end
         end
         return errors
       end
