@@ -129,9 +129,9 @@ module Api
  @api {post} api/v1/trading_parcels/direct_sell
  @apiSampleRequest off
  @apiName direct sell
- @apiGroup DirectSell
+ @apiGroup TradingParcels
  @apiDescription direct sell with buyer
- @apiParamExample {json} Request-Example:
+ @apiParamExample {json} Request-Example1:
  {
   "trading_parcel":
     {
@@ -156,7 +156,7 @@ module Api
 
     }
 }
- @apiSuccessExample {json} SuccessResponse:
+ @apiSuccessExample {json} SuccessResponse1:
  [
   {
     "success": false,
@@ -177,7 +177,42 @@ module Api
     }
   }
  ]
+@apiParamExample {json} Request-Example2:
+ {
+  "trading_parcel":
+    {
+    "description":"Z -7+5T",
+    "my_transaction_attributes":
+                               {
+                                 "buyer_id":"3600",
+                                 "paid":false,
+                                 "created_at":"04/12/2018"
+                               },
+     "no_of_stones":10,
+     "carats":1.0,
+     "credit_period":20,
+     "price":2200.0,
+     "company":"SafeTrade",
+     "cost":2000.0,
+     "sight":"12/2018",
+     "source":"DTC",
+     "percent":10.0,
+     "comment":"",
+     "total_value":2200.0
+
+    },
+    "over_credit_limit" : true,
+    "overdue_days_limit" : true
+}
+@apiSuccessExample {json} SuccessResponse2:
+ [
+  {
+    "success": true,
+    "notice": "Transaction added successfully"
+  }
+ ]
 =end
+
 
       def direct_sell
 

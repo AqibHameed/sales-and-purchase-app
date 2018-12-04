@@ -147,8 +147,9 @@ ActiveRecord::Schema.define(version: 20181204143000) do
     t.text "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "group_market_limit"
+    t.decimal "group_market_limit", precision: 10
     t.integer "group_overdue_limit"
+    t.decimal "credit_limit", precision: 10
   end
 
   create_table "contact_people", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
