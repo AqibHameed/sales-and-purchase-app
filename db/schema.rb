@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181129134211) do
+ActiveRecord::Schema.define(version: 20181204143000) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "email", default: "", null: false
@@ -147,9 +147,8 @@ ActiveRecord::Schema.define(version: 20181129134211) do
     t.text "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "group_market_limit", precision: 10
+    t.integer "group_market_limit"
     t.integer "group_overdue_limit"
-    t.decimal "credit_limit", precision: 10
   end
 
   create_table "contact_people", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -638,21 +637,21 @@ ActiveRecord::Schema.define(version: 20181129134211) do
     t.date "paid_date"
     t.integer "late_days"
     t.integer "buyer_days_limit"
-    t.decimal "market_limit", precision: 10
+    t.decimal "market_limit", precision: 10, scale: 2
     t.integer "supplier_paid"
-    t.decimal "outstandings", precision: 10
-    t.decimal "overdue_amount", precision: 10
-    t.decimal "given_credit_limit", precision: 10
-    t.decimal "given_market_limit", precision: 10
-    t.decimal "given_overdue_limit", precision: 10
+    t.decimal "outstandings", precision: 10, scale: 2
+    t.decimal "overdue_amount", precision: 10, scale: 2
+    t.decimal "given_credit_limit", precision: 10, scale: 2
+    t.decimal "given_market_limit", precision: 10, scale: 2
+    t.decimal "given_overdue_limit", precision: 10, scale: 2
     t.date "last_bought_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "supplier_unpaid", default: 0
-    t.decimal "percentage", precision: 10, default: "0"
-    t.decimal "activity_bought", precision: 10
-    t.decimal "buyer_percentage", precision: 10, default: "0"
-    t.decimal "system_percentage", precision: 10, default: "0"
+    t.decimal "percentage", precision: 10, scale: 2, default: "0.0"
+    t.decimal "activity_bought", precision: 10, scale: 2
+    t.decimal "buyer_percentage", precision: 10, scale: 2, default: "0.0"
+    t.decimal "system_percentage", precision: 10, scale: 2, default: "0.0"
   end
 
   create_table "seller_scores", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
