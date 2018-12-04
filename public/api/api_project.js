@@ -1,6 +1,6 @@
 define({
   "name": "IDT",
-  "version": "0.1",
+  "version": "1.0",
   "description": "api of IDT",
   "title": "IDT API",
   "url": "https://safetrade.ai",
@@ -9,7 +9,7 @@ define({
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2018-12-04T15:24:48.362Z",
+    "time": "2018-12-04T15:47:07.637Z",
     "url": "http://apidocjs.com",
     "version": "0.17.7"
   }
