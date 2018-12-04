@@ -27,5 +27,30 @@ define({ "api": [
     },
     "filename": "app/controllers/api/v1/trading_parcels_controller.rb",
     "groupTitle": "DirectSell"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "api/v1/secure_center?id=buyer_id",
+    "title": "",
+    "name": "live_monitoring",
+    "group": "companies_controller",
+    "description": "<p>get secure center data for buyer</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"details\": {\n      \"id\": 245,\n      \"invoices_overdue\": 0,\n      \"paid_date\": null,\n      \"buyer_id\": 7177,\n      \"seller_id\": 7187,\n      \"outstandings\": \"0.0\",\n      \"overdue_amount\": \"0.0\",\n      \"last_bought_on\": null,\n      \"buyer_percentage\": \"0.0\",\n      \"system_percentage\": \"0.0\",\n      \"supplier_connected\": 0\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "companies_controller",
+    "sampleRequest": [
+      {
+        "url": "https://safetrade.aiapi/v1/secure_center?id=buyer_id"
+      }
+    ]
   }
 ] });

@@ -310,6 +310,31 @@ class Api::V1::CompaniesController < ApplicationController
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} api/v1/secure_center?id=buyer_id
+ @apiName live_monitoring
+ @apiGroup companies_controller
+ @apiDescription get secure center data for buyer
+ @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "details": {
+        "id": 245,
+        "invoices_overdue": 0,
+        "paid_date": null,
+        "buyer_id": 7177,
+        "seller_id": 7187,
+        "outstandings": "0.0",
+        "overdue_amount": "0.0",
+        "last_bought_on": null,
+        "buyer_percentage": "0.0",
+        "system_percentage": "0.0",
+        "supplier_connected": 0
+    }
+  }
+=end
+
   def live_monitoring
     if current_company
       #secure_center_record(current_company.id, params[:id])
