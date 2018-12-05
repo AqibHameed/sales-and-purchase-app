@@ -308,8 +308,10 @@ class SuppliersController < ApplicationController
     if params[:id] == 'Rough'
       params[:id] = 'Outside Goods'
     end
-    demand_supplier = DemandSupplier.where(name: params[:id]).first
-    @demand_list = DemandList.where(demand_supplier_id: demand_supplier.id)
+    demand_supplier = DemandSupplier.find_by(name: params[:id])
+
+    @demand_list = DemandList.where(demand_supplier_id: demand_supplier.id) unless demand_supplier.blank?
+
     respond_to do |format|
       format.js
     end
