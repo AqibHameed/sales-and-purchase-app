@@ -2,6 +2,7 @@ module Api
   module V1
     class MessagesController < ApiController
       include MessagesHelper
+      include CustomersHelper
       skip_before_action :verify_authenticity_token, only: [:create]
       before_action :current_customer, only: [:index, :show, :create]
       
