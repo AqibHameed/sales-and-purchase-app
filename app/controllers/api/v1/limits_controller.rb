@@ -82,7 +82,7 @@ module Api
               render json: {success: false, errors: "Company not found", response_code: 201}
             else
               @data = {
-                  id: company.id.to_s,
+                  id: company.id,
                   name: company.try(:name),
                   total_limit: get_credit_limit(company, current_company).round(2),
                   used_limit: get_used_credit_limit(company, current_company).round(2),
@@ -115,7 +115,7 @@ module Api
             companies = Company.where("id in (?)", @array.uniq)
             companies.each do |c|
               @data << {
-                  id: c.id.to_s,
+                  id: c.id,
                   name: c.try(:name),
                   total_limit: get_credit_limit(c, current_company).round(2),
                   used_limit: get_used_credit_limit(c, current_company).round(2),
