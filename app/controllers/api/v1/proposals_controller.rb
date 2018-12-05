@@ -94,14 +94,15 @@ module Api
           negotiation = Negotiation.where(id: params[:negotiation_id]).first
           render :json => {:success => false, :message=> 'Negotiation does not exists for the negotiation id.', response_code: 201 } and return unless negotiation
           render :json => {:success => false, :message=> 'This negotiation is not yours.', response_code: 201 } and return unless negotiation.whose == current_company
-          if negotiation.proposal.negotiations.last == negotiation && negotiation.proposal.negotiated?
+          if negotiation.proposal.negotiations.last == negotiation && (negotiation.proposal.negotiated? || negotiation.proposal.new_proposal?)
             if negotiation.update_attributes(negotiation_params)
               @proposal = negotiation.proposal
               update_parameters = {
                 price: params[:price],
                 percent: params[:percent],
                 credit: params[:credit],
-                total_value: params[:total_value]
+                total_value: params[:total_value],
+                status: 0
               }
               (current_company == @proposal.buyer) ? update_parameters.merge({buyer_comment: params[:comment]}) : update_parameters.merge({notes: params[:comment]})
               @proposal.update_attributes(update_parameters)
