@@ -89,6 +89,158 @@ module Api
         end      
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} api/v1/proposals/:id/negotiate
+ @apiSampleRequest off
+ @apiName negotiate
+ @apiGroup Negotiations
+ @apiDescription negotiation between the buyer and seller
+ @apiParamExample {json} Request-Example1:
+ {
+  {
+    "price":"3000.01",
+    "credit":"15",
+    "comment":"",
+    "total_value":"50000.01",
+    "percent":"10.0",
+    "proposal":{
+      "price":"3000.01",
+      "credit":"15",
+      "total_value":"50000.01",
+      "percent":"10.0"
+   }
+  }
+}
+ @apiSuccessExample {json} SuccessResponse1:
+ [
+  {
+    "success": false,
+    "details": {
+        "id": 2,
+        "invoices_overdue": 0,
+        "paid_date": null,
+        "buyer_id": 1,
+        "seller_id": 4,
+        "outstandings": 0,
+        "last_bought_on": null,
+        "supplier_connected": 0,
+        "credit_limit": true,
+        "overdue_limit": false,
+        "overdue_amount": 0,
+        "buyer_percentage": 0,
+        "system_percentage": 0
+    }
+  }
+ ]
+@apiParamExample {json} Request-Example2:
+ {
+   {
+    "price":"3000.01",
+    "credit":"15",
+    "confirm": true,
+    "comment":"",
+    "total_value":"50000.01",
+    "percent":"10.0",
+    "proposal":{
+      "price":"3000.01",
+      "credit":"15",
+      "total_value":"50000.01",
+      "percent":"10.0"
+   }
+  }
+}
+@apiSuccessExample {json} SuccessResponse2:
+ [
+  {
+    "success": true,
+    "message": " Proposal is updated successfully. ",
+    "proposal": {
+        "status": null,
+        "supplier_name": "Seller C",
+        "source": "Dummy",
+        "description": "Dummy 2",
+        "sight": "12/2018",
+        "no_of_stones": 0,
+        "carats": "251.0",
+        "cost": 100,
+        "list_percentage": 8,
+        "list_avg_price": 108,
+        "list_total_price": 27108,
+        "list_credit": 60,
+        "list_discount": 0,
+        "list_comment": "",
+        "offered_percent": 10,
+        "offered_price": 3000.01,
+        "offered_credit": 15,
+        "offered_total_value": 50000.01,
+        "offered_comment": null,
+        "negotiated": {
+            "id": 29,
+            "offered_percent": 10,
+            "offered_price": 3000.01,
+            "offered_total_value": 50000,
+            "offered_credit": 15,
+            "offered_comment": "",
+            "offered_from": "Seller B(buyer)",
+            "is_mine": true
+        },
+        "total_negotiations": 1,
+        "negotiations": [
+            {
+                "id": 29,
+                "offered_percent": 10,
+                "offered_credit": 15,
+                "offered_price": 3000.01,
+                "offered_total_value": 50000.01,
+                "offered_comment": "",
+                "offered_from": "Seller B(buyer)",
+                "is_mine": true
+            }
+        ]
+    },
+    "response_code": 200
+  }
+ ]
+@apiParamExample {json} Request-Example3:
+ {
+  {
+    "negotiation_id":29,
+    "price":"3000.01",
+    "credit":"15",
+    "comment":"",
+    "total_value":"50000.01",
+    "percent":"10.0",
+    "proposal":{
+      "price":"3000.01",
+      "credit":"15",
+      "total_value":"50000.01",
+      "percent":"10.0"
+   }
+  }
+}
+@apiSuccessExample {json} SuccessResponse3:
+ [
+  {
+    "success": true,
+    "message": " Negotiation is updated successfully. ",
+    "negotiation": {
+        "from": "buyer",
+        "proposal_id": 17,
+        "id": 29,
+        "price": 3000.01,
+        "credit": 15,
+        "total_value": 50000.01,
+        "percent": 10,
+        "comment": "",
+        "created_at": "2018-12-05T14:57:44.000+05:30",
+        "updated_at": "2018-12-05T22:23:55.000+05:30"
+    },
+    "response_code": 200
+  }
+ ]
+=end
+
       def negotiate   
         if params[:negotiation_id].present?
           negotiation = Negotiation.where(id: params[:negotiation_id]).first
