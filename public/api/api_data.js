@@ -2,6 +2,64 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
+    "url": "/api/v1/limits/add_limits",
+    "title": "",
+    "name": "add_limits",
+    "group": "Limits",
+    "description": "<p>add limits</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": " {\n  {\n\t\"limit\":{\n\t\t\"buyer_id\": 1,\n\t\t\"credit_limit\": 35000\n\t}\n }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "[\n {\n   \"success\": true,\n   \"message\": \"Limits updated.\"\n }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/limits_controller.rb",
+    "groupTitle": "Limits"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/limits/add_overdue_limit",
+    "title": "",
+    "name": "add_overdue_limit",
+    "group": "Limits",
+    "description": "<p>add overdue limits</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": " {\n  {\n  \"buyer_id\": 1,\n  \"limit\": 30\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "[\n {\n   \"success\": true,\n   \"message\": \"Days Limit updated.\",\n   \"value\": \"30 days\"\n }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/limits_controller.rb",
+    "groupTitle": "Limits"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
     "url": "api/v1/proposals/:id/negotiate",
     "title": "",
     "name": "negotiate",

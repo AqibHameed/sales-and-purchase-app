@@ -8,6 +8,30 @@ module Api
       include ActionView::Helpers::TextHelper
       include ApplicationHelper
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/limits/add_limits
+ @apiSampleRequest off
+ @apiName add_limits
+ @apiGroup Limits
+ @apiDescription add limits
+ @apiParamExample {json} Request-Example:
+ {
+  {
+	"limit":{
+		"buyer_id": 1,
+		"credit_limit": 35000
+	}
+ }
+}
+ @apiSuccessExample {json} SuccessResponse:
+ [
+  {
+    "success": true,
+    "message": "Limits updated."
+  }
+ ]
+=end
       def add_limits
         if current_company
           buyer_limits = CreditLimit.find_by(buyer_id: params[:limit]['buyer_id'], seller_id: current_company.id)
@@ -23,7 +47,29 @@ module Api
           render json: {errors: "Not authenticated", response_code: 201}
         end
       end
-
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/limits/add_overdue_limit
+ @apiSampleRequest off
+ @apiName add_overdue_limit
+ @apiGroup Limits
+ @apiDescription add overdue limits
+ @apiParamExample {json} Request-Example:
+ {
+  {
+  "buyer_id": 1,
+  "limit": 30
+  }
+}
+ @apiSuccessExample {json} SuccessResponse:
+ [
+  {
+    "success": true,
+    "message": "Days Limit updated.",
+    "value": "30 days"
+  }
+ ]
+=end
       def add_overdue_limit
         if current_company
           buyer = Company.where(id: params[:buyer_id]).first
