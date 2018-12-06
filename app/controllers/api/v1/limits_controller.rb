@@ -33,15 +33,21 @@ module Api
  ]
 =end
       def add_limits
+
         if current_company
-          buyer_limits = CreditLimit.find_by(buyer_id: params[:limit]['buyer_id'], seller_id: current_company.id)
-          buyer_limits = CreditLimit.new(seller_id: current_company.id, buyer_id: params[:limit]['buyer_id']) if buyer_limits.nil?
-          buyer_limits.credit_limit = params[:limit]['credit_limit'] unless params[:limit]['credit_limit'].blank?
-          #buyer_limits.market_limit = params[:limit]['market_limit'] unless params[:limit]['market_limit'].blank?
-          if buyer_limits.save
-            render json: {success: true, message: 'Limits updated.'}
+          buyer = Company.where(id: params[:buyer_id]).first
+          if buyer.blank?
+            render json: {success: false, message: "Buyer doesn't exist"}
           else
-            render json: {success: false, message: buyer_limits.errors.full_messages}
+            buyer_limits = CreditLimit.find_by(buyer_id: params[:limit]['buyer_id'], seller_id: current_company.id)
+            buyer_limits = CreditLimit.new(seller_id: current_company.id, buyer_id: params[:limit]['buyer_id']) if buyer_limits.nil?
+            buyer_limits.credit_limit = params[:limit]['credit_limit'] unless params[:limit]['credit_limit'].blank?
+            #buyer_limits.market_limit = params[:limit]['market_limit'] unless params[:limit]['market_limit'].blank?
+            if buyer_limits.save
+              render json: {success: true, message: 'Limits updated.'}
+            else
+              render json: {success: false, message: buyer_limits.errors.full_messages}
+            end
           end
         else
           render json: {errors: "Not authenticated", response_code: 201}
