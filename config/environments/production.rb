@@ -122,6 +122,6 @@ Rails.application.configure do
   :email => {
     :email_prefix => "[Production Safetrade Error] ",
     :sender_address => %{"notifier" <contact@safetrade.ai>},
-    :exception_recipients =>  %w{umair.raza101@gmail.com, we.ror.devs@gmail.com, maneet@safetrade.ai}
+    :exception_recipients =>  %w{we.ror.devs@gmail.com, maneet@safetrade.ai}
   }
 end

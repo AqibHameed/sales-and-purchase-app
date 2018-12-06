@@ -290,7 +290,8 @@ module Api
           price: params[:price],
           percent: params[:percent],
           credit: params[:credit],
-          total_value: params[:total_value]
+          total_value: params[:total_value],
+          status: 0
         }
         (current_company == @proposal.buyer) ? update_parameters.merge({buyer_comment: params[:comment]}) : update_parameters.merge({notes: params[:comment]})
         @proposal.update_attributes(update_parameters)
