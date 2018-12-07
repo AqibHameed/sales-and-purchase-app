@@ -34,7 +34,7 @@ class TradingParcel < ApplicationRecord
   LAB = ["GIA", "AGS", "HRD", "IGI", "RDC", "CGL", "DCLA", "GCAL", "GHI", "IIDGR"]
 
   def diamond_type_is_polish?
-    self.source == "POLISHED"
+    self.source == DemandSupplier::POLISHED
   end
 
   def validate_sizes
@@ -61,7 +61,7 @@ class TradingParcel < ApplicationRecord
   def generate_and_add_uid
     uid = SecureRandom.hex(4)
     self.uid = uid
-    diamond_type = ((source == 'DTC' || source == 'RUSSIAN') ? 'Sight' : ((source == 'SOMETHING SPECIAL' || source == 'OUTSIDE GOODS') ? 'Rough' : ((source == 'POLISHED') ? 'Polished' : 'N/A')))
+    diamond_type = ((source == DemandSupplier::DTC || source == DemandSupplier::RUSSIAN) ? 'Sight' : ((source == DemandSupplier::SPECIAL || source == DemandSupplier::OUTSIDE) ? 'Rough' : ((source == DemandSupplier::POLISHED) ? 'Polished' : 'N/A')))
     self.diamond_type = diamond_type
     self.save(validate: false)
   end
