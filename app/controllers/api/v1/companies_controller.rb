@@ -209,7 +209,7 @@ class Api::V1::CompaniesController < ApplicationController
           description: get_description(t.trading_parcel),
           no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
           carats: t.trading_parcel.present? ? t.trading_parcel.weight.to_f : 'N/A',
-          cost: t.trading_parcel.present? ? t.trading_parcel.cost.to_f  : 'N/A',
+          cost: t.trading_parcel.present? ? cost_convert(t.trading_parcel)  : 'N/A',
           box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
           sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
           amount_to_be_paid: t.remaining_amount,
@@ -287,7 +287,7 @@ class Api::V1::CompaniesController < ApplicationController
           payment_status: t.buyer_reject ? 'Rejected' : get_status(t),
           no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
           carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
-          cost: t.trading_parcel.present? ? t.trading_parcel.cost.to_f  : 'N/A',
+          cost: t.trading_parcel.present? ? cost_convert(t.trading_parcel)  : 'N/A',
           box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
           sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
           comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
@@ -311,9 +311,9 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
 
-  # def cost_convert trading_parcel
-  #  trading_parcel.cost.blank? ? nil: trading_parcel.cost.to_f
-  # end
+  def cost_convert trading_parcel
+    trading_parcel.cost.blank? ? nil: trading_parcel.cost
+  end
 
 =begin
  @apiVersion 1.0.0
