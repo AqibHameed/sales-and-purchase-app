@@ -27,7 +27,7 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   def current_customer
-       token = request.headers['Authorization'].presence
+      token = request.headers['Authorization'].presence
        if token
          @current_customer ||= Customer.find_by_authentication_token(token)
        end
@@ -188,7 +188,7 @@ class Api::V1::CompaniesController < ApplicationController
           seller_id: t.seller_id,
           trading_parcel_id: t.trading_parcel_id,
           due_date: t.due_date.present? ? t.due_date.strftime("%FT%T%:z") : 'N/A',
-          avg_price: t.price,
+          avg_price: t.price.to_f,
           total_amount: t.total_amount.to_f,
           credit: t.credit,
           paid: t.paid,
@@ -209,7 +209,7 @@ class Api::V1::CompaniesController < ApplicationController
           description: get_description(t.trading_parcel),
           no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
           carats: t.trading_parcel.present? ? t.trading_parcel.weight.to_f : 'N/A',
-          cost: t.trading_parcel.present? ? t.trading_parcel.cost.to_f : 'N/A',
+          cost: t.trading_parcel.present? ? cost_convert(t.trading_parcel) : 'N/A',
           box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
           sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
           amount_to_be_paid: t.remaining_amount.to_f,
@@ -287,7 +287,7 @@ class Api::V1::CompaniesController < ApplicationController
           payment_status: t.buyer_reject ? 'Rejected' : get_status(t),
           no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
           carats: t.trading_parcel.present? ? t.trading_parcel.weight.to_f : 'N/A',
-          cost: t.trading_parcel.present? ? t.trading_parcel.cost.to_f : 'N/A',
+          cost: t.trading_parcel.present? ? cost_convert(t.trading_parcel)  : 'N/A',
           box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
           sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
           comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
@@ -308,6 +308,11 @@ class Api::V1::CompaniesController < ApplicationController
       end
       return @array
     end
+  end
+
+
+  def cost_convert trading_parcel
+   trading_parcel.cost.blank? ? nil: trading_parcel.cost.to_f
   end
 
 =begin
