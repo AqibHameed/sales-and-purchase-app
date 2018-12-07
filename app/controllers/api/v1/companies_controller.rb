@@ -188,8 +188,8 @@ class Api::V1::CompaniesController < ApplicationController
           seller_id: t.seller_id,
           trading_parcel_id: t.trading_parcel_id,
           due_date: t.due_date.present? ? t.due_date.strftime("%FT%T%:z") : 'N/A',
-          avg_price: t.price.to_f,
-          total_amount: t.total_amount.to_f,
+          avg_price: t.price,
+          total_amount: t.total_amount,
           credit: t.credit,
           paid: t.paid,
           created_at: t.created_at,
@@ -209,10 +209,10 @@ class Api::V1::CompaniesController < ApplicationController
           description: get_description(t.trading_parcel),
           no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
           carats: t.trading_parcel.present? ? t.trading_parcel.weight.to_f : 'N/A',
-          cost: t.trading_parcel.present? ? cost_convert(t.trading_parcel) : 'N/A',
+          cost: t.trading_parcel.present? ? t.trading_parcel.cost.to_f  : 'N/A',
           box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
           sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
-          amount_to_be_paid: t.remaining_amount.to_f,
+          amount_to_be_paid: t.remaining_amount,
           comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
           confirm_status: t.buyer_confirmed
         }
@@ -275,10 +275,10 @@ class Api::V1::CompaniesController < ApplicationController
           reject_reason: t.reject_reason,
           reject_date: t.reject_date,
           transaction_type: t.transaction_type,
-          amount_to_be_paid: t.remaining_amount.to_f,
+          amount_to_be_paid: t.remaining_amount,
           transaction_uid: t.transaction_uid,
           diamond_type: t.diamond_type,
-          total_amount: t.total_amount.to_f,
+          total_amount: t.total_amount,
           invoice_no: t.invoice_no,
           ready_for_buyer: t.ready_for_buyer,
           description: get_description(t.trading_parcel),
@@ -286,8 +286,8 @@ class Api::V1::CompaniesController < ApplicationController
           counter_party: (current_company.id == t.buyer_id) ? t.seller.try(:name) : ((current_company.id == t.seller_id) ? t.buyer.try(:name) : 'N/A'),
           payment_status: t.buyer_reject ? 'Rejected' : get_status(t),
           no_of_stones: t.trading_parcel.present? ? t.trading_parcel.no_of_stones : 'N/A',
-          carats: t.trading_parcel.present? ? t.trading_parcel.weight.to_f : 'N/A',
-          cost: t.trading_parcel.present? ? cost_convert(t.trading_parcel)  : 'N/A',
+          carats: t.trading_parcel.present? ? number_with_precision(t.trading_parcel.weight, precision: 2) : 'N/A',
+          cost: t.trading_parcel.present? ? t.trading_parcel.cost.to_f  : 'N/A',
           box_value: t.trading_parcel.present? ? t.trading_parcel.box_value : 'N/A',
           sight: t.trading_parcel.present? ? t.trading_parcel.sight : 'N/A',
           comment: t.trading_parcel.present? ? t.trading_parcel.try(:comment) : 'N/A',
@@ -311,9 +311,9 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
 
-  def cost_convert trading_parcel
-   trading_parcel.cost.blank? ? nil: trading_parcel.cost.to_f
-  end
+  # def cost_convert trading_parcel
+  #  trading_parcel.cost.blank? ? nil: trading_parcel.cost.to_f
+  # end
 
 =begin
  @apiVersion 1.0.0
