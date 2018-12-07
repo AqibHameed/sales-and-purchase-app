@@ -1,6 +1,9 @@
 module LiveMonitor
 
   extend ActiveSupport::Concern
+  def update_secure_center
+    SecureCenterJob.perform_now(self)
+  end
 
   def secure_center
     if self.class.name == "CompaniesGroup"
