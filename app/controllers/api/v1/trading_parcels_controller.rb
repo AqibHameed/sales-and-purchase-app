@@ -385,7 +385,7 @@ module Api
           credit_period: parcel.credit_period,
           avg_price: parcel.try(:price).to_f,
           company: parcel.try(:company).try(:name),
-          cost: parcel.cost.to_f,
+          cost: parcel.cost,
           discount_per_month: parcel.box_value,
           sight: parcel.sight,
           source: parcel.source,

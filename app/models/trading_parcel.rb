@@ -99,7 +99,7 @@ class TradingParcel < ApplicationRecord
   end
 
   def replace_nil_value
-    cost.nil? ? self.update_column(:cost, 0) : ''
+  #  cost.nil? ? self.update_column(:cost, 0) : ''
     percent.nil? ? self.update_column(:percent, 0) : ''
     weight.nil? ? self.update_column(:weight, 0) : ''
     price.nil? ? self.update_column(:price, 0) : ''
