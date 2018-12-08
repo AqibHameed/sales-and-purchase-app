@@ -312,7 +312,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 
   def cost_convert trading_parcel
-    trading_parcel.cost.blank? ? nil: trading_parcel.cost
+    trading_parcel.cost.blank? ? nil: trading_parcel.cost.to_s
   end
 
 =begin
