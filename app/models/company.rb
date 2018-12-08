@@ -438,9 +438,9 @@ class Company < ApplicationRecord
 
   def system_transaction_percentage
       date_previous_90_days = Date.current - 90.day
-      all_company_transactions = Transaction.select(:seller_id).where("due_date>= ?  AND due_date < ? AND remaining_amount < 2000", date_previous_90_days, Date.current)
-      invoice_amount_last_90_days = Transaction.select(:seller_id).where("due_date>= ? AND due_date < ?", date_previous_90_days, Date.current).sum(:total_amount)
-      paid_all_transaction_last_90_days = PartialPayment.where(transaction_id: all_company_transactions.pluck(:id)).sum(:amount)
+      all_company_transactions = Transaction.select(:seller_id).where("due_date>= ?  AND due_date < ?", date_previous_90_days, Date.current)
+      invoice_amount_last_90_days = Transaction.select(:seller_id).where("due_date>= ? AND due_date < ?", date_previous_90_days, Date.current).sum(:total_amount).to_f
+      paid_all_transaction_last_90_days = PartialPayment.where(transaction_id: all_company_transactions.pluck(:id)).sum(:amount).to_f
 
       if invoice_amount_last_90_days > 0
         percentage = (paid_all_transaction_last_90_days / invoice_amount_last_90_days) * 100
