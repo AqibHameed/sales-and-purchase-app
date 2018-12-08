@@ -39,9 +39,9 @@ module Api
           if buyer.blank?
             render json: {success: false, message: "Buyer doesn't exist"}
           else
-            buyer_limits = CreditLimit.find_by(buyer_id: params[:limit]['buyer_id'], seller_id: current_company.id)
-            buyer_limits = CreditLimit.new(seller_id: current_company.id, buyer_id: params[:limit]['buyer_id']) if buyer_limits.nil?
-            buyer_limits.credit_limit = params[:limit]['credit_limit'] unless params[:limit]['credit_limit'].blank?
+            buyer_limits = CreditLimit.find_by(buyer_id: params['buyer_id'], seller_id: current_company.id)
+            buyer_limits = CreditLimit.new(seller_id: current_company.id, buyer_id: params['buyer_id']) if buyer_limits.nil?
+            buyer_limits.credit_limit = params['credit_limit'] unless params['credit_limit'].blank?
             #buyer_limits.market_limit = params[:limit]['market_limit'] unless params[:limit]['market_limit'].blank?
             if buyer_limits.save
               render json: {success: true, message: 'Limits updated.'}
