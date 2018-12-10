@@ -11,7 +11,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": " {\n  {\n\t\"limit\":{\n\t\t\"buyer_id\": 1,\n\t\t\"credit_limit\": 35000\n\t}\n }\n}",
+          "content": " {\n  {\n  \"buyer_id\": 1,\n  \"limit\": 35000\n  }\n}",
           "type": "json"
         }
       ]
