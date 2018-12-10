@@ -1,79 +1,80 @@
 <div class="table">
   <table class="table table-bordered table-responsive">
-  <%if uid%>
+    <% if uid %>
+      <tr>
+        <td> UID</td>
+        <td><%= @parcel.uid %></td>
+      </tr>
+    <% end %>
     <tr>
-      <td> UID</td>
-      <td><%= @parcel.uid %></td>
-    </tr>
-  <% end %>
-  <tr>
-    <td> Supplier</td>
-    <td>
-       <%= check_anonymous_company_parcel(@parcel, current_company)%>
+      <td> Supplier</td>
+      <td>
+        <%= check_anonymous_company_parcel(@parcel, current_company) %>
       </td>
-  </tr>
-  <tr>
-    <td> Source </td>
-    <td><%= (@parcel.source.nil? || @parcel.source.blank?) ? 'N/A' : @parcel.source %></td>
-  </tr>
-  <!-- <tr>
+    </tr>
+    <tr>
+      <td> Source</td>
+      <td><%= (@parcel.source.nil? || @parcel.source.blank?) ? 'N/A' : @parcel.source %></td>
+    </tr>
+    <!-- <tr>
     <td> Description</td>
     <td><%#= get_description(@parcel) %></td>
   </tr> -->
-  <tr>
-    <td> Shape</td>
-    <td><%= @parcel.shape.nil? ? 'N/A' : @parcel.shape %></td>
-  </tr>
-  <tr>
-    <td> Size:</td>
-    <td><%= @parcel.weight.nil? ? 'N/A' : @parcel.weight %></td>
-  </tr>
-  <tr>
-    <td> Color</td>
-    <td><%= @parcel.color.nil? ? 'N/A' : @parcel.color %></td>
-  </tr>
-  <tr>
-    <td> Clarity</td>
-    <td><%= @parcel.clarity.nil? ? 'N/A' : @parcel.clarity %></td>
-  </tr>
-  <tr>
-    <td> Cut</td>
-    <td><%= @parcel.cut.nil? ? 'N/A' : @parcel.cut %></td>
-  </tr>
-  <tr>
-    <td> Polish</td>
-    <td><%= @parcel.polish.nil? ? 'N/A' : @parcel.polish %></td>
-  </tr>
-  <tr>
-    <td> Symmetry:</td>
-    <td><%= @parcel.symmetry.nil? ? 'N/A' : @parcel.symmetry %></td>
-  </tr>
-  <tr>
-    <td> Fluorescence</td>
-    <td><%= @parcel.fluorescence.nil? ? 'N/A' : @parcel.fluorescence %></td>
-  </tr>
-  <tr>
-    <td> lab:</td>
-    <td><%= @parcel.lab.nil? ? 'N/A' : @parcel.lab %></td>
-  </tr>
-  <tr>
-    <td> City</td>
-    <td><%= @parcel.city.nil? ? 'N/A' : @parcel.city %></td>
-  </tr>
-  <tr>
-    <td> Country</td>
-    <td><%= @parcel.country.nil? ? 'N/A' : @parcel.country %></td>
-  </tr>
-  <tr>
-    <td> Avg. Price</td>
-    <td><%= @parcel.price.nil? ? 'N/A' : @parcel.price %></td>
-  </tr>
-  <tr>
-    <td> Total/Box value:</td>
-    <td><%= @parcel.total_value.nil? ? 'N/A' : @parcel.total_value %></td>
-  </tr>
-  <tr>
-    <td> Comment</td>
-    <td><%= @parcel.try(:comment) %></td>
-  </tr>
-</table>
+    <tr>
+      <td> Shape</td>
+      <td><%= @parcel.shape.nil? ? 'N/A' : @parcel.shape %></td>
+    </tr>
+    <tr>
+      <td> Size:</td>
+      <td><%= @parcel.weight.nil? ? 'N/A' : @parcel.weight %></td>
+    </tr>
+    <tr>
+      <td> Color</td>
+      <td><%= @parcel.color.nil? ? 'N/A' : @parcel.color %></td>
+    </tr>
+    <tr>
+      <td> Clarity</td>
+      <td><%= @parcel.clarity.nil? ? 'N/A' : @parcel.clarity %></td>
+    </tr>
+    <tr>
+      <td> Cut</td>
+      <td><%= @parcel.cut.nil? ? 'N/A' : @parcel.cut %></td>
+    </tr>
+    <tr>
+      <td> Polish</td>
+      <td><%= @parcel.polish.nil? ? 'N/A' : @parcel.polish %></td>
+    </tr>
+    <tr>
+      <td> Symmetry:</td>
+      <td><%= @parcel.symmetry.nil? ? 'N/A' : @parcel.symmetry %></td>
+    </tr>
+    <tr>
+      <td> Fluorescence</td>
+      <td><%= @parcel.fluorescence.nil? ? 'N/A' : @parcel.fluorescence %></td>
+    </tr>
+    <tr>
+      <td> lab:</td>
+      <td><%= @parcel.lab.nil? ? 'N/A' : @parcel.lab %></td>
+    </tr>
+    <tr>
+      <td> City</td>
+      <td><%= @parcel.city.nil? ? 'N/A' : @parcel.city %></td>
+    </tr>
+    <tr>
+      <td> Country</td>
+      <td><%= @parcel.country.nil? ? 'N/A' : @parcel.country %></td>
+    </tr>
+    <tr>
+      <td> Avg. Price</td>
+      <td><%= @parcel.price.nil? ? 'N/A' : @parcel.price %></td>
+    </tr>
+    <tr>
+      <td> Total/Box value:</td>
+      <td><%= @parcel.total_value.nil? ? 'N/A' : @parcel.total_value %></td>
+    </tr>
+    <tr>
+      <td> Comment</td>
+      <td><%= @parcel.try(:comment) %></td>
+    </tr>
+  </table>
+</div>

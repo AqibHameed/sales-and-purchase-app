@@ -292,7 +292,7 @@ class TradingParcelsController < ApplicationController
   end
 
   def is_user_edit_polished?
-    if @parcel.source == 'POLISHED'
+    if @parcel.source == DemandSupplier::POLISHED
       unless current_company.add_polished
         redirect_to trading_customers_path, notice: 'Please contact admin, permission denied...'
       end
