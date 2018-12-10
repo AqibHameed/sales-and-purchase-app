@@ -223,13 +223,13 @@ class CustomersController < ApplicationController
     russian_parcels = []
     parcels.each do |parcel|
       if check_parcel_visibility(parcel, current_company)
-        if parcel.source == 'OUTSIDE GOODS'
+        if parcel.source == DemandSupplier::POLISHED
            outside_parcels << parcel
-        elsif parcel.source == 'RUSSIAN'
+        elsif parcel.source == DemandSupplier::RUSSIAN
            russian_parcels << parcel
-        elsif parcel.source == 'SOMETHING SPECIAL'
+        elsif parcel.source == DemandSupplier::SPECIAL
            something_special_parcels << parcel
-        else parcel.source == 'DTC'
+        else parcel.source == DemandSupplier::DTC
            dtc_parcels << parcel
         end
       end

@@ -1,5 +1,5 @@
 <h3>Parcel Details</h3>
-<%if @parcel.source == 'POLISHED'%>
+<%if @parcel.source == DemandSupplier::POLISHED%>
   <%= render partial: 'polished_parcel_details', locals: {uid: false}  %>
 <%else%>
   <%= render partial: 'single_parcel_details' %>

@@ -140,7 +140,7 @@ class Api::V1::CompaniesController < ApplicationController
   def history
     transactions = []
     if current_company
-      company = Company.where(name: params[:company]).first
+      company = Company.find_by(name: params[:company]) if params[:company].present?
       unless company.present?
         company = nil
       end
@@ -237,6 +237,7 @@ class Api::V1::CompaniesController < ApplicationController
     no_of_overdue_transactions = current_company.buyer_transactions.where("due_date < ? AND paid = ?", Date.current, false).count
 
     @transactions = []
+
     @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) AND cancel = ?', current_company.id, current_company.id, false)
 
     if company.present?
@@ -257,6 +258,7 @@ class Api::V1::CompaniesController < ApplicationController
     else
       @transactions << @all_rough_transaction
     end
+
     if @transactions.present?
       @transactions.flatten.uniq.each do |t|
         data = {
