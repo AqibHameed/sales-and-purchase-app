@@ -27,7 +27,7 @@ module Dialuck
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    config.time_zone = 'Kolkata'
+    config.time_zone = 'UTC'
 
     #delayed_job configuration 31-10-2017
     config.active_job.queue_adapter = :delayed_job
