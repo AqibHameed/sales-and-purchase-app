@@ -479,6 +479,7 @@ module Api
             end
 
             @proposal.trading_parcel.update_column(:sold, true)
+            Message.accept_proposal(proposal, current_company)
             Transaction.create_new(@proposal)
           end
         end
