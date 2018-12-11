@@ -1,10 +1,14 @@
 class ApplicationController < ActionController::Base
   helper :all
+  before_action :set_paper_trail_whodunnit
   protect_from_forgery with: :exception
   helper_method :current_company
   
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :check_request_access
+  def user_for_paper_trail
+    customer_signed_in? ? current_customer.id : 'Guest'
+  end
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
