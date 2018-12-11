@@ -18,6 +18,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def info_for_paper_trail
+    { ip: request.remote_ip }
+  end
+
   def current_ability
     if current_customer
       @current_ability ||= Ability.new(current_customer)
