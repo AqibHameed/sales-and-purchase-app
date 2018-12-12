@@ -126,7 +126,7 @@ module Api
         end
 =begin
  @apiVersion 1.0.0
- @api {post} api/v1/trading_parcels/direct_sell
+ @api {post} /api/v1/trading_parcels/direct_sell
  @apiSampleRequest off
  @apiName direct sell
  @apiGroup TradingParcels
