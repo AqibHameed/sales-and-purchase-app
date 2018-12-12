@@ -8,11 +8,48 @@ module Api
       include SecureCenterHelper
       include LiveMonitor
       include ApplicationHelper
+=begin
+ @apiVersion 1.0.0
+ @api {post} api/v1/proposals/:id/negotiate
+ @apiSampleRequest off
+ @apiName create
+ @apiGroup Proposal
+ @apiDescription buyer send or update proposal
+ @apiParamExample {json} Request-Example1:
+{
+"trading_parcel_id" : "3",
+"credit" : "2000",
+"price" : "4500",
+"total_value" : "4000"
+}
+ @apiSuccessExample {json} SuccessResponse1:
+{
+    "success": true,
+    "message": "Proposal Submitted Successfully"
+}
+@apiParamExample {json} Request-Example2:
+{
+"id" : "3",
+"credit" : "2000",
+"price" : "5000",
+"total_value" : "500000"
+}
+@apiSuccessExample {json} SuccessResponse2:
+ {
+"id" : "3",
+"credit" : "2000",
+"price" : "5000",
+"total_value" : "500000"
+}
+=end
+
+
 
       def create
         if current_company
           existing_proposal = Proposal.where(id: params[:id]).first
           if existing_proposal.present?
+
             existing_proposal.update_attributes(proposal_params)
             render json: { success: true, message: 'Proposal Updated Successfully' }
           else
