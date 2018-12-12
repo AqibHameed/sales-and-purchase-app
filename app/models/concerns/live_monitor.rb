@@ -105,7 +105,7 @@ module LiveMonitor
     credit_limit = CreditLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
     days_limit = DaysLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
     {
-        invoices_overdue:  company_transactions.where("due_date < ? AND paid = ? AND remaining_amount > 2000", Date.current, false).count,
+        invoices_overdue: company_transactions.where("due_date < ? AND paid = ? AND remaining_amount > 2000", Date.current, false).count,
         paid_date: date,
         late_days: late_days.present? ? late_days.abs : 0,
         buyer_days_limit: buyer_days_limit(company, current_company),
