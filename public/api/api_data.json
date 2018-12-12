@@ -109,6 +109,45 @@
   {
     "version": "1.0.0",
     "type": "post",
+    "url": "api/v1/proposals/:id/negotiate",
+    "title": "",
+    "name": "create",
+    "group": "Proposal",
+    "description": "<p>buyer send or update proposal</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n\"trading_parcel_id\" : \"3\",\n\"credit\" : \"2000\",\n\"price\" : \"4500\",\n\"total_value\" : \"4000\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n\"id\" : \"3\",\n\"credit\" : \"2000\",\n\"price\" : \"5000\",\n\"total_value\" : \"500000\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal Submitted Successfully\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": " {\n\"id\" : \"3\",\n\"credit\" : \"2000\",\n\"price\" : \"5000\",\n\"total_value\" : \"500000\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/proposals_controller.rb",
+    "groupTitle": "Proposal"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
     "url": "api/v1/trading_parcels/direct_sell",
     "title": "",
     "name": "direct_sell",
