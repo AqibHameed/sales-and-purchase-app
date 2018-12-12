@@ -10,7 +10,7 @@ module Api
       include ApplicationHelper
 =begin
  @apiVersion 1.0.0
- @api {post} api/v1/proposals/:id/negotiate
+ @api {post} api/v1/proposals/3
  @apiSampleRequest off
  @apiName create
  @apiGroup Proposal
