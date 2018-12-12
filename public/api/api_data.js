@@ -137,7 +137,7 @@ define({ "api": [
         },
         {
           "title": "SuccessResponse2:",
-          "content": " {\n\"id\" : \"3\",\n\"credit\" : \"2000\",\n\"price\" : \"5000\",\n\"total_value\" : \"500000\"\n}",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal Updated Successfully\"\n}",
           "type": "json"
         }
       ]
