@@ -35,11 +35,9 @@ module Api
 "total_value" : "500000"
 }
 @apiSuccessExample {json} SuccessResponse2:
- {
-"id" : "3",
-"credit" : "2000",
-"price" : "5000",
-"total_value" : "500000"
+{
+    "success": true,
+    "message": "Proposal Updated Successfully"
 }
 =end
 
