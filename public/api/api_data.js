@@ -109,7 +109,7 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "api/v1/proposals/:id/negotiate",
+    "url": "api/v1/proposals/3",
     "title": "",
     "name": "create",
     "group": "Proposal",
