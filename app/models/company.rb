@@ -422,7 +422,7 @@ class Company < ApplicationRecord
 
   def buyer_transaction_percentage
     date_previous_90_days = Date.current - 90.day
-    company_transactions = self.buyer_transactions.select(:seller_id).where("due_date>= ? AND due_date < ?", date_previous_90_days, Date.current)
+    company_transactions = self.buyer_transactions.select(:id).where("due_date>= ? AND due_date < ?", date_previous_90_days, Date.current)
 
     paid_transaction_last_90_days = PartialPayment.where(transaction_id: company_transactions.pluck(:id)).sum(:amount).to_f
 
@@ -438,8 +438,8 @@ class Company < ApplicationRecord
 
   def system_transaction_percentage
       date_previous_90_days = Date.current - 90.day
-      all_company_transactions = Transaction.select(:seller_id).where("due_date>= ?  AND due_date < ?", date_previous_90_days, Date.current)
-      invoice_amount_last_90_days = Transaction.select(:seller_id).where("due_date>= ? AND due_date < ?", date_previous_90_days, Date.current).sum(:total_amount).to_f
+      all_company_transactions = Transaction.select(:id).where("due_date>= ?  AND due_date < ?", date_previous_90_days, Date.current)
+      invoice_amount_last_90_days = Transaction.select(:id).where("due_date>= ? AND due_date < ?", date_previous_90_days, Date.current).sum(:total_amount).to_f
       paid_all_transaction_last_90_days = PartialPayment.where(transaction_id: all_company_transactions.pluck(:id)).sum(:amount).to_f
 
       if invoice_amount_last_90_days > 0

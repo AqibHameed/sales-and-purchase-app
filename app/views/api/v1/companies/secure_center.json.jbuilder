@@ -4,6 +4,6 @@ json.details do
   json.supplier_connected @secure_center.supplier_paid
   json.overdue_amount @secure_center.overdue_amount.to_f
   json.outstandings @secure_center.outstandings.to_f
-  json.buyer_percentage @secure_center.buyer_percentage.to_i
-  json.system_percentage @secure_center.system_percentage.to_i
+  json.buyer_percentage @secure_center.buyer_percentage.to_f
+  json.system_percentage @secure_center.system_percentage.to_f
 end
