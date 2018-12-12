@@ -319,7 +319,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
  @apiVersion 1.0.0
- @api {get} api/v1/secure_center?id=buyer_id
+ @api {get} /api/v1/secure_center?id=buyer_id
  @apiName live_monitoring
  @apiGroup companies_controller
  @apiDescription get secure center data for buyer

@@ -60,7 +60,7 @@
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "api/v1/proposals/:id/negotiate",
+    "url": "/api/v1/proposals/:id/negotiate",
     "title": "",
     "name": "negotiate",
     "group": "Negotiations",
@@ -109,7 +109,7 @@
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "api/v1/proposals/:id/negotiate",
+    "url": "/api/v1/proposals/3",
     "title": "",
     "name": "create",
     "group": "Proposal",
@@ -148,7 +148,7 @@
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "api/v1/trading_parcels/direct_sell",
+    "url": "/api/v1/trading_parcels/direct_sell",
     "title": "",
     "name": "direct_sell",
     "group": "TradingParcels",
@@ -187,7 +187,7 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "api/v1/secure_center?id=buyer_id",
+    "url": "/api/v1/secure_center?id=buyer_id",
     "title": "",
     "name": "live_monitoring",
     "group": "companies_controller",
@@ -205,7 +205,7 @@
     "groupTitle": "companies_controller",
     "sampleRequest": [
       {
-        "url": "https://safetrade.aiapi/v1/secure_center?id=buyer_id"
+        "url": "https://safetrade.ai/api/v1/secure_center?id=buyer_id"
       }
     ]
   }
