@@ -21,7 +21,7 @@ describe LiveMonitor do
   describe '#update_secure_center' do
     context 'when call secure center' do
       it 'does show secure center' do
-        Transaction.last.update_secure_center
+        @transaction.secure_center
       end
     end
 

@@ -966,27 +966,15 @@ ActiveRecord::Schema.define(version: 20181213145119) do
     t.boolean "cancel", default: false
   end
 
-  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string "versioned_type"
-    t.bigint "versioned_id"
-    t.string "user_type"
-    t.bigint "user_id"
-    t.string "user_name"
-    t.text "modifications"
-    t.integer "number"
-    t.integer "reverted_from"
-    t.string "tag"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "object_changes"
-    t.index ["created_at"], name: "index_versions_on_created_at"
-    t.index ["number"], name: "index_versions_on_number"
-    t.index ["tag"], name: "index_versions_on_tag"
-    t.index ["user_id", "user_type"], name: "index_versions_on_user_id_and_user_type"
-    t.index ["user_name"], name: "index_versions_on_user_name"
-    t.index ["user_type", "user_id"], name: "index_versions_on_user_type_and_user_id"
-    t.index ["versioned_id", "versioned_type"], name: "index_versions_on_versioned_id_and_versioned_type"
-    t.index ["versioned_type", "versioned_id"], name: "index_versions_on_versioned_type_and_versioned_id"
+  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+    t.string "item_type", limit: 191, null: false
+    t.integer "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object", limit: 4294967295
+    t.datetime "created_at"
+    t.string "ip"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
   create_table "winners", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
