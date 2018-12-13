@@ -139,12 +139,7 @@ module Api
     "comment":"",
     "total_value":"50000.01",
     "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+    "id": 1
   }
 }
  @apiSuccessExample {json} SuccessResponse1:
@@ -177,12 +172,7 @@ module Api
     "comment":"",
     "total_value":"50000.01",
     "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+    "id": 1
   }
 }
 @apiSuccessExample {json} SuccessResponse2:
@@ -246,12 +236,7 @@ module Api
     "comment":"",
     "total_value":"50000.01",
     "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+    "id": 1
   }
 }
 @apiSuccessExample {json} SuccessResponse3:
