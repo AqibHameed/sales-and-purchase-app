@@ -5,6 +5,7 @@ class Proposal < ApplicationRecord
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
   has_many :messages, dependent: :destroy
   has_many :negotiations, dependent: :destroy
+  has_paper_trail
   after_create :set_buyer_offers
 
 

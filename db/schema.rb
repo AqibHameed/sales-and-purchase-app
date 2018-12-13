@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181213145119) do
+ActiveRecord::Schema.define(version: 20181211092918) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -635,12 +635,21 @@ ActiveRecord::Schema.define(version: 20181213145119) do
     t.integer "buyer_id"
     t.integer "invoices_overdue"
     t.date "paid_date"
+    t.integer "late_days"
+    t.integer "buyer_days_limit"
+    t.decimal "market_limit", precision: 10, scale: 2
     t.integer "supplier_paid"
     t.decimal "outstandings", precision: 10, scale: 2
     t.decimal "overdue_amount", precision: 10, scale: 2
+    t.decimal "given_credit_limit", precision: 10, scale: 2
+    t.decimal "given_market_limit", precision: 10, scale: 2
+    t.decimal "given_overdue_limit", precision: 10, scale: 2
     t.date "last_bought_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "supplier_unpaid", default: 0
+    t.decimal "percentage", precision: 10, scale: 2, default: "0.0"
+    t.decimal "activity_bought", precision: 10, scale: 2
     t.decimal "buyer_percentage", precision: 10, scale: 2, default: "0.0"
     t.decimal "system_percentage", precision: 10, scale: 2, default: "0.0"
   end
@@ -966,27 +975,15 @@ ActiveRecord::Schema.define(version: 20181213145119) do
     t.boolean "cancel", default: false
   end
 
-  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
-    t.string "versioned_type"
-    t.bigint "versioned_id"
-    t.string "user_type"
-    t.bigint "user_id"
-    t.string "user_name"
-    t.text "modifications"
-    t.integer "number"
-    t.integer "reverted_from"
-    t.string "tag"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "object_changes"
-    t.index ["created_at"], name: "index_versions_on_created_at"
-    t.index ["number"], name: "index_versions_on_number"
-    t.index ["tag"], name: "index_versions_on_tag"
-    t.index ["user_id", "user_type"], name: "index_versions_on_user_id_and_user_type"
-    t.index ["user_name"], name: "index_versions_on_user_name"
-    t.index ["user_type", "user_id"], name: "index_versions_on_user_type_and_user_id"
-    t.index ["versioned_id", "versioned_type"], name: "index_versions_on_versioned_id_and_versioned_type"
-    t.index ["versioned_type", "versioned_id"], name: "index_versions_on_versioned_type_and_versioned_id"
+  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+    t.string "item_type", limit: 191, null: false
+    t.integer "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object", limit: 4294967295
+    t.datetime "created_at"
+    t.string "ip"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
   create_table "winners", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
