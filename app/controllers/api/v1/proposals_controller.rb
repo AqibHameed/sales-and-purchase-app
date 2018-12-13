@@ -104,7 +104,7 @@ module Api
 
               errors = get_errors_for_accept_or_negotiate(@proposal)
               if errors.present?
-                secure_center_record(current_company.id, @proposal.buyer_id)
+                secure_center_record(current_company, @proposal.buyer_id)
                 #render :json => { :success => false, :errors => errors }
               else
                 accpet_proposal(@proposal)
@@ -139,12 +139,7 @@ module Api
     "comment":"",
     "total_value":"50000.01",
     "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+    "id": 1
   }
 }
  @apiSuccessExample {json} SuccessResponse1:
@@ -177,12 +172,7 @@ module Api
     "comment":"",
     "total_value":"50000.01",
     "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+    "id": 1
   }
 }
 @apiSuccessExample {json} SuccessResponse2:
@@ -246,12 +236,7 @@ module Api
     "comment":"",
     "total_value":"50000.01",
     "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+    "id": 1
   }
 }
 @apiSuccessExample {json} SuccessResponse3:
@@ -276,7 +261,7 @@ module Api
  ]
 =end
 
-      def negotiate   
+      def negotiate
         if params[:negotiation_id].present?
           negotiation = Negotiation.where(id: params[:negotiation_id]).first
           render :json => {:success => false, :message=> 'Negotiation does not exists for the negotiation id.', response_code: 201 } and return unless negotiation
@@ -307,8 +292,7 @@ module Api
             else
               errors = get_errors_for_accept_or_negotiate(@proposal)
               if errors.present?
-                secure_center_record(current_company.id, @proposal.buyer_id)
-                #render :json => { :success => false, :errors => errors }
+                secure_center_record(current_company, @proposal.buyer_id)
               else
                 update_proposal(@proposal)
               end
