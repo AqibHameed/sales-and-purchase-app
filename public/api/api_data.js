@@ -69,17 +69,17 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-Example1:",
-          "content": " {\n  {\n    \"price\":\"3000.01\",\n    \"credit\":\"15\",\n    \"comment\":\"\",\n    \"total_value\":\"50000.01\",\n    \"percent\":\"10.0\",\n    \"proposal\":{\n      \"price\":\"3000.01\",\n      \"credit\":\"15\",\n      \"total_value\":\"50000.01\",\n      \"percent\":\"10.0\"\n   }\n  }\n}",
+          "content": " {\n  {\n    \"price\":\"3000.01\",\n    \"credit\":\"15\",\n    \"comment\":\"\",\n    \"total_value\":\"50000.01\",\n    \"percent\":\"10.0\",\n    \"id\": 1\n  }\n}",
           "type": "json"
         },
         {
           "title": "Request-Example2:",
-          "content": " {\n   {\n    \"price\":\"3000.01\",\n    \"credit\":\"15\",\n    \"confirm\": true,\n    \"comment\":\"\",\n    \"total_value\":\"50000.01\",\n    \"percent\":\"10.0\",\n    \"proposal\":{\n      \"price\":\"3000.01\",\n      \"credit\":\"15\",\n      \"total_value\":\"50000.01\",\n      \"percent\":\"10.0\"\n   }\n  }\n}",
+          "content": " {\n   {\n    \"price\":\"3000.01\",\n    \"credit\":\"15\",\n    \"confirm\": true,\n    \"comment\":\"\",\n    \"total_value\":\"50000.01\",\n    \"percent\":\"10.0\",\n    \"id\": 1\n  }\n}",
           "type": "json"
         },
         {
           "title": "Request-Example3:",
-          "content": " {\n  {\n    \"negotiation_id\":29,\n    \"price\":\"3000.01\",\n    \"credit\":\"15\",\n    \"comment\":\"\",\n    \"total_value\":\"50000.01\",\n    \"percent\":\"10.0\",\n    \"proposal\":{\n      \"price\":\"3000.01\",\n      \"credit\":\"15\",\n      \"total_value\":\"50000.01\",\n      \"percent\":\"10.0\"\n   }\n  }\n}",
+          "content": " {\n  {\n    \"negotiation_id\":29,\n    \"price\":\"3000.01\",\n    \"credit\":\"15\",\n    \"comment\":\"\",\n    \"total_value\":\"50000.01\",\n    \"percent\":\"10.0\",\n    \"id\": 1\n  }\n}",
           "type": "json"
         }
       ]
