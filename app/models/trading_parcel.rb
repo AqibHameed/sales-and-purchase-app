@@ -1,6 +1,7 @@
 class TradingParcel < ApplicationRecord
   serialize :broker_ids
   paginates_per 25
+  has_paper_trail
 
   belongs_to :customer, optional: true
   belongs_to :company

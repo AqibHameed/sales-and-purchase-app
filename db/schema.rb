@@ -635,12 +635,21 @@ ActiveRecord::Schema.define(version: 20181213145119) do
     t.integer "buyer_id"
     t.integer "invoices_overdue"
     t.date "paid_date"
+    t.integer "late_days"
+    t.integer "buyer_days_limit"
+    t.decimal "market_limit", precision: 10, scale: 2
     t.integer "supplier_paid"
     t.decimal "outstandings", precision: 10, scale: 2
     t.decimal "overdue_amount", precision: 10, scale: 2
+    t.decimal "given_credit_limit", precision: 10, scale: 2
+    t.decimal "given_market_limit", precision: 10, scale: 2
+    t.decimal "given_overdue_limit", precision: 10, scale: 2
     t.date "last_bought_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "supplier_unpaid", default: 0
+    t.decimal "percentage", precision: 10, scale: 2, default: "0.0"
+    t.decimal "activity_bought", precision: 10, scale: 2
     t.decimal "buyer_percentage", precision: 10, scale: 2, default: "0.0"
     t.decimal "system_percentage", precision: 10, scale: 2, default: "0.0"
   end
