@@ -89,6 +89,9 @@ describe LiveMonitor do
         last_bought_on = company_transactions.order('created_at ASC').last
         expect(new_transaction.updated_at).to eq(last_bought_on.updated_at)
       end
+      it 'does show buyer_percentage' do
+
+      end
     end
   end
 end
