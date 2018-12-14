@@ -319,27 +319,27 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
  @apiVersion 1.0.0
- @api {get} /api/v1/secure_center?id=buyer_id
+ @api {get} /api/v1/secure_center?id=2
  @apiName live_monitoring
  @apiGroup companies_controller
  @apiDescription get secure center data for buyer
  @apiSuccessExample {json} SuccessResponse:
-  {
+ {
     "success": true,
     "details": {
-        "id": 245,
+        "id": 273,
         "invoices_overdue": 0,
         "paid_date": null,
-        "buyer_id": 7177,
-        "seller_id": 7187,
-        "outstandings": "0.0",
-        "overdue_amount": "0.0",
+        "buyer_id": 2,
+        "seller_id": 1,
         "last_bought_on": null,
-        "buyer_percentage": "0.0",
-        "system_percentage": "0.0",
-        "supplier_connected": 0
+        "supplier_connected": 0,
+        "overdue_amount": 0,
+        "outstandings": 0,
+        "buyer_percentage": 0,
+        "system_percentage": 5
     }
-  }
+}
 =end
 
   def live_monitoring
