@@ -458,7 +458,7 @@ module Api
         end
         if alert.present?
           parcel.destroy
-          secure_center_record(current_company.id, transaction.buyer_id)
+          secure_center_record(current_company, transaction.buyer_id)
           #render json: { sucess: false, message: "You have set a credit limit of #{existing_limit}. This transaction will increase it to #{new_limit}. Do you wish to continue?" }
         else
           save_transaction(transaction, parcel)
