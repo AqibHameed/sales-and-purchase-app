@@ -49,6 +49,7 @@ describe LiveMonitor do
       it 'does show over due amount' do
         @transaction.update_attributes!(due_date: 30.days.ago)
         transactions = @transaction.secure_center
+        expect(@parcel.total_value).to eq(transactions.last.overdue_amount)
       end
     end
   end
