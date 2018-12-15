@@ -84,7 +84,6 @@ module Api
       end
 
       def accept_and_decline
-
         credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
         @company_group = CompaniesGroup.where("company_id like '%#{@proposal.buyer_id}%'").where(seller_id: current_company.id).first
         total_price = @proposal.price*@proposal.trading_parcel.weight
@@ -115,6 +114,7 @@ module Api
         elsif params[:perform] == 'reject'
           @proposal.status = 2
           if @proposal.save(validate: false)
+            Message.reject_proposal(@proposal, current_company)
             render :json => {:success => true, :message=> ' Proposal is rejected. ', response_code: 201 }
           else
             render :json => {:success => false, :message=> ' Something went wrong. ', response_code: 201 }
