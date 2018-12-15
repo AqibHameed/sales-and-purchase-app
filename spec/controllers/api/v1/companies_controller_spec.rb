@@ -12,19 +12,14 @@ RSpec.describe Api::V1::CompaniesController do
 
   before(:each) do
     request.headers.merge!(authorization: @customer.authentication_token)
-    1.upto(5) do
-      @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
-      create(:transaction, buyer_id: @buyer.company_id,
-             seller_id: @customer.company_id,
-             trading_parcel_id: @parcel.id)
-    end
+    @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
+    create(:transaction, buyer_id: @buyer.company_id,
+           seller_id: @customer.company_id,
+           trading_parcel_id: @parcel.id)
   end
   describe '#live_monitering' do
     context 'when secure center already exists' do
       it 'does fetch secure center data' do
-        create(:transaction, buyer_id: @buyer.company_id,
-               seller_id: @customer.company_id,
-               trading_parcel_id: @parcel.id)
         get 'live_monitoring', params: {id: @buyer.company_id}
         expect(@secure_center).should equal?(seller_id: @customer.company_id,
                                              buyer_id: @buyer.company_id)
