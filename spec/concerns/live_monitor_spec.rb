@@ -149,7 +149,6 @@ describe LiveMonitor do
         PartialPayment.create(company_id: @buyer.company_id, transaction_id: all_company_transactions_90days.last.id, amount: 4000)
         paid_all_transaction_amount_last_90_days = PartialPayment.where(transaction_id: all_company_transactions_90days.pluck(:id)).sum(:amount).to_f
         expect(paid_all_transaction_amount_last_90_days).to eq(4000.0)
-        binding.pry
         system_percentage = (paid_all_transaction_amount_last_90_days / total_transactions_amount_90_days) * 100
         expect(system_percentage.to_i).to eq(10)
       end
