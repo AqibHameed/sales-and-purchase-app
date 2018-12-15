@@ -12,11 +12,18 @@ RSpec.describe Api::V1::CompaniesController do
 
   before(:each) do
     request.headers.merge!(authorization: @customer.authentication_token)
+    1.upto(5) do
+      create(:transaction, buyer_id: @buyer.company_id,
+             seller_id: @customer.company_id,
+             trading_parcel_id: @parcel.id)
+    end
   end
   describe '#live_monitering' do
     context 'when secure center already exists' do
       it 'does fetch secure center data' do
-        Transaction.create!(buyer_id: @buyer.company_id, seller_id: @customer.company_id, trading_parcel_id: 1, due_date: 15.days.ago, created_at: 10.days.ago)
+        create(:transaction, buyer_id: @buyer.company_id,
+               seller_id: @customer.company_id,
+               trading_parcel_id: @parcel.id)
         get 'live_monitoring', params: {id: @buyer.company_id}
         expect(@secure_center).should equal?(seller_id: @customer.company_id,
                                              buyer_id: @buyer.company_id)
@@ -31,6 +38,18 @@ RSpec.describe Api::V1::CompaniesController do
                                              buyer_id: @buyer.company_id)
         expect(response.status).to eq(200)
       end
+      # context 'when  create transaction against single seller' do
+      #   it 'does increase outstanding amount if paid is false ' do
+      #     get 'live_monitoring', params: {id: @buyer.company_id}
+      #     total_amount = TradingParcel.where(customer: @customer).sum(:total_value)
+      #     assigns(:secure_center).outstandings.should eq(total_amount)
+      #     create(:transaction, buyer_id: @buyer.company_id,
+      #            seller_id: @customer.company_id,
+      #            trading_parcel_id: @parcel.id)
+      #     get 'live_monitoring', params: {id: @buyer.company_id}
+      #     assigns(:secure_center).outstandings.should eq(total_amount)
+      #   end
+      # end
     end
   end
 end
