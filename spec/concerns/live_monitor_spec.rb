@@ -51,7 +51,7 @@ describe LiveMonitor do
         partial_payment = PartialPayment.create(company_id: @buyer.company_id, transaction_id: transaction.id, amount: 2000)
         payment(partial_payment)
         secure_center = SecureCenter.find_by(seller_id: transaction.seller_id, buyer_id: transaction.buyer_id)
-        expect(secure_center.paid_date).to eq(Date.current)
+        expect(secure_center.paid_date.to_date).to eq(Date.current.to_date)
       end
     end
     context 'when new seller and buyer connect' do
@@ -108,7 +108,7 @@ describe LiveMonitor do
                                  seller_id: @seller.company_id,
                                  trading_parcel_id: @parcel.id)
         secure_center = SecureCenter.find_by(buyer_id: @buyer.company_id)
-        expect(new_transaction.updated_at).to eq(secure_center.updated_at)
+        expect(new_transaction.updated_at.to_date).to eq(secure_center.updated_at.to_date)
       end
       it 'does show buyer_percentage' do
         previous_date = DateTime.current - 90.days
