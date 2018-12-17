@@ -53,16 +53,16 @@ class MarketBuyerScore < ApplicationRecord
   def self.get_scores
     scores = MarketBuyerScore.where("actual = ?", true).order(:created_at).last 
     if scores.nil?
-      scores.MarketBuyerScore.new
+      scores = MarketBuyerScore.new
       scores.actual = true
-      scores.late_payment = 0,
-      scores.current_risk = 0,
-      scores.network_diversity = 0,
-      scores.buyer_network = 0,
-      scores.due_date = 0,
-      scores.credit_used = 0,
-      scores.count_of_credit_given = 0,
-      scores.created_at = Time.current,
+      scores.late_payment = 0
+      scores.current_risk = 0
+      scores.network_diversity = 0
+      scores.buyer_network = 0
+      scores.due_date = 0
+      scores.credit_used = 0
+      scores.count_of_credit_given = 0
+      scores.created_at = Time.current
       scores.updated_at = Time.current
       scores.save
     end
