@@ -5,22 +5,25 @@ class Ability
     # Define abilities for the passed in user here. For example:
     #
     # customer ||= Customer.new # guest user (not logged in)
-    if customer.class == Admin
-      can :manage, :all
-    else
-      if customer.has_role?('Broker')
-        can :access, :broker
-      end
-      if customer.has_role?('Supplier')
-        can :access, :auctions
-      end
-      if customer.has_role?('Seller')
-        can :access, :sell
-      end
-      if customer.has_role?('Buyer')
-        can :access, :buy
+    unless customer.blank?
+      if customer.class == Admin
+        can :manage, :all
+      else
+        if customer.has_role?('Broker')
+          can :access, :broker
+        end
+        if customer.has_role?('Supplier')
+          can :access, :auctions
+        end
+        if customer.has_role?('Seller')
+          can :access, :sell
+        end
+        if customer.has_role?('Buyer')
+          can :access, :buy
+        end
       end
     end
+
     #
     # The first argument to `can` is the action you are giving the user
     # permission to do.
