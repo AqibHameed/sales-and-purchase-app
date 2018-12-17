@@ -96,7 +96,7 @@ RSpec.describe ProposalsController, type: :controller do
         proposal = buyer_create_proposal(buyer)
         message = create_message(buyer, proposal)
 
-        companies_groups = create(:companies_group, company_id: [buyer.company.id], seller_id: @customer.company_id)
+        companies_groups = create(:companies_group, company_id: [buyer.company.id], seller_id:@customer.company.id)
 
         put :accept, params: {id: proposal.id, check: true, format: :js}
 
@@ -108,8 +108,7 @@ RSpec.describe ProposalsController, type: :controller do
         buyer = create_buyer
         proposal = buyer_create_proposal(buyer)
         message = create_message(buyer, proposal)
-
-        companies_groups = create(:companies_group, company_id: [buyer.company.id], seller_id: @customer.company_id)
+        companies_groups = create(:companies_group, company_id: [buyer.company.id], seller_id: @customer.company.id)
 
         days_limit = companies_groups.group_overdue_limit
         date = Date.current - days_limit.days

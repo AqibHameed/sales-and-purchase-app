@@ -347,14 +347,14 @@ class Api::V1::CompaniesController < ApplicationController
       #secure_center_record(current_company.id, params[:id])
       @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
       if @secure_center.present?
-        render status: :ok, template: "api/v1/companies/secure_center"
+        render status: :ok, template: "api/v1/companies/secure_center.json.jbuilder"
         #render json: { success: true, details: secure_center }
       else
         company = Company.where(id: params[:id]).first
         if company.present?
           secure_center = SecureCenter.new(seller_id: current_company.id, buyer_id: company.id)
           @secure_center = create_or_update_secure_center(secure_center, company, current_company)
-          render status: :ok, template: "api/v1/companies/secure_center"
+          render status: :ok, template: "api/v1/companies/secure_center.json.jbuilder"
         else
           render json: { errors: "Company with this id does not present.", response_code: 201 }
         end
