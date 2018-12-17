@@ -4,9 +4,8 @@
 require Rails.root.join('lib', 'rails_admin_destroy_all_stones.rb')
 
 RailsAdmin.config do |config|
-
   config.authorize_with :cancan
-
+  config.parent_controller = 'AdminApplicationController'
   # config.audit_with :paper_trail, 'Customer'
   # config.audit_with :paper_trail, 'Admin'
 
