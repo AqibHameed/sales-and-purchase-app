@@ -148,6 +148,84 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
+    "url": "/api/v1/signup",
+    "title": "",
+    "name": "signup",
+    "group": "Registeration",
+    "description": "<p>Sign up Customer</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"registration\":\n{\n\t\"email\":\"test@example.com\",\n\t\"password\":\"password\",\n\t\"first_name\": \"first_name\",\n\t\"last_name\":\"last_name\",\n\t\"city\":\"city\",\n\t\"address\": \"address\",\n\t\"postal_code\": \"25612\",\n\t\"phone\": \"256326\",\n\t\"company_id\": \"1\",\n\t\"company_address\": \"company_address\",\n\t\"phone_2\": \"9852523\",\n\t\"mobile_no\": \"985263812\",\n\t\"country_code\": \"91\"\n}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"A request has been to sent to your company admin for approval. You can access your account after approval\",\n    \"customer\": {\n        \"id\": 22,\n        \"email\": \"test@example.com\",\n        \"created_at\": \"2018-12-17T18:38:53.000Z\",\n        \"updated_at\": \"2018-12-17T18:38:56.000Z\",\n        \"first_name\": \"first_name\",\n        \"last_name\": \"last_name\",\n        \"city\": \"city\",\n        \"address\": \"address\",\n        \"postal_code\": \"25612\",\n        \"phone\": \"256326\",\n        \"status\": null,\n        \"company\": \"Buyer A\",\n        \"company_address\": \"company_address\",\n        \"phone_2\": \"9852523\",\n        \"mobile_no\": \"+91 985263812\",\n        \"authentication_token\": \"qeA97FXpxSGfLX49YzMX\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/registrations_controller.rb",
+    "groupTitle": "Registeration"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/log_in",
+    "title": "",
+    "name": "login",
+    "group": "Session",
+    "description": "<p>Login Customer</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\"customer\": {\n\t\"email\": \"umair.raza101@gmail.com\",\n\t\"password\": \"password\"\n}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"customer\": {\n        \"id\": 21,\n        \"email\": \"umair.raza101@gmail.com\",\n        \"designation\": \"Buyer/Seller\",\n        \"created_at\": \"2018-12-07T15:00:19.000Z\",\n        \"updated_at\": \"2018-12-17T18:32:41.000Z\",\n        \"first_name\": \"Umair\",\n        \"last_name\": \"Raza\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy Seller 1\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+1\",\n        \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/sessions_controller.rb",
+    "groupTitle": "Session"
+  },
+  {
+    "version": "1.0.0",
+    "type": "delete",
+    "url": "/api/v1/log_out",
+    "title": "",
+    "name": "logout",
+    "group": "Session",
+    "description": "<p>Logout Customer</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"response_code\": 200\n}}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/sessions_controller.rb",
+    "groupTitle": "Session"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
     "url": "/api/v1/trading_parcels/direct_sell",
     "title": "",
     "name": "direct_sell",
