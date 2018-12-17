@@ -10,6 +10,18 @@ RailsAdmin.config do |config|
   # config.audit_with :paper_trail, 'Admin'
 
    config.audit_with :history, 'Admin'
+  config.audit_with :paper_trail, 'Transaction', 'PaperTrail::Version'
+  config.audit_with :paper_trail, 'Transaction', 'PaperTrail::Version'
+
+  PAPER_TRAIL_AUDIT_MODEL = ['Transaction']
+  config.actions do
+    history_index do
+      only PAPER_TRAIL_AUDIT_MODEL
+    end
+    history_show do
+      only PAPER_TRAIL_AUDIT_MODEL
+    end
+  end
 
 
   #Register custom action to rails admin
@@ -41,13 +53,11 @@ RailsAdmin.config do |config|
     index                         # mandatory
     new
     export
-    history_index
     bulk_delete
     # member actions
     show
     edit
     delete
-    history_show
     # show_in_app
     # custom action
     toggle
@@ -71,7 +81,7 @@ RailsAdmin.config do |config|
   # config.default_items_per_page = 20
 
   # Exclude specific models (keep the others):
-  config.excluded_models = ['Version', 'TempStone']
+  config.excluded_models = ['TempStone']
 
   # Include specific models (exclude the others):
   # config.included_models = []

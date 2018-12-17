@@ -153,4 +153,40 @@ class Transaction < ApplicationRecord
     new_parcel.sale_all = false
     new_parcel.save
   end
+
+  rails_admin do
+    list do
+      # field :verified, :toggle
+      [:id, :buyer_id, :seller_id, :trading_parcel_id, :due_date, :price, :credit, :paid, :buyer_confirmed, :reject_reason, :reject_date, :transaction_type, :remaining_amount, :transaction_uid, :diamond_type, :total_amount, :invoice_no, :ready_for_buyer, :description, :buyer_reject, :cancel].each do |field_name|
+        field field_name
+      end
+    end
+    # show do
+    #   [:id, :buyer_id, :seller_id, :trading_parcel_id, :due_date, :price, :credit, :paid, :buyer_confirmed, :reject_reason, :reject_date, :transaction_type, :remaining_amount, :transaction_uid, :diamond_type, :total_amount, :invoice_no, :ready_for_buyer, :description, :buyer_reject, :cancel].each do |field_name|
+    #     field field_name
+    #   end
+    # end
+    edit do
+      field :due_date
+      field :price
+      field :credit
+      field :paid
+      field :buyer_confirmed
+      field :reject_reason
+      field :reject_date
+      field :transaction_type
+      field :remaining_amount
+      field :diamond_type
+      field :total_amount
+      field :invoice_no
+      field :ready_for_buyer
+      field :buyer_reject
+      field :cancel
+
+    end
+
+    configure :versions do
+    end
+
+  end
 end
