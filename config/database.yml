@@ -16,9 +16,6 @@ test:
 
 staging:
   <<: *default
-  database: dialuck_staging
-  password: root
-
 production:
   <<: *default
 
