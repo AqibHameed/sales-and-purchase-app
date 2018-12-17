@@ -84,7 +84,6 @@ module Api
       end
 
       def accept_and_decline
-
         credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
         @company_group = CompaniesGroup.where("company_id like '%#{@proposal.buyer_id}%'").where(seller_id: current_company.id).first
         total_price = @proposal.price*@proposal.trading_parcel.weight
@@ -104,7 +103,7 @@ module Api
 
               errors = get_errors_for_accept_or_negotiate(@proposal)
               if errors.present?
-                secure_center_record(current_company.id, @proposal.buyer_id)
+                secure_center_record(current_company, @proposal.buyer_id)
                 #render :json => { :success => false, :errors => errors }
               else
                 accpet_proposal(@proposal)
@@ -115,6 +114,7 @@ module Api
         elsif params[:perform] == 'reject'
           @proposal.status = 2
           if @proposal.save(validate: false)
+            Message.reject_proposal(@proposal, current_company)
             render :json => {:success => true, :message=> ' Proposal is rejected. ', response_code: 201 }
           else
             render :json => {:success => false, :message=> ' Something went wrong. ', response_code: 201 }
@@ -134,17 +134,12 @@ module Api
  @apiParamExample {json} Request-Example1:
  {
   {
-    "price":"3000.01",
-    "credit":"15",
-    "comment":"",
-    "total_value":"50000.01",
-    "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+  "price":"200.0",
+  "credit":"60",
+  "comment":"",
+  "total_value":"11000.0",
+  "percent":"0.0",
+  "id": 58
   }
 }
  @apiSuccessExample {json} SuccessResponse1:
@@ -152,84 +147,89 @@ module Api
   {
     "success": false,
     "details": {
-        "id": 2,
-        "invoices_overdue": 0,
-        "paid_date": null,
-        "buyer_id": 1,
-        "seller_id": 4,
-        "outstandings": 0,
-        "last_bought_on": null,
-        "supplier_connected": 0,
+        "id": 248,
+        "invoices_overdue": 2,
+        "paid_date": "2018-12-12",
+        "buyer_id": 3,
+        "seller_id": 8,
+        "last_bought_on": "2018-12-12",
+        "supplier_connected": 3,
         "credit_limit": true,
         "overdue_limit": false,
         "overdue_amount": 0,
-        "buyer_percentage": 0,
-        "system_percentage": 0
+        "outstandings": 0,
+        "buyer_percentage": 50,
+        "system_percentage": 43
     }
   }
  ]
 @apiParamExample {json} Request-Example2:
  {
-   {
-    "price":"3000.01",
-    "credit":"15",
-    "confirm": true,
-    "comment":"",
-    "total_value":"50000.01",
-    "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+  {
+  "price":"200.0",
+  "credit":"60",
+  "comment":"",
+  "total_value":"11000.0",
+  "percent":"0.0",
+  "confirm": true,
+  "id": 58
   }
 }
 @apiSuccessExample {json} SuccessResponse2:
  [
   {
     "success": true,
-    "message": " Proposal is updated successfully. ",
+    "message": " Proposal is negotiated successfully. ",
     "proposal": {
-        "status": null,
-        "supplier_name": "Seller C",
-        "source": "Dummy",
-        "description": "Dummy 2",
-        "sight": "12/2018",
-        "no_of_stones": 0,
-        "carats": "251.0",
-        "cost": 100,
-        "list_percentage": 8,
-        "list_avg_price": 108,
-        "list_total_price": 27108,
-        "list_credit": 60,
+        "status": "negotiated",
+        "supplier_name": "Dummy Seller 1",
+        "source": "RUSSIAN",
+        "description": "+11 CLIV/MB LIGHT",
+        "sight": "12/18",
+        "no_of_stones": 10,
+        "carats": "1.0",
+        "cost": 3000,
+        "list_percentage": 10,
+        "list_avg_price": 3300,
+        "list_total_price": 3300,
+        "list_credit": 10,
         "list_discount": 0,
         "list_comment": "",
         "offered_percent": 10,
-        "offered_price": 3000.01,
-        "offered_credit": 15,
-        "offered_total_value": 50000.01,
-        "offered_comment": null,
+        "offered_price": 3300,
+        "offered_credit": 10,
+        "offered_total_value": 3300,
+        "offered_comment": "",
         "negotiated": {
-            "id": 29,
-            "offered_percent": 10,
-            "offered_price": 3000.01,
-            "offered_total_value": 50000,
-            "offered_credit": 15,
+            "id": 88,
+            "offered_percent": 0,
+            "offered_price": 200,
+            "offered_total_value": 11000,
+            "offered_credit": 60,
             "offered_comment": "",
-            "offered_from": "Seller B(buyer)",
+            "offered_from": "Dummy Seller 1(seller)",
             "is_mine": true
         },
-        "total_negotiations": 1,
+        "total_negotiations": 2,
         "negotiations": [
             {
-                "id": 29,
+                "id": 87,
                 "offered_percent": 10,
-                "offered_credit": 15,
-                "offered_price": 3000.01,
-                "offered_total_value": 50000.01,
+                "offered_credit": 10,
+                "offered_price": 3300,
+                "offered_total_value": 3300,
                 "offered_comment": "",
-                "offered_from": "Seller B(buyer)",
+                "offered_from": "Buyer C(buyer)",
+                "is_mine": true
+            },
+            {
+                "id": 88,
+                "offered_percent": 0,
+                "offered_credit": 60,
+                "offered_price": 200,
+                "offered_total_value": 11000,
+                "offered_comment": "",
+                "offered_from": "Dummy Seller 1(seller)",
                 "is_mine": true
             }
         ]
@@ -240,18 +240,14 @@ module Api
 @apiParamExample {json} Request-Example3:
  {
   {
-    "negotiation_id":29,
-    "price":"3000.01",
-    "credit":"15",
-    "comment":"",
-    "total_value":"50000.01",
-    "percent":"10.0",
-    "proposal":{
-      "price":"3000.01",
-      "credit":"15",
-      "total_value":"50000.01",
-      "percent":"10.0"
-   }
+  "price":"150.0",
+  "credit":"60",
+  "comment":"",
+  "total_value":"1000.0",
+  "percent":"0.0",
+  "confirm": true,
+  "negotiation_id":89,
+  "id": 58
   }
 }
 @apiSuccessExample {json} SuccessResponse3:
@@ -261,22 +257,22 @@ module Api
     "message": " Negotiation is updated successfully. ",
     "negotiation": {
         "from": "buyer",
-        "proposal_id": 17,
-        "id": 29,
-        "price": 3000.01,
-        "credit": 15,
-        "total_value": 50000.01,
-        "percent": 10,
+        "proposal_id": 58,
+        "id": 89,
+        "price": 150,
+        "credit": 60,
+        "total_value": 1000,
+        "percent": 0,
         "comment": "",
-        "created_at": "2018-12-05T14:57:44.000+05:30",
-        "updated_at": "2018-12-05T22:23:55.000+05:30"
+        "created_at": "2018-12-13T17:22:41.000Z",
+        "updated_at": "2018-12-13T17:24:39.000Z"
     },
     "response_code": 200
   }
  ]
 =end
 
-      def negotiate   
+      def negotiate
         if params[:negotiation_id].present?
           negotiation = Negotiation.where(id: params[:negotiation_id]).first
           render :json => {:success => false, :message=> 'Negotiation does not exists for the negotiation id.', response_code: 201 } and return unless negotiation
@@ -307,8 +303,7 @@ module Api
             else
               errors = get_errors_for_accept_or_negotiate(@proposal)
               if errors.present?
-                secure_center_record(current_company.id, @proposal.buyer_id)
-                #render :json => { :success => false, :errors => errors }
+                secure_center_record(current_company, @proposal.buyer_id)
               else
                 update_proposal(@proposal)
               end

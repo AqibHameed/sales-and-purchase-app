@@ -1,8 +1,7 @@
-class SecureCenterJob < ActiveJob::Base
-  queue_as :default
+require "#{Rails.root}/app/models/concerns/live_monitor.rb"
+namespace :update_secure_center_record do
   include LiveMonitor
-
-  def perform_now
+  task :update => :environment do
     SecureCenter.all.each do |secure_center|
       buyer = Company.find_by(id: secure_center.buyer_id)
       seller = Company.find_by(id: secure_center.seller_id)

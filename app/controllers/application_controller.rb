@@ -1,10 +1,14 @@
 class ApplicationController < ActionController::Base
   helper :all
   protect_from_forgery with: :exception
+  before_action :set_paper_trail_whodunnit
   helper_method :current_company
   
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :check_request_access
+  def user_for_paper_trail
+    customer_signed_in? ? current_customer.id : 'Guest'
+  end
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
@@ -12,6 +16,10 @@ class ApplicationController < ActionController::Base
       format.html { redirect_to root_url, notice: exception.message }
       format.js   { head :forbidden, content_type: 'text/html' }
     end
+  end
+
+  def info_for_paper_trail
+    { ip: request.remote_ip }
   end
 
   def current_ability

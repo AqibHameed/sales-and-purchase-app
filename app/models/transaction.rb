@@ -2,6 +2,7 @@ class Transaction < ApplicationRecord
   include LiveMonitor
   
   belongs_to :trading_parcel
+  has_paper_trail
 
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'
@@ -11,7 +12,7 @@ class Transaction < ApplicationRecord
   validate :validate_invoice_date
   after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
-  after_save :update_secure_center
+  after_save :secure_center
 
   attr_accessor :weight
 
