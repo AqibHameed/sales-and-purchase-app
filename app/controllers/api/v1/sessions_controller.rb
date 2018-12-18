@@ -2,6 +2,47 @@ class Api::V1::SessionsController < Devise::SessionsController
   before_action :ensure_params_exist, except: [:destroy, :customer_by_token]
   skip_before_action :verify_authenticity_token
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/log_in
+ @apiSampleRequest off
+ @apiName login
+ @apiGroup Session
+ @apiDescription Login Customer
+ @apiParamExample {json} Request-Example:
+{
+"customer": {
+	"email": "umair.raza101@gmail.com",
+	"password": "password"
+}
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "customer": {
+        "id": 21,
+        "email": "umair.raza101@gmail.com",
+        "designation": "Buyer/Seller",
+        "created_at": "2018-12-07T15:00:19.000Z",
+        "updated_at": "2018-12-17T18:32:41.000Z",
+        "first_name": "Umair",
+        "last_name": "Raza",
+        "city": null,
+        "address": null,
+        "postal_code": null,
+        "phone": null,
+        "status": null,
+        "company": "Dummy Seller 1",
+        "company_address": null,
+        "phone_2": null,
+        "mobile_no": "+1",
+        "authentication_token": "XwHsMFNtQAy6aFpttQek",
+        "chat_id": "-1",
+        "token": null
+    },
+    "response_code": 200
+}
+=end
+
   def create
     customer = Customer.where("email = ? OR mobile_no = ?", params[:customer][:email], params[:customer][:email]).first
     return invalid_login_attempt unless customer
@@ -38,6 +79,20 @@ class Api::V1::SessionsController < Devise::SessionsController
       render :json => { success: false, message: 'Customer does not exist for this token.', response_code: 201 }
     end
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {delete} /api/v1/log_out
+ @apiSampleRequest off
+ @apiName logout
+ @apiGroup Session
+ @apiDescription Logout Customer
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "response_code": 200
+}}
+=end
 
   def destroy
     auth_token = request.headers['Authorization']
