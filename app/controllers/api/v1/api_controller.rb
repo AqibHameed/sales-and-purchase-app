@@ -18,6 +18,37 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/app_versions
+ @apiSampleRequest off
+ @apiName app versions
+ @apiGroup Api
+ @apiDescription buyer send or update proposal
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "versions": []
+}
+=end
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/app_versions?version=1.2
+ @apiSampleRequest off
+ @apiName app versions version = 1.2
+ @apiGroup Api
+ @apiDescription search app verions with version
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "version": {
+        "version": "1.2",
+        "force_upgrade": true,
+        "recommend_upgrade": true
+    }
+}
+=end
+
   def app_versions
     if params[:version].present?
       version = AppVersion.where(version: params[:version]).first
@@ -41,6 +72,31 @@ class Api::V1::ApiController < ApplicationController
   #   render json: { data: data }
   # end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/filter_data
+ @apiSampleRequest off
+ @apiName filter_data
+ @apiGroup Api
+ @apiDescription Filter data
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "suppliers": [
+        {
+            "id": 1,
+            "name": "umair"
+        },
+        {
+            "id": 2,
+            "name": "Khuram"
+        }
+    ],
+    "months": [],
+    "location": [],
+    "response_code": 200
+}
+=end
+
   def filter_data
     suppliers = Supplier.all.map { |e| { id: e.id, name: e.name}  }
     months = Tender.group("month(open_date)").count
@@ -57,6 +113,30 @@ class Api::V1::ApiController < ApplicationController
     end
     render json: { suppliers: suppliers, months: data, location: data_countries, response_code: 200  }
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/device_token
+ @apiSampleRequest off
+ @apiName Device Token
+ @apiGroup Api
+ @apiDescription Token for devise
+ @apiParamExample {json} Request-Example:
+ {
+"customer":
+	{
+	"token":"qwe34234werwe32we3",
+	"device_type":"ios/android"
+	}
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "device_token": "qwe34234werwe32we3",
+    "type": "ios/android",
+    "response_code": 200
+}
+=end
 
   def device_token
     if current_customer
@@ -76,6 +156,29 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/supplier_notification
+ @apiSampleRequest off
+ @apiName Supplier notifications
+ @apiGroup Api
+ @apiDescription Get supplier notifications
+ @apiParamExample {json} Request-Example:
+{
+"supplier_id": 1 ,
+"notify": true
+ }
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "supplier_notification": {
+        "supplier_id": 1,
+        "notify": true
+    },
+    "response_code": 200
+}
+=end
+
   def supplier_notification
     if current_customer
       supplier_notification = SupplierNotification.where(customer_id: current_customer.id, supplier_id: params[:supplier_id]).first_or_initialize
@@ -90,6 +193,32 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/suppliers
+ @apiSampleRequest off
+ @apiName get suppliers
+ @apiGroup Api
+ @apiDescription get liist of suppliers
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "supplier_notifications": [
+        {
+            "supplier_id": 1,
+            "supplier_name": "ali",
+            "is_notified": true
+        },
+        {
+            "supplier_id": 2,
+            "supplier_name": "aqib",
+            "is_notified": false
+        }
+    ],
+    "response_code": 200
+}
+=end
+
   def get_suppliers
     if current_customer
       companies = Supplier.all
@@ -98,6 +227,28 @@ class Api::V1::ApiController < ApplicationController
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/attachment
+ @apiSampleRequest off
+ @apiName email attachment
+ @apiGroup Api
+ @apiDescription direct sell with buyer
+ @apiParamExample {json} Request-Example:
+{
+"email_attachment":
+{
+	"file":"<file object>",
+	"tender_id": 1
+}
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+need to check
+}
+=end
+
 
   def email_attachment
     if current_customer
@@ -115,6 +266,43 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/customer_list
+ @apiSampleRequest off
+ @apiName customer list
+ @apiGroup Api
+ @apiDescription get list of customer
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "customers": [
+        {
+            "id": 5,
+            "first_name": "abc",
+            "last_name": "def",
+            "email": "wetu@getnada.com",
+            "company": "Dummy co. 3",
+            "chat_id": "-1"
+        },
+        {
+            "id": 3,
+            "first_name": "abc",
+            "last_name": "xyz",
+            "email": "xabi@nada.email",
+            "company": "Dummy co. 2",
+            "chat_id": "-1"
+        }
+    ],
+    "response_code": 200
+}
+=end
+
   def customer_list
     @customers = Customer.all
     if params[:company].present?
@@ -127,6 +315,57 @@ class Api::V1::ApiController < ApplicationController
     @customers = @customers.page(params[:page]).per(params[:count])
     render json: { pagination: set_pagination(:customers), customers: get_customers_data(@customers, current_customer), response_code: 200 }
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/company_list
+ @apiSampleRequest off
+ @apiName company list
+ @apiGroup Api
+ @apiDescription Show list of companies
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "pagination": {
+        "total_pages": 144,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "companies": [
+        {
+            "id": "1",
+            "name": "Dummy co. 1",
+            "city": null,
+            "country": "India",
+            "created_at": "2018-10-25T11:21:17.000Z",
+            "updated_at": "2018-10-25T11:21:17.000Z",
+            "purchases_completed": 3590,
+            "suppliers_connected": 1,
+            "status": false,
+            "customers": []
+        },
+        {
+            "id": "2",
+            "name": "Dummy co. 2",
+            "city": null,
+            "country": "India",
+            "created_at": "2018-10-25T11:21:17.000Z",
+            "updated_at": "2018-10-25T11:21:17.000Z",
+            "purchases_completed": 0,
+            "suppliers_connected": 2,
+            "status": true,
+            "customers": [
+                {
+                    "id": 3,
+                    "first_name": "abc",
+                    "last_name": "xyz"
+                }
+            ]
+        }
+    ],
+    "response_code": 200
+}
+=end
 
   def company_list
     # @companies = Company.all
@@ -144,6 +383,30 @@ class Api::V1::ApiController < ApplicationController
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {put} /api/v1/update_chat_id
+ @apiSampleRequest off
+ @apiName dupdate chat id
+ @apiGroup Api
+ @apiDescription update authorized chat id
+ @apiParamExample {json} Request-Example:
+{
+	"chat_id": "43AESdca43"
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "customer": {
+        "chat_id": "43AESdca43",
+        "email": "ranu.ongraph@gmail.com",
+        "first_name": "test",
+        "last_name": "test"
+    },
+    "response_code": 200
+}
+=end
 
   def update_chat_id
     if current_customer

@@ -13,7 +13,7 @@ module Api
  @api {post} /api/v1/proposals/3
  @apiSampleRequest off
  @apiName create
- @apiGroup Proposal
+ @apiGroup Proposals
  @apiDescription buyer send or update proposal
  @apiParamExample {json} Request-Example1:
 {
@@ -78,10 +78,75 @@ module Api
         end
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/proposals/22
+ @apiSampleRequest off
+ @apiName show
+ @apiGroup Proposals
+ @apiDescription show proposal with proposal_id = 22
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "proposal": {
+        "status": null,
+        "supplier_name": "SafeTrade",
+        "source": "SOMETHING SPECIAL",
+        "description": "PINK COLOR",
+        "sight": "",
+        "no_of_stones": 1000,
+        "carats": "1000.0",
+        "cost": 1000,
+        "list_percentage": 10,
+        "list_avg_price": 1100,
+        "list_total_price": 1100000,
+        "list_credit": 1000,
+        "list_discount": 0,
+        "list_comment": "",
+        "offered_percent": 10,
+        "offered_price": 1100,
+        "offered_credit": 1000,
+        "offered_total_value": 1100000,
+        "offered_comment": null,
+        "negotiated": null
+    },
+    "response_code": 200
+}
+=end
+
       def show
         get_proposal_details(@proposal)
         render :json => {:success => true, :proposal=> @data, response_code: 200 }
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} api/v1/proposals/:id/accept_and_decline?perform=accept
+ @apiSampleRequest off
+ @apiName accept_and_decline  (accept case)
+ @apiGroup Proposals
+ @apiDescription proposal accept
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Proposal is accepted.",
+    "response_code": 201
+}
+=end
+=begin
+ @apiVersion 1.0.0
+ @api {get} api/v1/proposals/:id/accept_and_decline?perform=reject
+ @apiSampleRequest off
+ @apiName accept_and_decline   (reject case)
+ @apiGroup Proposals
+ @apiDescription proposal reject
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Proposal is rejected.",
+    "response_code": 201
+}
+=end
 
       def accept_and_decline
         credit_limit = get_available_credit_limit(@proposal.buyer, current_company).to_f
@@ -129,7 +194,7 @@ module Api
  @api {post} /api/v1/proposals/:id/negotiate
  @apiSampleRequest off
  @apiName negotiate
- @apiGroup Negotiations
+ @apiGroup Proposals
  @apiDescription negotiation between the buyer and seller
  @apiParamExample {json} Request-Example1:
  {

@@ -46,6 +46,43 @@ module Api
         end
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/trading_parcels/3
+ @apiSampleRequest off
+ @apiName show
+ @apiGroup TradingParcels
+ @apiDescription show trading parcel with parcel_id = 3
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "parcel": {
+        "id": "3",
+        "description": null,
+        "lot_no": null,
+        "no_of_stones": 0,
+        "carats": 10,
+        "credit_period": 30,
+        "avg_price": 10,
+        "company": "3D DIAMONDS Nv",
+        "cost": 10,
+        "discount_per_month": "0",
+        "sight": null,
+        "source": "POLISHED",
+        "uid": "f5f41260",
+        "percent": 0,
+        "comment": "This is Dummy Polished Parcel",
+        "total_value": 240,
+        "no_of_demands": 0,
+        "size_info": [],
+        "vital_sales_data": {
+            "demanded_clients": []
+        }
+    },
+    "response_code": 200
+}
+=end
+
       def show
         if current_customer
           parcel = TradingParcel.where(id: params[:id]).first
@@ -97,6 +134,41 @@ module Api
         end
       end
 
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/trading_parcels
+ @apiSampleRequest off
+ @apiName index
+ @apiGroup TradingParcels
+ @apiDescription show list of trading parcel
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "parcels": [
+        {
+            "id": "10744",
+            "source": "OutSide Goods",
+            "description": "Dummy Parcel for Demo",
+            "total_value": "100.00"
+        },
+        {
+            "id": "10746",
+            "source": "POLISHED",
+            "description": null,
+            "total_value": "240.00"
+        }
+    ],
+    "response_code": 200
+}
+=end
+
       def index
         if current_customer
           if params[:demand_supplier_id].present? 
@@ -111,6 +183,20 @@ module Api
           render json: { errors: "Not authenticated", response_code: 201 }
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {delete} /api/v1/trading_parcels/1
+ @apiSampleRequest off
+ @apiName destroy
+ @apiGroup TradingParcels
+ @apiDescription Delete trading parcels with respect to id = 1
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "This parcel is deleted successfully."
+}
+=end
 
       def destroy
         @parcel = TradingParcel.where(id: params[:id]).first

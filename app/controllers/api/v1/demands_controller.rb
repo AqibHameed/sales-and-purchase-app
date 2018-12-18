@@ -14,6 +14,60 @@ module Api
       #   end
       # end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/demands
+ @apiSampleRequest off
+ @apiName index
+ @apiGroup Demands
+ @apiDescription show list of demands
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "response_code": 200,
+    "demands": [
+        {
+            "id": 1,
+            "name": "DTC",
+            "descriptions": [
+                {
+                    "id": 10744,
+                    "description": "Dummy Parcel for Demo",
+                    "parcels": 0
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "RUSSIAN",
+            "descriptions": [
+                {
+                    "id": 10745,
+                    "description": "Dummy Parcel for Demo",
+                    "parcels": 0
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "OUTSIDE GOODS",
+            "descriptions": [
+                {
+                    "id": 10746,
+                    "description": "Dummy Parcel for Demo",
+                    "parcels": 1
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "name": "POLISHED",
+            "descriptions": []
+        }
+    ]
+}
+=end
+
       def index
         if current_company
           @all_demands = []
@@ -44,6 +98,36 @@ module Api
         end
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/demands?demand_supplier_id=4&description[]=PINKCOLOR&description[]=BLUECOLOR
+ @apiSampleRequest off
+ @apiName create
+ @apiGroup Demands
+ @apiDescription Create demands
+ @apiParamExample {json} Request-Example:
+nothing only params in url
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Demand created successfully.",
+    "demands": {
+        "id": 10820,
+        "description": "BLUE COLOR",
+        "weight": null,
+        "price": null,
+        "company_id": 3585,
+        "diamond_type": null,
+        "created_at": "2018-12-18T12:10:58.000Z",
+        "updated_at": "2018-12-18T12:10:58.000Z",
+        "demand_supplier_id": 4,
+        "block": false,
+        "deleted": false
+    }
+}
+=end
+
+
       def create
         if current_company
           array = []
@@ -60,6 +144,21 @@ module Api
           render json: {errors: "Not authenticated", response_code: 201}
         end
       end
+
+
+=begin
+ @apiVersion 1.0.0
+ @api {delete} /api/v1/demands/10820
+ @apiSampleRequest off
+ @apiName destroy
+ @apiGroup Demands
+ @apiDescription Delete demand with demnad_id = 10820
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Demand destroy successfully"
+}
+=end
 
       def destroy
         if current_company
@@ -78,15 +177,161 @@ module Api
         end
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/demands/demand_suppliers
+ @apiSampleRequest off
+ @apiName demand_suppliers
+ @apiGroup Demands
+ @apiDescription show demand sources
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "demand_suppliers": [
+        {
+            "id": 1,
+            "name": "DTC"
+        },
+        {
+            "id": 2,
+            "name": "RUSSIAN"
+        },
+        {
+            "id": 3,
+            "name": "OUTSIDE"
+        },
+        {
+            "id": 4,
+            "name": "SPECIAL"
+        },
+        {
+            "id": 5,
+            "name": "POLISHED"
+        }
+    ],
+    "response_code": 200
+}
+=end
+
       def demand_suppliers
         demand_supplier = DemandSupplier.all
         render json: {success: true, demand_suppliers: demand_supplier.as_json(only: [:id, :name]), response_code: 200}
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/demands/parcels_list
+ @apiSampleRequest off
+ @apiName demand description
+ @apiGroup Demands
+ @apiDescription show demand description
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "descriptions": [
+        "Z -7+5",
+        "Z -7",
+        "Z -5+3",
+        "Z 3 grs +7 (mele)",
+        "Z 3 grs (mele)",
+        "Z -3",
+        "Z +9 (mele)",
+        "Z +7 (mele)",
+        "Z +11 (mele)",
+        "Z / Longs 3grs / +7",
+        "Z / Longs 3 grs",
+        "Z / Longs -11+9",
+        "Z / Longs +7",
+        "Z / Longs +11",
+        "Z / Cliv -2 grs+3",
+        "Z / Cliv 11+9",
+        "Z / Cliv +7",
+        "Z / Cliv +5",
+        "Z / Cliv +3",
+        "Z / Cliv +11"
+    ],
+    "response_code": 200
+}
+=end
+
+
       def demand_description
         list = DemandList.where(demand_supplier_id: params[:demand_supplier_id])
         render json: {success: true, descriptions: list.map {|e| e.description}, response_code: 200}
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/demands/parcels_list
+ @apiSampleRequest off
+ @apiName parcels list
+ @apiGroup Demands
+ @apiDescription show parcel list
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "parcels": [
+        {
+            "proposal_send": true,
+            "proposal_id": 18,
+            "is_mine": false,
+            "is_overdue": false,
+            "id": "10754",
+            "description": "+100 CT",
+            "lot_no": null,
+            "no_of_stones": 100,
+            "carats": 100,
+            "credit_period": 50,
+            "avg_price": 110,
+            "company": "SafeTrade",
+            "cost": 100,
+            "discount_per_month": null,
+            "sight": null,
+            "source": "SOMETHING SPECIAL",
+            "uid": "527566f4",
+            "percent": 10,
+            "comment": "",
+            "total_value": 11000,
+            "size_info": [],
+            "proposal_status": "rejected",
+            "my_offer": null,
+            "demand_id": 10753
+        },
+        {
+            "proposal_send": false,
+            "proposal_id": null,
+            "is_mine": false,
+            "is_overdue": false,
+            "id": "10757",
+            "description": "PINK COLOR",
+            "lot_no": null,
+            "no_of_stones": 10,
+            "carats": 100,
+            "credit_period": 100,
+            "avg_price": 110,
+            "company": "SafeTrade",
+            "cost": 100,
+            "discount_per_month": "0",
+            "sight": "",
+            "source": "SOMETHING SPECIAL",
+            "uid": "1dee48ab",
+            "percent": 10,
+            "comment": "",
+            "total_value": 11000,
+            "size_info": [],
+            "proposal_status": "no",
+            "my_offer": null,
+            "demand_id": 10819
+        }
+    ],
+    "response_code": 200
+}
+=end
 
       def parcels_list
         if current_company
@@ -187,6 +432,30 @@ module Api
           respose_hash
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/demands/live_demands
+ @apiSampleRequest off
+ @apiName live demands
+ @apiGroup Demands
+ @apiDescription get live demands with authorization token
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "live_demands": {
+        "rough": [
+            {
+                "description": "PINK COLOR",
+                "no_of_demands": 1,
+                "date": "2018-12-18T12:10:58+00:00"
+            }
+        ],
+        "polished": []
+    },
+    "response_code": 200
+}
+=end
 
       def live_demands
         if current_company

@@ -33,12 +33,55 @@ class Api::V1::CompaniesController < ApplicationController
        end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/blocked_customers
+ @apiSampleRequest off
+ @apiName blocked customers
+ @apiGroup Companies
+ @apiDescription get blocked Customer
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "blocked_customers": [
+        {
+            "id": "1",
+            "company": "Dummy co. 1",
+            "city": null,
+            "country": "India",
+            "created_at": "2018-10-25T11:21:17.000Z",
+            "updated_at": "2018-10-25T11:21:17.000Z"
+        }
+    ],
+    "response_code": 200
+}
+=end
+
   def blocked_customers
     if current_company
       blocked = BlockUser.where(company_id: current_company.id)
       render json: { success: true, blocked_customers: blocked.map { |e| { id: e.try(:block_user).try(:id).to_s, company: e.block_user.try(:name), city: e.block_user.try(:city), country: e.block_user.try(:county), created_at: e.block_user.try(:created_at), updated_at: e.block_user.try(:updated_at)}}, response_code: 200 }
     end
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/reset_limits
+ @apiSampleRequest off
+ @apiName reset limits
+ @apiGroup Companies
+ @apiDescription reset limit against compnay
+ @apiParamExample {json} Request-Example:
+{
+"company_id": 1
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Limits are reset successfully",
+    "response_code": 200
+}
+=end
 
   def reset_limits
     if current_company
@@ -81,6 +124,27 @@ class Api::V1::CompaniesController < ApplicationController
   def not_found
     render json: {errors: 'Not found', response_code: 201 }, status: 404
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/invite
+ @apiSampleRequest off
+ @apiName invite
+ @apiGroup Companies
+ @apiDescription invite company
+ @apiParamExample {json} Request-Example:
+{
+ "company": "test_test",
+ "email": "hello@123.com",
+ "country": "India"
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": " Company is invited successfully",
+    "response_code": 200
+}
+=end
 
   def invite
     if current_company
@@ -136,6 +200,64 @@ class Api::V1::CompaniesController < ApplicationController
       render json: {errors: "Not authenticated", response_code: 201}
     end
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/history
+ @apiSampleRequest off
+ @apiName history
+ @apiGroup Companies
+ @apiDescription get history of all transactions
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "transactions": [
+        {
+            "id": 10744,
+            "buyer_id": 1,
+            "seller_id": 3585,
+            "trading_parcel_id": 10745,
+            "due_date": "2018-11-23T18:30:00+00:00",
+            "avg_price": "10.0",
+            "credit": 30,
+            "paid": false,
+            "created_at": "2018-10-25T12:20:51.000Z",
+            "invoice_date": "2018-10-25T12:20:51+00:00",
+            "updated_at": "2018-10-25T12:20:51.000Z",
+            "buyer_confirmed": true,
+            "reject_reason": null,
+            "reject_date": null,
+            "transaction_type": "manual",
+            "amount_to_be_paid": "100.0",
+            "transaction_uid": "9ac4579796e01a860fad5c84",
+            "diamond_type": "Rough",
+            "total_amount": "100.0",
+            "invoice_no": null,
+            "ready_for_buyer": null,
+            "description": "OutSide Goods Dummy Parcel for Demo",
+            "activity": "Sold",
+            "counter_party": "Dummy co. 1",
+            "payment_status": "Overdue",
+            "no_of_stones": null,
+            "carats": "10.00",
+            "cost": "10.0",
+            "box_value": "12",
+            "sight": "07/18",
+            "comment": "This is a Demo Parcel",
+            "confirm_status": true,
+            "paid_date": null,
+            "seller_days_limit": 30,
+            "buyer_days_limit": 54
+        }
+    ]
+}
+=end
 
   def history
     transactions = []
