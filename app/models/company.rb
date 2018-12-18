@@ -476,5 +476,10 @@ class Company < ApplicationRecord
       field :is_broker
       field :add_polished
     end
+
+    configure :versions do
+      label "Versions"
+    end
   end
+
 end

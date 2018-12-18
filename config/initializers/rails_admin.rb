@@ -10,10 +10,9 @@ RailsAdmin.config do |config|
   # config.audit_with :paper_trail, 'Admin'
 
   config.audit_with :history, 'Admin'
-  config.audit_with :paper_trail, 'Transaction', 'PaperTrail::Version'
-  config.audit_with :paper_trail, 'Transaction', 'Version'
+  config.audit_with :paper_trail, 'Customer', 'PaperTrail::Version'
 
-  PAPER_TRAIL_AUDIT_MODEL = ['Transaction']
+  PAPER_TRAIL_AUDIT_MODEL = ['Transaction', 'Company', 'TradingParcel', 'PartialPayment', 'SecureCenter', 'DaysLimit', 'Proposal', 'CreditLimit']
   config.actions do
     history_index do
       only PAPER_TRAIL_AUDIT_MODEL
@@ -81,7 +80,7 @@ RailsAdmin.config do |config|
   # config.default_items_per_page = 20
 
   # Exclude specific models (keep the others):
-  config.excluded_models = ['TempStone']
+  config.excluded_models = ['Version', 'TempStone']
 
   # Include specific models (exclude the others):
   # config.included_models = []

@@ -6,5 +6,12 @@ has_paper_trail
     if transaction.remaining_amount < amount
       errors[:base] << "Amount should be less than the total amount to be paid"
     end
+ end
+
+  rails_admin do
+    configure :versions do
+      label "Versions"
+    end
   end
+
 end

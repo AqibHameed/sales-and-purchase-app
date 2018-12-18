@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181213145119) do
+ActiveRecord::Schema.define(version: 20181218120511) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -974,6 +974,7 @@ ActiveRecord::Schema.define(version: 20181213145119) do
     t.text "object", limit: 4294967295
     t.datetime "created_at"
     t.string "ip"
+    t.text "object_changes", limit: 4294967295
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 

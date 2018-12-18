@@ -116,4 +116,10 @@ class TradingParcel < ApplicationRecord
   def parcel_transactions
     Transaction.where(trading_parcel_id: self.id).first
   end
+
+  rails_admin do
+    configure :versions do
+      label "Versions"
+    end
+  end
 end

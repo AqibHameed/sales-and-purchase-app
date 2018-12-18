@@ -156,6 +156,7 @@ class Transaction < ApplicationRecord
 
   rails_admin do
     configure :versions do
+      label "Versions"
     end
   end
 end

@@ -13,4 +13,10 @@ class CreditLimit < ApplicationRecord
     errors.add(:market_limit, 'Should be greater than credit limit') if credit_limit.to_f > market_limit.to_f
   end
 
+  rails_admin do
+    configure :versions do
+      label "Versions"
+    end
+  end
+
 end

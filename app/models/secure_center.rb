@@ -52,4 +52,10 @@ class SecureCenter < ApplicationRecord
     late_days.present? ? late_days.abs : 0
   end
 
+  rails_admin do
+    configure :versions do
+      label "Versions"
+    end
+  end
+
 end

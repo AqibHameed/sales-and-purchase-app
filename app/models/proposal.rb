@@ -40,6 +40,12 @@ class Proposal < ApplicationRecord
     end        
   end
 
+  rails_admin do
+    configure :versions do
+      label "Versions"
+    end
+  end
+
   # validate  :credit_validation
 
   # def credit_validation
