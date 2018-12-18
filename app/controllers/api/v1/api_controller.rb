@@ -41,6 +41,31 @@ class Api::V1::ApiController < ApplicationController
   #   render json: { data: data }
   # end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/filter_data
+ @apiSampleRequest off
+ @apiName filter_data
+ @apiGroup Api
+ @apiDescription Filter data
+ @apiSuccessExample {json} SuccessResponse1:
+{
+    "suppliers": [
+        {
+            "id": 1,
+            "name": "umair"
+        },
+        {
+            "id": 2,
+            "name": "Khuram"
+        }
+    ],
+    "months": [],
+    "location": [],
+    "response_code": 200
+}
+=end
+
   def filter_data
     suppliers = Supplier.all.map { |e| { id: e.id, name: e.name}  }
     months = Tender.group("month(open_date)").count
@@ -57,6 +82,30 @@ class Api::V1::ApiController < ApplicationController
     end
     render json: { suppliers: suppliers, months: data, location: data_countries, response_code: 200  }
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/device_token
+ @apiSampleRequest off
+ @apiName Device Token
+ @apiGroup Api
+ @apiDescription Token for devise
+ @apiParamExample {json} Request-Example:
+ {
+"customer":
+	{
+	"token":"qwe34234werwe32we3",
+	"device_type":"ios/android"
+	}
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "device_token": "qwe34234werwe32we3",
+    "type": "ios/android",
+    "response_code": 200
+}
+=end
 
   def device_token
     if current_customer
@@ -76,6 +125,29 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/supplier_notification
+ @apiSampleRequest off
+ @apiName Supplier notifications
+ @apiGroup Api
+ @apiDescription Get supplier notifications
+ @apiParamExample {json} Request-Example:
+{
+"supplier_id": 1 ,
+"notify": true
+ }
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "supplier_notification": {
+        "supplier_id": 1,
+        "notify": true
+    },
+    "response_code": 200
+}
+=end
+
   def supplier_notification
     if current_customer
       supplier_notification = SupplierNotification.where(customer_id: current_customer.id, supplier_id: params[:supplier_id]).first_or_initialize
@@ -90,6 +162,32 @@ class Api::V1::ApiController < ApplicationController
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/suppliers
+ @apiSampleRequest off
+ @apiName get suppliers
+ @apiGroup Api
+ @apiDescription get liist of suppliers
+ @apiSuccessExample {json} SuccessResponse1:
+{
+    "success": true,
+    "supplier_notifications": [
+        {
+            "supplier_id": 1,
+            "supplier_name": "ali",
+            "is_notified": true
+        },
+        {
+            "supplier_id": 2,
+            "supplier_name": "aqib",
+            "is_notified": false
+        }
+    ],
+    "response_code": 200
+}
+=end
+
   def get_suppliers
     if current_customer
       companies = Supplier.all
@@ -98,6 +196,28 @@ class Api::V1::ApiController < ApplicationController
       render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
     end
   end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/attachment
+ @apiSampleRequest off
+ @apiName email attachment
+ @apiGroup Api
+ @apiDescription direct sell with buyer
+ @apiParamExample {json} Request-Example:
+{
+"email_attachment":
+{
+	"file":"<file object>",
+	"tender_id": 1
+}
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+need to check
+}
+=end
+
 
   def email_attachment
     if current_customer

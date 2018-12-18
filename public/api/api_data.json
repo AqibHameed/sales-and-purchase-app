@@ -2,6 +2,133 @@
   {
     "version": "1.0.0",
     "type": "post",
+    "url": "/api/v1/device_token",
+    "title": "",
+    "name": "Device_Token",
+    "group": "Api",
+    "description": "<p>Token for devise</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": " {\n\"customer\":\n\t{\n\t\"token\":\"qwe34234werwe32we3\",\n\t\"device_type\":\"ios/android\"\n\t}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"device_token\": \"qwe34234werwe32we3\",\n    \"type\": \"ios/android\",\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/api_controller.rb",
+    "groupTitle": "Api"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/supplier_notification",
+    "title": "",
+    "name": "Supplier_notifications",
+    "group": "Api",
+    "description": "<p>Get supplier notifications</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\"supplier_id\": 1 ,\n\"notify\": true\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"supplier_notification\": {\n        \"supplier_id\": 1,\n        \"notify\": true\n    },\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/api_controller.rb",
+    "groupTitle": "Api"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/attachment",
+    "title": "",
+    "name": "email_attachment",
+    "group": "Api",
+    "description": "<p>direct sell with buyer</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\"email_attachment\":\n{\n\t\"file\":\"<file object>\",\n\t\"tender_id\": 1\n}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\nneed to check\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/api_controller.rb",
+    "groupTitle": "Api"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/filter_data",
+    "title": "",
+    "name": "filter_data",
+    "group": "Api",
+    "description": "<p>Filter data</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"suppliers\": [\n        {\n            \"id\": 1,\n            \"name\": \"umair\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Khuram\"\n        }\n    ],\n    \"months\": [],\n    \"location\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/api_controller.rb",
+    "groupTitle": "Api"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/suppliers",
+    "title": "",
+    "name": "get_suppliers",
+    "group": "Api",
+    "description": "<p>get liist of suppliers</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"success\": true,\n    \"supplier_notifications\": [\n        {\n            \"supplier_id\": 1,\n            \"supplier_name\": \"ali\",\n            \"is_notified\": true\n        },\n        {\n            \"supplier_id\": 2,\n            \"supplier_name\": \"aqib\",\n            \"is_notified\": false\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/api_controller.rb",
+    "groupTitle": "Api"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
     "url": "/api/v1/limits/add_limits",
     "title": "",
     "name": "add_limits",
@@ -222,6 +349,333 @@
     },
     "filename": "app/controllers/api/v1/sessions_controller.rb",
     "groupTitle": "Session"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/bid_history?parcel_id=1",
+    "title": "",
+    "name": "last_3_bids",
+    "group": "Stones",
+    "description": "<p>get bids history on parcel with respect to parcel id</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"errors\": \"Parcel not found\",\n    \"response_code\": 201\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/parcels/upload",
+    "title": "",
+    "name": "upload",
+    "group": "Stones",
+    "description": "<p>Upload image for stone parcels</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\"parcel_id\": 167 ,\n\"image\": <image_object>\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": 'Image successfully uploaded.',\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/tender_notifications",
+    "title": "",
+    "name": "create",
+    "group": "TenderNotifications",
+    "description": "<p>tender notifications</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\"tender_id\": 1 ,\"notify\": true }",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"tender_notification\": {\n        \"tender_id\": 1,\n        \"notify\": true\n    },\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tender_notifications_controller.rb",
+    "groupTitle": "TenderNotifications"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tender_notifications/notifications",
+    "title": "",
+    "name": "notifications",
+    "group": "TenderNotifications",
+    "description": "<p>Notification history</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"success\": true,\n    \"notifications\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tender_notifications_controller.rb",
+    "groupTitle": "TenderNotifications"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tenders/closed",
+    "title": "",
+    "name": "closed",
+    "group": "Tenders",
+    "description": "<p>List of closed tenders</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/find_active_parcels?term=17.37",
+    "title": "",
+    "name": "find_active_parcels",
+    "group": "Tenders",
+    "description": "<p>search in active parcels</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"success\": true,\n    \"parcels\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/old_tenders",
+    "title": "",
+    "name": "old_tender",
+    "group": "Tenders",
+    "description": "<p>get old tenders</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"tenders\": [\n        {\n            \"id\": 982,\n            \"name\": \"DEMO \",\n            \"start_date\": \"2018-01-05T13:00:00.000Z\",\n            \"end_date\": \"2018-12-31T12:56:00.000Z\",\n            \"company_name\": \"DEMO\",\n            \"company_logo\": null,\n            \"city\": \"Surat\",\n            \"country\": \"India\",\n            \"notification\": false\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/old_upcoming",
+    "title": "",
+    "name": "old_upcoming",
+    "group": "Tenders",
+    "description": "<p>old up coming</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"tenders\": [\n        {\n            \"id\": 1123,\n            \"name\": \"ODC January 2019\",\n            \"start_date\": \"2019-01-20T01:30:00.000Z\",\n            \"end_date\": \"2019-01-30T05:46:00.000Z\",\n            \"company_name\": \"Okavango Diamond Company\",\n            \"company_logo\": null,\n            \"city\": \"Gaborone\",\n            \"country\": \"BW\",\n            \"notification\": false\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/stone_parcel",
+    "title": "",
+    "name": "stone_parcel",
+    "group": "Tenders",
+    "description": "<p>Tender's Stone parcel</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": " {\n\"id\": 1 ,\n\"comments\": \"\",\n \"valuation\": \"\",\n \"parcel_rating\": 4\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"errors\": [\n        \"Parcel not found\"\n    ],\n    \"response_code\": 201\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tender_parcel?tender_id=1",
+    "title": "",
+    "name": "tender_parcel",
+    "group": "Tenders",
+    "description": "<p>tender parcels detail</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tender_winners?tender_id=1",
+    "title": "",
+    "name": "tender_winners",
+    "group": "Tenders",
+    "description": "<p>Tender winner list</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"tender_winners\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tenders",
+    "title": "",
+    "name": "tenders",
+    "group": "Tenders",
+    "description": "<p>With Authentication token and withou authentication token</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tenders?supplier=11",
+    "title": "",
+    "name": "tenders",
+    "group": "Tenders",
+    "description": "<p>tenders according to supplier</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tenders?location=surat",
+    "title": "",
+    "name": "tenders_location",
+    "group": "Tenders",
+    "description": "<p>tenders according to Location</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tenders?month=1",
+    "title": "",
+    "name": "tenders_month",
+    "group": "Tenders",
+    "description": "<p>tenders according to month</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
   },
   {
     "version": "1.0.0",

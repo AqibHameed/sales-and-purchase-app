@@ -4,6 +4,63 @@ module Api
       before_action :current_customer
       protect_from_forgery with: :null_session
       skip_before_action :verify_authenticity_token, only: [:index]
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/tenders
+ @apiSampleRequest off
+ @apiName tenders
+ @apiGroup Tenders
+ @apiDescription With Authentication token and withou authentication token
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "tenders": [],
+    "response_code": 200
+}
+=end
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/tenders?month=1
+ @apiSampleRequest off
+ @apiName tenders month
+ @apiGroup Tenders
+ @apiDescription tenders according to month
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "tenders": [],
+    "response_code": 200
+}
+=end
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/tenders?location=surat
+ @apiSampleRequest off
+ @apiName tenders location
+ @apiGroup Tenders
+ @apiDescription tenders according to Location
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "tenders": [],
+    "response_code": 200
+}
+=end
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/tenders?supplier=11
+ @apiSampleRequest off
+ @apiName tenders
+ @apiGroup Tenders
+ @apiDescription tenders according to supplier
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "tenders": [],
+    "response_code": 200
+}
+=end
+
 
       def index
         col_str = ""
@@ -50,6 +107,22 @@ module Api
         # render json: { tenders: tender_data(tenders), response_code: 200 }
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/tenders/closed
+ @apiSampleRequest off
+ @apiName closed
+ @apiGroup Tenders
+ @apiDescription List of closed tenders
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "tenders": [],
+    "response_code": 200
+}
+=end
+
+
       def closed
         col_str = "close_date < '#{Time.zone.now}' AND close_date > '#{4.month.ago}'"
         if params[:location] || params[:month] || params[:supplier]
@@ -64,6 +137,40 @@ module Api
         end
         render json: {success: true, tenders: closed_tender_data(tenders), response_code: 200}
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/old_tenders
+ @apiSampleRequest off
+ @apiName old tender
+ @apiGroup Tenders
+ @apiDescription get old tenders
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "tenders": [
+        {
+            "id": 982,
+            "name": "DEMO ",
+            "start_date": "2018-01-05T13:00:00.000Z",
+            "end_date": "2018-12-31T12:56:00.000Z",
+            "company_name": "DEMO",
+            "company_logo": null,
+            "city": "Surat",
+            "country": "India",
+            "notification": false
+        }
+    ],
+    "response_code": 200
+}
+=end
+
 
       def old_tenders
         col_str = ""
@@ -80,6 +187,33 @@ module Api
         @tenders = tender.page(params[:page]).per(params[:count])
         render json: {success: true, pagination: set_pagination(:tenders), tenders: old_tender_data(@tenders), response_code: 200}
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/old_upcoming
+ @apiSampleRequest off
+ @apiName old upcoming
+ @apiGroup Tenders
+ @apiDescription old up coming
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "tenders": [
+        {
+            "id": 1123,
+            "name": "ODC January 2019",
+            "start_date": "2019-01-20T01:30:00.000Z",
+            "end_date": "2019-01-30T05:46:00.000Z",
+            "company_name": "Okavango Diamond Company",
+            "company_logo": null,
+            "city": "Gaborone",
+            "country": "BW",
+            "notification": false
+        }
+    ],
+    "response_code": 200
+}
+=end
 
       def old_upcoming
         col_str = "open_date > '#{Time.zone.now}'"
@@ -117,10 +251,48 @@ module Api
         render json: {success: true, tender_parcels: winners_stone_data(stones), response_code: 200}
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/tender_parcel?tender_id=1
+ @apiSampleRequest off
+ @apiName tender parcel
+ @apiGroup Tenders
+ @apiDescription tender parcels detail
+ @apiSuccessExample {json} SuccessResponse1:
+{
+    "success": true,
+    "tender_parcels": [],
+    "response_code": 200
+}
+=end
+
       def tender_parcel
         stones = Stone.includes(:stone_ratings).where(tender_id: params[:tender_id])
         render json: {success: true, tender_parcels: stone_data(stones), response_code: 200}
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/stone_parcel
+ @apiSampleRequest off
+ @apiName stone parcel
+ @apiGroup Tenders
+ @apiDescription Tender's Stone parcel
+ @apiParamExample {json} Request-Example:
+ {
+"id": 1 ,
+"comments": "",
+ "valuation": "",
+ "parcel_rating": 4
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "errors": [
+        "Parcel not found"
+    ],
+    "response_code": 201
+}
+=end
 
       def stone_parcel
         if current_customer
@@ -148,6 +320,22 @@ module Api
         end
       end
 
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/find_active_parcels?term=17.37
+ @apiSampleRequest off
+ @apiName find active parcels
+ @apiGroup Tenders
+ @apiDescription search in active parcels
+ @apiSuccessExample {json} SuccessResponse1:
+{
+    "success": true,
+    "parcels": [],
+    "response_code": 200
+}
+=end
+
       def find_active_parcels
         if params[:term].nil? || params[:term].blank?
           render json: {errors: "Invalid Parameters", response_code: 201}
@@ -165,6 +353,20 @@ module Api
           end
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/tender_winners?tender_id=1
+ @apiSampleRequest off
+ @apiName tender winners
+ @apiGroup Tenders
+ @apiDescription Tender winner list
+ @apiSuccessExample {json} SuccessResponse1:
+{
+    "tender_winners": [],
+    "response_code": 200
+}
+=end
 
       def tender_winners
         tender_winners = TenderWinner.where(tender_id: params[:tender_id])

@@ -2,7 +2,26 @@ module Api
   module V1
     class TenderNotificationsController <ApiController
       skip_before_action :verify_authenticity_token
-      
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/tender_notifications
+ @apiSampleRequest off
+ @apiName create
+ @apiGroup TenderNotifications
+ @apiDescription tender notifications
+ @apiParamExample {json} Request-Example:
+{"tender_id": 1 ,"notify": true }
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "tender_notification": {
+        "tender_id": 1,
+        "notify": true
+    },
+    "response_code": 200
+}
+=end
+
       def create
         if current_customer
           tender_notification = TenderNotification.where(customer_id: current_customer.id, tender_id: params[:tender_id]).first
@@ -20,6 +39,21 @@ module Api
           render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/tender_notifications/notifications
+ @apiSampleRequest off
+ @apiName notifications
+ @apiGroup TenderNotifications
+ @apiDescription Notification history
+ @apiSuccessExample {json} SuccessResponse1:
+{
+    "success": true,
+    "notifications": [],
+    "response_code": 200
+}
+=end
 
       def notifications
         if current_customer
