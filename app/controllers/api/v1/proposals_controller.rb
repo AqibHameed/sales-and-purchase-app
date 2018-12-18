@@ -13,7 +13,7 @@ module Api
  @api {post} /api/v1/proposals/3
  @apiSampleRequest off
  @apiName create
- @apiGroup Proposal
+ @apiGroup Proposals
  @apiDescription buyer send or update proposal
  @apiParamExample {json} Request-Example1:
 {
@@ -194,7 +194,7 @@ module Api
  @api {post} /api/v1/proposals/:id/negotiate
  @apiSampleRequest off
  @apiName negotiate
- @apiGroup Negotiations
+ @apiGroup Proposals
  @apiDescription negotiation between the buyer and seller
  @apiParamExample {json} Request-Example1:
  {

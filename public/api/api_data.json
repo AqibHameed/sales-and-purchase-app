@@ -807,11 +807,90 @@
   },
   {
     "version": "1.0.0",
+    "type": "get",
+    "url": "api/v1/proposals/:id/accept_and_decline?perform=accept",
+    "title": "",
+    "name": "accept_and_decline__accept_case_",
+    "group": "Proposals",
+    "description": "<p>proposal accept</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal is accepted.\",\n    \"response_code\": 201\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/proposals_controller.rb",
+    "groupTitle": "Proposals"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "api/v1/proposals/:id/accept_and_decline?perform=reject",
+    "title": "",
+    "name": "accept_and_decline__reject_case_",
+    "group": "Proposals",
+    "description": "<p>proposal reject</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal is rejected.\",\n    \"response_code\": 201\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/proposals_controller.rb",
+    "groupTitle": "Proposals"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/proposals/3",
+    "title": "",
+    "name": "create",
+    "group": "Proposals",
+    "description": "<p>buyer send or update proposal</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n\"trading_parcel_id\" : \"3\",\n\"credit\" : \"2000\",\n\"price\" : \"4500\",\n\"total_value\" : \"4000\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n\"id\" : \"3\",\n\"credit\" : \"2000\",\n\"price\" : \"5000\",\n\"total_value\" : \"500000\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal Submitted Successfully\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal Updated Successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/proposals_controller.rb",
+    "groupTitle": "Proposals"
+  },
+  {
+    "version": "1.0.0",
     "type": "post",
     "url": "/api/v1/proposals/:id/negotiate",
     "title": "",
     "name": "negotiate",
-    "group": "Negotiations",
+    "group": "Proposals",
     "description": "<p>negotiation between the buyer and seller</p>",
     "parameter": {
       "examples": [
@@ -847,85 +926,6 @@
         {
           "title": "SuccessResponse3:",
           "content": "[\n {\n   \"success\": true,\n   \"message\": \" Negotiation is updated successfully. \",\n   \"negotiation\": {\n       \"from\": \"buyer\",\n       \"proposal_id\": 58,\n       \"id\": 89,\n       \"price\": 150,\n       \"credit\": 60,\n       \"total_value\": 1000,\n       \"percent\": 0,\n       \"comment\": \"\",\n       \"created_at\": \"2018-12-13T17:22:41.000Z\",\n       \"updated_at\": \"2018-12-13T17:24:39.000Z\"\n   },\n   \"response_code\": 200\n }\n]",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/proposals_controller.rb",
-    "groupTitle": "Negotiations"
-  },
-  {
-    "version": "1.0.0",
-    "type": "post",
-    "url": "/api/v1/proposals/3",
-    "title": "",
-    "name": "create",
-    "group": "Proposal",
-    "description": "<p>buyer send or update proposal</p>",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Request-Example1:",
-          "content": "{\n\"trading_parcel_id\" : \"3\",\n\"credit\" : \"2000\",\n\"price\" : \"4500\",\n\"total_value\" : \"4000\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Request-Example2:",
-          "content": "{\n\"id\" : \"3\",\n\"credit\" : \"2000\",\n\"price\" : \"5000\",\n\"total_value\" : \"500000\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse1:",
-          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal Submitted Successfully\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "SuccessResponse2:",
-          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal Updated Successfully\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/proposals_controller.rb",
-    "groupTitle": "Proposal"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "api/v1/proposals/:id/accept_and_decline?perform=accept",
-    "title": "",
-    "name": "accept_and_decline__accept_case_",
-    "group": "Proposals",
-    "description": "<p>proposal accept</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal is accepted.\",\n    \"response_code\": 201\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/proposals_controller.rb",
-    "groupTitle": "Proposals"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "api/v1/proposals/:id/accept_and_decline?perform=reject",
-    "title": "",
-    "name": "accept_and_decline__reject_case_",
-    "group": "Proposals",
-    "description": "<p>proposal reject</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"message\": \"Proposal is rejected.\",\n    \"response_code\": 201\n}",
           "type": "json"
         }
       ]
