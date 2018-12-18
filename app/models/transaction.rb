@@ -153,4 +153,9 @@ class Transaction < ApplicationRecord
     new_parcel.sale_all = false
     new_parcel.save
   end
+
+  rails_admin do
+    configure :versions do
+    end
+  end
 end
