@@ -9,9 +9,9 @@ RailsAdmin.config do |config|
   # config.audit_with :paper_trail, 'Customer'
   # config.audit_with :paper_trail, 'Admin'
 
-   config.audit_with :history, 'Admin'
+  config.audit_with :history, 'Admin'
   config.audit_with :paper_trail, 'Transaction', 'PaperTrail::Version'
-  config.audit_with :paper_trail, 'Transaction', 'PaperTrail::Version'
+  config.audit_with :paper_trail, 'Transaction', 'Version'
 
   PAPER_TRAIL_AUDIT_MODEL = ['Transaction']
   config.actions do
