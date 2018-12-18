@@ -54,7 +54,7 @@ module Api
  @apiName last 3 bids
  @apiGroup Stones
  @apiDescription get bids history on parcel with respect to parcel id
- @apiSuccessExample {json} SuccessResponse1:
+ @apiSuccessExample {json} SuccessResponse:
 {
     "errors": "Parcel not found",
     "response_code": 201

@@ -69,6 +69,40 @@ class Api::V1::SessionsController < Devise::SessionsController
     invalid_login_attempt
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/get_customer
+ @apiSampleRequest off
+ @apiName customer by token
+ @apiGroup Session
+ @apiDescription get customer from authorization token add in header
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "customer": {
+        "id": 5,
+        "email": "testing@gmail.com",
+        "designation": "Buyer/Seller",
+        "created_at": "2018-10-30T07:26:20.000Z",
+        "updated_at": "2018-11-01T11:19:12.000Z",
+        "first_name": "abc",
+        "last_name": "def",
+        "city": null,
+        "address": null,
+        "postal_code": null,
+        "phone": null,
+        "status": null,
+        "company": "Dummy co. 3",
+        "company_address": null,
+        "phone_2": null,
+        "mobile_no": "+971 551114466",
+        "authentication_token": "hGazWDBk_Pkh8wn2jA",
+        "chat_id": "-1",
+        "token": null
+    },
+    "response_code": 200
+}
+=end
+
   def customer_by_token
     token = request.headers['Authorization']
     customer = Customer.where(authentication_token: token).first

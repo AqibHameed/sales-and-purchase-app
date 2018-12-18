@@ -47,7 +47,7 @@ module Api
  @apiName notifications
  @apiGroup TenderNotifications
  @apiDescription Notification history
- @apiSuccessExample {json} SuccessResponse1:
+ @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
     "notifications": [],

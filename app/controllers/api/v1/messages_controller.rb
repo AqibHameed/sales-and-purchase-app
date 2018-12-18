@@ -5,7 +5,43 @@ module Api
       include CustomersHelper
       skip_before_action :verify_authenticity_token, only: [:create]
       before_action :current_customer, only: [:index, :show, :create]
-      
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/messages
+ @apiSampleRequest off
+ @apiName index
+ @apiGroup Messages
+ @apiDescription Get all messages of authorized user
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "messages": [
+        {
+            "id": 2,
+            "proposal_id": 2,
+            "sender": "SafeTrade",
+            "receiver": "OnGraph",
+            "message": " </br>For more Details about proposal, <a href=\"/proposals/2\">Click Here</a>",
+            "message_type": "Proposal",
+            "subject": "Seller sent a new proposal.",
+            "created_at": "2018-10-25T12:44:44.000Z",
+            "updated_at": "2018-10-25T12:44:44.000Z",
+            "date": "2018-10-25T12:44:44.000Z",
+            "description": "+100 CT",
+            "status": "accepted",
+            "calculation": -9.09
+        }
+    ],
+    "response_code": 200
+}
+=end
+
       def index
         all_messages = []
         if current_company
@@ -43,7 +79,29 @@ module Api
           render json: {errors: "Not authenticated", response_code: 201}
         end
       end
-
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/messages/2
+ @apiSampleRequest off
+ @apiName show
+ @apiGroup Messages
+ @apiDescription show single message with message_id = 2
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": {
+        "id": 2,
+        "sender": "SafeTrade",
+        "receiver": "OnGraph",
+        "message": " </br>For more Details about proposal, <a href=\"/proposals/2\">Click Here</a>",
+        "message_type": "Proposal",
+        "subject": "Seller sent a new proposal.",
+        "created_at": "2018-10-25T12:44:44.000Z",
+        "updated_at": "2018-10-25T12:44:44.000Z"
+    },
+    "response_code": 200
+}
+=end
       def show
         if current_company
           if params[:id].present?
@@ -72,6 +130,28 @@ module Api
           render json: { errors: "Not authenticated", response_code: 201 }
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/messages
+ @apiSampleRequest off
+ @apiName CREATE
+ @apiGroup Messages
+ @apiDescription create message
+ @apiParamExample {json} Request-Example:
+ {"message":{
+	"subect": "Proposal send",
+	"message": "this is contant",
+	"message_type": "simple",
+	"receiver_id": "3"
+}
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Message Created Successfully"
+}
+=end
 
       def create
         if current_company

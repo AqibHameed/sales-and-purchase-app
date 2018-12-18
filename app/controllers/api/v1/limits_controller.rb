@@ -93,6 +93,23 @@ module Api
         end
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/limits/block
+ @apiSampleRequest off
+ @apiName block
+ @apiGroup Limits
+ @apiDescription Block any company
+ @apiParamExample {json} Request-Example:
+{
+	"company_id": 1
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true
+}
+=end
+
       def block
         if current_company
           unless params[:company_id].nil? || params[:company_id].blank?
@@ -110,6 +127,23 @@ module Api
         end
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/limits/unblock
+ @apiSampleRequest off
+ @apiName unblock
+ @apiGroup Limits
+ @apiDescription unBlock any company
+ @apiParamExample {json} Request-Example:
+{
+	"company_id": 1
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true
+}
+=end
+
       def unblock
         if current_company
           b = BlockUser.where(block_company_ids: params[:company_id], company_id: current_company.id).first
@@ -123,6 +157,29 @@ module Api
           render json: {errors: "Not authenticated", response_code: 201}
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/limits/credit_limit_list?company_id=1&page=1&count=3
+ @apiSampleRequest off
+ @apiName credit limit list
+ @apiGroup Limits
+ @apiDescription buyer send or update proposal
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "limits": {
+        "id": 1,
+        "name": "Dummy co. 1",
+        "total_limit": 0,
+        "used_limit": 200,
+        "available_limit": 0,
+        "overdue_limit": "30 days",
+        "supplier_connected": 3588
+    },
+    "response_code": 200
+}
+=end
 
       def credit_limit_list
         if current_company

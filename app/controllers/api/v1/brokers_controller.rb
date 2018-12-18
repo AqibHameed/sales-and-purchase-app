@@ -17,6 +17,20 @@ module Api
         render json: { success: true, pagination: set_pagination(:all_sellers), sellers: @all_sellers }
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/brokers/assigned_parcels
+ @apiSampleRequest off
+ @apiName assigned parcels
+ @apiGroup Brokers
+ @apiDescription assign parcels to the broker
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "parcels": []
+}
+=end
+
       def assigned_parcels
         if current_company
           @data = []

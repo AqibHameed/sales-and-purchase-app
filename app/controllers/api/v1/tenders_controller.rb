@@ -246,6 +246,21 @@ module Api
         # render json: { tenders: tender_data(tenders), response_code: 200 }
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/old_tender_parcel?tender_id=3
+ @apiSampleRequest off
+ @apiName old tender parcel
+ @apiGroup Tenders
+ @apiDescription old tender parcels
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "tender_parcels": [],
+    "response_code": 200
+}
+=end
+
       def old_tender_parcel
         stones = Stone.where(tender_id: params[:tender_id])
         render json: {success: true, tender_parcels: winners_stone_data(stones), response_code: 200}
@@ -258,7 +273,7 @@ module Api
  @apiName tender parcel
  @apiGroup Tenders
  @apiDescription tender parcels detail
- @apiSuccessExample {json} SuccessResponse1:
+ @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
     "tender_parcels": [],
@@ -328,7 +343,7 @@ module Api
  @apiName find active parcels
  @apiGroup Tenders
  @apiDescription search in active parcels
- @apiSuccessExample {json} SuccessResponse1:
+ @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
     "parcels": [],
@@ -361,7 +376,7 @@ module Api
  @apiName tender winners
  @apiGroup Tenders
  @apiDescription Tender winner list
- @apiSuccessExample {json} SuccessResponse1:
+ @apiSuccessExample {json} SuccessResponse:
 {
     "tender_winners": [],
     "response_code": 200

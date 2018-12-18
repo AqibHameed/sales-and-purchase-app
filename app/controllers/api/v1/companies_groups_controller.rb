@@ -4,6 +4,65 @@ module Api
       before_action :current_customer
       skip_before_action :verify_authenticity_token, only: [:create, :update, :destroy]
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/companies_groups
+ @apiSampleRequest off
+ @apiName index
+ @apiGroup CompaniesGroups
+ @apiDescription get all groups
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "groups": [
+        {
+            "id": "3582",
+            "group_name": "Dummy Group",
+            "group_market_limit": 200,
+            "group_overdue_limit": 300,
+            "companies": [
+                {
+                    "id": "1",
+                    "name": "Dummy co. 1",
+                    "total_limit": 0,
+                    "used_limit": 200,
+                    "available_limit": 0,
+                    "overdue_limit": "30 days",
+                    "supplier_connected": "1"
+                },
+                {
+                    "id": "2",
+                    "name": "Dummy co. 2",
+                    "total_limit": 0,
+                    "used_limit": 0,
+                    "available_limit": 0,
+                    "overdue_limit": "30 days",
+                    "supplier_connected": "2"
+                }
+            ]
+        },
+        {
+            "id": "3589",
+            "group_name": "testing group",
+            "group_market_limit": null,
+            "group_overdue_limit": 200,
+            "companies": [
+                {
+                    "id": "1",
+                    "name": "Dummy co. 1",
+                    "total_limit": 0,
+                    "used_limit": 200,
+                    "available_limit": 0,
+                    "overdue_limit": "30 days",
+                    "supplier_connected": "1"
+                }
+            ]
+        }
+    ]
+}
+=end
+
+
       def index
         if current_company
           @companies_group = CompaniesGroup.where(seller_id: current_company.id)
@@ -12,6 +71,44 @@ module Api
           render json: { errors: "Not authenticated", response_code: 201 }
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/companies_groups
+ @apiSampleRequest off
+ @apiName create
+ @apiGroup CompaniesGroups
+ @apiDescription create companies group
+ @apiParamExample {json} Request-Example:
+{
+	"company_id": [1],
+	"group_name": "testing group",
+	"group_overdue_limit": 2300,
+	"group_market_limit": 5000
+
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Group created successfully",
+    "data": {
+        "id": "3589",
+        "group_name": "testing group",
+        "companies": [
+            {
+                "id": "1",
+                "name": "Dummy co. 1",
+                "total_limit": 0,
+                "used_limit": 200,
+                "available_limit": 0,
+                "overdue_limit": "30 days",
+                "supplier_connected": "1"
+            }
+        ]
+    },
+    "response_code": 200
+}
+=end
 
       def create
         if current_company
@@ -31,6 +128,45 @@ module Api
         end
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {put} /api/v1/companies_groups/3589
+ @apiSampleRequest off
+ @apiName update
+ @apiGroup CompaniesGroups
+ @apiDescription update companies group
+ @apiParamExample {json} Request-Example:
+{
+	"company_id": [1],
+	"group_name": "testing group",
+	"group_overdue_limit": 2300,
+	"group_market_limit": 5000
+
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Group updated successfully",
+    "data": {
+        "id": "3589",
+        "group_name": "testing group",
+        "companies": [
+            {
+                "id": "1",
+                "name": "Dummy co. 1",
+                "total_limit": 0,
+                "used_limit": 200,
+                "available_limit": 0,
+                "overdue_limit": "30 days",
+                "supplier_connected": "1"
+            }
+        ]
+    },
+    "response_code": 200
+}
+=end
+
+
       def update
         companies_group = CompaniesGroup.find(params[:id])
         if current_company && current_company.id == companies_group.seller_id
@@ -47,6 +183,21 @@ module Api
           render json: { errors: "Not authenticated", response_code: 201 }
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {delete} /api/v1/companies_groups/3589
+ @apiSampleRequest off
+ @apiName Destroy
+ @apiGroup CompaniesGroups
+ @apiDescription Delete group with group id = 3589
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "response_code": 200
+}
+=end
+
 
       def destroy
         companies_group = CompaniesGroup.find(params[:id])
