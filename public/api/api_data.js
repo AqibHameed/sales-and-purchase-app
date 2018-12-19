@@ -1434,7 +1434,7 @@ define({ "api": [
     "title": "",
     "name": "destroy",
     "group": "TradingParcels",
-    "description": "<p>Delete trading parcels with respect to id = 1</p>",
+    "description": "<p>delete customer's parcels parcel_id = 1</p>",
     "success": {
       "examples": [
         {

@@ -222,7 +222,7 @@ module Api
  @apiSampleRequest off
  @apiName destroy
  @apiGroup TradingParcels
- @apiDescription Delete trading parcels with respect to id = 1
+ @apiDescription delete customer's parcels parcel_id = 1
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
@@ -231,17 +231,21 @@ module Api
 =end
 
       def destroy
-        @parcel = TradingParcel.where(id: params[:id]).first
-        if @parcel.present?
-          if @parcel.destroy
-            render json: { success: true, message: "This parcel is deleted successfully." }
+        if current_customer
+          @parcel = current_customer.trading_parcels.find_by(id: params[:id])
+          if @parcel.present?
+            if @parcel.destroy
+              render json: {success: true, message: "Your parcel is deleted successfully."}
+            else
+              render json: {errors: @parcel.errors.full_messages}
+            end
           else
-            render json: { errors: @parcel.errors.full_messages }
+            render json: {errors: 'Parcel does not exist.'}
           end
         else
-          render json: { errors: 'Parcel does not exist.' }
+          render json: {errors: "Not authenticated", response_code: 201}
         end
-        end
+      end
 =begin
  @apiVersion 1.0.0
  @api {post} /api/v1/trading_parcels/direct_sell
