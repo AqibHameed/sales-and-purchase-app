@@ -5,10 +5,10 @@ class TradingParcel < ApplicationRecord
 
   belongs_to :customer, optional: true
   belongs_to :company
-  has_many :proposals
-  has_many :parcel_size_infos
+  has_many :proposals, dependent: :destroy
+  has_many :parcel_size_infos, dependent: :destroy
   has_one :my_transaction, class_name: 'Transaction'
-  belongs_to :trading_document, optional: true
+  belongs_to :trading_document, optional: true, dependent: :destroy
 
   validates :description, presence: true, unless: :diamond_type_is_polish?
   validates :source, :credit_period, :total_value, :price, :weight, presence: true

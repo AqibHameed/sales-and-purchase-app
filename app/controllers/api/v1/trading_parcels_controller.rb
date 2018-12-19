@@ -231,8 +231,8 @@ module Api
 =end
 
       def destroy
-        if current_customer
-          @parcel = current_customer.trading_parcels.find_by(id: params[:id])
+        if current_company
+          @parcel = current_company.trading_parcels.find_by(id: params[:id])
           if @parcel.present?
             if @parcel.destroy
               render json: {success: true, message: "Your parcel is deleted successfully."}
