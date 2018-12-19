@@ -13,6 +13,12 @@ roles.each do |role|
 end
 
 Admin.create(email: 'admin@prismlab.co', password: 'password', password_confirmation: 'password')
+
+DemandSupplier.find_or_create_by(name: 'DTC', diamond_type: 'Sight')
+DemandSupplier.find_or_create_by(name: 'RUSSIAN', diamond_type: 'Sight')
+DemandSupplier.find_or_create_by(name: 'OUTSIDE', diamond_type: 'Rough')
+DemandSupplier.find_or_create_by(name: 'SPECIAL', diamond_type: 'Rough')
+DemandSupplier.find_or_create_by(name: 'POLISHED', diamond_type: 'Polished')
 # # dummy_co_1 = Company.where(name: 'Dummy co. 1', county: 'India').first
 #
 # dummy_co_1 = Company.find_or_create_by(name: 'Dummy co. 1', county: 'India')
