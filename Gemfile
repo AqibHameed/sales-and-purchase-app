@@ -10,6 +10,7 @@ gem 'devise_invitable'
 gem "rails_admin"
 gem 'rails_admin_history_rollback'
 gem "paperclip"
+gem "paranoia", "~> 2.2"
 # For S3
 gem 'aws-sdk', '~> 2.3'
 gem 'bootstrap-wysihtml5-rails'

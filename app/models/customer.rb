@@ -11,6 +11,7 @@ class Customer < ApplicationRecord
   default_scope { where(invitation_token: nil).order("first_name asc, last_name asc") }
 
   belongs_to :company
+  acts_as_paranoid
 
   has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
 
