@@ -190,7 +190,7 @@ module Api
  @apiSampleRequest off
  @apiName destroy
  @apiGroup TradingParcels
- @apiDescription delete customer's parcel send authentication and parcel_id = 1
+ @apiDescription delete customer's parcels parcel_id = 1
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
