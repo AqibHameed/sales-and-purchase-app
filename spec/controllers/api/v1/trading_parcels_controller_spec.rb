@@ -11,21 +11,6 @@ RSpec.describe Api::V1::TradingParcelsController do
   end
 
   before(:each) do
-    request.headers.merge!(authorization: @customer.authentication_token)
-    1.upto(5) do
-      @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
-      create(:transaction, buyer_id: @buyer.company_id,
-             seller_id: @customer.company_id,
-             trading_parcel_id: @parcel.id,
-             diamond_type: 'polished')
-    end
-    1.upto(5) do
-      @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
-      create(:transaction, buyer_id: @buyer.company_id,
-             seller_id: @customer.company_id,
-             trading_parcel_id: @parcel.id,
-             diamond_type: 'Rough')
-    end
   end
 
   describe '#create trading parcel' do
@@ -69,6 +54,18 @@ RSpec.describe Api::V1::TradingParcelsController do
                                                 sight: '',
                                                 lot_no: ''}}
         response.body.should have_content('Parcel updated successfully')
+        expect(response.status).to eq(200)
+        expect(response.message).to eq("OK")
+        expect(response.success?).to eq(true)
+      end
+    end
+  end
+
+  describe '#show' do
+    context 'when seller want to see any single trading parcel' do
+      it 'does show the related parcel' do
+        get :show, params: {id: @parcel.id}
+        response.body.should have_content(@parcel.id)
         expect(response.status).to eq(200)
         expect(response.message).to eq("OK")
         expect(response.success?).to eq(true)
