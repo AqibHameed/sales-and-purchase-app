@@ -220,7 +220,7 @@ nothing only params in url
 
 =begin
  @apiVersion 1.0.0
- @api {get} /api/v1/demands/parcels_list
+ @api {get} /api/v1/demands/demand_description
  @apiSampleRequest off
  @apiName demand description
  @apiGroup Demands
@@ -373,7 +373,7 @@ nothing only params in url
           @info << {size: size, percent: per}
         end
 
-        proposal = parcel.proposals.where(buyer_id: current_company.id).last
+        proposal = parcel.proposals.where('buyer_id = ? AND status != ?', current_company.id, 2).last
         if proposal.present?
           proposal_send = true
           proposal_status = proposal.status #negotiation_status(current_company)

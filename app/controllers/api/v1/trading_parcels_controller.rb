@@ -9,6 +9,38 @@ module Api
 
       skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy, :request_limit_increase, :accept_limit_increase, :reject_limit_increase]
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/trading_parcels
+ @apiSampleRequest off
+ @apiName create
+ @apiGroup TradingParcels
+ @apiDescription create parcel
+ @apiParamExample {json} Request-Example:
+{"trading_parcel":
+   {
+   	   "source": "SPECIAL",
+	   "description": "5-10 Cts BLK CLIV WHITE",
+	   "credit_period": "2000",
+	   "no_of_stones": "10",
+	   "total_value": 5000.0,
+	   "percent": "10",
+	   "cost": 4500.0,
+	   "avg_price": 5000.0,
+	   "carats": 1,
+	   "comment": "",
+	   "discout": "",
+	   "sight": "",
+	   "lot_no":""
+   }
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Parcel created successfully"
+}
+=end
+
       def create
         if current_company
           parcel = TradingParcel.new(parcel_params)
@@ -199,8 +231,8 @@ module Api
 =end
 
       def destroy
-        if current_customer
-          @parcel = current_customer.trading_parcels.find_by(id: params[:id])
+        if current_company
+          @parcel = current_company.trading_parcels.find_by(id: params[:id])
           if @parcel.present?
             if @parcel.destroy
               render json: {success: true, message: "Your parcel is deleted successfully."}

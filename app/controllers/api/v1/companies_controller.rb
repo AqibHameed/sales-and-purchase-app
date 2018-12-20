@@ -361,7 +361,6 @@ class Api::V1::CompaniesController < ApplicationController
     @transactions = []
 
     @all_rough_transaction = Transaction.includes(:trading_parcel).where("diamond_type = ? OR diamond_type = ? OR diamond_type = ? OR diamond_type is null", 'Outside Goods', 'Rough', 'Sight').where('(buyer_id = ? or seller_id = ?) AND cancel = ?', current_company.id, current_company.id, false)
-
     if company.present?
       @all_rough_transaction = @all_rough_transaction.where('buyer_id = ?', company.id)
     end

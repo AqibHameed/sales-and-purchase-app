@@ -1321,11 +1321,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {
@@ -1341,11 +1341,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -1397,6 +1397,35 @@ define({ "api": [
     },
     "filename": "app/controllers/api/v1/tenders_controller.rb",
     "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/trading_parcels",
+    "title": "",
+    "name": "create",
+    "group": "TradingParcels",
+    "description": "<p>create parcel</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\"trading_parcel\":\n   {\n   \t   \"source\": \"SPECIAL\",\n\t   \"description\": \"5-10 Cts BLK CLIV WHITE\",\n\t   \"credit_period\": \"2000\",\n\t   \"no_of_stones\": \"10\",\n\t   \"total_value\": 5000.0,\n\t   \"percent\": \"10\",\n\t   \"cost\": 4500.0,\n\t   \"avg_price\": 5000.0,\n\t   \"carats\": 1,\n\t   \"comment\": \"\",\n\t   \"discout\": \"\",\n\t   \"sight\": \"\",\n\t   \"lot_no\":\"\"\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Parcel created successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/trading_parcels_controller.rb",
+    "groupTitle": "TradingParcels"
   },
   {
     "version": "1.0.0",
@@ -1496,6 +1525,35 @@ define({ "api": [
     },
     "filename": "app/controllers/api/v1/trading_parcels_controller.rb",
     "groupTitle": "TradingParcels"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/transactions/make_payment",
+    "title": "",
+    "name": "make_payment",
+    "group": "Transactions",
+    "description": "<p>make payment of trading parcel</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"transaction_id\": 1,\n\t\"amount\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  success: true, message: \"Payment is made successfully.\",\n  response_code: 201\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/transactions_controller.rb",
+    "groupTitle": "Transactions"
   },
   {
     "version": "1.0.0",

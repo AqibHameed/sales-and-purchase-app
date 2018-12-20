@@ -3,7 +3,24 @@ module Api
     class TransactionsController < ApiController
       skip_before_action :verify_authenticity_token, only: [:make_payment, :confirm, :reject]
       before_action :current_customer, only: [:make_payment, :confirm, :reject]
-
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/transactions/make_payment
+ @apiSampleRequest off
+ @apiName make_payment
+ @apiGroup Transactions
+ @apiDescription make payment of trading parcel
+ @apiParamExample {json} Request-Example:
+{
+	"transaction_id": 1,
+	"amount": 200
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+  success: true, message: "Payment is made successfully.",
+  response_code: 201
+}
+=end
       def make_payment
         if current_company
           @payment = PartialPayment.new(payment_params)

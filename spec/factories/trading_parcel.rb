@@ -6,6 +6,7 @@ FactoryBot.define do
     total_value {4000.0}
     price {10.0}
     weight {10.0}
+    diamond_type {"Rough"}
     customer
     company
   end
