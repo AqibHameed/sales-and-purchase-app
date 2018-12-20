@@ -11,6 +11,7 @@ RSpec.describe Api::V1::TradingParcelsController do
   end
 
   before(:each) do
+    request.headers.merge!(authorization: @customer.authentication_token)
   end
 
   describe '#create trading parcel' do
@@ -64,6 +65,18 @@ RSpec.describe Api::V1::TradingParcelsController do
   describe '#show' do
     context 'when seller want to see any single trading parcel' do
       it 'does show the related parcel' do
+        get :show, params: {id: @parcel.id}
+        response.body.should have_content(@parcel.id)
+        expect(response.status).to eq(200)
+        expect(response.message).to eq("OK")
+        expect(response.success?).to eq(true)
+      end
+    end
+  end
+
+  describe '#direct_sell' do
+    context 'when seller do direct_sell' do
+      it 'does sold successfully' do
         get :show, params: {id: @parcel.id}
         response.body.should have_content(@parcel.id)
         expect(response.status).to eq(200)
