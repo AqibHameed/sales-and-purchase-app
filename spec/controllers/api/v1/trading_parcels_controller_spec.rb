@@ -44,6 +44,31 @@ RSpec.describe Api::V1::TradingParcelsController do
                                                 discout: '',
                                                 sight: '',
                                                 lot_no: ''}}
+        response.body.should have_content('Parcel created successfully')
+        expect(response.status).to eq(200)
+        expect(response.message).to eq("OK")
+        expect(response.success?).to eq(true)
+      end
+    end
+  end
+
+  describe '#update' do
+    context 'when seller update trading parcel' do
+      it 'does update the related parcel' do
+        post :update, params: {id: @parcel.id, trading_parcel: {source: 'SPECIAL',
+                                                description: '5-10 Cts BLK CLIV WHITE',
+                                                credit_period: '2000',
+                                                no_of_stones: '10',
+                                                total_value: 5000.0,
+                                                percent: '10',
+                                                cost:  2500.0,
+                                                avg_price: 2000.0,
+                                                carats: 1,
+                                                comment: '',
+                                                discout: '',
+                                                sight: '',
+                                                lot_no: ''}}
+        response.body.should have_content('Parcel updated successfully')
         expect(response.status).to eq(200)
         expect(response.message).to eq("OK")
         expect(response.success?).to eq(true)

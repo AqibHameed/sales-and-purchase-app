@@ -28,6 +28,7 @@ RSpec.describe Api::V1::CompaniesController do
     end
 
   end
+
   describe '#live_monitering' do
     context 'when secure center already exists' do
       it 'does fetch secure center data' do
@@ -47,6 +48,7 @@ RSpec.describe Api::V1::CompaniesController do
       end
     end
   end
+
   describe '#history' do
     context 'when fetch history without any params' do
       it 'does show all history' do
@@ -57,6 +59,7 @@ RSpec.describe Api::V1::CompaniesController do
         assigns[:all_rough_transaction].size.should eq(polished.size)
       end
     end
+
     context 'when fetch history with type rough' do
       it 'does show only Rough history' do
         transactions = Transaction.where(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Rough')
@@ -68,6 +71,7 @@ RSpec.describe Api::V1::CompaniesController do
         assigns[:transactions].flatten.size.should eq(new_tran.size)
       end
     end
+
     context 'When fetch history with Type rough and activity bought' do
       it 'does show bought transaction where diamond type is Rough' do
         transaction = Transaction.find_by(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Rough')
@@ -80,6 +84,7 @@ RSpec.describe Api::V1::CompaniesController do
         assigns[:transactions].flatten.size.should eq(bought_transactions)
       end
     end
+
     context 'When fetch history with Type rough and activity sold' do
       it 'does show bought transaction where diamond type is sold' do
         transaction = Transaction.find_by(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Rough')
@@ -92,30 +97,33 @@ RSpec.describe Api::V1::CompaniesController do
         assigns[:transactions].flatten.size.should eq(sold_transactions)
       end
     end
+
     context 'When fetch history with Type rough and activity sold status pending' do
       it 'does show bought transaction where diamond type is sold and status pending' do
         transactions = Transaction.where(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Rough')
         get 'history', params: {type: 'rough', activity: 'sold', status: 'pending'}
         pending = transactions.where('due_date > ? AND paid= ?', Date.current, false).size
         assigns[:transactions].flatten.size.should eq(pending)
-        transactions.last.update_attributes(due_date: (Date.current-30.days))
+        transactions.last.update_attributes(due_date: (Date.current - 30.days))
         get 'history', params: {type: 'rough', activity: 'sold', status: 'pending'}
         pending = transactions.where('due_date > ? AND paid= ?', Date.current, false).size
         assigns[:transactions].flatten.size.should eq(pending)
       end
     end
+
     context 'When fetch history with Type rough and activity sold status overdue' do
       it 'does show bought transaction where diamond type is sold and status overdue' do
         transactions = Transaction.where(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Rough')
         get 'history', params: {type: 'rough', activity: 'sold', status: 'overdue'}
         overdue = transactions.where("due_date < ? && paid = ? && buyer_confirmed = true", Date.current, false).size
         assigns[:transactions].flatten.size.should eq(overdue)
-        transactions.last.update_attributes(due_date: (Date.current-30.days))
+        transactions.last.update_attributes(due_date: (Date.current - 30.days))
         get 'history', params: {type: 'rough', activity: 'sold', status: 'overdue'}
         overdue = transactions.where("due_date < ? && paid = ? && buyer_confirmed = true", Date.current, false).size
         assigns[:transactions].flatten.size.should eq(overdue)
       end
     end
+
     context 'When fetch history with Type rough and activity sold status completed' do
       it 'does show bought transaction where diamond type is sold and status completed' do
         transactions = Transaction.where(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Rough')
@@ -129,7 +137,6 @@ RSpec.describe Api::V1::CompaniesController do
       end
     end
 
-
     context 'when fetch history with type polished' do
       it 'does show only polished history' do
         transactions = Transaction.where(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'polished')
@@ -141,6 +148,7 @@ RSpec.describe Api::V1::CompaniesController do
         assigns[:transactions].flatten.size.should eq(new_tran.size)
       end
     end
+
     context 'When fetch history with Type polished and activity bought' do
       it 'does show bought transaction where diamond type is polished' do
         transaction = Transaction.find_by(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Polished')
@@ -153,6 +161,7 @@ RSpec.describe Api::V1::CompaniesController do
         assigns[:transactions].flatten.size.should eq(bought_transactions)
       end
     end
+
     context 'When fetch history with Type polished and activity sold' do
       it 'does show bought transaction where diamond type polished and activity sold' do
         transaction = Transaction.find_by(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Polished')
@@ -165,30 +174,33 @@ RSpec.describe Api::V1::CompaniesController do
         assigns[:transactions].flatten.size.should eq(sold_transactions)
       end
     end
+
     context 'When fetch history with Type polished and activity sold status pending' do
       it 'does show bought transaction where diamond type polished, activity is sold and status pending' do
         transactions = Transaction.where(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Polished')
         get 'history', params: {type: 'polished', activity: 'sold', status: 'pending'}
         pending = transactions.where('due_date > ? AND paid= ?', Date.current, false).size
         assigns[:transactions].flatten.size.should eq(pending)
-        transactions.last.update_attributes(due_date: (Date.current-30.days))
+        transactions.last.update_attributes(due_date: (Date.current - 30.days))
         get 'history', params: {type: 'polished', activity: 'sold', status: 'pending'}
         pending = transactions.where('due_date > ? AND paid= ?', Date.current, false).size
         assigns[:transactions].flatten.size.should eq(pending)
       end
     end
+
     context 'When fetch history with Type polished and activity sold status overdue' do
       it 'does show bought transaction where diamond type polished, activity is sold and status overdue' do
         transactions = Transaction.where(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Polished')
         get 'history', params: {type: 'polished', activity: 'sold', status: 'overdue'}
         overdue = transactions.where("due_date < ? && paid = ? && buyer_confirmed = true", Date.current, false).size
         assigns[:transactions].flatten.size.should eq(overdue)
-        transactions.last.update_attributes(due_date: (Date.current-30.days))
+        transactions.last.update_attributes(due_date: (Date.current - 30.days))
         get 'history', params: {type: 'polished', activity: 'sold', status: 'overdue'}
         overdue = transactions.where("due_date < ? && paid = ? && buyer_confirmed = true", Date.current, false).size
         assigns[:transactions].flatten.size.should eq(overdue)
       end
     end
+
     context 'When fetch history with Type polished and activity sold status completed' do
       it 'does show bought transaction where diamond type polished, activity is sold and status completed' do
         transactions = Transaction.where(seller_id: @customer.company_id, buyer_id: @buyer.company_id, diamond_type: 'Polished')
