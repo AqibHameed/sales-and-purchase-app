@@ -26,6 +26,28 @@ RSpec.describe Api::V1::TradingParcelsController do
              trading_parcel_id: @parcel.id,
              diamond_type: 'Rough')
     end
+  end
 
+  describe '#create trading parcel' do
+    context 'when seller create trading parcel' do
+      it 'does create parcel' do
+        post :create, params: {trading_parcel: {source: 'SPECIAL',
+                                                description: '5-10 Cts BLK CLIV WHITE',
+                                                credit_period: '2000',
+                                                no_of_stones: '10',
+                                                total_value: 5000.0,
+                                                percent: '10',
+                                                cost:  2500.0,
+                                                avg_price: 2000.0,
+                                                carats: 1,
+                                                comment: '',
+                                                discout: '',
+                                                sight: '',
+                                                lot_no: ''}}
+        expect(response.status).to eq(200)
+        expect(response.message).to eq("OK")
+        expect(response.success?).to eq(true)
+      end
+    end
   end
 end
