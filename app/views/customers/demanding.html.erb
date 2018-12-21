@@ -32,7 +32,7 @@
 <h3>Demand List</h3>
 <div class="row">
   <div class="col-sm-3">
-    <h1>DTC</h1>
+    <h1><%= DemandSupplier::DTC %></h1>
     <div class="table no-padding">
       <table id="tenderList" class="table table-bordered table-responsive tablesorter">
         <thead class="thead-desktop">
@@ -51,7 +51,7 @@
     </div>
   </div>
   <div class="col-sm-3">
-    <h1>Russian</h1>
+    <h1><%= DemandSupplier::RUSSIAN %></h1>
     <div class="table no-padding">
       <table id="tenderList" class="table table-bordered table-responsive tablesorter">
         <thead class="thead-desktop">
@@ -89,7 +89,7 @@
     </div>
   </div>
   <div class="col-sm-3">
-    <h1>Something Special</h1>
+    <h1><%= DemandSupplier::SPECIAL %></h1>
     <div class="table no-padding">
       <table id="tenderList" class="table table-bordered table-responsive tablesorter">
         <thead class="thead-desktop">
@@ -115,7 +115,7 @@
       <%=link_to "Add Polished demand", polished_demand_customers_path, class: 'btn btn-success', data: { turbolinks: false } %>
     </div>
   <%end%>
-  <h1>Polished </h1>
+  <h1><%= DemandSupplier::POLISHED %> </h1>
   <div class="table no-padding">
     <table id="tenderList" class="table table-bordered table-responsive tablesorter">
       <thead class="thead-desktop">
