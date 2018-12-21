@@ -28,7 +28,7 @@ module Api
     "demands": [
         {
             "id": 1,
-            "name": "DTC",
+            "name": "Sight",
             "descriptions": [
                 {
                     "id": 10744,
@@ -50,7 +50,7 @@ module Api
         },
         {
             "id": 3,
-            "name": "OUTSIDE GOODS",
+            "name": "OUTSIDE",
             "descriptions": [
                 {
                     "id": 10746,
@@ -190,7 +190,7 @@ nothing only params in url
     "demand_suppliers": [
         {
             "id": 1,
-            "name": "DTC"
+            "name": "Sight"
         },
         {
             "id": 2,
