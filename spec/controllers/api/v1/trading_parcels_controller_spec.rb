@@ -75,50 +75,71 @@ RSpec.describe Api::V1::TradingParcelsController do
   end
 
   describe '#direct_sell' do
-    context 'when seller do direct_sell' do
+    context 'when seller do direct_sell on credit' do
       it 'does sold successfully' do
-        post :direct_sell, params: {trading_parcel:
-                                        {
-                                            diamond_type: "Sight",
-                                            source: "RUSSIAN",
-                                            box_value: "34",
-                                            sight: "11/18",
-                                            lot_no: "",
-                                            description: "+11 SAWABLES LIGHT",
-                                            no_of_stones: "34",
-                                            cost: "34",
-                                            percent: "34.00",
-                                            shape: "",
-                                            color: "",
-                                            clarity: "",
-                                            cut: "",
-                                            polish: "",
-                                            symmetry: "",
-                                            fluorescence: "",
-                                            lab: "",
-                                            city: "",
-                                            country: "AF",
-                                            credit_period: "34",
-                                            customer_id: "21",
-                                            company_id: "8",
-                                            weight: "34",
-                                            price: "45.56",
-                                            total_value: "1549.04",
-                                            comment: "",
-                                            sale_broker: "0",
-                                            sale_demanded: "1",
-                                            broker_ids: "",
-                                            my_transaction_attributes:
-                                                {
-                                                    seller_id: @customer.company_id,
-                                                    transaction_type: "manual",
-                                                    buyer_confirmed: "false",
-                                                    buyer_id: "7",
-                                                    created_at: "28/12/2018",
-                                                    paid: "0"
-                                                }
-                                        }
+        request.content_type = 'application/json'
+        post :direct_sell, params: {
+            trading_parcel: {
+                description: 'Z -7+5T',
+                my_transaction_attributes: {
+                    buyer_id: "#{@buyer.company_id}",
+                    paid: false,
+                    created_at: '04/12/2018'
+                },
+                no_of_stones: 10,
+                carats: 1,
+                credit_period: 20,
+                price: 2200,
+                company: 'SafeTrade',
+                cost: 2000,
+                sight: '12/2018',
+                source: 'DTC',
+                percent: 10,
+                comment: '',
+                total_value: 2200
+            },
+            over_credit_limit: true,
+            overdue_days_limit: true
         }
+        transaction = Transaction.last
+        expect(transaction.transaction_type).to eq('manual')
+        expect(transaction.seller_id).to eq(@customer.company_id)
+        expect(transaction.buyer_id).to eq(@buyer.company_id)
+        expect(transaction.paid).to be false
+      end
+    end
+
+    context 'when seller do direct_sell on credit' do
+      it 'does sold successfully' do
+        request.content_type = 'application/json'
+        post :direct_sell, params: {
+            trading_parcel: {
+                description: 'Z -7+5T',
+                my_transaction_attributes: {
+                    buyer_id: "#{@buyer.company_id}",
+                    paid: true,
+                    created_at: '04/12/2018'
+                },
+                no_of_stones: 10,
+                carats: 1,
+                credit_period: 20,
+                price: 2200,
+                company: 'SafeTrade',
+                cost: 2000,
+                sight: '12/2018',
+                source: 'DTC',
+                percent: 10,
+                comment: '',
+                total_value: 2200
+            },
+            over_credit_limit: true,
+            overdue_days_limit: true
+        }
+        transaction = Transaction.last
+        expect(transaction.transaction_type).to eq('manual')
+        expect(transaction.seller_id).to eq(@customer.company_id)
+        expect(transaction.buyer_id).to eq(@buyer.company_id)
+        expect(transaction.paid).to be true
       end
     end
   end
