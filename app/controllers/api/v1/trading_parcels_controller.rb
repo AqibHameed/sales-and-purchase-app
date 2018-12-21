@@ -186,7 +186,7 @@ module Api
     "parcels": [
         {
             "id": "10744",
-            "source": "OutSide Goods",
+            "source": "OUTSIDE",
             "description": "Dummy Parcel for Demo",
             "total_value": "100.00"
         },
@@ -271,7 +271,7 @@ module Api
      "company":"SafeTrade",
      "cost":2000.0,
      "sight":"12/2018",
-     "source":"DTC",
+     "source":"Sight",
      "percent":10.0,
      "comment":"",
      "total_value":2200.0
@@ -317,7 +317,7 @@ module Api
      "company":"SafeTrade",
      "cost":2000.0,
      "sight":"12/2018",
-     "source":"DTC",
+     "source":"Sight",
      "percent":10.0,
      "comment":"",
      "total_value":2200.0

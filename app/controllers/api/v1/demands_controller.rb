@@ -28,7 +28,7 @@ module Api
     "demands": [
         {
             "id": 1,
-            "name": "DTC",
+            "name": "Sight",
             "descriptions": [
                 {
                     "id": 10744,
@@ -50,7 +50,7 @@ module Api
         },
         {
             "id": 3,
-            "name": "OUTSIDE GOODS",
+            "name": "OUTSIDE",
             "descriptions": [
                 {
                     "id": 10746,
@@ -190,7 +190,7 @@ nothing only params in url
     "demand_suppliers": [
         {
             "id": 1,
-            "name": "DTC"
+            "name": "Sight"
         },
         {
             "id": 2,
@@ -292,7 +292,7 @@ nothing only params in url
             "cost": 100,
             "discount_per_month": null,
             "sight": null,
-            "source": "SOMETHING SPECIAL",
+            "source": "SPECIAL",
             "uid": "527566f4",
             "percent": 10,
             "comment": "",
@@ -318,7 +318,7 @@ nothing only params in url
             "cost": 100,
             "discount_per_month": "0",
             "sight": "",
-            "source": "SOMETHING SPECIAL",
+            "source": "SPECIAL",
             "uid": "1dee48ab",
             "percent": 10,
             "comment": "",
