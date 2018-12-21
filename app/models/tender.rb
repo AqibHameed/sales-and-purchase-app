@@ -78,8 +78,7 @@ class Tender < ApplicationRecord
   scope :upcoming, -> {where("open_date > ?", Time.current)}
   scope :past, -> {where("close_date < ?", Time.current)}
 
-
-  #  validates_attachment_content_type :document, :content_type => ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/excel"], :message => 'Only *.xls files allowed'
+  #validates_attachment_content_type :document, :content_type => ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"], :message => 'Only *.xls files allowed'
   def self.tenders_with_bid
     where(:id => Bid.all.map(&:tender_id).uniq)
   end
@@ -1115,6 +1114,7 @@ class Tender < ApplicationRecord
     edit do
       field :supplier do
         label "Supplier"
+        required false
       end
       field :supplier_mine_id, :enum do
         label "Mine"
