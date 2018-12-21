@@ -3,7 +3,7 @@
   <div class="clear10"></div>
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-    <h2>DTC</h2>
+    <h2><%= DemandSupplier::DTC%></h2>
     <%# dtc.each do |d| %>
     <% dtc.group_by(&:description).each do |description, parcels| %>
       <div class="panel panel-default">
@@ -22,7 +22,7 @@
       </div>
     <% end %>
     <div class='clear10'></div>
-    <h2>RUSSIAN</h2>
+    <h2><%= DemandSupplier::RUSSIAN%></h2>
     <% russian.group_by(&:description).each do |description, parcels| %>
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingTwo">
@@ -41,7 +41,7 @@
     <% end %>
 
     <div class='clear10'></div>
-    <h2>OUTSIDEGOODS</h2>
+    <h2><%= DemandSupplier::OUTSIDE%></h2>
     <% outside.group_by(&:description).each do |description, parcels| %>
       <div class="panel panel-default">
         <div class="panel-heading " role="tab" id="headingThree">
@@ -60,7 +60,7 @@
     <% end %>
 
     <div class='clear10'></div>
-    <h2>SOMTHING SPECIAL</h2>
+    <h2><%= DemandSupplier::SPECIAL%></h2>
     <% something_special.group_by(&:description).each do |description, parcels| %>
       <div class="panel panel-default">
         <div class="panel-heading " role="tab" id="headingFour">

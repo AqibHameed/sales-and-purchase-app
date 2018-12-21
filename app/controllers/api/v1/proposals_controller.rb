@@ -91,7 +91,7 @@ module Api
     "proposal": {
         "status": null,
         "supplier_name": "SafeTrade",
-        "source": "SOMETHING SPECIAL",
+        "source": "SPECIAL",
         "description": "PINK COLOR",
         "sight": "",
         "no_of_stones": 1000,
