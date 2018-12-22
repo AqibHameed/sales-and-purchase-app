@@ -48,10 +48,14 @@ class Tender < ApplicationRecord
   has_attached_file :winner_list
   do_not_validate_attachment_file_type :winner_list
 
-  after_save :create_stones_from_uploaded_file
-  after_save :create_sights_from_uploaded_file
+  #after_save :create_stones_from_uploaded_file
+  after_update :create_stones_from_uploaded_file
+  #after_save :create_sights_from_uploaded_file
+  after_update :create_sights_from_uploaded_file
   # after_save :create_temp_stones_from_uploaded_file #==> remove on Nov 15 2013
-  after_save :update_winner_list_from_uploaded_file
+
+  #after_save :update_winner_list_from_uploaded_file
+  after_update :update_winner_list_from_uploaded_file
   after_update :update_round_open_time,  :if => :bid_open_changed?
 
   after_create_commit :delayed_job_need_to_perform
