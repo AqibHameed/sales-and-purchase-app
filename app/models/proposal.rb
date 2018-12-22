@@ -6,6 +6,7 @@ class Proposal < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :negotiations, dependent: :destroy
   has_paper_trail
+  acts_as_paranoid
   after_create :set_buyer_offers
 
 

@@ -2,13 +2,14 @@ class TradingParcel < ApplicationRecord
   serialize :broker_ids
   paginates_per 25
   has_paper_trail
+  acts_as_paranoid
 
-  belongs_to :customer, optional: true
+  belongs_to :customer, -> { with_deleted }, optional: true
   belongs_to :company
-  has_many :proposals, dependent: :destroy
-  has_many :parcel_size_infos, dependent: :destroy
-  has_one :my_transaction, class_name: 'Transaction'
-  belongs_to :trading_document, optional: true, dependent: :destroy
+  has_many :proposals, -> { with_deleted }, dependent: :destroy
+  has_many :parcel_size_infos, -> { with_deleted }, dependent: :destroy
+  has_one :my_transaction, -> { with_deleted }, class_name: 'Transaction'
+  belongs_to :trading_document, -> { with_deleted }, optional: true, dependent: :destroy
 
   validates :description, presence: true, unless: :diamond_type_is_polish?
   validates :source, :credit_period, :total_value, :price, :weight, presence: true

@@ -3,6 +3,7 @@ class Transaction < ApplicationRecord
   
   belongs_to :trading_parcel
   has_paper_trail
+  acts_as_paranoid
 
   belongs_to :buyer, class_name: 'Company', foreign_key: 'buyer_id'
   belongs_to :seller, class_name: 'Company', foreign_key: 'seller_id'

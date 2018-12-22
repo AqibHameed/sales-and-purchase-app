@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181218120511) do
+ActiveRecord::Schema.define(version: 20181219120641) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -139,6 +139,8 @@ ActiveRecord::Schema.define(version: 20181218120511) do
     t.boolean "add_polished", default: false
     t.boolean "is_broker", default: false
     t.string "email"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_companies_on_deleted_at"
   end
 
   create_table "companies_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -283,6 +285,8 @@ ActiveRecord::Schema.define(version: 20181218120511) do
     t.string "firebase_uid"
     t.integer "parent_id"
     t.boolean "is_requested", default: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["email"], name: "index_customers_on_email", unique: true
     t.index ["invitation_token"], name: "index_customers_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_customers_on_invitations_count"
@@ -494,6 +498,8 @@ ActiveRecord::Schema.define(version: 20181218120511) do
     t.integer "trading_parcel_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_parcel_size_infos_on_deleted_at"
   end
 
   create_table "partial_payments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -573,6 +579,8 @@ ActiveRecord::Schema.define(version: 20181218120511) do
     t.integer "buyer_total_value"
     t.integer "buyer_percent"
     t.boolean "negotiated", default: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_proposals_on_deleted_at"
   end
 
   create_table "push_notifications", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -901,7 +909,9 @@ ActiveRecord::Schema.define(version: 20181218120511) do
     t.string "box_value_field"
     t.string "sight_field"
     t.string "price_field"
+    t.datetime "deleted_at"
     t.index ["customer_id"], name: "index_trading_documents_on_customer_id"
+    t.index ["deleted_at"], name: "index_trading_documents_on_deleted_at"
   end
 
   create_table "trading_parcels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -946,7 +956,9 @@ ActiveRecord::Schema.define(version: 20181218120511) do
     t.string "country"
     t.boolean "anonymous", default: false
     t.integer "size"
+    t.datetime "deleted_at"
     t.index ["customer_id"], name: "index_trading_parcels_on_customer_id"
+    t.index ["deleted_at"], name: "index_trading_parcels_on_deleted_at"
     t.index ["trading_document_id"], name: "index_trading_parcels_on_trading_document_id"
   end
 
@@ -973,6 +985,8 @@ ActiveRecord::Schema.define(version: 20181218120511) do
     t.string "description"
     t.boolean "buyer_reject", default: false
     t.boolean "cancel", default: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_transactions_on_deleted_at"
   end
 
   create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
