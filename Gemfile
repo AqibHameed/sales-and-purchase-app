@@ -94,6 +94,7 @@ group :test do
   gem 'shoulda-callback-matchers', '~> 1.1.1'
   gem 'rspec-activemodel-mocks'
   gem 'rails-controller-testing'
+  gem 'simplecov', require: false
 end
 
 group :development, :test do

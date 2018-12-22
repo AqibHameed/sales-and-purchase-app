@@ -1,6 +1,11 @@
 ENV["RAILS_ENV"] ||= 'test'
 require_relative 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_group 'API Controllers', 'app/controllers/api'
+end
+# end simpleconv configuration
 require 'rspec/rails'
 # require 'capybara/poltergeist'
 # require 'rspec/autorun' unless defined? Zeus
