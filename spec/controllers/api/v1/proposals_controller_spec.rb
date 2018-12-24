@@ -8,6 +8,7 @@ RSpec.describe Api::V1::ProposalsController do
     create(:customer_role, customer: @customer)
     @buyer = create_buyer
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
+    @parcel = create(:trading_parcel, customer: @buyer, company: @customer.company)
   end
 
   before(:each) do
@@ -67,5 +68,42 @@ RSpec.describe Api::V1::ProposalsController do
       end
     end
   end
-  
+
+  describe '#show' do
+    context 'when seller want to see any proposal' do
+      it 'does show the proposal' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        create(:proposal, buyer_id: @buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
+        proposal = Proposal.last
+        put :show, params: {id: proposal.id}
+        response.success?.should be true
+        assigns(:data)[:status].should eq('new_proposal')
+      end
+    end
+
+    context 'when buyer want to see any proposal' do
+      it 'does show the proposal' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        create(:proposal, buyer_id: @buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
+        proposal = Proposal.last
+        put :show, params: {id: proposal.id}
+        response.success?.should be true
+      end
+    end
+
+    context 'when want to see negotiated proposal' do
+      it 'does show negotiated proposals' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        create(:proposal, buyer_id: @buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
+        proposal = Proposal.last
+        put :show, params: {id: proposal.id}
+        create(:negotiation, proposal_id: proposal.id, from: 'seller')
+        proposal.update_attributes(status: 'negotiated')
+        request.headers.merge!(authorization: @customer.authentication_token)
+        put :show, params: {id: proposal.id}
+        assigns(:data)[:status].should eq('negotiated')
+        response.success?.should be true
+      end
+    end
+  end
 end
