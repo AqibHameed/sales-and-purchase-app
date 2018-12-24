@@ -25,7 +25,6 @@ RSpec.describe Api::V1::ProposalsController do
             total_value: 4000
         }
         response.body.should have_content('Not authenticated')
-        request.headers.merge!(authorization: @customer.authentication_token)
       end
     end
 
@@ -103,6 +102,150 @@ RSpec.describe Api::V1::ProposalsController do
         put :show, params: {id: proposal.id}
         assigns(:data)[:status].should eq('negotiated')
         response.success?.should be true
+      end
+    end
+  end
+
+  describe '#accept_and_decline'do
+    context 'when user not authenticated and want to accept the proposal' do
+      it 'does show user not authenticated' do
+        create(:proposal, buyer_id: @buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
+        proposal = Proposal.last
+        get :accept_and_decline, params: {id: proposal.id, perform: 'reject'}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when seller accept the proposal' do
+      it 'does accept proposal successfully' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        create(:proposal, buyer_id: @buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
+        proposal = Proposal.last
+        get :accept_and_decline, params: {id: proposal.id,
+                                          perform: 'accept',
+                                          confirm: true}
+        response.body.should have_content('Proposal is accepted.')
+      end
+    end
+
+    context 'when seller reject the proposal' do
+      it 'does reject proposal successfully' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        create(:proposal, buyer_id: @buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
+        proposal = Proposal.last
+        get :accept_and_decline, params: {id: proposal.id,
+                                          perform: 'reject',
+                                          confirm: true}
+        response.body.should have_content('Proposal is rejected.')
+      end
+    end
+
+    context 'when seller reject the proposal without confirmation' do
+      it 'does show Secure center data' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        create(:proposal, buyer_id: @buyer.company.id, seller_id: @customer.company.id, trading_parcel_id: @parcel.id, price: "4000", credit: "1500")
+        proposal = Proposal.last
+        get :accept_and_decline, params: {id: proposal.id, perform: 'accept'}
+        assigns(:secure_center).should_not be nil
+        assigns(:secure_center).seller_id.should eq(@customer.company_id)
+        assigns(:secure_center).buyer_id.should eq(@buyer.company_id)
+      end
+    end
+
+    context 'when buyer accept the proposal' do
+      it 'does accept the proposal successfully' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+
+        proposal = Proposal.last
+        create(:negotiation, proposal_id: proposal.id, from: 'seller')
+        proposal.update_attributes(status: 'negotiated')
+        get :accept_and_decline, params: {id: proposal.id,
+                                          perform: 'accept',
+                                          confirm: true}
+        response.body.should have_content('Proposal is accepted.')
+      end
+    end
+
+    context 'when buyer reject the proposal' do
+      it 'does reject the proposal successfully' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+
+        proposal = Proposal.last
+        create(:negotiation, proposal_id: proposal.id, from: 'seller')
+        proposal.update_attributes(status: 'negotiated')
+        get :accept_and_decline, params: {id: proposal.id,
+                                          perform: 'reject',
+                                          confirm: true}
+        response.body.should have_content('Proposal is rejected.')
+      end
+    end
+
+    context 'when buyer reject the proposal' do
+      it 'does reject the proposal successfully' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+
+        proposal = Proposal.last
+        create(:negotiation, proposal_id: proposal.id, from: 'seller')
+        proposal.update_attributes(status: 'negotiated')
+        get :accept_and_decline, params: {id: proposal.id,
+                                          perform: 'reject',
+                                          confirm: true}
+        response.body.should have_content('Proposal is rejected.')
+      end
+    end
+
+    context 'when buyer reject the proposal' do
+      it 'does reject the proposal successfully' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+
+        proposal = Proposal.last
+        create(:negotiation, proposal_id: proposal.id, from: 'seller')
+        proposal.update_attributes(status: 'negotiated')
+        get :accept_and_decline, params: {id: proposal.id,
+                                          perform: 'reject',
+                                          confirm: true}
+        response.body.should have_content('Proposal is rejected.')
+      end
+    end
+
+    context 'when seller accept the proposal with in credit limits' do
+      it 'does accept the proposal successfully' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+        create(:credit_limit, seller_id: @customer.company_id, buyer_id: @buyer.company_id)
+        proposal = Proposal.last
+        get :accept_and_decline, params: {id: proposal.id,
+                                          perform: 'accept'}
+        response.body.should have_content('Proposal is accepted.')
       end
     end
   end
