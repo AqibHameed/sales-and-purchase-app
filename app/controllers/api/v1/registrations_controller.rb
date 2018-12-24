@@ -9,48 +9,47 @@ class Api::V1::RegistrationsController < ActionController::Base
  @apiDescription Sign up Customer
  @apiParamExample {json} Request-Example:
 {
-	"registration":
-{
-	"email":"test@example.com",
-	"password":"password",
-	"first_name": "first_name",
-	"last_name":"last_name",
-	"city":"city",
-	"address": "address",
-	"postal_code": "25612",
-	"phone": "256326",
-	"company_id": "1",
-	"company_address": "company_address",
-	"phone_2": "9852523",
-	"mobile_no": "985263812",
-	"country_code": "91"
-}
+	{
+   "registration": {
+      "first_name":"umair",
+      "last_name":"raza",
+      "email":"umair@gmail.com",
+      "password":"password",
+      "confirmPassword":"password",
+      "company_id":"4",
+      "mobile_no":"12345688898",
+      "country_code":"86",
+      "role": "Buyer/Seller/Broker"
+    }
+  }
 }
  @apiSuccessExample {json} SuccessResponse:
 {
-    "success": true,
-    "message": "A request has been to sent to your company admin for approval. You can access your account after approval",
-    "customer": {
-        "id": 22,
-        "email": "test@example.com",
-        "created_at": "2018-12-17T18:38:53.000Z",
-        "updated_at": "2018-12-17T18:38:56.000Z",
-        "first_name": "first_name",
-        "last_name": "last_name",
-        "city": "city",
-        "address": "address",
-        "postal_code": "25612",
-        "phone": "256326",
-        "status": null,
-        "company": "Buyer A",
-        "company_address": "company_address",
-        "phone_2": "9852523",
-        "mobile_no": "+91 985263812",
-        "authentication_token": "qeA97FXpxSGfLX49YzMX",
-        "chat_id": "-1",
-        "token": null
-    },
-    "response_code": 200
+    {
+      "success": true,
+      "message": "A request has been to sent to your company admin for approval. You can access your account after approval",
+      "customer": {
+          "id": 23,
+          "email": "umair@gmail.com",
+          "created_at": "2018-12-24T13:15:52.000Z",
+          "updated_at": "2018-12-24T13:15:57.000Z",
+          "first_name": "umair",
+          "last_name": "raza",
+          "city": null,
+          "address": null,
+          "postal_code": null,
+          "phone": null,
+          "status": null,
+          "company": "Seller A",
+          "company_address": null,
+          "phone_2": null,
+          "mobile_no": "+86 12345688898",
+          "authentication_token": "_iw1Ns3W3Su3QpMrT88e",
+          "chat_id": "-1",
+          "token": null
+     },
+     "response_code": 200
+   }
 }
 =end
 
@@ -63,8 +62,7 @@ class Api::V1::RegistrationsController < ActionController::Base
     #   check_company = check_company
     #   is_requested = true
     # end
-    customer = Customer.new(customer_params.merge(role: 'Buyer/Seller'))
-    # customer = Customer.new(customer_params)
+    customer = Customer.new(customer_params)
     if customer.save
       customer.ensure_authentication_token
       mobile_no = '+'+params[:registration][:country_code]+' '+params[:registration][:mobile_no]
@@ -112,6 +110,6 @@ class Api::V1::RegistrationsController < ActionController::Base
   end
 
   def customer_params
-    params.require(:registration).permit(:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company_address, :phone_2, :mobile_no, :company_id, :company_name)
+    params.require(:registration).permit(:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company_address, :phone_2, :mobile_no, :company_id, :company_name, :role)
   end
 end
