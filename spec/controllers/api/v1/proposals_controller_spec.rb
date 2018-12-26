@@ -249,4 +249,28 @@ RSpec.describe Api::V1::ProposalsController do
       end
     end
   end
+
+  describe '#negotiate' do
+    context 'when seller negotiate proposal' do
+      it 'does negotiate the proposal' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+        proposal = Proposal.last
+        post :negotiate, params: {
+                price: 200.0,
+                credit: 60,
+                comment: '',
+                total_value: 11000.0,
+                percent: 0.0,
+                confirm: true,
+                id: proposal.id
+        }
+      end
+    end
+  end
 end
