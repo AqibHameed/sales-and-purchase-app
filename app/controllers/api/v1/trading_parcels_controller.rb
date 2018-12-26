@@ -337,7 +337,6 @@ module Api
 
 
       def direct_sell
-
         if current_customer
           @parcel = TradingParcel.new(trading_parcel_params)
           @parcel.company_id = current_company.id
@@ -373,7 +372,7 @@ module Api
                     end
                   end
                 else
-                  check_credit_limit(transaction, @parcel)
+                  save_transaction(transaction, @parcel)
                 end
               end
             else
