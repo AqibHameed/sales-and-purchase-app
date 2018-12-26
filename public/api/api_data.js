@@ -964,8 +964,13 @@ define({ "api": [
     "parameter": {
       "examples": [
         {
-          "title": "Request-Example:",
-          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Seller/Broker\"\n    }\n  }\n}",
+          "title": "Request-Example1:",
+          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Seller/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example1:",
+          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Seller/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
           "type": "json"
         }
       ]
@@ -973,8 +978,13 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
+          "title": "SuccessResponse1:",
           "content": "{\n    {\n      \"success\": true,\n      \"message\": \"A request has been to sent to your company admin for approval. You can access your account after approval\",\n      \"customer\": {\n          \"id\": 23,\n          \"email\": \"umair@gmail.com\",\n          \"created_at\": \"2018-12-24T13:15:52.000Z\",\n          \"updated_at\": \"2018-12-24T13:15:57.000Z\",\n          \"first_name\": \"umair\",\n          \"last_name\": \"raza\",\n          \"city\": null,\n          \"address\": null,\n          \"postal_code\": null,\n          \"phone\": null,\n          \"status\": null,\n          \"company\": \"Seller A\",\n          \"company_address\": null,\n          \"phone_2\": null,\n          \"mobile_no\": \"+86 12345688898\",\n          \"authentication_token\": \"_iw1Ns3W3Su3QpMrT88e\",\n          \"chat_id\": \"-1\",\n          \"token\": null\n     },\n     \"response_code\": 200\n   }\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n  {\n      \"errors\": [\n          \"Company already registered as buyer/seller\"\n      ],\n      \"response_code\": 201\n  }\n}",
           "type": "json"
         }
       ]
