@@ -54,7 +54,7 @@
           <%= select_tag "country", options_for_select(country_list), prompt: 'Please select', class: 'input form-control ', style: "width: 330px;"%>
         </div>
 
-        <div class="field">
+        <div class="field" id="company_select">
           <%= f.hidden_field :is_requested, value: false %>
           <%= f.label :company_id, id: 'company' %><br />
           <%= f.select :company_id, options_for_select([]), { prompt: 'Please select' }, class: ' input form-control', style: "width: 330px;" %>
@@ -134,12 +134,14 @@
       $('#company').addClass('hide')
       $('#country_label').addClass('hide')
       $('#country').addClass('hide')
+      $('#company_select').addClass('hide')
     } else {
       $('#customer_company_name').val('')
       $('#customer_company_id').removeClass('hide')
       $('#company').removeClass('hide')
       $('#country_label').removeClass('hide')
       $('#country').removeClass('hide')
+      $('#company_select').removeClass('hide')
       $('#company_individual_label').addClass('hide')
       $('#company_individual').addClass('hide')
     }
@@ -152,11 +154,13 @@
       $('#company').removeClass('hide')
       $('#country_label').removeClass('hide')
       $('#country').removeClass('hide')
+      $('#company_select').removeClass('hide')
     } else {
       $('#customer_company_id').addClass('hide')
       $('#company').addClass('hide')
       $('#country_label').addClass('hide')
       $('#country').addClass('hide')
+      $('#company_select').addClass('hide')
     }
   });
 
