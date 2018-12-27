@@ -92,25 +92,24 @@ class Api::V1::RegistrationsController < ActionController::Base
     #   is_requested = true
     # end
     if params[:registration][:company_id].present?
-      company = Company.find(params[:registration][:company_id])
+      @company = Company.find(params[:registration][:company_id])
     else
       if params[:registration][:company_individual].present?
         if params[:registration][:company_individual] == "Individual" && params[:registration][:role] == 'Broker'
           string = "#{params[:registration][:first_name]}"+"#{params[:registration][:last_name]}"+"("+"#{params[:registration][:role]}"+")"
-          company = Company.where(name: string).first_or_create
+          @company = Company.where(name: string).first_or_create
           params[:registration].delete("company_id")
-          params[:registration].merge!("company_id"  =>  company.id)
+          params[:registration].merge!("company_id"  =>  @company.id)
         end
       end
     end
-
     customer = Customer.new(customer_params)
 
     unless params[:registration][:role].blank? || params[:registration][:company_id].blank?
       if params[:registration][:role] == 'Broker'
-        company.try(:customers).present? ? customer.errors.add(:company, 'already registered as buyer/seller') : ''
+        @company.try(:customers).present? ? customer.errors.add(:company, 'already registered as buyer/seller') : ''
       else
-        company.is_broker ? customer.errors.add(:company, 'already registered as broker') : ''
+        @company.is_broker ? customer.errors.add(:company, 'already registered as broker') : ''
       end
     end
 
@@ -166,6 +165,6 @@ class Api::V1::RegistrationsController < ActionController::Base
   end
 
   def customer_params
-    params.require(:registration).permit(:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company_address, :phone_2, :mobile_no, :company_id, :company_name, :role)
+    params.require(:registration).permit(:email, :password, :first_name, :last_name, :city, :address, :postal_code, :phone, :status, :company_address, :phone_2, :mobile_no, :company_id, :company_name, :confirmed_at, :is_requested, :role)
   end
 end
