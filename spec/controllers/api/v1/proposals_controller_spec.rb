@@ -251,9 +251,8 @@ RSpec.describe Api::V1::ProposalsController do
   end
 
   describe '#negotiate' do
-    context 'when seller negotiate proposal' do
-      it 'does negotiate the proposal' do
-        request.headers.merge!(authorization: @buyer.authentication_token)
+    context 'when seller negotiate proposal without authenticated token' do
+      it 'does not authenticated' do
         create(:proposal,
                buyer_id: @buyer.company.id,
                seller_id: @customer.company.id,
@@ -270,7 +269,169 @@ RSpec.describe Api::V1::ProposalsController do
                 confirm: true,
                 id: proposal.id
         }
+        response.body.should have_content('Not authenticated')
       end
     end
+
+    context 'when seller negotiate proposal' do
+      it 'does proposal negotiated successfully' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        request.content_type = 'application/json'
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+        proposal = Proposal.last
+        post :negotiate, params: {
+            price: 200.0,
+            credit: 60,
+            comment: '',
+            total_value: 11000.0,
+            percent: 0.0,
+            confirm: true,
+            id: proposal.id
+        }
+        expect(response.success?).to be true
+        response.body.should have_content('Proposal is negotiated successfully.')
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'when seller negotiate proposal if already exit' do
+      it 'does proposal will be updated' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        request.content_type = 'application/json'
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+        proposal = Proposal.last
+        create(:negotiation, proposal_id: proposal.id, from: 'seller')
+        post :negotiate, params: {
+            price: 200.0,
+            credit: 60,
+            comment: '',
+            total_value: 11000.0,
+            percent: 0.0,
+            confirm: true,
+            id: proposal.id
+        }
+        response.body.should have_content('Proposal is updated successfully.')
+        expect(response.status).to eq(200)
+        expect(response.success?).to be true
+      end
+    end
+
+    context 'when seller negotiate proposal if already exit' do
+      it 'does proposal negotiated updated' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        request.content_type = 'application/json'
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+        proposal = Proposal.last
+        create(:negotiation, proposal_id: proposal.id, from: 'seller')
+        negotiation = Negotiation.last
+        post :negotiate, params: {
+            price: 200.0,
+            credit: 60,
+            comment: '',
+            total_value: 11000.0,
+            percent: 0.0,
+            confirm: true,
+            negotiation_id: negotiation.id,
+            id: proposal.id
+        }
+        response.body.should have_content('Negotiation is updated successfully.')
+        expect(response.status).to eq(200)
+        expect(response.success?).to be true
+      end
+    end
+
+    context 'when seller negotiate proposal first time' do
+      it 'does show secure center' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        request.content_type = 'application/json'
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+        proposal = Proposal.last
+        post :negotiate, params: {
+            price: 200.0,
+            credit: 60,
+            comment: '',
+            total_value: 11000.0,
+            percent: 0.0,
+            id: proposal.id
+        }
+        assigns(:secure_center).should_not be nil?
+        assigns(:secure_center).seller_id.should eq(@customer.company_id)
+        expect(response.success?).to be true
+        assigns(:secure_center).buyer_id.should eq(@buyer.company_id)
+      end
+    end
+
+    context 'when seller negotiate proposal first time' do
+      it 'does check credit limits' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        request.content_type = 'application/json'
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500')
+        proposal = Proposal.last
+        create(:credit_limit, seller_id: @customer.company_id, buyer_id: @buyer.company_id)
+        post :negotiate, params: {
+            price: 200.0,
+            credit: 60,
+            comment: '',
+            total_value: 11000.0,
+            percent: 0.0,
+            id: proposal.id
+        }
+        response.body.should have_content('Proposal is negotiated successfully.')
+        response.status.should be 200
+        response.success?.should be true
+      end
+    end
+    context 'when seller negotiate already accepted proposal' do
+      it 'does show error message ' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        request.content_type = 'application/json'
+        create(:proposal,
+               buyer_id: @buyer.company.id,
+               seller_id: @customer.company.id,
+               trading_parcel_id: @parcel.id,
+               price: '4000',
+               credit: '1500',
+               status: 'accepted')
+        proposal = Proposal.last
+        create(:negotiation, proposal_id: proposal.id, from: 'seller')
+        negotiation = Negotiation.last
+        post :negotiate, params: {
+            price: 200.0,
+            credit: 60,
+            comment: '',
+            total_value: 11000.0,
+            percent: 0.0,
+            negotiation_id: negotiation.id,
+            id: proposal.id
+        }
+        response.body.should have_content('It is proceeded, So Now you can not update it.')
+      end
+    end
+
   end
 end
