@@ -190,7 +190,7 @@ class Tender < ApplicationRecord
   end
 
   def create_stones_from_uploaded_file
-   if self.saved_change_to_document_updated_at?
+   #if self.saved_change_to_document_updated_at?
       file_path = document_url(self.document)
       data_file = Spreadsheet.open(open(file_path))
       worksheet = data_file.worksheet(self.sheet_no.to_i - 1)
@@ -224,7 +224,7 @@ class Tender < ApplicationRecord
           end
         end
       end
-    end
+    #end
   end
 
   def create_sights_from_uploaded_file
@@ -322,7 +322,7 @@ class Tender < ApplicationRecord
   end
 
   def update_winner_list_from_uploaded_file
-    if self.winner_list_updated_at_changed?
+    #if self.winner_list_updated_at_changed?
       puts "==============file==============="
       unless self.winner_list.nil?
         file_path = document_url(self.winner_list)
@@ -347,9 +347,9 @@ class Tender < ApplicationRecord
         end
       end
 
-    else
-      puts "==============no file==============="
-    end
+    # else
+    #   puts "==============no file==============="
+    # end
   end
 
   # def check_selling_price(actual_selling_price)
