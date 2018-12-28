@@ -4,6 +4,7 @@ FactoryBot.define do
     created_at {10.days.ago}
     buyer_confirmed {true}
     paid {false}
+    trading_parcel
   end
 end
 

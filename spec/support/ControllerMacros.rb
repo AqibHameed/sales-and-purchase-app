@@ -32,4 +32,24 @@ module ControllerMacros
       create(:message, sender_id: buyer.company.id, receiver_id: @customer.company.id, proposal: proposal)
   end
 
+  def create_parcel(customer)
+    create(:trading_parcel, customer: customer, company: customer.company)
+  end
+
+  def create_customer
+    company = Company.create(name: Faker::Name.name)
+    customer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
+                    password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
+                    role: "Buyer/Seller", confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
+    create(:customer_role, customer: customer)
+    customer
+  end
+
+  def create_transaction(buyer, customer, parcel)
+    create(:transaction, buyer_id: buyer.company_id,
+           seller_id: customer.company_id,
+           trading_parcel_id: parcel.id,
+           diamond_type: 'Rough')
+  end
+
 end
