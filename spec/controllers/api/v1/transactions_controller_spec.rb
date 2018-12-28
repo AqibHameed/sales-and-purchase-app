@@ -72,4 +72,26 @@ RSpec.describe Api::V1::TransactionsController do
 
   end
 
+  describe '#reject' do
+    context 'when unauthorized user reject a transaction' do
+      it 'does show an error un authorized user' do
+        post :reject, params: {
+            id: @transaction.id
+        }
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user reject a transaction' do
+      it 'does show the message transaction rejected successfully' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        post :reject, params: {
+            id: @transaction.id
+        }
+        response.body.should have_content('Transaction rejected successfully')
+        expect(response.status).to eq(200)
+      end
+    end
+  end
+
 end
