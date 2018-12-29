@@ -3,6 +3,7 @@ class Company < ApplicationRecord
   has_many :customers, dependent: :destroy
   has_many :demands, dependent: :destroy
   has_many :polished_demands, dependent: :destroy
+  has_many :broker_requests, dependent: :destroy
   has_many :trading_parcels, dependent: :destroy
   has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit", dependent: :destroy
   has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction", dependent: :destroy
@@ -122,7 +123,11 @@ class Company < ApplicationRecord
   end
 
   def self.get_sellers
-    Company.where(is_broker: false)
+    where(is_broker: false)
+  end
+
+  def self.get_brokers
+    where(is_broker: true)
   end
 
   def block_users
@@ -134,8 +139,16 @@ class Company < ApplicationRecord
     BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: false).first.present?
   end
 
+  def sent_seller_request(broker)
+    BrokerRequest.where(broker_id: broker.id, seller_id: self.id, accepted: false).first.present?
+  end
+
   def is_broker_or_not(seller)
     BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
+  end
+
+  def is_seller_or_not(broker)
+    BrokerRequest.where(broker_id: broker.id, seller_id: self.id, accepted: true).first.present?
   end
 
   def my_brokers

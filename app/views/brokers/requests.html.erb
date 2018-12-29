@@ -1,11 +1,11 @@
 <div class="dashboard">
-  <h3> Broker Requests </h3>
+  <h3> <%= current_company.is_broker? ? 'Seller/Buyer': 'Broker' %> Requests </h3>
   <div class="clear10"></div>
   <div class="table">
     <table id="tenderList" class="table table-bordered table-responsive">
       <tr>
         <th></th>
-        <th>Broker Name</th>
+        <th><%= current_company.is_broker? ? 'Seller/Buyer': 'Broker' %> Name</th>
         <th>Company</th>
         <th></th>
       </tr>
@@ -22,13 +22,13 @@
 </div>
 <div class="clear10"></div>
 <div class="dashboard">
-  <h3> My Brokers </h3>
+  <h3> My <%= current_company.is_broker? ? 'Sellers': 'Brokers' %> </h3>
   <div class="clear10"></div>
   <div class="table">
     <table id="tenderList" class="table table-bordered table-responsive">
     <tr>
       <th></th>
-      <th>Broker Name</th>
+      <th><%= current_company.is_broker? ? 'Seller/Buyer': 'Broker' %> Name</th>
       <th>Company</th>
       <th></th>
     </tr>
