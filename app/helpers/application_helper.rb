@@ -494,13 +494,23 @@ module ApplicationHelper
     Company.where.not(name: current_company.name).map { |e| e.name}
   end
 
-  def link_to_request(current_company, seller)
-    if current_company.sent_broker_request(seller)
-      'Requested'
-    elsif current_company.is_broker_or_not(seller)
-      'Connected'
+  def link_to_request(current_company, customer)
+    if current_company.is_broker?
+      if current_company.sent_broker_request(customer)
+        'Requested'
+      elsif current_company.is_broker_or_not(customer)
+        'Connected'
+      else
+        link_to 'Send Request', send_request_brokers_path(s: customer.id), data: { turbolinks: false }
+      end
     else
-      link_to 'Send Request', send_request_brokers_path(s: seller.id), data: { turbolinks: false }
+      if current_company.sent_seller_request(customer)
+        'Requested'
+      elsif current_company.is_seller_or_not(customer)
+        'Connected'
+      else
+        link_to 'Send Request', send_request_brokers_path(s: customer.id), data: { turbolinks: false }
+      end
     end
   end
 
