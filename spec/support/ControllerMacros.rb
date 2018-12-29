@@ -45,6 +45,23 @@ module ControllerMacros
     customer
   end
 
+  def create_sources(source, seller, buyer)
+    created_source = create(:demand_supplier, name: source)
+
+    create(:demand_list,
+           description: "#{Faker::Lorem.sentence} #{source}",
+           demand_supplier_id: created_source.id)
+
+    create(:trading_parcel, customer: buyer,
+           company: buyer.company,
+           description: created_source.demand_list.first.description,
+           source: created_source.name)
+
+    create(:demand, company_id: buyer.company_id,
+           demand_supplier_id: created_source.id,
+           description: created_source.demand_list.first.description)
+  end
+
   def create_transaction(buyer, customer, parcel)
     create(:transaction, buyer_id: buyer.company_id,
            seller_id: customer.company_id,
