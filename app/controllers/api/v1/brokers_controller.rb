@@ -2,7 +2,9 @@ module Api
   module V1
     class BrokersController < ApiController
       before_action :load_request , only: [:reject, :remove]
-      skip_before_action :verify_authenticity_token, only: [:send_request]
+      skip_before_action :verify_authenticity_token, only: [:send_request, :company_record_on_the_basis_of_roles]
+
+      include ApplicationHelper
 
       def index
         @sellers = Company.get_sellers
@@ -15,6 +17,92 @@ module Api
         end
         @all_sellers = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])
         render json: { success: true, pagination: set_pagination(:all_sellers), sellers: @all_sellers }
+      end
+
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/brokers/company_record_on_the_basis_of_roles
+  @apiSampleRequest off
+  @apiName company_record_on_the_basis_of_roles
+  @apiGroup Brokers
+  @apiDescription get company record on the basis of roles
+  @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "company_record_on_the_basis_of_roles": [
+        {
+            "id": 2,
+            "name": "Buyer B",
+            "status": "SendRequest"
+        },
+        {
+            "id": 3,
+            "name": "Buyer C",
+            "status": "SendRequest"
+        },
+        {
+            "id": 5,
+            "name": "Seller B",
+            "status": "SendRequest"
+        },
+        {
+            "id": 6,
+            "name": "Seller C",
+            "status": "SendRequest"
+        },
+        {
+            "id": 7,
+            "name": "Dummy Buyer 1",
+            "status": "SendRequest"
+        },
+        {
+            "id": 8,
+            "name": "Dummy Seller 1",
+            "status": "SendRequest"
+        },
+        {
+            "id": 9,
+            "name": "Dummy Seller 2",
+            "status": "SendRequest"
+        },
+        {
+            "id": 10,
+            "name": "Dummy Buyer 2",
+            "status": "SendRequest"
+        }
+    ]
+  }
+=end
+      def company_record_on_the_basis_of_roles
+        @data = []
+        if current_company.is_broker?
+          @brokers = Company.get_brokers
+          @brokers.each do |b|
+            @data << {
+                id: b.id,
+                name: b.name,
+                status: check_request_seller(current_company, b)
+               # status:
+            }
+          end
+        else
+          @sellers = Company.get_sellers
+          @sellers.each do |s|
+            @data << {
+                id: s.id,
+                name: s.name,
+                status: check_request_broker(current_company, s)
+            }
+          end
+        end
+        @all_company_record_on_the_basis_of_roles = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])
+        render json: { success: true, pagination: set_pagination(:all_company_record_on_the_basis_of_roles), company_record_on_the_basis_of_roles: @all_company_record_on_the_basis_of_roles }
       end
 
 =begin

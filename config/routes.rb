@@ -377,6 +377,7 @@ Rails.application.routes.draw do
           get :assigned_parcels
           get :demanding_companies
           post :send_request
+          get  :company_record_on_the_basis_of_roles
         end
       end
 

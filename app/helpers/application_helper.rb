@@ -504,6 +504,26 @@ module ApplicationHelper
     end
   end
 
+  def check_request_broker(current_company, seller)
+    if current_company.sent_broker_request(seller)
+      'Requested'
+    elsif current_company.is_broker_or_not(seller)
+      'Connected'
+    else
+      'SendRequest'
+    end
+  end
+
+  def check_request_seller(current_company, broker)
+    if current_company.sent_seller_request(broker)
+      'Requested'
+    elsif current_company.is_seller_or_not(broker)
+      'Connected'
+    else
+      'SendRequest'
+    end
+  end
+
   def for_sale_options
     [['All', '0'], ['None', '1'], ['Broker', '2'], ['Credit Given', '3'], ['Demanded', '4']]
   end

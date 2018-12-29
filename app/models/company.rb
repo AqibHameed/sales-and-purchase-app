@@ -12,6 +12,7 @@ class Company < ApplicationRecord
   has_many :company_group_seller, :foreign_key => "seller_id", :class_name => "CompaniesGroup", dependent: :destroy
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
+
   has_paper_trail
   acts_as_paranoid
   validates :name, presence: true, uniqueness: {case_sensitive: false}
@@ -125,6 +126,10 @@ class Company < ApplicationRecord
     Company.where(is_broker: false)
   end
 
+  def self.get_brokers
+    Company.where(is_broker: true)
+  end
+
   def block_users
     BlockUser.where(company_id: id)
   end
@@ -137,6 +142,15 @@ class Company < ApplicationRecord
   def is_broker_or_not(seller)
     BrokerRequest.where(broker_id: self.id, seller_id: seller.id, accepted: true).first.present?
   end
+
+  def sent_seller_request(broker)
+    BrokerRequest.where(broker_id: broker.id, seller_id: self.id, accepted: false).first.present?
+  end
+
+  def is_seller_or_not(broker)
+    BrokerRequest.where(broker_id: broker.id, seller_id: self.id, accepted: true).first.present?
+  end
+
 
   def my_brokers
     BrokerRequest.where(seller_id: self.id, accepted: true)
