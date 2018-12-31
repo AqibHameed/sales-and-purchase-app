@@ -257,6 +257,26 @@
   },
   {
     "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/company_record_on_the_basis_of_roles",
+    "title": "",
+    "name": "company_record_on_the_basis_of_roles",
+    "group": "Brokers",
+    "description": "<p>get company record on the basis of roles</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"pagination\": {\n      \"total_pages\": 1,\n      \"prev_page\": null,\n      \"next_page\": null,\n      \"current_page\": 1\n  },\n  \"company_record_on_the_basis_of_roles\": [\n      {\n          \"id\": 2,\n          \"name\": \"Buyer B\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 3,\n          \"name\": \"Buyer C\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 5,\n          \"name\": \"Seller B\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 6,\n          \"name\": \"Seller C\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 7,\n          \"name\": \"Dummy Buyer 1\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 8,\n          \"name\": \"Dummy Seller 1\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 9,\n          \"name\": \"Dummy Seller 2\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 10,\n          \"name\": \"Dummy Buyer 2\",\n          \"status\": \"SendRequest\"\n      }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
     "type": "delete",
     "url": "/api/v1/companies_groups/3589",
     "title": "",
@@ -1331,11 +1351,11 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -1351,11 +1371,11 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {
