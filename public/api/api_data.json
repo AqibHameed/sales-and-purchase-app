@@ -237,6 +237,64 @@
   },
   {
     "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/brokers/accept",
+    "title": "",
+    "name": "Accept_request",
+    "group": "Brokers",
+    "description": "<p>accept request seller to broker or broker to seller</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"request_id\": 3\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  success: true,\n  message: 'Request accepted successfully.',\n  status: 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/brokers/send_request",
+    "title": "",
+    "name": "Send_request",
+    "group": "Brokers",
+    "description": "<p>send request seller to broker, broker to seller</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"company\": \"broker1(Broker)\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Request sent successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
     "type": "get",
     "url": "/api/v1/brokers/assigned_parcels",
     "title": "",
@@ -268,6 +326,104 @@
         {
           "title": "SuccessResponse:",
           "content": "{\n  \"success\": true,\n  \"pagination\": {\n      \"total_pages\": 1,\n      \"prev_page\": null,\n      \"next_page\": null,\n      \"current_page\": 1\n  },\n  \"company_record_on_the_basis_of_roles\": [\n      {\n          \"id\": 2,\n          \"name\": \"Buyer B\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 3,\n          \"name\": \"Buyer C\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 5,\n          \"name\": \"Seller B\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 6,\n          \"name\": \"Seller C\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 7,\n          \"name\": \"Dummy Buyer 1\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 8,\n          \"name\": \"Dummy Seller 1\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 9,\n          \"name\": \"Dummy Seller 2\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 10,\n          \"name\": \"Dummy Buyer 2\",\n          \"status\": \"SendRequest\"\n      }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/brokers/reject",
+    "title": "",
+    "name": "reject_request",
+    "group": "Brokers",
+    "description": "<p>reject request seller to broker or broker to seller</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"request_id\": 3\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  success: true,\n  message: 'Request rejected successfully.',\n  status: 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/brokers/remove",
+    "title": "",
+    "name": "remove_request",
+    "group": "Brokers",
+    "description": "<p>reomve  seller or broker</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"request_id\": 3\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  success: true,\n  message: 'You have removed successfully.',\n  status: 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/show_myclients",
+    "title": "",
+    "name": "show_all_connected_sellers_buyers_or_brokers",
+    "group": "Brokers",
+    "description": "<p>show connected sellers/buyers or broker</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"response_code\": 200,\n    \"myclients\": [\n        {\n            \"request_id\": 9,\n            \"broker_name\": \"broker 1\",\n            \"seller_buyer_name\": \"broker1(Broker)\"\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/show_requests",
+    "title": "",
+    "name": "show_requests",
+    "group": "Brokers",
+    "description": "<p>show requests incoming from sellers/buyers or broker</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"response_code\": 200,\n    \"requests\": [\n        {\n            \"request_id\": 8,\n            \"broker_name\": \"broker 1\",\n            \"seller_buyer_name\": \"broker1(Broker)\"\n        }\n    ]\n}",
           "type": "json"
         }
       ]
@@ -1351,11 +1507,11 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {
@@ -1371,11 +1527,11 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
