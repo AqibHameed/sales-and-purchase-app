@@ -9,13 +9,26 @@
         <th>Company</th>
         <th></th>
       </tr>
-      <% @requests.each do |request| %>
-        <tr>
-          <td></td>
-          <td><%= request.broker.try(:customers).try(:first).try(:name) %></td>
-          <td><%= request.broker.try(:name) %></td>
-          <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: { turbolinks: false } %> | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: { turbolinks: false } %></td>
-        </tr>
+      <% if current_company.is_broker? %>
+        <% @requests.each do |request| %>
+          <tr>
+            <td></td>
+            <td><%= request.seller.try(:customers).try(:first).try(:name) %></td>
+            <td><%= request.seller.try(:name) %></td>
+            <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: {turbolinks: false} %>
+              | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: {turbolinks: false} %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <% @requests.each do |request| %>
+          <tr>
+            <td></td>
+            <td><%= request.broker.try(:customers).try(:first).try(:name) %></td>
+            <td><%= request.broker.try(:name) %></td>
+            <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: {turbolinks: false} %>
+              | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: {turbolinks: false} %></td>
+          </tr>
+        <% end %>
       <% end %>
   </table>
   </div>
@@ -32,14 +45,25 @@
       <th>Company</th>
       <th></th>
     </tr>
-    <% @my_brokers.each do |b| %>
-      <tr>
-        <td></td>
-        <td><%= b.broker.try(:customers).try(:first).try(:name) %></td>
-        <td><%= b.broker.try(:name) %></td>
-        <td><%= link_to "Remove", remove_brokers_path(id: b.id), data: { turbolinks: false } %></td>
-      </tr>
-    <% end %>
+      <% if current_company.is_broker? %>
+        <% @my_brokers.each do |b| %>
+          <tr>
+            <td></td>
+            <td><%= b.seller.try(:customers).try(:first).try(:name) %></td>
+            <td><%= b.seller.try(:name) %></td>
+            <td><%= link_to "Remove", remove_brokers_path(id: b.id), data: { turbolinks: false } %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <% @my_brokers.each do |b| %>
+          <tr>
+            <td></td>
+            <td><%= b.broker.try(:customers).try(:first).try(:name) %></td>
+            <td><%= b.broker.try(:name) %></td>
+            <td><%= link_to "Remove", remove_brokers_path(id: b.id), data: { turbolinks: false } %></td>
+          </tr>
+        <% end %>
+      <% end %>
 </table>
   </div>
 </div>

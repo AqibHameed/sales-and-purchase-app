@@ -376,7 +376,12 @@ Rails.application.routes.draw do
         collection do
           get :assigned_parcels
           get :demanding_companies
+          post :accept
+          post :reject
+          post :remove
           post :send_request
+          get  :show_requests
+          get  :show_myclients
           get  :company_record_on_the_basis_of_roles
         end
       end

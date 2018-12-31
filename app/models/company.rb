@@ -4,6 +4,8 @@ class Company < ApplicationRecord
   has_many :demands, dependent: :destroy
   has_many :polished_demands, dependent: :destroy
   has_many :trading_parcels, dependent: :destroy
+  has_many :sender, :class_name => 'BrokerRequest', :foreign_key => 'sender_id'
+  has_many :receiver, :class_name => 'BrokerRequest', :foreign_key => 'receiver_id'
   has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit", dependent: :destroy
   has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction", dependent: :destroy
   has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction", dependent: :destroy
