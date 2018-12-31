@@ -14,11 +14,17 @@ class BrokersController < ApplicationController
 
   def send_request
     if current_company.is_broker?
-      broker_request = BrokerRequest.where(broker_id: current_company.id, seller_id: params[:s]).first_or_initialize do |br|
+      broker_request = BrokerRequest.where(broker_id: current_company.id,
+                                           seller_id: params[:s],
+                                           sender_id: current_company.id,
+                                           receiver_id: params[:s]).first_or_initialize do |br|
         br.accepted = false
       end
     else
-      broker_request = BrokerRequest.where(broker_id: params[:s], seller_id: current_company.id).first_or_initialize do |br|
+      broker_request = BrokerRequest.where(broker_id: params[:s],
+                                           seller_id: current_company.id,
+                                           sender_id: current_company.id,
+                                           receiver_id: params[:s]).first_or_initialize do |br|
         br.accepted = false
       end
     end
@@ -35,11 +41,17 @@ class BrokersController < ApplicationController
 
   def requests
     if current_company.is_broker?
-      @requests = BrokerRequest.where(broker_id: current_company.id, accepted: false)
-      @my_brokers = BrokerRequest.where(broker_id: current_company.id, accepted: true)
+      @requests = BrokerRequest.where(broker_id: current_company.id,
+                                      accepted: false,
+                                      receiver_id: current_company.id)
+      @my_brokers = BrokerRequest.where(broker_id: current_company.id,
+                                        accepted: true)
     else
-      @requests = BrokerRequest.where(seller_id: current_company.id, accepted: false)
-      @my_brokers = BrokerRequest.where(seller_id: current_company.id, accepted: true)
+      @requests = BrokerRequest.where(seller_id: current_company.id,
+                                      accepted: false,
+                                      receiver_id: current_company.id)
+      @my_brokers = BrokerRequest.where(seller_id: current_company.id,
+                                        accepted: true)
     end
   end
 

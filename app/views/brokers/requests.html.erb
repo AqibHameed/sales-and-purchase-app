@@ -9,13 +9,26 @@
         <th>Company</th>
         <th></th>
       </tr>
-      <% @requests.each do |request| %>
-        <tr>
-          <td></td>
-          <td><%= request.broker.try(:customers).try(:first).try(:name) %></td>
-          <td><%= request.broker.try(:name) %></td>
-          <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: { turbolinks: false } %> | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: { turbolinks: false } %></td>
-        </tr>
+      <% if current_company.is_broker? %>
+        <% @requests.each do |request| %>
+          <tr>
+            <td></td>
+            <td><%= request.broker.try(:customers).try(:first).try(:name) %></td>
+            <td><%= request.broker.try(:name) %></td>
+            <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: {turbolinks: false} %>
+              | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: {turbolinks: false} %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <% @requests.each do |request| %>
+          <tr>
+            <td></td>
+            <td><%= request.seller.try(:customers).try(:first).try(:name) %></td>
+            <td><%= request.seller.try(:name) %></td>
+            <td><%= link_to 'Accept', accept_brokers_path(id: request.id), data: {turbolinks: false} %>
+              | <%= link_to 'Reject', reject_brokers_path(id: request.id), data: {turbolinks: false} %></td>
+          </tr>
+        <% end %>
       <% end %>
   </table>
   </div>
