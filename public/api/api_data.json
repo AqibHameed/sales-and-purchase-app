@@ -335,6 +335,26 @@
   },
   {
     "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/dashboard",
+    "title": "",
+    "name": "dashboard",
+    "group": "Brokers",
+    "description": "<p>get the list of assign parcel to broker</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"parcels\": [\n      {\n          \"description\": \"Dummy Parcel for Demo\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 6\n      },\n      {\n          \"description\": \"Dummy Parcel for Demo\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 6\n      },\n      {\n          \"description\": \"Basket +14.8 ct-buffer\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 1\n      },\n      {\n          \"description\": \"+9 SAWABLES LIGHT\",\n          \"no_of_parcels\": 0,\n          \"no_of_demands\": 5\n      }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
     "type": "post",
     "url": "/api/v1/brokers/reject",
     "title": "",
@@ -1476,7 +1496,7 @@
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [],\n    \"response_code\": 200\n}",
+          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]
