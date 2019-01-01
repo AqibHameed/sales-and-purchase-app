@@ -335,6 +335,26 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/dashboard",
+    "title": "",
+    "name": "dashboard",
+    "group": "Brokers",
+    "description": "<p>get the list of assign parcel to broker</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  {\n    \"success\": true,\n    \"parcels\": []\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
     "type": "post",
     "url": "/api/v1/brokers/reject",
     "title": "",

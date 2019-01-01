@@ -383,6 +383,7 @@ Rails.application.routes.draw do
           get  :show_requests
           get  :show_myclients
           get  :company_record_on_the_basis_of_roles
+          get  :dashboard
         end
       end
 

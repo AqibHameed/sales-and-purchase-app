@@ -415,6 +415,30 @@ module Api
         end
       end
 
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/brokers/dashboard
+  @apiSampleRequest off
+  @apiName dashboard
+  @apiGroup Brokers
+  @apiDescription get the list of assign parcel to broker
+  @apiSuccessExample {json} SuccessResponse:
+      {
+        {
+          "success": true,
+          "parcels": []
+        }
+      }
+=end
+      def dashboard
+        if current_company
+            @parcels = TradingParcel.all.select { |e| e.broker_ids.include? current_company.id.to_s unless e.broker_ids.nil? }
+            render status: :ok, template: "api/v1/brokers/dashboard.json.jbuilder"
+        else
+            render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
       private
 
       def check_current_company_requests
