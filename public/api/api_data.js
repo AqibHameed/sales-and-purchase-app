@@ -355,6 +355,35 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/demanding_companies?id=1",
+    "title": "",
+    "name": "demanding_companies",
+    "group": "Brokers",
+    "description": "<p>buyers who are demanding that description of parcel</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n    \"id\": \"1\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"companies\": [\n      {\n          \"id\": 7,\n          \"name\": \"Dummy Buyer 1\",\n          \"mobile_no\": \"+11111234455\"\n      },\n      {\n          \"id\": 7,\n          \"name\": \"Dummy Buyer 1\",\n          \"mobile_no\": \"+11111234455\"\n      },\n      {\n          \"id\": 9,\n          \"name\": \"Dummy Seller 2\",\n          \"mobile_no\": \"+11111231122\"\n      },\n      {\n          \"id\": 9,\n          \"name\": \"Dummy Seller 2\",\n          \"mobile_no\": \"+11111231122\"\n      },\n      {\n          \"id\": 10,\n          \"name\": \"Dummy Buyer 2\",\n          \"mobile_no\": \"+11111233344\"\n      },\n      {\n          \"id\": 10,\n          \"name\": \"Dummy Buyer 2\",\n          \"mobile_no\": \"+11111233344\"\n      }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
     "type": "post",
     "url": "/api/v1/brokers/reject",
     "title": "",
