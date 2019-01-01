@@ -36,12 +36,21 @@ module ControllerMacros
     create(:trading_parcel, customer: customer, company: customer.company)
   end
 
+  def create_broker
+    company = Company.create(name: Faker::Name.name)
+    broker = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
+                               password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
+                               role: "Broker", confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
+    create(:role, name: 'Broker')
+    broker
+  end
+
   def create_customer
     company = Company.create(name: Faker::Name.name)
     customer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                     password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
                     role: "Buyer/Seller", confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
-    create(:customer_role, customer: customer)
+    create(:role, name: 'Buyer/Seller')
     customer
   end
 

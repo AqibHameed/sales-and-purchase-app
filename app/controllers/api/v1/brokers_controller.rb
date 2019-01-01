@@ -80,29 +80,33 @@ module Api
   }
 =end
       def company_record_on_the_basis_of_roles
-        @data = []
-        if current_company.is_broker?
-          @brokers = Company.get_brokers
-          @brokers.each do |b|
-            @data << {
-                id: b.id,
-                name: b.name,
-                status: check_request_seller(current_company, b)
-               # status:
-            }
+        if current_company
+          @data = []
+          if current_company.is_broker?
+            @brokers = Company.get_brokers
+            @brokers.each do |b|
+              @data << {
+                  id: b.id,
+                  name: b.name,
+                  status: check_request_seller(current_company, b)
+                  # status:
+              }
+            end
+          else
+            @sellers = Company.get_sellers
+            @sellers.each do |s|
+              @data << {
+                  id: s.id,
+                  name: s.name,
+                  status: check_request_broker(current_company, s)
+              }
+            end
           end
+          @all_company_record_on_the_basis_of_roles = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])
+          render json: { success: true, pagination: set_pagination(:all_company_record_on_the_basis_of_roles), company_record_on_the_basis_of_roles: @all_company_record_on_the_basis_of_roles }
         else
-          @sellers = Company.get_sellers
-          @sellers.each do |s|
-            @data << {
-                id: s.id,
-                name: s.name,
-                status: check_request_broker(current_company, s)
-            }
-          end
+          render json: { errors: "Not authenticated", response_code: 201 }
         end
-        @all_company_record_on_the_basis_of_roles = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])
-        render json: { success: true, pagination: set_pagination(:all_company_record_on_the_basis_of_roles), company_record_on_the_basis_of_roles: @all_company_record_on_the_basis_of_roles }
       end
 
 =begin
