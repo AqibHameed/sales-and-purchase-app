@@ -345,7 +345,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n  {\n    \"success\": true,\n    \"parcels\": []\n  }\n}",
+          "content": "{\n  \"success\": true,\n  \"parcels\": [\n      {\n          \"description\": \"Dummy Parcel for Demo\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 6\n      },\n      {\n          \"description\": \"Dummy Parcel for Demo\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 6\n      },\n      {\n          \"description\": \"Basket +14.8 ct-buffer\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 1\n      },\n      {\n          \"description\": \"+9 SAWABLES LIGHT\",\n          \"no_of_parcels\": 0,\n          \"no_of_demands\": 5\n      }\n  ]\n}",
           "type": "json"
         }
       ]

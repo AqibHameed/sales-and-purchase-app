@@ -423,12 +423,31 @@ module Api
   @apiGroup Brokers
   @apiDescription get the list of assign parcel to broker
   @apiSuccessExample {json} SuccessResponse:
-      {
+  {
+    "success": true,
+    "parcels": [
         {
-          "success": true,
-          "parcels": []
+            "description": "Dummy Parcel for Demo",
+            "no_of_parcels": 1,
+            "no_of_demands": 6
+        },
+        {
+            "description": "Dummy Parcel for Demo",
+            "no_of_parcels": 1,
+            "no_of_demands": 6
+        },
+        {
+            "description": "Basket +14.8 ct-buffer",
+            "no_of_parcels": 1,
+            "no_of_demands": 1
+        },
+        {
+            "description": "+9 SAWABLES LIGHT",
+            "no_of_parcels": 0,
+            "no_of_demands": 5
         }
-      }
+    ]
+  }
 =end
       def dashboard
         if current_company
