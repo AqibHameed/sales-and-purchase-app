@@ -276,9 +276,48 @@ module Api
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
-    "tender_parcels": [],
+    "tender_parcels": [
+        {
+            "id": 1270,
+            "stone_type": "Parcel",
+            "no_of_stones": 14,
+            "size": null,
+            "weight": 206.61,
+            "purity": null,
+            "color": null,
+            "polished": null,
+            "deec_no": 1,
+            "lot_no": 1,
+            "description": "+10.8CT CLIVAGE",
+            "comments": null,
+            "valuation": null,
+            "parcel_rating": null,
+            "images": [],
+            "winners_data": [],
+            "highlight_parcel": false
+        },
+        {
+            "id": 1271,
+            "stone_type": "Parcel",
+            "no_of_stones": 2,
+            "size": null,
+            "weight": 24.6,
+            "purity": null,
+            "color": null,
+            "polished": null,
+            "deec_no": 2,
+            "lot_no": 2,
+            "description": "+10.8CT BROWN MIX",
+            "comments": null,
+            "valuation": null,
+            "parcel_rating": null,
+            "images": [],
+            "winners_data": [],
+            "highlight_parcel": false
+        }
+    ],
     "response_code": 200
-}
+  }
 =end
 
       def tender_parcel

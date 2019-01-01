@@ -1476,7 +1476,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [],\n    \"response_code\": 200\n}",
+          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]
