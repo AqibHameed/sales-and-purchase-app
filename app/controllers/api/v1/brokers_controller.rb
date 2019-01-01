@@ -83,22 +83,22 @@ module Api
         if current_company
           @data = []
           if current_company.is_broker?
-            @brokers = Company.get_brokers
+            @brokers = Company.get_sellers
             @brokers.each do |b|
               @data << {
                   id: b.id,
                   name: b.name,
-                  status: check_request_seller(current_company, b)
+                  status: check_request_broker(current_company, b)
                   # status:
               }
             end
           else
-            @sellers = Company.get_sellers
+            @sellers = Company.get_brokers
             @sellers.each do |s|
               @data << {
                   id: s.id,
                   name: s.name,
-                  status: check_request_broker(current_company, s)
+                  status: check_request_seller(current_company, s)
               }
             end
           end
