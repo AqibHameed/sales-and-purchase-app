@@ -2,7 +2,7 @@ module Api
   module V1
     class BrokersController < ApiController
       before_action :check_current_company_requests , only: [:accept, :reject, :remove]
-      skip_before_action :verify_authenticity_token, only: [:send_request, :company_record_on_the_basis_of_roles, :accept, :reject, :remove]
+      skip_before_action :verify_authenticity_token, only: [:send_request, :dashboard, :company_record_on_the_basis_of_roles, :accept, :reject, :remove]
 
       include ApplicationHelper
 
