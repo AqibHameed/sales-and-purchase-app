@@ -96,4 +96,14 @@ RSpec.describe Api::V1::BrokersController do
 
   end
 
+  describe '#accept' do
+    context 'when unknown user want to accept the request' do
+      it 'does show message not authenticated user' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        get :accept
+        response.body.should have_content('Not authenticated')
+      end
+    end
+  end
+
 end
