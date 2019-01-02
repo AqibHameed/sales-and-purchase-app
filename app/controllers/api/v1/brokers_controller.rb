@@ -2,7 +2,7 @@ module Api
   module V1
     class BrokersController < ApiController
       before_action :check_current_company_requests , only: [:accept, :reject, :remove]
-      skip_before_action :verify_authenticity_token, only: [:send_request, :company_record_on_the_basis_of_roles, :accept, :reject, :remove]
+      skip_before_action :verify_authenticity_token, only: [:send_request, :dashboard, :company_record_on_the_basis_of_roles, :accept, :reject, :remove]
 
       include ApplicationHelper
 
@@ -191,6 +191,55 @@ module Api
         end
       end
 
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/brokers/demanding_companies?id=1
+  @apiSampleRequest off
+  @apiName demanding_companies
+  @apiGroup Brokers
+  @apiDescription buyers who are demanding that description of parcel
+  @apiParamExample {json} Request-Example:
+      {
+          "id": "1"
+      }
+  @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "companies": [
+        {
+            "id": 7,
+            "name": "Dummy Buyer 1",
+            "mobile_no": "+11111234455"
+        },
+        {
+            "id": 7,
+            "name": "Dummy Buyer 1",
+            "mobile_no": "+11111234455"
+        },
+        {
+            "id": 9,
+            "name": "Dummy Seller 2",
+            "mobile_no": "+11111231122"
+        },
+        {
+            "id": 9,
+            "name": "Dummy Seller 2",
+            "mobile_no": "+11111231122"
+        },
+        {
+            "id": 10,
+            "name": "Dummy Buyer 2",
+            "mobile_no": "+11111233344"
+        },
+        {
+            "id": 10,
+            "name": "Dummy Buyer 2",
+            "mobile_no": "+11111233344"
+        }
+    ]
+  }
+=end
+
       def demanding_companies
         @data = []
         if current_company
@@ -202,7 +251,8 @@ module Api
               all_companies.each do |company|
                 @data << {
                   id: company.id,
-                  name: company.name
+                  name: company.try(:name),
+                  mobile_no: company.try(:get_owner).try(:mobile_no)
                 }
               end
               render json: { success: true, companies: @data }
