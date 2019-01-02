@@ -10,6 +10,7 @@ RSpec.describe Api::V1::BrokersController do
     @buyer = create_buyer
     @parcel = create_parcel(@customer)
     @trading_parcel = create(:trading_parcel, broker_ids: @customer.company.id.to_s, company: @customer.company)
+    @demand = create(:demand, description: @trading_parcel.description, block: false)
   end
 
   before(:each) do
@@ -57,6 +58,39 @@ RSpec.describe Api::V1::BrokersController do
         get :dashboard
         assigns(:parcels).first.company_id.should eq(@customer.id)
         response.success?.should be true
+      end
+    end
+
+  end
+
+  describe '#demanding_companies' do
+    context 'when unknown user want to see demands company list' do
+      it 'does show message not authenticated user' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        get :demanding_companies
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authenticate user want to see dashboard list and parcel id is not exist' do
+      it 'does show Parcel for this id does not present' do
+        get :demanding_companies, params: {id: 'al'}
+        response.body.should have_content('Parcel for this id does not present')
+      end
+    end
+
+    context 'when authenticate user want to see dashboard list and demand is not exist' do
+      it 'does show This parcel is not demanded' do
+        trading_parcel = create(:trading_parcel, broker_ids: @customer.company.id.to_s)
+        get :demanding_companies, params: {id: trading_parcel.id}
+        response.body.should have_content('This parcel is not demanded')
+      end
+    end
+
+    context 'when authenticate user want to see dashboard list and demand is exist' do
+      it 'does show the demand related to others companies' do
+        get :demanding_companies, params: {id: @trading_parcel.id}
+        expect(JSON.parse(response.body)['companies'].first['id']).not_to eq(@customer.company.id)
       end
     end
 
