@@ -196,4 +196,111 @@ RSpec.describe Api::V1::BrokersController do
     end
   end
 
+
+    context 'when authenticated  seller/buyer send request and they already requested' do
+      it 'does show they are already connected' do
+        request = create(:broker_request,
+                         seller_id: @customer.company_id,
+                         broker_id: @broker.company_id,
+                         sender_id: @broker.company_id,
+                         receiver_id: @customer.company_id)
+        post :send_request, params: {company: @broker.company.name}
+        response.body.should have_content('status is already requested')
+      end
+    end
+
+    context 'when authenticated  seller/buyer send request and they already connected' do
+      it 'does show they are already connected' do
+        request = create(:broker_request,
+                         seller_id: @customer.company_id,
+                         broker_id: @broker.company_id,
+                         sender_id: @broker.company_id,
+                         receiver_id: @customer.company_id)
+        request.update_attributes(accepted: true)
+        post :send_request, params: {company: @broker.company.name}
+        response.body.should have_content('You both are already connected')
+      end
+    end
+
+    context 'when authenticated  broker send request and they already connected' do
+      it 'does show they are already connected' do
+        request.headers.merge!(authorization: @broker.authentication_token)
+        request = create(:broker_request,
+                         seller_id: @customer.company_id,
+                         broker_id: @broker.company_id,
+                         sender_id: @broker.company_id,
+                         receiver_id: @customer.company_id)
+        request.update_attributes(accepted: true)
+        post :send_request, params: {company: @customer.company.name}
+        response.body.should have_content('You both are already connected')
+      end
+    end
+  end
+
+  describe '#show_requests' do
+    context 'when unauthenticated user want to see requests' do
+      it 'does show Not authenticated' do
+        request.headers.merge!(authorization: 'jsdadadadasdasdasdas')
+        get :show_requests
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authenticted broker want to see requests came from any buyers/sellers' do
+      it 'does show list of requests' do
+        get :show_requests
+        JSON.parse(response.body)["requests"].empty?.should be true
+        request = create(:broker_request,
+                         seller_id: @customer.company_id,
+                         broker_id: @broker.company_id,
+                         sender_id: @broker.company_id,
+                         receiver_id: @customer.company_id)
+        get :show_requests
+        JSON.parse(response.body)["requests"].empty?.should be false
+        JSON.parse(response.body)["requests"].first["broker_name"].should eq(@broker.name)
+        JSON.parse(response.body)["requests"].first["broker_company"].should eq(@broker.company.name)
+      end
+    end
+
+    context 'when authenticted seller/buyer want to see requests came from any brokers' do
+      it 'does show list of requests' do
+        request.headers.merge!(authorization: @broker.authentication_token)
+        get :show_requests
+        JSON.parse(response.body)["requests"].empty?.should be true
+        request = create(:broker_request,
+                         seller_id: @customer.company_id,
+                         broker_id: @broker.company_id,
+                         sender_id: @customer.company_id,
+                         receiver_id: @broker.company_id)
+        get :show_requests
+        JSON.parse(response.body)["requests"].empty?.should be false
+        JSON.parse(response.body)["requests"].first["seller_name"].should eq(@customer.name)
+        JSON.parse(response.body)["requests"].first["seller_company"].should eq(@customer.company.name)
+      end
+    end
+  end
+
+  describe '#remove' do
+    context 'when unauthenticated user try to remove connected user' do
+      it 'does show not authenticated' do
+        request.headers.merge!(authorization: 'custweomer.autsdhentication_towerken')
+        post :remove, params: {request_id: 1}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when seller/buyer try to remove connected broker' do
+      it 'does show successfully removed' do
+        request = create(:broker_request,
+                         seller_id: @customer.company_id,
+                         broker_id: @broker.company_id,
+                         sender_id: @customer.company_id,
+                         receiver_id: @broker.company_id)
+        request.update_attributes(accepted: true)
+        post :remove, params: {request_id: request.id}
+        response.body.should have_content('You have removed successfully.')
+      end
+    end
+  end
+
 end

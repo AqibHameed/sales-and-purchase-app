@@ -1,5 +1,6 @@
 class BrokersController < ApplicationController
   before_action :authenticate_customer!
+  before_action :check_record_exit?, only: [:send_request]
   before_action :check_authorization, except: [:reject, :accept, :remove, :requests, :index, :send_request]
   before_action :load_request, only: [:accept, :reject, :remove]
 
@@ -113,6 +114,19 @@ class BrokersController < ApplicationController
       # do nothing
     else
       redirect_to trading_customers_path, notice: 'You are not authorized.'
+    end
+  end
+
+  def check_record_exit?
+    if current_company.is_broker?
+      request = BrokerRequest.find_by(seller_id: params[:s], broker_id: current_company.id)
+    else
+      request = BrokerRequest.find_by(seller_id: current_company.id, broker_id: params[:s])
+    end
+    if request.present?
+      flash[:notice] = 'You both are already connected.' if request.accepted?
+      flash[:notice] = 'status is already requested.' unless request.accepted?
+      redirect_to requests_brokers_path
     end
   end
 end
