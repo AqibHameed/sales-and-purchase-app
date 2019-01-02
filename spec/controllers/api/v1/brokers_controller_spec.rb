@@ -302,4 +302,43 @@ RSpec.describe Api::V1::BrokersController do
     end
   end
 
+  describe '#show_myclients' do
+    context 'when unauthenticated user try to get show my client' do
+      it 'does show not authenticated' do
+        request.headers.merge!(authorization: 'jsdadadadasdasdasdas')
+        get :show_myclients
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when broker login try to get list of seller' do
+      it 'does does match the buyer name and seller name' do
+        request.headers.merge!(authorization: @broker.authentication_token)
+        create(:broker_request,
+                                broker_id: @broker.company.id,
+                                seller_id: Customer.first.company.id,
+                                receiver_id: @broker.company.id,
+                                sender_id:  Customer.first.company.id,
+                                accepted: true)
+        get :show_myclients
+        JSON.parse(response.body)["myclients"].first["broker_name"].should eq(@broker.company.name)
+        JSON.parse(response.body)["myclients"].first["seller_buyer_name"].should eq(@broker.company.customers.first.first_name + " " +@broker.company.customers.first.last_name)
+      end
+    end
+
+    context 'when buyer-seller login try to get list of broker' do
+      it 'does does match the buyer name and seller name' do
+        create(:broker_request,
+                                broker_id: @broker.company.id,
+                                seller_id: @customer.company.id,
+                                receiver_id: @broker.company.id,
+                                sender_id:  @customer.company.id,
+                                accepted: true)
+        get :show_myclients
+        JSON.parse(response.body)["myclients"].first["seller_buyer_name"].should eq(@broker.company.name)
+        JSON.parse(response.body)["myclients"].first["broker_name"].should eq(@broker.company.customers.first.first_name + " " +@broker.company.customers.first.last_name)
+      end
+    end
+  end
+
 end

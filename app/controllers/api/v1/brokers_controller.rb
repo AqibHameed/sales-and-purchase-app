@@ -442,8 +442,8 @@ module Api
             @my_sellers.each do |mysellers|
               @my_clients_data << {
                   request_id: mysellers.id,
-                  seller_buyer_name: mysellers.brokers.customers.first.name,
-                  broker_name: mysellers.brokers.name
+                  seller_buyer_name: mysellers.broker.customers.first.name,
+                  broker_name: mysellers.broker.name
               }
             end unless @my_sellers.nil?
           else
