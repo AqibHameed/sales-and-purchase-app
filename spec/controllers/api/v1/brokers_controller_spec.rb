@@ -11,6 +11,7 @@ RSpec.describe Api::V1::BrokersController do
     @parcel = create_parcel(@customer)
     @trading_parcel = create(:trading_parcel, broker_ids: @customer.company.id.to_s, company: @customer.company)
     @demand = create(:demand, description: @trading_parcel.description, block: false)
+    @broker_request = create(:broker_request, broker_id: @customer.company.id, seller_id: @customer.company.id)
   end
 
   before(:each) do
@@ -149,6 +150,48 @@ RSpec.describe Api::V1::BrokersController do
         request.headers.merge!(authorization: 'asdasdasdasdasdsd')
         get :accept
         response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authenticated user want to accept the request and if request is not exit' do
+      it 'does show message dont have any request with this id' do
+        get :accept, params: {request_id: 'al'}
+        response.body.should have_content("#{@customer.company.name} don't have any request with this id")
+      end
+    end
+
+    context 'when authenticated user want to accept the request and if request is exit' do
+      it 'does show message  Request accepted successfully' do
+        broker_request = create(:broker_request, broker_id: @customer.company.id, seller_id: Customer.first.company.id, receiver_id: @customer.company.id, sender_id:  Customer.first.company.id)
+        get :accept, params: {request_id: broker_request.id}
+        response.body.should have_content("Request accepted successfully")
+        response.success?.should be true
+      end
+    end
+  end
+
+  describe '#reject' do
+    context 'when unknown user want to reject the request' do
+      it 'does show message not authenticated user' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        get :reject
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authenticated user want to reject the request and if request is not exit' do
+      it 'does show message dont have any request with this id' do
+        get :reject, params: {request_id: 'al'}
+        response.body.should have_content("#{@customer.company.name} don't have any request with this id")
+      end
+    end
+
+    context 'when authenticated user want to reject the request and if request is exit' do
+      it 'does show message dont have any request with this id' do
+        broker_request = create(:broker_request, broker_id: @customer.company.id, seller_id: Customer.first.company.id, receiver_id: @customer.company.id, sender_id:  Customer.first.company.id)
+        get :reject, params: {request_id: broker_request.id}
+        response.body.should have_content("Request rejected successfully")
+        response.success?.should be true
       end
     end
   end
