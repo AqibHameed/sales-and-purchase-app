@@ -28,7 +28,7 @@ RSpec.describe Api::V1::DemandsController do
       it 'does show demand empty' do
         get :index, params: {format: :json}
         total_demands = assigns(:all_demands).size
-        expect(total_demands).to eq(5)
+        expect(total_demands).to eq(Demand.all.count)
       end
     end
   end
@@ -37,7 +37,7 @@ RSpec.describe Api::V1::DemandsController do
     context 'when unauthorized user want to create demand' do
       it 'does show user unauthorized' do
         request.headers.merge!(authorization: 'wetasdetoken')
-        source = DemandSupplier.first
+        source = DemandSupplier.last
         post :create, params: {
             demand_supplier_id: source.id,
             description: [
@@ -50,7 +50,7 @@ RSpec.describe Api::V1::DemandsController do
 
     context 'when authorized user want to create demand' do
       it 'does create demand' do
-        source = DemandSupplier.first
+        source = DemandSupplier.last
         post :create, params: {
             demand_supplier_id: source.id,
             description: [
