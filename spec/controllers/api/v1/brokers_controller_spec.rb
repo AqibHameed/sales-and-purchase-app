@@ -62,4 +62,51 @@ RSpec.describe Api::V1::BrokersController do
 
   end
 
+  describe '#send_request' do
+    context 'when unauthenticated Broker or buyer-seller send request' do
+      it 'does show Not authenticated error' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        post :send_request, params: {company: @broker.company.name}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authenticated  buyer-seller send request to Broker' do
+      it 'does show Request send successfully' do
+        post :send_request, params: {company: @broker.company.name}
+        response.body.should have_content('Request sent successfully')
+        request = BrokerRequest.last
+        expect(request.sender_id).to eq(@customer.company_id)
+        expect(request.receiver_id).to eq(@broker.company_id)
+        expect(request.accepted).to be false
+      end
+    end
+
+    context 'when authenticated  broker send request to Broker' do
+      it 'does show Request send successfully' do
+        request.headers.merge!(authorization: @broker.authentication_token)
+        post :send_request, params: {company: @customer.company.name}
+        response.body.should have_content('Request sent successfully')
+        request = BrokerRequest.last
+        expect(request.sender_id).to eq(@broker.company_id)
+        expect(request.receiver_id).to eq(@customer.company_id)
+        expect(request.accepted).to be false
+      end
+    end
+
+    context 'when authenticated  broker send request to non-existing company' do
+      it 'does show company not exist' do
+        request.headers.merge!(authorization: @broker.authentication_token)
+        post :send_request, params: {company: 'unknown company'}
+        response.body.should have_content('There is no company with this name')
+      end
+    end
+
+    context 'when authenticated  seller/buyer send request to non-existing company' do
+      it 'does show company not exist' do
+        post :send_request, params: {company: 'unknown company'}
+        response.body.should have_content('There is no company with this name')
+      end
+    end
+  end
 end

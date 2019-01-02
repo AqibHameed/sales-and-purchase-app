@@ -382,8 +382,8 @@ module Api
             @requests.each do |request|
               @requests_data << {
                   request_id: request.id,
-                  seller_buyer_name: request.seller.customers.first.name,
-                  broker_name: request.seller.name
+                  seller_name: request.seller.customers.first.name,
+                  seller_company: request.seller.name
               }
             end unless @requests.nil?
           else
@@ -394,7 +394,7 @@ module Api
               @requests_data << {
                   request_id: request.id,
                   broker_name: request.broker.customers.first.name,
-                  seller_buyer_name: request.broker.name
+                  broker_company: request.broker.name
               }
             end unless @requests.nil?
           end
