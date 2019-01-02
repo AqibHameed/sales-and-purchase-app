@@ -235,7 +235,6 @@ RSpec.describe Api::V1::BrokersController do
         response.body.should have_content('You both are already connected')
       end
     end
-  end
 
   describe '#show_requests' do
     context 'when unauthenticated user want to see requests' do
