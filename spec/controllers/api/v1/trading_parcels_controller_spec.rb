@@ -9,6 +9,7 @@ RSpec.describe Api::V1::TradingParcelsController do
     create(:customer_role, customer: @customer)
     @buyer = create_buyer
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
+    @demand_supplier = create(:demand_supplier)
   end
 
   before(:each) do
@@ -308,12 +309,21 @@ RSpec.describe Api::V1::TradingParcelsController do
     end
   end
 
-  describe '#make_payment' do
-    context 'when unauthorized user make a payment' do
+  describe '#available_trading_parcels' do
+    context 'when unauthorized user to get the list of available parcel' do
       it 'does show error un authorized user' do
         request.headers.merge!(authorization: 'wetasdetoken')
         get :available_trading_parcels
         response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user to get the list of available parcel' do
+      it 'does show the list of available parcel' do
+        get :available_trading_parcels
+        expect(assigns(:all_parcels).first[:name]).to eq(@demand_supplier.name)
+        expect(assigns(:all_parcels).first[:parcels].first[:description]).to eq(@parcel.description)
+        response.success?.should be true
       end
     end
   end
