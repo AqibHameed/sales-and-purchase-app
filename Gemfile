@@ -83,7 +83,7 @@ gem 'bootstrap-datepicker-rails'
 gem 'firebase'
 gem "google-cloud-firestore"
 gem 'rubyzip', '>= 1.2.1'
-gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx', '>=2.1.0.pre'
 gem 'axlsx_rails'
 
 group :test do
@@ -109,7 +109,6 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'rspec-rails'
   gem "binding_of_caller"
-  gem 'simplecov', require: false
   gem 'webmock'
   gem 'xray-rails'
 end
