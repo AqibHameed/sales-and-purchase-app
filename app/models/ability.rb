@@ -9,16 +9,17 @@ class Ability
       if customer.class == Admin
         can :manage, :all
       else
-        if customer.has_role?('Broker')
+        if customer.has_role?(Role::BROKER)
           can :access, :broker
         end
-        if customer.has_role?('Supplier')
+        if customer.has_role?(Role::SUPPLIER)
           can :access, :auctions
         end
-        if customer.has_role?('Seller')
+        if customer.has_role?(Role::TRADER)
           can :access, :sell
+          can :access, :buy
         end
-        if customer.has_role?('Buyer')
+        if customer.has_role?(Role::BUYER)
           can :access, :buy
         end
       end
