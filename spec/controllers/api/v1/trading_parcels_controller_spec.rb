@@ -1,12 +1,9 @@
 require 'rails_helper'
 RSpec.describe Api::V1::TradingParcelsController do
   before(:all) do
-    company = Company.create(name: Faker::Name.name)
+    create_roles
     @unregister_company = Company.create(name: Faker::Name.name)
-    @customer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
-                                password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                                role: "Buyer/Seller", confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
-    create(:customer_role, customer: @customer)
+    @customer = create_customer
     @buyer = create_buyer
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
   end
