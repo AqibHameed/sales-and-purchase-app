@@ -14,7 +14,7 @@
       <img src="./assets/0.10.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" style="display:none;">
-      <div class="timestamp">Generated <abbr class="timeago" title="2019-01-03T21:06:53+05:00">2019-01-03T21:06:53+05:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2019-01-03T22:23:40+05:00">2019-01-03T22:23:40+05:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -26245,7 +26245,7 @@
         <li class="covered" data-hits="4" data-linenumber="98">
           <span class="hits">4</span>
           
-          <code class="ruby">        if params[:registration][:company_individual] == &quot;Individual&quot; &amp;&amp; params[:registration][:role] == &#39;Broker&#39;</code>
+          <code class="ruby">        if params[:registration][:company_individual] == &quot;Individual&quot; &amp;&amp; params[:registration][:role] == Role::BROKER</code>
         </li>
       
         <li class="covered" data-hits="4" data-linenumber="99">
@@ -26311,7 +26311,7 @@
         <li class="covered" data-hits="6" data-linenumber="109">
           <span class="hits">6</span>
           
-          <code class="ruby">      if params[:registration][:role] == &#39;Broker&#39;</code>
+          <code class="ruby">      if params[:registration][:role] == Role::BROKER</code>
         </li>
       
         <li class="covered" data-hits="5" data-linenumber="110">
@@ -37586,7 +37586,7 @@
         <li class="covered" data-hits="2" data-linenumber="37">
           <span class="hits">2</span>
           
-          <code class="ruby">      if current_customer.has_role?(&#39;Buyer&#39;) ||  current_customer.has_role?(Role::TRADER)</code>
+          <code class="ruby">      if current_customer.has_role?(Role::BUYER) ||  current_customer.has_role?(Role::TRADER)</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="38">
@@ -37604,7 +37604,7 @@
         <li class="missed" data-hits="0" data-linenumber="40">
           
           
-          <code class="ruby">        if current_customer.has_role?(&#39;Broker&#39;)</code>
+          <code class="ruby">        if current_customer.has_role?(Role::BROKER)</code>
         </li>
       
         <li class="missed" data-hits="0" data-linenumber="41">
@@ -68182,7 +68182,7 @@
         <li class="covered" data-hits="5" data-linenumber="12">
           <span class="hits">5</span>
           
-          <code class="ruby">        if customer.has_role?(&#39;Broker&#39;)</code>
+          <code class="ruby">        if customer.has_role?(Role::BROKER)</code>
         </li>
       
         <li class="missed" data-hits="0" data-linenumber="13">
@@ -68200,7 +68200,7 @@
         <li class="covered" data-hits="5" data-linenumber="15">
           <span class="hits">5</span>
           
-          <code class="ruby">        if customer.has_role?(&#39;Supplier&#39;)</code>
+          <code class="ruby">        if customer.has_role?(Role::SUPPLIER)</code>
         </li>
       
         <li class="missed" data-hits="0" data-linenumber="16">
@@ -68218,7 +68218,7 @@
         <li class="covered" data-hits="5" data-linenumber="18">
           <span class="hits">5</span>
           
-          <code class="ruby">        if customer.has_role?(&#39;Trader&#39;)</code>
+          <code class="ruby">        if customer.has_role?(Role::TRADER)</code>
         </li>
       
         <li class="covered" data-hits="5" data-linenumber="19">
@@ -68242,7 +68242,7 @@
         <li class="covered" data-hits="5" data-linenumber="22">
           <span class="hits">5</span>
           
-          <code class="ruby">        if customer.has_role?(&#39;Buyer&#39;)</code>
+          <code class="ruby">        if customer.has_role?(Role::BUYER)</code>
         </li>
       
         <li class="missed" data-hits="0" data-linenumber="23">
