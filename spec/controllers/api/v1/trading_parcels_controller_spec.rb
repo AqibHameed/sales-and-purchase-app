@@ -307,4 +307,14 @@ RSpec.describe Api::V1::TradingParcelsController do
       end
     end
   end
+
+  describe '#make_payment' do
+    context 'when unauthorized user make a payment' do
+      it 'does show error un authorized user' do
+        request.headers.merge!(authorization: 'wetasdetoken')
+        get :available_trading_parcels
+        response.body.should have_content('Not authenticated')
+      end
+    end
+  end
 end
