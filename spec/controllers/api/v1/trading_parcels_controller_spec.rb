@@ -327,4 +327,28 @@ RSpec.describe Api::V1::TradingParcelsController do
       end
     end
   end
+
+  describe '#destroy' do
+    context 'when unauthorized user to destroy the trading parcle' do
+      it 'does show error un authorized user' do
+        request.headers.merge!(authorization: 'wetasdetoken')
+        delete :destroy, params: {id: @parcel.id}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user to destroy the trading parcle and parcel doest not exist' do
+      it 'does show Parcel does not exist' do
+        delete :destroy, params: {id: 'al'}
+        response.body.should have_content('Parcel does not exist.')
+      end
+    end
+
+    context 'when authorized user to destroy the trading parcle and parcel is exist' do
+      it 'does show Parcel does not exist' do
+        delete :destroy, params: {id: @parcel.id}
+        response.body.should have_content('Your parcel is deleted successfully.')
+      end
+    end
+  end
 end
