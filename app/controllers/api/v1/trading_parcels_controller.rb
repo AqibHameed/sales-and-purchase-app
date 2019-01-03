@@ -7,7 +7,7 @@ module Api
       include LiveMonitor
       include ApplicationHelper
 
-      skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy, :request_limit_increase, :accept_limit_increase, :reject_limit_increase]
+      skip_before_action :verify_authenticity_token, only: [:create, :update, :direct_sell, :destroy, :request_limit_increase, :accept_limit_increase, :reject_limit_increase, :available_trading_parcels]
 
 =begin
  @apiVersion 1.0.0
@@ -158,9 +158,7 @@ module Api
             }
             @all_parcels << demand_supplier
           end
-          respond_to do |format|
-            format.json { render :available_trading_parcels }
-          end
+          render status: :ok, template: "api/v1/trading_parcels/available_trading_parcels.json.jbuilder"
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
