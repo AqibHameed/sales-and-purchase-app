@@ -14,50 +14,67 @@ RSpec.describe Api::V1::LimitsController do
     request.headers.merge!(authorization: @customer.authentication_token)
   end
 
-  describe '#add_limits' do
-    context 'when unauthorized user to update the credit limit' do
+  # describe '#add_limits' do
+  #   context 'when unauthorized user to update the credit limit' do
+  #     it 'does show error un authorized user' do
+  #       request.headers.merge!(authorization: 'wetasdetoken')
+  #       post :add_limits
+  #       response.body.should have_content('Not authenticated')
+  #     end
+  #   end
+  #
+  #   context 'when authorized user to update the credit limit and buyer id is not exist' do
+  #     it 'does show the message Buyer doesnt exist' do
+  #       post :add_limits, params: {buyer_id: 'al'}
+  #       response.body.should have_content("Buyer doesn't exist")
+  #     end
+  #   end
+  #
+  #   context 'when authorized user to update the credit limit and buyer id is  exist' do
+  #     it 'does show the message Limits updated' do
+  #       post :add_limits, params: {buyer_id: @company.id, limit: '3000'}
+  #       response.body.should have_content("Limits updated")
+  #     end
+  #   end
+  # end
+  #
+  # describe '#add_overdue_limit' do
+  #   context 'when unauthorized user to update the days limit' do
+  #     it 'does show error un authorized user' do
+  #       request.headers.merge!(authorization: 'wetasdetoken')
+  #       post :add_overdue_limit
+  #       response.body.should have_content('Not authenticated')
+  #     end
+  #   end
+  #
+  #   context 'when authorized user to update the days limit and buyer id is not exist' do
+  #     it 'does show the message Buyer doesnt exist' do
+  #       post :add_overdue_limit, params: {buyer_id: 'al'}
+  #       response.body.should have_content("Buyer doesn't exist")
+  #     end
+  #   end
+  #
+  #   context 'when authorized user to update the days limit and buyer id is  exist' do
+  #     it 'does show the message Days Limit updated' do
+  #       post :add_overdue_limit, params: {buyer_id: @company.id, limit: '20'}
+  #       response.body.should have_content("Days Limit updated")
+  #     end
+  #   end
+  # end
+
+  describe '#credit_limit_list' do
+    context 'when unauthorized user to get the credit limit list' do
       it 'does show error un authorized user' do
         request.headers.merge!(authorization: 'wetasdetoken')
-        post :add_limits
-        response.body.should have_content('Not authenticated')
+        get :credit_limit_list
+        response.body.should have_content('You have to login first')
       end
     end
 
-    context 'when authorized user to update the credit limit and buyer id is not exist' do
-      it 'does show the message Buyer doesnt exist' do
-        post :add_limits, params: {buyer_id: 'al'}
-        response.body.should have_content("Buyer doesn't exist")
-      end
-    end
-
-    context 'when authorized user to update the credit limit and buyer id is  exist' do
-      it 'does show the message Limits updated' do
-        post :add_limits, params: {buyer_id: @company.id, limit: '3000'}
-        response.body.should have_content("Limits updated")
-      end
-    end
-  end
-
-  describe '#add_overdue_limit' do
-    context 'when unauthorized user to update the days limit' do
-      it 'does show error un authorized user' do
-        request.headers.merge!(authorization: 'wetasdetoken')
-        post :add_overdue_limit
-        response.body.should have_content('Not authenticated')
-      end
-    end
-
-    context 'when authorized user to update the days limit and buyer id is not exist' do
-      it 'does show the message Buyer doesnt exist' do
-        post :add_overdue_limit, params: {buyer_id: 'al'}
-        response.body.should have_content("Buyer doesn't exist")
-      end
-    end
-
-    context 'when authorized user to update the days limit and buyer id is  exist' do
-      it 'does show the message Days Limit updated' do
-        post :add_overdue_limit, params: {buyer_id: @company.id, limit: '20'}
-        response.body.should have_content("Days Limit updated")
+    context 'when authorized user to get the credit limit list if company id not exist' do
+      it 'does show the message Company not found' do
+        get :credit_limit_list, params: {company_id: 'al'}
+        response.body.should have_content('Company not found')
       end
     end
   end
