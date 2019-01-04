@@ -6,61 +6,61 @@ RSpec.describe Api::V1::LimitsController do
                                 password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
                                 role: "Buyer/Seller", confirmed_at: Time.current, company: @company, authentication_token: Devise.friendly_token)
     create(:customer_role, customer: @customer)
-    create(:credit_limit, buyer_id: @company.id, seller_id: @customer.id)
-    create(:days_limit, buyer_id: @company.id, seller_id: @customer.id)
+    create(:credit_limit, buyer_id: @company.id, seller_id: @customer.company.id)
+    create(:days_limit, buyer_id: @company.id, seller_id: @customer.company.id)
   end
 
   before(:each) do
     request.headers.merge!(authorization: @customer.authentication_token)
   end
 
-  # describe '#add_limits' do
-  #   context 'when unauthorized user to update the credit limit' do
-  #     it 'does show error un authorized user' do
-  #       request.headers.merge!(authorization: 'wetasdetoken')
-  #       post :add_limits
-  #       response.body.should have_content('Not authenticated')
-  #     end
-  #   end
-  #
-  #   context 'when authorized user to update the credit limit and buyer id is not exist' do
-  #     it 'does show the message Buyer doesnt exist' do
-  #       post :add_limits, params: {buyer_id: 'al'}
-  #       response.body.should have_content("Buyer doesn't exist")
-  #     end
-  #   end
-  #
-  #   context 'when authorized user to update the credit limit and buyer id is  exist' do
-  #     it 'does show the message Limits updated' do
-  #       post :add_limits, params: {buyer_id: @company.id, limit: '3000'}
-  #       response.body.should have_content("Limits updated")
-  #     end
-  #   end
-  # end
-  #
-  # describe '#add_overdue_limit' do
-  #   context 'when unauthorized user to update the days limit' do
-  #     it 'does show error un authorized user' do
-  #       request.headers.merge!(authorization: 'wetasdetoken')
-  #       post :add_overdue_limit
-  #       response.body.should have_content('Not authenticated')
-  #     end
-  #   end
-  #
-  #   context 'when authorized user to update the days limit and buyer id is not exist' do
-  #     it 'does show the message Buyer doesnt exist' do
-  #       post :add_overdue_limit, params: {buyer_id: 'al'}
-  #       response.body.should have_content("Buyer doesn't exist")
-  #     end
-  #   end
-  #
-  #   context 'when authorized user to update the days limit and buyer id is  exist' do
-  #     it 'does show the message Days Limit updated' do
-  #       post :add_overdue_limit, params: {buyer_id: @company.id, limit: '20'}
-  #       response.body.should have_content("Days Limit updated")
-  #     end
-  #   end
-  # end
+  describe '#add_limits' do
+    context 'when unauthorized user to update the credit limit' do
+      it 'does show error un authorized user' do
+        request.headers.merge!(authorization: 'wetasdetoken')
+        post :add_limits
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user to update the credit limit and buyer id is not exist' do
+      it 'does show the message Buyer doesnt exist' do
+        post :add_limits, params: {buyer_id: 'al'}
+        response.body.should have_content("Buyer doesn't exist")
+      end
+    end
+
+    context 'when authorized user to update the credit limit and buyer id is  exist' do
+      it 'does show the message Limits updated' do
+        post :add_limits, params: {buyer_id: @company.id, limit: '3000'}
+        response.body.should have_content("Limits updated")
+      end
+    end
+  end
+
+  describe '#add_overdue_limit' do
+    context 'when unauthorized user to update the days limit' do
+      it 'does show error un authorized user' do
+        request.headers.merge!(authorization: 'wetasdetoken')
+        post :add_overdue_limit
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user to update the days limit and buyer id is not exist' do
+      it 'does show the message Buyer doesnt exist' do
+        post :add_overdue_limit, params: {buyer_id: 'al'}
+        response.body.should have_content("Buyer doesn't exist")
+      end
+    end
+
+    context 'when authorized user to update the days limit and buyer id is  exist' do
+      it 'does show the message Days Limit updated' do
+        post :add_overdue_limit, params: {buyer_id: @company.id, limit: '20'}
+        response.body.should have_content("Days Limit updated")
+      end
+    end
+  end
 
   describe '#credit_limit_list' do
     context 'when unauthorized user to get the credit limit list' do
@@ -120,7 +120,6 @@ RSpec.describe Api::V1::LimitsController do
         days_limit = DaysLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
         limit_days = days_limit.present? ? "#{days_limit.days_limit.to_i}"+ " "+ "days" : "30 days"
         supplier_paid = @company.supplier_paid
-
         expect(credit_limit).to eq(JSON.parse(response.body)['limits'].first['total_limit'])
         expect(get_used_credit_limit).to eq(JSON.parse(response.body)['limits'].first['used_limit'])
         expect(limit_days).to eq(JSON.parse(response.body)['limits'].first['overdue_limit'])
