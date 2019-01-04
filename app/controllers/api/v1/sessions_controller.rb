@@ -21,7 +21,7 @@ class Api::V1::SessionsController < Devise::SessionsController
     "customer": {
         "id": 21,
         "email": "umair.raza101@gmail.com",
-        "designation": "Buyer/Seller",
+        "designation": "Trader",
         "created_at": "2018-12-07T15:00:19.000Z",
         "updated_at": "2018-12-17T18:32:41.000Z",
         "first_name": "Umair",
@@ -81,7 +81,7 @@ class Api::V1::SessionsController < Devise::SessionsController
     "customer": {
         "id": 5,
         "email": "testing@gmail.com",
-        "designation": "Buyer/Seller",
+        "designation": "Trader",
         "created_at": "2018-10-30T07:26:20.000Z",
         "updated_at": "2018-11-01T11:19:12.000Z",
         "first_name": "abc",
@@ -145,7 +145,7 @@ class Api::V1::SessionsController < Devise::SessionsController
     {
       id: customer.id,
       email:  customer.email,
-      designation: customer.has_role?('Broker') ? 'Broker' : 'Buyer/Seller',
+      designation: customer.has_role?('Broker') ? 'Broker' : Role::TRADER,
       created_at: customer.created_at,
       updated_at: customer.updated_at,
       first_name: customer.first_name,

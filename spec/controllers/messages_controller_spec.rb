@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe MessagesController, type: :controller do
 
   before(:all) do
+    create_roles
     create_user
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
   end

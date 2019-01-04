@@ -34,10 +34,10 @@ class ApplicationController < ActionController::Base
     if current_admin.present?
       # do nothing
     else
-      if current_customer.has_role?('Buyer') ||  current_customer.has_role?('Seller')
+      if current_customer.has_role?(Role::BUYER) ||  current_customer.has_role?(Role::TRADER)
         # do nothing
       else
-        if current_customer.has_role?('Broker')
+        if current_customer.has_role?(Role::BROKER)
           redirect_to '/brokers', notice: 'You are not authorized.'
         else
           redirect_to root_path, notice: 'You are not authorized.'

@@ -1190,12 +1190,12 @@
       "examples": [
         {
           "title": "Request-Example1:",
-          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Seller/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
+          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Trader/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
           "type": "json"
         },
         {
           "title": "Request-Example1:",
-          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Seller/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
+          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Trader/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
           "type": "json"
         }
       ]
@@ -1209,7 +1209,7 @@
         },
         {
           "title": "SuccessResponse1:",
-          "content": "{\n  {\n      \"errors\": [\n          \"Company already registered as buyer/seller\"\n      ],\n      \"response_code\": 201\n  }\n}",
+          "content": "{\n  {\n      \"errors\": [\n          \"Company already registered as Trader\"\n      ],\n      \"response_code\": 201\n  }\n}",
           "type": "json"
         }
       ]
@@ -1229,7 +1229,7 @@
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"customer\": {\n        \"id\": 5,\n        \"email\": \"testing@gmail.com\",\n        \"designation\": \"Buyer/Seller\",\n        \"created_at\": \"2018-10-30T07:26:20.000Z\",\n        \"updated_at\": \"2018-11-01T11:19:12.000Z\",\n        \"first_name\": \"abc\",\n        \"last_name\": \"def\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy co. 3\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+971 551114466\",\n        \"authentication_token\": \"hGazWDBk_Pkh8wn2jA\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"customer\": {\n        \"id\": 5,\n        \"email\": \"testing@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-10-30T07:26:20.000Z\",\n        \"updated_at\": \"2018-11-01T11:19:12.000Z\",\n        \"first_name\": \"abc\",\n        \"last_name\": \"def\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy co. 3\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+971 551114466\",\n        \"authentication_token\": \"hGazWDBk_Pkh8wn2jA\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1258,7 +1258,7 @@
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"customer\": {\n        \"id\": 21,\n        \"email\": \"umair.raza101@gmail.com\",\n        \"designation\": \"Buyer/Seller\",\n        \"created_at\": \"2018-12-07T15:00:19.000Z\",\n        \"updated_at\": \"2018-12-17T18:32:41.000Z\",\n        \"first_name\": \"Umair\",\n        \"last_name\": \"Raza\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy Seller 1\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+1\",\n        \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"customer\": {\n        \"id\": 21,\n        \"email\": \"umair.raza101@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-12-07T15:00:19.000Z\",\n        \"updated_at\": \"2018-12-17T18:32:41.000Z\",\n        \"first_name\": \"Umair\",\n        \"last_name\": \"Raza\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy Seller 1\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+1\",\n        \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
