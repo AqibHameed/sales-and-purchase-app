@@ -26,7 +26,6 @@ class TradingParcelsController < ApplicationController
     if trading_parcel_params[:sale_broker].to_i == 1 && trading_parcel_params[:broker_ids].blank?
       check_broker = false
     end
-
     if @parcel.save && check_broker
       @parcel.send_mail_to_demanded
       flash[:notice] = "Parcel created successfully"
@@ -259,7 +258,7 @@ class TradingParcelsController < ApplicationController
   private
   def trading_parcel_params
     params.require(:trading_parcel).permit(:company_id, :customer_id, :credit_period, :lot_no, :diamond_type, :description, :no_of_stones, :weight, :price, :source, :box, :cost, :box_value, :sight, :percent, :comment, :total_value, :sale_all, :sale_none, :sale_broker, :sale_credit, :sale_demanded, :broker_ids, :anonymous, :shape, :color, :clarity, :cut, :polish, :symmetry, :fluorescence, :lab, :city, :country, :size,
-                                              parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy ])
+                                              parcel_size_infos_attributes: [:id, :carats, :percent, :size, :_destroy])
   end
 
   def historical_params

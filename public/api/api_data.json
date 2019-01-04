@@ -1645,7 +1645,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\"trading_parcel\":\n   {\n   \t   \"source\": \"SPECIAL\",\n\t   \"description\": \"5-10 Cts BLK CLIV WHITE\",\n\t   \"credit_period\": \"2000\",\n\t   \"no_of_stones\": \"10\",\n\t   \"total_value\": 5000.0,\n\t   \"percent\": \"10\",\n\t   \"cost\": 4500.0,\n\t   \"avg_price\": 5000.0,\n\t   \"carats\": 1,\n\t   \"comment\": \"\",\n\t   \"discout\": \"\",\n\t   \"sight\": \"\",\n\t   \"lot_no\":\"\"\n   }\n}",
+          "content": "{\"trading_parcel\":\n   {\n   \t   \"source\": \"SPECIAL\",\n\t   \"description\": \"5-10 Cts BLK CLIV WHITE\",\n\t   \"credit_period\": \"2000\",\n\t   \"no_of_stones\": \"10\",\n\t   \"total_value\": 5000.0,\n\t   \"percent\": \"10\",\n\t   \"cost\": 4500.0,\n\t   \"avg_price\": 5000.0,\n\t   \"carats\": 1,\n\t   \"comment\": \"\",\n\t   \"discout\": \"\",\n\t   \"sight\": \"\",\n\t   \"lot_no\":\"\",\n\t   \"parcel_size_infos_attributes\":[\n\t   \t  {\n\t   \t    \"size\": 1,\n\t   \t    \"percent\": \"20\",\n\t   \t    \"_destroy\": \"false\"\n\t   \t  },\n\t   \t  {\n\t   \t    \"size\": 2,\n\t   \t    \"percent\": \"30\",\n\t   \t    \"_destroy\": \"false\"\n\t   \t  }\n\t   ]\n   }\n}",
           "type": "json"
         }
       ]

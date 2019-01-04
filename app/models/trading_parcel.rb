@@ -7,7 +7,7 @@ class TradingParcel < ApplicationRecord
   belongs_to :customer, -> { with_deleted }, optional: true
   belongs_to :company
   has_many :proposals, -> { with_deleted }, dependent: :destroy
-  has_many :parcel_size_infos, -> { with_deleted }, dependent: :destroy
+  has_many :parcel_size_infos, -> { with_deleted }, dependent: :destroy, inverse_of: :trading_parcel
   has_one :my_transaction, -> { with_deleted }, class_name: 'Transaction'
   belongs_to :trading_document, -> { with_deleted }, optional: true, dependent: :destroy
 
@@ -20,7 +20,7 @@ class TradingParcel < ApplicationRecord
   after_update :set_sale_none_when_all_none, :replace_nil_value
 
   accepts_nested_attributes_for :my_transaction
-  accepts_nested_attributes_for :parcel_size_infos, :allow_destroy => true
+  accepts_nested_attributes_for :parcel_size_infos, reject_if: :all_blank, :allow_destroy => true
   validate :validate_sizes, unless: :diamond_type_is_polish?
   attr_accessor :single_parcel
 

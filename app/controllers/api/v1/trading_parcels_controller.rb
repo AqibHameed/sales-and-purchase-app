@@ -31,7 +31,19 @@ module Api
 	   "comment": "",
 	   "discout": "",
 	   "sight": "",
-	   "lot_no":""
+	   "lot_no":"",
+	   "parcel_size_infos_attributes":[
+	   	  {
+	   	    "size": 1,
+	   	    "percent": "20",
+	   	    "_destroy": "false"
+	   	  },
+	   	  {
+	   	    "size": 2,
+	   	    "percent": "30",
+	   	    "_destroy": "false"
+	   	  }
+	   ]
    }
 }
  @apiSuccessExample {json} SuccessResponse:
