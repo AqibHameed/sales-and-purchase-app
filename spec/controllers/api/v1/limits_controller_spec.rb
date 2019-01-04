@@ -77,5 +77,55 @@ RSpec.describe Api::V1::LimitsController do
         response.body.should have_content('Company not found')
       end
     end
+
+    context 'when authorized user to get the credit limit list if company id exist' do
+      it 'does the values according to the formula' do
+        get :credit_limit_list, params: {company_id: @company.id}
+        company = Company.find_by(id: @company.id)
+        current_company = @customer.company
+        credit = CreditLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
+        credit_limit = credit.present? ? credit.credit_limit : 0.0
+        get_used_credit_limit = Transaction.where(buyer_id: company.id, seller_id: current_company.id, paid: false, buyer_confirmed: true).sum(:remaining_amount).to_f
+
+        available_credit_limit = credit_limit.to_f - get_used_credit_limit.to_f
+        if available_credit_limit < 0
+          available_credit_limit = 0.0
+        end
+
+        days_limit = DaysLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
+        limit_days = days_limit.present? ? "#{days_limit.days_limit.to_i}"+ " "+ "days" : "30 days"
+        supplier_paid = @company.supplier_paid
+
+        expect(credit_limit).to eq(JSON.parse(response.body)['limits']['total_limit'])
+        expect(get_used_credit_limit).to eq(JSON.parse(response.body)['limits']['used_limit'])
+        expect(limit_days).to eq(JSON.parse(response.body)['limits']['overdue_limit'])
+        expect(supplier_paid).to eq(JSON.parse(response.body)['limits']['supplier_connected'])
+      end
+    end
+
+    context 'when authorized user to get the credit limit list if company id is not exist' do
+      it 'does the values according to the formula' do
+        get :credit_limit_list
+        company = Company.find_by(id: @company.id)
+        current_company = @customer.company
+        credit = CreditLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
+        credit_limit = credit.present? ? credit.credit_limit : 0.0
+        get_used_credit_limit = Transaction.where(buyer_id: company.id, seller_id: current_company.id, paid: false, buyer_confirmed: true).sum(:remaining_amount).to_f
+
+        available_credit_limit = credit_limit.to_f - get_used_credit_limit.to_f
+        if available_credit_limit < 0
+          available_credit_limit = 0.0
+        end
+
+        days_limit = DaysLimit.find_by(buyer_id: company.id, seller_id: current_company.id)
+        limit_days = days_limit.present? ? "#{days_limit.days_limit.to_i}"+ " "+ "days" : "30 days"
+        supplier_paid = @company.supplier_paid
+
+        expect(credit_limit).to eq(JSON.parse(response.body)['limits'].first['total_limit'])
+        expect(get_used_credit_limit).to eq(JSON.parse(response.body)['limits'].first['used_limit'])
+        expect(limit_days).to eq(JSON.parse(response.body)['limits'].first['overdue_limit'])
+        expect(supplier_paid).to eq(JSON.parse(response.body)['limits'].first['supplier_connected'])
+      end
+    end
   end
 end
