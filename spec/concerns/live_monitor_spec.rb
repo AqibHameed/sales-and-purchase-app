@@ -4,22 +4,26 @@ include LiveMonitor
 describe LiveMonitor do
 
   before(:all) do
+    roles = [Role::BUYER, Role::BROKER, Role::TRADER, Role::SUPPLIER]
+    roles.each do |role|
+      create(:role, name: role)
+    end
     seller_company = Company.create(name: Faker::Name.name)
     sellercompany = Company.create(name: Faker::Name.name)
     sellercompany1 = Company.create(name: Faker::Name.name)
     buyer_company = Company.create(name: Faker::Name.name)
     @customer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                                 password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                                role: "Buyer/Seller", confirmed_at: Time.current, company: seller_company, authentication_token: Devise.friendly_token)
+                                role: Role::TRADER, confirmed_at: Time.current, company: seller_company, authentication_token: Devise.friendly_token)
     @seller = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                               password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                              role: "Buyer/Seller", confirmed_at: Time.current, company: sellercompany, authentication_token: Devise.friendly_token)
+                              role: Role::TRADER, confirmed_at: Time.current, company: sellercompany, authentication_token: Devise.friendly_token)
     @seller1 = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                               password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                              role: "Buyer/Seller", confirmed_at: Time.current, company: sellercompany1, authentication_token: Devise.friendly_token)
+                              role: Role::TRADER, confirmed_at: Time.current, company: sellercompany1, authentication_token: Devise.friendly_token)
     @buyer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                              password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                             role: "Buyer/Seller", confirmed_at: Time.current, company: buyer_company, authentication_token: Devise.friendly_token)
+                             role: Role::TRADER, confirmed_at: Time.current, company: buyer_company, authentication_token: Devise.friendly_token)
     create(:customer_role, customer: @customer)
   end
   before(:each) do
@@ -59,7 +63,7 @@ describe LiveMonitor do
         new_company = Company.create(name: Faker::Name.name)
         new_seller = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                                     password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                                    role: "Buyer/Seller", confirmed_at: Time.current, company: new_company, authentication_token: Devise.friendly_token)
+                                    role: Role::TRADER, confirmed_at: Time.current, company: new_company, authentication_token: Devise.friendly_token)
         parcel = create(:trading_parcel, customer: @customer, company: new_seller.company)
         transaction = create(:transaction, buyer_id: @buyer.company_id,
                seller_id: new_seller.company_id,

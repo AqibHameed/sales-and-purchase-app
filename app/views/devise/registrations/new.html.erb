@@ -41,7 +41,7 @@
 
         <div class="field">
           <%= f.label :role %><br />
-          <%= f.select :role, options_for_select(['Buyer/Seller', "Broker"]), {},  class: 'input form-control', autocomplete: "off", style: "width: 330px;" %>
+          <%= f.select :role, options_for_select([Role::TRADER, Role::BROKER]), {},  class: 'input form-control', autocomplete: "off", style: "width: 330px;" %>
         </div>
 
         <div class="field">

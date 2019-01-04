@@ -21,7 +21,7 @@ class RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
     unless sign_up_params[:role].blank? || sign_up_params[:company_id].blank?
       if sign_up_params[:role] == 'Broker'
-        company.try(:customers).present? ? resource.errors.add(:company, 'already registered as buyer/seller') : ''
+        company.try(:customers).present? ? resource.errors.add(:company, 'already registered as Trader') : ''
       else
         company.is_broker ? resource.errors.add(:company, 'already registered as broker') : ''
       end

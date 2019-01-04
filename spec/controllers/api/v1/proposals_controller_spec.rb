@@ -1,11 +1,8 @@
 require 'rails_helper'
 RSpec.describe Api::V1::ProposalsController do
   before(:all) do
-    company = Company.create(name: Faker::Name.name)
-    @customer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
-                                password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                                role: "Buyer/Seller", confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
-    create(:customer_role, customer: @customer)
+    create_roles
+    @customer = create_customer
     @buyer = create_buyer
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
     @parcel = create(:trading_parcel, customer: @buyer, company: @customer.company)

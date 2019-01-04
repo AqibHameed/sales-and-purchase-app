@@ -1,6 +1,7 @@
 require 'rails_helper'
 RSpec.describe Api::V1::TransactionsController do
   before(:all) do
+    create_roles
     @customer = create_customer
     @buyer = create_buyer
     @parcel = create_parcel(@customer)

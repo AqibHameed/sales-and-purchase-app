@@ -19,7 +19,7 @@ module ControllerMacros
    company = Company.create(name: Faker::Name.name)
    buyer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                                       password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                                      role: "Buyer/Seller", confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
+                                      role: Role::TRADER, confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
     create(:customer_role, customer: buyer)
     buyer
   end
@@ -40,7 +40,7 @@ module ControllerMacros
     company = Company.create(name: Faker::Name.name)
     broker = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                                password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                               role: "Broker", confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
+                               role: Role::BROKER, confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
     role = create(:role, name: 'Broker')
     create(:customer_role, customer: broker, role: role)
     broker
@@ -50,9 +50,16 @@ module ControllerMacros
     company = Company.create(name: Faker::Name.name)
     customer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                     password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                    role: "Buyer/Seller", confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
+                    role: Role::TRADER, confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
     create(:customer_role, customer: customer)
     customer
+  end
+
+  def create_roles
+    roles = [Role::BUYER, Role::BROKER, Role::TRADER, Role::SUPPLIER]
+    roles.each do |role|
+      create(:role, name: role)
+    end
   end
 
   def create_sources(source, seller, buyer)

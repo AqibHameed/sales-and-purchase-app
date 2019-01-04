@@ -1,5 +1,8 @@
 require 'rails_helper'
 RSpec.describe Api::V1::RegistrationsController do
+  before(:all) do
+    create_roles
+  end
   before(:each) do
       @company = create(:company, is_broker: true)
       @customer = create(:customer, company: @company)
@@ -37,7 +40,7 @@ RSpec.describe Api::V1::RegistrationsController do
             company_id: @company.id
           }
         }
-        response.body.should have_content('Company already registered as buyer/seller')
+        response.body.should have_content('Company already registered as Trader')
       end
     end
 
@@ -59,11 +62,11 @@ RSpec.describe Api::V1::RegistrationsController do
       end
     end
 
-    context 'when role is Buyer/Seller and company customer exist' do
+    context 'when role is Trader and company customer exist' do
       it 'does not create a customer' do
         post :create, params: { registration: {
             company_individual: 'Individual',
-            role: 'Buyer/Seller',
+            role: Role::TRADER,
             first_name: FFaker::Name.first_name,
             last_name: FFaker::Name.last_name,
             email: FFaker::Internet.email,
@@ -77,7 +80,7 @@ RSpec.describe Api::V1::RegistrationsController do
       end
     end
 
-    context 'when role is Buyer/Seller and company customer exist' do
+    context 'when role is Trader and company customer exist' do
       it 'does not create a customer' do
         post :create, params: { registration: {
             company_individual: 'Individual',

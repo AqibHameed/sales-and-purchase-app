@@ -7,9 +7,9 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
-roles = ['Buyer', 'Seller', 'Supplier', 'Broker']
+roles = [Role::BUYER, Role::TRADER, Role::SUPPLIER, Role::BROKER]
 roles.each do |role|
-  Role.create(name: role)
+  Role.find_or_create_by(name: role)
 end
 
 Admin.create(email: 'admin@prismlab.co', password: 'password', password_confirmation: 'password')

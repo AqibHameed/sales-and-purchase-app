@@ -19,7 +19,7 @@ class Api::V1::RegistrationsController < ActionController::Base
       "company_id":"4",
       "mobile_no":"12345688898",
       "country_code":"86",
-      "role": "Buyer/Seller/Broker",
+      "role": "Buyer/Trader/Broker",
       "company_individual": "Individual"
     }
   }
@@ -65,7 +65,7 @@ class Api::V1::RegistrationsController < ActionController::Base
       "company_id":"4",
       "mobile_no":"12345688898",
       "country_code":"86",
-      "role": "Buyer/Seller/Broker",
+      "role": "Trader/Broker",
       "company_individual": "Individual"
     }
   }
@@ -75,7 +75,7 @@ class Api::V1::RegistrationsController < ActionController::Base
 {
   {
       "errors": [
-          "Company already registered as buyer/seller"
+          "Company already registered as Trader"
       ],
       "response_code": 201
   }
@@ -95,7 +95,7 @@ class Api::V1::RegistrationsController < ActionController::Base
       @company = Company.find(params[:registration][:company_id])
     else
       if params[:registration][:company_individual].present?
-        if params[:registration][:company_individual] == "Individual" && params[:registration][:role] == 'Broker'
+        if params[:registration][:company_individual] == "Individual" && params[:registration][:role] == Role::BROKER
           string = "#{params[:registration][:first_name]}"+"#{params[:registration][:last_name]}"+"("+"#{params[:registration][:role]}"+")"
           @company = Company.where(name: string).first_or_create
           params[:registration].delete("company_id")
@@ -106,8 +106,8 @@ class Api::V1::RegistrationsController < ActionController::Base
     customer = Customer.new(customer_params)
 
     unless params[:registration][:role].blank? || params[:registration][:company_id].blank?
-      if params[:registration][:role] == 'Broker'
-        @company.try(:customers).present? ? customer.errors.add(:company, 'already registered as buyer/seller') : ''
+      if params[:registration][:role] == Role::BROKER
+        @company.try(:customers).present? ? customer.errors.add(:company, 'already registered as Trader') : ''
       else
         @company.is_broker ? customer.errors.add(:company, 'already registered as broker') : ''
       end

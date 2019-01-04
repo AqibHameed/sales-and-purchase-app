@@ -1,6 +1,7 @@
 require 'rails_helper'
 RSpec.describe Api::V1::BrokersController do
   before(:all) do
+    create_roles
     1.upto(5) do
       @customer = create_customer
     end
