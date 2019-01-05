@@ -211,4 +211,38 @@ RSpec.describe Api::V1::CompaniesController do
       end
     end
   end
+
+  describe '#invite' do
+    context 'when unknown user invite the other company' do
+      it 'does show message not authenticated user' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        post :invite, params: {company: @buyer.company.name, county: @buyer.company.county}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authenticated user invite the other company' do
+      it 'does show message Company is invited successfully' do
+        post :invite, params: {company: Faker::Name.name, county: Faker::Address.country}
+        response.body.should have_content('Company is invited successfully')
+      end
+    end
+  end
+
+  describe '#send_feedback' do
+    context 'when unknown user send feedback' do
+      it 'does show message not authenticated user' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        post :send_feedback, params: {star: Faker::Number.number(1), comment: Faker::Lorem.sentence}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authenticated user send feedback' do
+      it 'does show message Feedback is submitted successfully' do
+        post :send_feedback, params: {star: Faker::Number.number(1), comment: Faker::Lorem.sentence}
+        response.body.should have_content('Feedback is submitted successfully')
+      end
+    end
+  end
 end
