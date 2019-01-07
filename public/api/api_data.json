@@ -237,6 +237,64 @@
   },
   {
     "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/brokers/accept",
+    "title": "",
+    "name": "Accept_request",
+    "group": "Brokers",
+    "description": "<p>accept request seller to broker or broker to seller</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"request_id\": 3\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  success: true,\n  message: 'Request accepted successfully.',\n  status: 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/brokers/send_request",
+    "title": "",
+    "name": "Send_request",
+    "group": "Brokers",
+    "description": "<p>send request seller to broker, broker to seller</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"company\": \"broker1(Broker)\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Request sent successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
     "type": "get",
     "url": "/api/v1/brokers/assigned_parcels",
     "title": "",
@@ -248,6 +306,173 @@
         {
           "title": "SuccessResponse:",
           "content": "{\n    \"success\": true,\n    \"parcels\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/company_record_on_the_basis_of_roles",
+    "title": "",
+    "name": "company_record_on_the_basis_of_roles",
+    "group": "Brokers",
+    "description": "<p>get company record on the basis of roles</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"pagination\": {\n      \"total_pages\": 1,\n      \"prev_page\": null,\n      \"next_page\": null,\n      \"current_page\": 1\n  },\n  \"company_record_on_the_basis_of_roles\": [\n      {\n          \"id\": 2,\n          \"name\": \"Buyer B\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 3,\n          \"name\": \"Buyer C\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 5,\n          \"name\": \"Seller B\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 6,\n          \"name\": \"Seller C\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 7,\n          \"name\": \"Dummy Buyer 1\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 8,\n          \"name\": \"Dummy Seller 1\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 9,\n          \"name\": \"Dummy Seller 2\",\n          \"status\": \"SendRequest\"\n      },\n      {\n          \"id\": 10,\n          \"name\": \"Dummy Buyer 2\",\n          \"status\": \"SendRequest\"\n      }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/dashboard",
+    "title": "",
+    "name": "dashboard",
+    "group": "Brokers",
+    "description": "<p>get the list of assign parcel to broker</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"parcels\": [\n      {\n          \"description\": \"Dummy Parcel for Demo\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 6\n      },\n      {\n          \"description\": \"Dummy Parcel for Demo\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 6\n      },\n      {\n          \"description\": \"Basket +14.8 ct-buffer\",\n          \"no_of_parcels\": 1,\n          \"no_of_demands\": 1\n      },\n      {\n          \"description\": \"+9 SAWABLES LIGHT\",\n          \"no_of_parcels\": 0,\n          \"no_of_demands\": 5\n      }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/demanding_companies?id=1",
+    "title": "",
+    "name": "demanding_companies",
+    "group": "Brokers",
+    "description": "<p>buyers who are demanding that description of parcel</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n    \"id\": \"1\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"companies\": [\n      {\n          \"id\": 7,\n          \"name\": \"Dummy Buyer 1\",\n          \"mobile_no\": \"+11111234455\"\n      },\n      {\n          \"id\": 7,\n          \"name\": \"Dummy Buyer 1\",\n          \"mobile_no\": \"+11111234455\"\n      },\n      {\n          \"id\": 9,\n          \"name\": \"Dummy Seller 2\",\n          \"mobile_no\": \"+11111231122\"\n      },\n      {\n          \"id\": 9,\n          \"name\": \"Dummy Seller 2\",\n          \"mobile_no\": \"+11111231122\"\n      },\n      {\n          \"id\": 10,\n          \"name\": \"Dummy Buyer 2\",\n          \"mobile_no\": \"+11111233344\"\n      },\n      {\n          \"id\": 10,\n          \"name\": \"Dummy Buyer 2\",\n          \"mobile_no\": \"+11111233344\"\n      }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/brokers/reject",
+    "title": "",
+    "name": "reject_request",
+    "group": "Brokers",
+    "description": "<p>reject request seller to broker or broker to seller</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"request_id\": 3\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  success: true,\n  message: 'Request rejected successfully.',\n  status: 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/brokers/remove",
+    "title": "",
+    "name": "remove_request",
+    "group": "Brokers",
+    "description": "<p>reomve  seller or broker</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"request_id\": 3\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  success: true,\n  message: 'You have removed successfully.',\n  status: 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/show_myclients",
+    "title": "",
+    "name": "show_all_connected_sellers_buyers_or_brokers",
+    "group": "Brokers",
+    "description": "<p>show connected sellers/buyers or broker</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"response_code\": 200,\n    \"myclients\": [\n        {\n            \"request_id\": 9,\n            \"broker_name\": \"broker 1\",\n            \"seller_buyer_name\": \"broker1(Broker)\"\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/brokers_controller.rb",
+    "groupTitle": "Brokers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/brokers/show_requests",
+    "title": "",
+    "name": "show_requests",
+    "group": "Brokers",
+    "description": "<p>show requests incoming from sellers/buyers or broker</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"response_code\": 200,\n    \"requests\": [\n        {\n            \"request_id\": 8,\n            \"broker_name\": \"broker 1\",\n            \"seller_buyer_name\": \"broker1(Broker)\"\n        }\n    ]\n}",
           "type": "json"
         }
       ]
@@ -965,12 +1190,12 @@
       "examples": [
         {
           "title": "Request-Example1:",
-          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Seller/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
+          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Trader/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
           "type": "json"
         },
         {
           "title": "Request-Example1:",
-          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Buyer/Seller/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
+          "content": "{\n\t{\n   \"registration\": {\n      \"first_name\":\"umair\",\n      \"last_name\":\"raza\",\n      \"email\":\"umair@gmail.com\",\n      \"password\":\"password\",\n      \"confirmPassword\":\"password\",\n      \"company_id\":\"4\",\n      \"mobile_no\":\"12345688898\",\n      \"country_code\":\"86\",\n      \"role\": \"Trader/Broker\",\n      \"company_individual\": \"Individual\"\n    }\n  }\n}",
           "type": "json"
         }
       ]
@@ -984,7 +1209,7 @@
         },
         {
           "title": "SuccessResponse1:",
-          "content": "{\n  {\n      \"errors\": [\n          \"Company already registered as buyer/seller\"\n      ],\n      \"response_code\": 201\n  }\n}",
+          "content": "{\n  {\n      \"errors\": [\n          \"Company already registered as Trader\"\n      ],\n      \"response_code\": 201\n  }\n}",
           "type": "json"
         }
       ]
@@ -1004,7 +1229,7 @@
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"customer\": {\n        \"id\": 5,\n        \"email\": \"testing@gmail.com\",\n        \"designation\": \"Buyer/Seller\",\n        \"created_at\": \"2018-10-30T07:26:20.000Z\",\n        \"updated_at\": \"2018-11-01T11:19:12.000Z\",\n        \"first_name\": \"abc\",\n        \"last_name\": \"def\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy co. 3\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+971 551114466\",\n        \"authentication_token\": \"hGazWDBk_Pkh8wn2jA\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"customer\": {\n        \"id\": 5,\n        \"email\": \"testing@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-10-30T07:26:20.000Z\",\n        \"updated_at\": \"2018-11-01T11:19:12.000Z\",\n        \"first_name\": \"abc\",\n        \"last_name\": \"def\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy co. 3\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+971 551114466\",\n        \"authentication_token\": \"hGazWDBk_Pkh8wn2jA\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1033,7 +1258,7 @@
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"customer\": {\n        \"id\": 21,\n        \"email\": \"umair.raza101@gmail.com\",\n        \"designation\": \"Buyer/Seller\",\n        \"created_at\": \"2018-12-07T15:00:19.000Z\",\n        \"updated_at\": \"2018-12-17T18:32:41.000Z\",\n        \"first_name\": \"Umair\",\n        \"last_name\": \"Raza\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy Seller 1\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+1\",\n        \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"customer\": {\n        \"id\": 21,\n        \"email\": \"umair.raza101@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-12-07T15:00:19.000Z\",\n        \"updated_at\": \"2018-12-17T18:32:41.000Z\",\n        \"first_name\": \"Umair\",\n        \"last_name\": \"Raza\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy Seller 1\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+1\",\n        \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1300,7 +1525,7 @@
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [],\n    \"response_code\": 200\n}",
+          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]
@@ -1420,7 +1645,7 @@
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\"trading_parcel\":\n   {\n   \t   \"source\": \"SPECIAL\",\n\t   \"description\": \"5-10 Cts BLK CLIV WHITE\",\n\t   \"credit_period\": \"2000\",\n\t   \"no_of_stones\": \"10\",\n\t   \"total_value\": 5000.0,\n\t   \"percent\": \"10\",\n\t   \"cost\": 4500.0,\n\t   \"avg_price\": 5000.0,\n\t   \"carats\": 1,\n\t   \"comment\": \"\",\n\t   \"discout\": \"\",\n\t   \"sight\": \"\",\n\t   \"lot_no\":\"\"\n   }\n}",
+          "content": "{\"trading_parcel\":\n   {\n   \t   \"source\": \"SPECIAL\",\n\t   \"description\": \"5-10 Cts BLK CLIV WHITE\",\n\t   \"credit_period\": \"2000\",\n\t   \"no_of_stones\": \"10\",\n\t   \"total_value\": 5000.0,\n\t   \"percent\": \"10\",\n\t   \"cost\": 4500.0,\n\t   \"avg_price\": 5000.0,\n\t   \"carats\": 1,\n\t   \"comment\": \"\",\n\t   \"discout\": \"\",\n\t   \"sight\": \"\",\n\t   \"lot_no\":\"\",\n\t   \"parcel_size_infos_attributes\":[\n\t   \t  {\n\t   \t    \"size\": \"M\",\n\t   \t    \"percent\": 20,\n\t   \t    \"_destroy\": \"false\"\n\t   \t  },\n\t   \t  {\n\t   \t    \"size\": \"1\",\n\t   \t    \"percent\": 30,\n\t   \t    \"_destroy\": \"false\"\n\t   \t  }\n\t   ]\n   }\n}",
           "type": "json"
         }
       ]

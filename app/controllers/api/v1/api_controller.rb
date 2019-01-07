@@ -12,10 +12,10 @@ class Api::V1::ApiController < ApplicationController
 
 
   def current_customer
-    token = request.headers['Authorization'].presence
-    if token
-      @current_customer ||= Customer.find_by_authentication_token(token)
-    end
+     token = request.headers['Authorization'].presence
+     if token
+       @current_customer ||= Customer.find_by_authentication_token(token)
+     end
   end
 
 =begin
@@ -456,13 +456,13 @@ need to check
     if parcel_id
       TradingParcel.find parcel_id
     elsif source and description
-      TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished').where("description LIKE ? or source=? ", description, source)
+      TradingParcel.where(sold: false).where("description LIKE ? AND source=? ", description, source)
     elsif source
-      TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished').where(source: source)
+      TradingParcel.where(sold: false).where(source: source)
     elsif description
-      TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished').where("description LIKE ?", description)
+      TradingParcel.where(sold: false).where("description LIKE ?", description)
     else
-      TradingParcel.where(sold: false).where.not(description: 'Dummy Parcel for Demo', diamond_type: 'Polished')
+      TradingParcel.where(sold: false)
     end
   end
 

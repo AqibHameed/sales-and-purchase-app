@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181219120641) do
+ActiveRecord::Schema.define(version: 20190105113220) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -111,6 +111,8 @@ ActiveRecord::Schema.define(version: 20181219120641) do
     t.boolean "accepted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sender_id"
+    t.integer "receiver_id"
   end
 
   create_table "buyer_scores", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
@@ -364,7 +366,7 @@ ActiveRecord::Schema.define(version: 20181219120641) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "email_attachments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "email_attachments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "file_file_name"
     t.string "file_content_type"
     t.integer "file_file_size"
@@ -375,7 +377,7 @@ ActiveRecord::Schema.define(version: 20181219120641) do
     t.integer "tender_id"
   end
 
-  create_table "email_templates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "email_templates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "type_of_event"
     t.string "before_here"
     t.string "after_here"
@@ -494,7 +496,7 @@ ActiveRecord::Schema.define(version: 20181219120641) do
   create_table "parcel_size_infos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "carats"
     t.string "size"
-    t.string "percent"
+    t.integer "percent"
     t.integer "trading_parcel_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -583,7 +585,7 @@ ActiveRecord::Schema.define(version: 20181219120641) do
     t.index ["deleted_at"], name: "index_proposals_on_deleted_at"
   end
 
-  create_table "push_notifications", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "push_notifications", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "type_of_event"
     t.text "message"
     t.datetime "created_at", null: false
@@ -612,7 +614,7 @@ ActiveRecord::Schema.define(version: 20181219120641) do
     t.string "flag_type", default: "Imp"
   end
 
-  create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -699,7 +701,7 @@ ActiveRecord::Schema.define(version: 20181219120641) do
     t.float "starting_price", limit: 24
   end
 
-  create_table "stone_ratings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
+  create_table "stone_ratings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "stone_id"
     t.integer "customer_id"
     t.string "comments"

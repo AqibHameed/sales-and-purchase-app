@@ -425,6 +425,7 @@ module Api
 
       def negotiation_params
         params.permit(:price, :credit, :total_value, :percent, :comment)
+        params.permit(:price, :credit, :total_value, :percent, :comment)
       end
 
       def verify_current_company

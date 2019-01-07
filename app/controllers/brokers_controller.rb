@@ -1,10 +1,12 @@
 class BrokersController < ApplicationController
   before_action :authenticate_customer!
-  before_action :check_authorization, except: [:reject, :accept, :remove, :requests]
+  before_action :check_record_exit?, only: [:send_request]
+  before_action :check_authorization, except: [:reject, :accept, :remove, :requests, :index, :send_request]
   before_action :load_request, only: [:accept, :reject, :remove]
 
   def index
     @sellers = Company.get_sellers
+    @brokers = Company.get_brokers
   end
 
   def dashboard
@@ -12,11 +14,24 @@ class BrokersController < ApplicationController
   end
 
   def send_request
-    broker_request = BrokerRequest.where(broker_id: current_company.id, seller_id: params[:s]).first_or_initialize do |br|
-      br.accepted = false
+    if current_company.is_broker?
+      broker_request = BrokerRequest.where(broker_id: current_company.id,
+                                           seller_id: params[:s],
+                                           sender_id: current_company.id,
+                                           receiver_id: params[:s]).first_or_initialize do |br|
+        br.accepted = false
+      end
+    else
+      broker_request = BrokerRequest.where(broker_id: params[:s],
+                                           seller_id: current_company.id,
+                                           sender_id: current_company.id,
+                                           receiver_id: params[:s]).first_or_initialize do |br|
+        br.accepted = false
+      end
     end
     if broker_request.save
-      Message.create_new_broker(broker_request, current_company)
+      Message.create_new_broker(broker_request, current_company) if current_company.is_broker?
+      Message.create_new_seller(broker_request, current_company) unless current_company.is_broker?
       flash[:notice] = 'Request sent successfully.'
       redirect_to brokers_path
     else
@@ -26,8 +41,19 @@ class BrokersController < ApplicationController
   end
 
   def requests
-    @requests = BrokerRequest.where(seller_id: current_company.id, accepted: false)
-    @my_brokers = BrokerRequest.where(seller_id: current_company.id, accepted: true)
+    if current_company.is_broker?
+      @requests = BrokerRequest.where(broker_id: current_company.id,
+                                      accepted: false,
+                                      receiver_id: current_company.id)
+      @my_brokers = BrokerRequest.where(broker_id: current_company.id,
+                                        accepted: true)
+    else
+      @requests = BrokerRequest.where(seller_id: current_company.id,
+                                      accepted: false,
+                                      receiver_id: current_company.id)
+      @my_brokers = BrokerRequest.where(seller_id: current_company.id,
+                                        accepted: true)
+    end
   end
 
   def accept
@@ -88,6 +114,19 @@ class BrokersController < ApplicationController
       # do nothing
     else
       redirect_to trading_customers_path, notice: 'You are not authorized.'
+    end
+  end
+
+  def check_record_exit?
+    if current_company.is_broker?
+      request = BrokerRequest.find_by(seller_id: params[:s], broker_id: current_company.id)
+    else
+      request = BrokerRequest.find_by(seller_id: current_company.id, broker_id: params[:s])
+    end
+    if request.present?
+      flash[:notice] = 'You both are already connected.' if request.accepted?
+      flash[:notice] = 'status is already requested.' unless request.accepted?
+      redirect_to requests_brokers_path
     end
   end
 end

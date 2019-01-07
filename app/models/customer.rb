@@ -50,9 +50,10 @@ class Customer < ApplicationRecord
 
   # send_account_creation_mail
   # Callback add_user_to_tenders
-  after_create :create_update_firebase_user, :assign_role_to_customer, :check_for_confirmation
+  after_create :create_update_firebase_user unless  Rails.env == 'test'
+  after_create :assign_role_to_customer, :check_for_confirmation
   after_destroy :delete_firebase_user
-  after_update :create_update_firebase_user
+  after_update :create_update_firebase_user unless  Rails.env == 'test'
   after_invitation_accepted :set_roles_to_customer
 
   has_attached_file :certificate
@@ -165,11 +166,11 @@ class Customer < ApplicationRecord
   end
 
   def assign_role_to_customer
-    if self.role == "Buyer/Seller"
-      CustomerRole.create(role_id: 1, customer_id: self.id)
-      CustomerRole.create(role_id: 2, customer_id: self.id)
-    elsif self.role == "Broker"
-      CustomerRole.create(role_id: 4, customer_id: self.id)
+    customer_role = Role.find_by(name: self.role)
+    if self.role == Role::TRADER
+      CustomerRole.create(role_id: customer_role.id, customer_id: self.id)
+    elsif self.role == Role::BROKER
+      CustomerRole.create(role_id: customer_role.id, customer_id: self.id)
       company.update(is_broker: true)
     end
     invite = BrokerInvite.where(email: self.email).first

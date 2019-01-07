@@ -276,9 +276,48 @@ module Api
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
-    "tender_parcels": [],
+    "tender_parcels": [
+        {
+            "id": 1270,
+            "stone_type": "Parcel",
+            "no_of_stones": 14,
+            "size": null,
+            "weight": 206.61,
+            "purity": null,
+            "color": null,
+            "polished": null,
+            "deec_no": 1,
+            "lot_no": 1,
+            "description": "+10.8CT CLIVAGE",
+            "comments": null,
+            "valuation": null,
+            "parcel_rating": null,
+            "images": [],
+            "winners_data": [],
+            "highlight_parcel": false
+        },
+        {
+            "id": 1271,
+            "stone_type": "Parcel",
+            "no_of_stones": 2,
+            "size": null,
+            "weight": 24.6,
+            "purity": null,
+            "color": null,
+            "polished": null,
+            "deec_no": 2,
+            "lot_no": 2,
+            "description": "+10.8CT BROWN MIX",
+            "comments": null,
+            "valuation": null,
+            "parcel_rating": null,
+            "images": [],
+            "winners_data": [],
+            "highlight_parcel": false
+        }
+    ],
     "response_code": 200
-}
+  }
 =end
 
       def tender_parcel
@@ -494,6 +533,7 @@ module Api
         @stones = []
         stones.each do |stone|
           stone_rating = stone.stone_ratings.where(customer_id: current_customer.try(&:id)).last
+          stone_image = stone.parcel_images.where(customer_id: current_customer.try(&:id)).last
           @stones << {
               id: stone.id,
               stone_type: stone.stone_type,
@@ -510,7 +550,8 @@ module Api
               valuation: stone_rating.try(:valuation),
               parcel_rating: stone_rating.try(:parcel_rating),
               images: parcel_images(stone),
-              winners_data: historical_data(stone.try(:tender).try(:id), stone)
+              winners_data: historical_data(stone.try(:tender).try(:id), stone),
+              highlight_parcel: stone_rating.present? || stone_image.present?
           }
         end
         @stones
