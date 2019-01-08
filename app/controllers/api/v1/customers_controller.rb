@@ -3,6 +3,22 @@ module Api
     class CustomersController < ApiController
       skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request]
       before_action :current_customer
+      MOBILE_TILES_SHOW = {
+          0 => 'Smart Search',
+          1 => 'Available Parcel',
+          2 => 'Inbox',
+          3 => 'History',
+          4 =>  'Live Monitor',
+          5 => 'Public Channels',
+          6 => 'Feedback',
+          7 => 'Share App',
+          8 => 'Invite',
+          9 => 'Current Tenders',
+          10 => 'Upcoming Tenders',
+          11 => 'Protection',
+          12 => 'Record Sale',
+          13 => 'Past Tenders'
+      }
 
       def profile
         if current_customer
@@ -78,6 +94,47 @@ module Api
           end
         else
           render json: { success: false, message: 'Invalid Customer ID', response_code: 201 }
+        end
+      end
+
+      def access_tiles
+        if current_customer
+
+            if current_customer.has_role?("Buyer")
+              @messages = [{MOBILE_TILES_SHOW[0] => true}, {MOBILE_TILES_SHOW[2] => true}, {MOBILE_TILES_SHOW[3] => true}]
+              render json: { success: true, messages: @messages }
+
+            elsif current_customer.has_role?("Trader")
+              @messages <<  {MOBILE_TILES_SHOW[0] => true}
+              @messages << {MOBILE_TILES_SHOW[1] => true}
+              @messages << {MOBILE_TILES_SHOW[2] => true}
+              @messages << {MOBILE_TILES_SHOW[3] => true}
+              @messages << {MOBILE_TILES_SHOW[4] => true}
+              @messages << {MOBILE_TILES_SHOW[5] => true}
+              @messages << {MOBILE_TILES_SHOW[6] => true}
+              @messages << {MOBILE_TILES_SHOW[7] => true}
+              @messages << {MOBILE_TILES_SHOW[8] => true}
+              @messages << {MOBILE_TILES_SHOW[9] => true}
+              @messages << {MOBILE_TILES_SHOW[10] => true}
+              @messages << {MOBILE_TILES_SHOW[11] => true}
+              @messages << {MOBILE_TILES_SHOW[12] => true}
+              @messages << {MOBILE_TILES_SHOW[13] => true}
+
+              render status: :ok, template: "api/v1/customers/permission.json.jbuilder"
+
+            elsif current_customer.has_role?("Broker")
+              @messages << {MOBILE_TILES_SHOW[5] => true}
+              @messages << {MOBILE_TILES_SHOW[6] => true}
+              @messages << {MOBILE_TILES_SHOW[7] => true}
+              @messages << {MOBILE_TILES_SHOW[8] => true}
+              @messages << {MOBILE_TILES_SHOW[9] => true}
+              @messages << {MOBILE_TILES_SHOW[10] => true}
+              @messages << {MOBILE_TILES_SHOW[13] => true}
+
+              render status: :ok, template: "api/v1/customers/permission.json.jbuilder"
+            end
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
         end
       end
 

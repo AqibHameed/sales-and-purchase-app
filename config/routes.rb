@@ -392,6 +392,7 @@ Rails.application.routes.draw do
       post '/approve_reject', to: 'customers#approve_reject_customer_request'
       patch '/update_password', to: 'customers#update_password'
       get '/user_requests', to: 'customers#get_user_requests'
+      get '/access_tiles', to: 'customers#access_tiles'
     end
   end
 
