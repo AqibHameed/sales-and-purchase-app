@@ -105,32 +105,19 @@ module Api
               render json: { success: true, messages: @messages }
 
             elsif current_customer.has_role?("Trader")
-              @messages <<  {MOBILE_TILES_SHOW[0] => true}
-              @messages << {MOBILE_TILES_SHOW[1] => true}
-              @messages << {MOBILE_TILES_SHOW[2] => true}
-              @messages << {MOBILE_TILES_SHOW[3] => true}
-              @messages << {MOBILE_TILES_SHOW[4] => true}
-              @messages << {MOBILE_TILES_SHOW[5] => true}
-              @messages << {MOBILE_TILES_SHOW[6] => true}
-              @messages << {MOBILE_TILES_SHOW[7] => true}
-              @messages << {MOBILE_TILES_SHOW[8] => true}
-              @messages << {MOBILE_TILES_SHOW[9] => true}
-              @messages << {MOBILE_TILES_SHOW[10] => true}
-              @messages << {MOBILE_TILES_SHOW[11] => true}
-              @messages << {MOBILE_TILES_SHOW[12] => true}
-              @messages << {MOBILE_TILES_SHOW[13] => true}
+              @messages = [{MOBILE_TILES_SHOW[0] => true}, {MOBILE_TILES_SHOW[1] => true}, {MOBILE_TILES_SHOW[2] => true},
+                           {MOBILE_TILES_SHOW[3] => true}, {MOBILE_TILES_SHOW[4] => true}, {MOBILE_TILES_SHOW[5] => true},
+                           {MOBILE_TILES_SHOW[6] => true}, {MOBILE_TILES_SHOW[7] => true}, {MOBILE_TILES_SHOW[8] => true},
+                           {MOBILE_TILES_SHOW[9] => true}, {MOBILE_TILES_SHOW[10] => true}, {MOBILE_TILES_SHOW[11] => true},
+                           {MOBILE_TILES_SHOW[12] => true}, {MOBILE_TILES_SHOW[13] => true}]
 
               render status: :ok, template: "api/v1/customers/permission.json.jbuilder"
 
             elsif current_customer.has_role?("Broker")
-              @messages << {MOBILE_TILES_SHOW[5] => true}
-              @messages << {MOBILE_TILES_SHOW[6] => true}
-              @messages << {MOBILE_TILES_SHOW[7] => true}
-              @messages << {MOBILE_TILES_SHOW[8] => true}
-              @messages << {MOBILE_TILES_SHOW[9] => true}
-              @messages << {MOBILE_TILES_SHOW[10] => true}
-              @messages << {MOBILE_TILES_SHOW[13] => true}
-
+              @messages =[{MOBILE_TILES_SHOW[5] => true}, {MOBILE_TILES_SHOW[6] => true}, {MOBILE_TILES_SHOW[7] => true},
+                          {MOBILE_TILES_SHOW[8] => true}, {MOBILE_TILES_SHOW[9] => true}, {MOBILE_TILES_SHOW[10] => true},
+                          {MOBILE_TILES_SHOW[13] => true}]
+              
               render status: :ok, template: "api/v1/customers/permission.json.jbuilder"
             end
         else
