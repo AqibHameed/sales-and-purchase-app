@@ -15,8 +15,10 @@ class CreateTilesCounts < ActiveRecord::Migration[5.1]
       t.integer :protection, default: 0
       t.integer :record_sale, default: 0
       t.integer :past_tenders, default: 0
+      t.integer :customer_id
 
       t.timestamps
     end
+    add_index :tiles_counts, :customer_id
   end
 end

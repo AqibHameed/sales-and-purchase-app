@@ -894,8 +894,10 @@ ActiveRecord::Schema.define(version: 20190109143315) do
     t.integer "protection", default: 0
     t.integer "record_sale", default: 0
     t.integer "past_tenders", default: 0
+    t.integer "customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_tiles_counts_on_customer_id"
   end
 
   create_table "trading_documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
