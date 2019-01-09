@@ -18,6 +18,11 @@ class Api::V1::ApiController < ApplicationController
      end
   end
 
+  def titles_count
+    
+  end
+
+
 =begin
  @apiVersion 1.0.0
  @api {get} /api/v1/app_versions

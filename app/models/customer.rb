@@ -43,6 +43,7 @@ class Customer < ApplicationRecord
   has_many :brokers, :foreign_key => "broker_id", :class_name => "BrokerRequest"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "BrokerRequest"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "CompaniesGroup"
+  has_one  :tiles_count
 
   validates :mobile_no, uniqueness: true
   validates :first_name, :mobile_no, :presence => true
