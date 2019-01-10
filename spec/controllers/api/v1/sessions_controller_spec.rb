@@ -81,4 +81,28 @@ RSpec.describe Api::V1::SessionsController do
       end
     end
   end
+
+  describe '#customer_by_token' do
+    before(:each) do
+      @request.env["devise.mapping"] = Devise.mappings[:customer]
+    end
+    context 'when try to find  the customer with wrong toket' do
+      it 'does match the message Customer does not exist for this token' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        get :customer_by_token
+        response.body.should have_content('Customer does not exist for this token')
+      end
+    end
+
+    context 'when try to find  the customer with correct toket' do
+      it 'does match the message Customer does not exist for this token' do
+        request.headers.merge!(authorization: @customer.authentication_token)
+        get :customer_by_token
+        expect(JSON.parse(response.body).flatten.second['email']).to eq(@customer.email)
+        expect(JSON.parse(response.body).flatten.second['company']).to eq(@customer.company.name)
+        expect(JSON.parse(response.body).flatten.second['mobile_no']).to eq(@customer.mobile_no)
+      end
+    end
+  end
+
 end
