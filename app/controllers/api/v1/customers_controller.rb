@@ -98,7 +98,7 @@ module Api
       end
 =begin
  @apiVersion 1.0.0
- @api {get} /api/v1/access_tiles?tabs=inbox
+ @api {get} /api/v1/access_tiles?tab=inbox
  @apiSampleRequest off
  @apiName access_tiles
  @apiGroup Customers
