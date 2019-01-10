@@ -147,7 +147,7 @@ module Api
 
             elsif current_customer.has_role?("Trader")
               @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
-                           {MOBILE_TILES_SHOW[1] => true, count: current_customer.tiles_count.available_parcel},
+                           {MOBILE_TILES_SHOW[1] => true, count: current_customer.tiles_count.sell},
                            {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
                            {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history},
                            {MOBILE_TILES_SHOW[4] => true, count: current_customer.tiles_count.live_monitor},
