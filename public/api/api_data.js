@@ -679,7 +679,7 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/access_tiles?tabs=inbox",
+    "url": "/api/v1/access_tiles?tab=inbox",
     "title": "",
     "name": "access_tiles",
     "group": "Customers",
