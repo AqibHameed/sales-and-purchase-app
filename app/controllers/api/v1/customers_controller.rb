@@ -156,7 +156,7 @@ module Api
                            {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
                            {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
                            {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
-                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.upcoming_tenders},
+                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
                            {MOBILE_TILES_SHOW[11] => true, count: current_customer.tiles_count.protection},
                            {MOBILE_TILES_SHOW[12] => true, count: current_customer.tiles_count.record_sale},
                            {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
@@ -168,7 +168,7 @@ module Api
                           {MOBILE_TILES_SHOW[6] => true, count: current_customer.tiles_count.feedback},
                           {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
                           {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
-                          {MOBILE_TILES_SHOW[9] => true, count: current_customer.current_tenders},
+                          {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
                           {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
 
