@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190105113220) do
+ActiveRecord::Schema.define(version: 20190109143315) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -289,7 +289,6 @@ ActiveRecord::Schema.define(version: 20190105113220) do
     t.boolean "is_requested", default: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
-    t.index ["email"], name: "index_customers_on_email", unique: true
     t.index ["invitation_token"], name: "index_customers_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_customers_on_invitations_count"
     t.index ["invited_by_id"], name: "index_customers_on_invited_by_id"
@@ -878,6 +877,27 @@ ActiveRecord::Schema.define(version: 20190105113220) do
     t.boolean "updated_after_round"
     t.string "sight_starting_price_field"
     t.string "stone_starting_price_field"
+  end
+
+  create_table "tiles_counts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "smart_search", default: 0
+    t.integer "sell", default: 0
+    t.integer "inbox", default: 0
+    t.integer "history", default: 0
+    t.integer "live_monitor", default: 0
+    t.integer "public_channels", default: 0
+    t.integer "feedback", default: 0
+    t.integer "share_app", default: 0
+    t.integer "invite", default: 0
+    t.integer "current_tenders", default: 0
+    t.integer "upcoming_tenders", default: 0
+    t.integer "protection", default: 0
+    t.integer "record_sale", default: 0
+    t.integer "past_tenders", default: 0
+    t.integer "customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_tiles_counts_on_customer_id"
   end
 
   create_table "trading_documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|

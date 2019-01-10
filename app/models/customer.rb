@@ -13,6 +13,9 @@ class Customer < ApplicationRecord
   belongs_to :company
   acts_as_paranoid
 
+  TILES = ['smart_search', 'sell', 'inbox', 'history', 'live_monitor', 'public_channels', 'feedback', 'share_app', 'invite',
+           'current_tenders', 'upcoming_tenders', 'protection', 'record_sale', 'past_tenders'].freeze
+
   has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
 
   has_many :bids
@@ -43,6 +46,7 @@ class Customer < ApplicationRecord
   has_many :brokers, :foreign_key => "broker_id", :class_name => "BrokerRequest"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "BrokerRequest"
   has_many :sellers, :foreign_key => "seller_id", :class_name => "CompaniesGroup"
+  has_one  :tiles_count
 
   validates :mobile_no, uniqueness: true
   validates :first_name, :mobile_no, :presence => true

@@ -17,6 +17,7 @@ class Api::V1::ApiController < ApplicationController
        @current_customer ||= Customer.find_by_authentication_token(token)
      end
   end
+  
 
 =begin
  @apiVersion 1.0.0

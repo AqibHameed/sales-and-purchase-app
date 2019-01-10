@@ -178,7 +178,7 @@ module Api
         @messages = messages
         if status.present?
           if status == 'negotiated'
-            @messages = negotiated_messages(messages)
+            @messages = negotiation_messages(messages)
           elsif status == 'new'
             @messages = new_messages(messages)
           else  

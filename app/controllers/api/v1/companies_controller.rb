@@ -487,7 +487,7 @@ class Api::V1::CompaniesController < ApplicationController
   
   protected
   def current_company
-    @company ||= current_customer.company
+    @company ||= current_customer.company unless current_customer.nil?
   end
 
   private

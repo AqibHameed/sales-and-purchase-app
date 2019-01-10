@@ -46,7 +46,7 @@ class TradingParcel < ApplicationRecord
     end
     # if self.weight.present?
     if sum > 100
-     self.errors.add :base, "Sum of sizes should be less than 100"
+     self.errors.add :base, "Total Percent cannot be higher than 100"
     end
     # end
   end
