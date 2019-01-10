@@ -678,6 +678,26 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/access_tiles?tabs=inbox",
+    "title": "",
+    "name": "access_tiles",
+    "group": "Customers",
+    "description": "<p>permission the tiles and sorting the record on the basis of count</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n {\n   \"success\": true,\n   \"messages\": [\n       {\n           \"Inbox\": true,\n           \"count\": 5\n       },\n       {\n           \"History\": true,\n           \"count\": 0\n       },\n       {\n           \"Smart Search\": true,\n           \"count\": 0\n       }\n   ]\n }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers"
+  },
+  {
+    "version": "1.0.0",
     "type": "post",
     "url": "/api/v1/demands?demand_supplier_id=4&description[]=PINKCOLOR&description[]=BLUECOLOR",
     "title": "",

@@ -3,6 +3,22 @@ module Api
     class CustomersController < ApiController
       skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request]
       before_action :current_customer
+      MOBILE_TILES_SHOW = {
+          0 => 'Smart Search',
+          1 => 'Sell',
+          2 => 'Inbox',
+          3 => 'History',
+          4 =>  'Live Monitor',
+          5 => 'Public Channels',
+          6 => 'Feedback',
+          7 => 'Share App',
+          8 => 'Invite',
+          9 => 'Current Tenders',
+          10 => 'Upcoming Tenders',
+          11 => 'Protection',
+          12 => 'Record Sale',
+          13 => 'Past Tenders'
+      }
 
       def profile
         if current_customer
@@ -78,6 +94,89 @@ module Api
           end
         else
           render json: { success: false, message: 'Invalid Customer ID', response_code: 201 }
+        end
+      end
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/access_tiles?tabs=inbox
+ @apiSampleRequest off
+ @apiName access_tiles
+ @apiGroup Customers
+ @apiDescription permission the tiles and sorting the record on the basis of count
+ @apiSuccessExample {json} SuccessResponse:
+ {
+  {
+    "success": true,
+    "messages": [
+        {
+            "Inbox": true,
+            "count": 5
+        },
+        {
+            "History": true,
+            "count": 0
+        },
+        {
+            "Smart Search": true,
+            "count": 0
+        }
+    ]
+  }
+ }
+=end
+
+
+      def access_tiles
+
+        if current_customer
+            if current_customer.tiles_count.blank?
+              current_customer.create_tiles_count
+            end
+
+            if params[:tab].present? && Customer::TILES.include?(params[:tab])
+                  count = current_customer.tiles_count.send(params[:tab])
+                  current_customer.tiles_count.update_attribute(params[:tab], count + 1)
+            end
+
+            if current_customer.has_role?("Buyer")
+              @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
+                           {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
+                           {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history}]
+
+              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
+
+            elsif current_customer.has_role?("Trader")
+              @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
+                           {MOBILE_TILES_SHOW[1] => true, count: current_customer.tiles_count.available_parcel},
+                           {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
+                           {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history},
+                           {MOBILE_TILES_SHOW[4] => true, count: current_customer.tiles_count.live_monitor},
+                           {MOBILE_TILES_SHOW[5] => true, count: current_customer.tiles_count.public_channels},
+                           {MOBILE_TILES_SHOW[6] => true, count: current_customer.tiles_count.feedback},
+                           {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
+                           {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
+                           {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
+                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.upcoming_tenders},
+                           {MOBILE_TILES_SHOW[11] => true, count: current_customer.tiles_count.protection},
+                           {MOBILE_TILES_SHOW[12] => true, count: current_customer.tiles_count.record_sale},
+                           {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
+
+              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
+
+            elsif current_customer.has_role?("Broker")
+              @messages =[{MOBILE_TILES_SHOW[5] => true, count: current_customer.tiles_count.public_channels},
+                          {MOBILE_TILES_SHOW[6] => true, count: current_customer.tiles_count.feedback},
+                          {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
+                          {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
+                          {MOBILE_TILES_SHOW[9] => true, count: current_customer.current_tenders},
+                          {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
+                          {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
+
+              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
+            end
+
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
         end
       end
 
