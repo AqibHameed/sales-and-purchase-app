@@ -2,7 +2,7 @@ class CreateTilesCounts < ActiveRecord::Migration[5.1]
   def change
     create_table :tiles_counts do |t|
       t.integer :smart_search, default: 0
-      t.integer :available_parcel, default: 0
+      t.integer :sell, default: 0
       t.integer :inbox, default: 0
       t.integer :history, default: 0
       t.integer :live_monitor, default: 0

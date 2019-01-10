@@ -96,63 +96,54 @@ module Api
           render json: { success: false, message: 'Invalid Customer ID', response_code: 201 }
         end
       end
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/access_tiles?tabs=inbox
+ @apiSampleRequest off
+ @apiName access_tiles
+ @apiGroup Customers
+ @apiDescription permission the tiles and sorting the record on the basis of count
+ @apiSuccessExample {json} SuccessResponse:
+ {
+  {
+    "success": true,
+    "messages": [
+        {
+            "Inbox": true,
+            "count": 5
+        },
+        {
+            "History": true,
+            "count": 0
+        },
+        {
+            "Smart Search": true,
+            "count": 0
+        }
+    ]
+  }
+ }
+=end
+
 
       def access_tiles
+
         if current_customer
             if current_customer.tiles_count.blank?
               current_customer.create_tiles_count
             end
-            if params[:tabs].present?
-               if params[:tabs] == 'inbox'
-                 inbox_count = current_customer.tiles_count.inbox
-                 current_customer.tiles_count.update(inbox: inbox_count + 1)
-               elsif params[:tabs]  == 'smart_search'
-                 smart_search_count = current_customer.tiles_count.smart_search
-                 current_customer.tiles_count.update(smart_search: smart_search_count + 1)
-               elsif params[:tabs]  == 'sell'
-                 sell_count = current_customer.tiles_count.available_parcel
-                 current_customer.tiles_count.update(available_parcel: sell_count + 1)
-               elsif params[:tabs]  == 'history'
-                 history_count = current_customer.tiles_count.history
-                 current_customer.tiles_count.update(history: history_count + 1)
-               elsif params[:tabs]  == 'live_monitor'
-                 live_monitor_count = current_customer.tiles_count.live_monitor
-                 current_customer.tiles_count.update(live_monitor: live_monitor_count + 1)
-               elsif params[:tabs]  == 'public_channels'
-                 public_channels_count = current_customer.tiles_count.public_channels
-                 current_customer.tiles_count.update(public_channels: public_channels_count + 1)
-               elsif params[:tabs]  == 'feedback'
-                 feedback_count = current_customer.tiles_count.feedback
-                 current_customer.tiles_count.update(feedback: feedback_count + 1)
-               elsif params[:tabs]  == 'share_app'
-                 share_app_count = current_customer.tiles_count.share_app
-                 current_customer.tiles_count.update(share_app: share_app_count + 1)
-               elsif params[:tabs]  == 'invite'
-                 invite_count = current_customer.tiles_count.invite
-                 current_customer.tiles_count.update(invite: invite_count + 1)
-               elsif params[:tabs]  == 'current_tenders'
-                 current_tenders_count = current_customer.tiles_count.current_tenders
-                 current_customer.tiles_count.update(current_tenders: current_tenders_count + 1)
-               elsif params[:tabs]  == 'upcoming_tenders'
-                 upcoming_tenders_count = current_customer.tiles_count.upcoming_tenders
-                 current_customer.tiles_count.update(upcoming_tenders: upcoming_tenders_count + 1)
-               elsif params[:tabs]  == 'protection'
-                 protection_count = current_customer.tiles_count.protection
-                 current_customer.tiles_count.update(protection: protection_count + 1)
-               elsif params[:tabs]  == 'record_sale'
-                 record_sale_count = current_customer.tiles_count.record_sale
-                 current_customer.tiles_count.update(record_sale: record_sale_count + 1)
-               elsif params[:tabs]  == 'past_tenders'
-                 past_tenders_count = current_customer.tiles_count.past_tenders
-                 current_customer.tiles_count.update(past_tenders: past_tenders_count + 1)
-               end
+
+            if params[:tab].present? && Customer::TILES.include?(params[:tab])
+                  count = current_customer.tiles_count.send(params[:tab])
+                  current_customer.tiles_count.update_attribute(params[:tab], count + 1)
             end
 
             if current_customer.has_role?("Buyer")
               @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
                            {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
                            {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history}]
-              render json: { success: true, messages: @messages }
+
+              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
 
             elsif current_customer.has_role?("Trader")
               @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
@@ -170,7 +161,7 @@ module Api
                            {MOBILE_TILES_SHOW[12] => true, count: current_customer.tiles_count.record_sale},
                            {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
 
-              render json: { success: true, messages: @messages }
+              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
 
             elsif current_customer.has_role?("Broker")
               @messages =[{MOBILE_TILES_SHOW[5] => true, count: current_customer.tiles_count.public_channels},
@@ -181,7 +172,7 @@ module Api
                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
                           {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
 
-              render json: { success: true, messages: @messages }
+              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
             end
 
         else
