@@ -179,7 +179,34 @@ module Api
           render json: { errors: "Not authenticated", response_code: 201 }
         end
       end
+=begin
+ @apiVersion 1.0.0
+ @api {get} api/v1/customers/transactions
+ @apiSampleRequest off
+ @apiName customer_transactions
+ @apiGroup Customers
+ @apiDescription permission the tiles and sorting the record on the basis of count
+ @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "transactions": {
+    "total": 11,
+    "pending": 2,
+    "completed": 8,
+    "overdue": 1
+  }
+}
+=end
 
+      def transactions
+        total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
+        pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+        overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+        completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
+        render json: {success: true, transactions: {total: total, pending: pending,
+                                                    completed: completed, overdue: overdue}}
+      end
+      
       private
 
       def customer_params

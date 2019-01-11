@@ -387,6 +387,13 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :customers do
+        get :transactions
+        get :sales
+        get :purchases
+      end
+
+
       get '/profile', to: 'customers#profile'
       patch '/update_profile', to: 'customers#update_profile'
       post '/approve_reject', to: 'customers#approve_reject_customer_request'
