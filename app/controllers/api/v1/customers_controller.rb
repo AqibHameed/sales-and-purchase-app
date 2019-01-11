@@ -98,7 +98,7 @@ module Api
       end
 =begin
  @apiVersion 1.0.0
- @api {get} /api/v1/access_tiles?tabs=inbox
+ @api {get} /api/v1/access_tiles?tab=inbox
  @apiSampleRequest off
  @apiName access_tiles
  @apiGroup Customers
@@ -147,7 +147,7 @@ module Api
 
             elsif current_customer.has_role?("Trader")
               @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
-                           {MOBILE_TILES_SHOW[1] => true, count: current_customer.tiles_count.available_parcel},
+                           {MOBILE_TILES_SHOW[1] => true, count: current_customer.tiles_count.sell},
                            {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
                            {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history},
                            {MOBILE_TILES_SHOW[4] => true, count: current_customer.tiles_count.live_monitor},
@@ -156,7 +156,7 @@ module Api
                            {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
                            {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
                            {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
-                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.upcoming_tenders},
+                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
                            {MOBILE_TILES_SHOW[11] => true, count: current_customer.tiles_count.protection},
                            {MOBILE_TILES_SHOW[12] => true, count: current_customer.tiles_count.record_sale},
                            {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
@@ -168,7 +168,7 @@ module Api
                           {MOBILE_TILES_SHOW[6] => true, count: current_customer.tiles_count.feedback},
                           {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
                           {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
-                          {MOBILE_TILES_SHOW[9] => true, count: current_customer.current_tenders},
+                          {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
                           {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
 
