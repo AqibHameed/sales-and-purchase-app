@@ -467,6 +467,61 @@ need to check
     end
   end
 
+
+  def calculate_sales
+
+    zero = {
+        term: "cash",
+        percent: sale_count_value('0', @credit_given_transaction.count, 'count', current_company),
+        pending_transaction: sale_count_value('0', @total_pending_sent, 'pending', current_company),
+        overdue_transaction: sale_count_value('0', @total_overdue_sent, 'overdue', current_company),
+        complete_transaction: sale_count_value('0', @total_complete_sent, 'complete', current_company)
+
+    }
+
+
+    one = {
+        term: "1<=30",
+        percent: sale_count_value('less_30', @credit_given_transaction.count, 'count', current_company),
+        pending_transaction: sale_count_value('less_30', @total_pending_sent, 'pending', current_company),
+        overdue_transaction: sale_count_value('less_30', @total_overdue_sent, 'overdue', current_company),
+        complete_transaction: sale_count_value('less_30', @total_complete_sent, 'complete', current_company)
+
+    }
+
+    two = {
+        term: "61<=90",
+        percent: sale_count_value('90', @credit_given_transaction.count, 'count', current_company),
+        pending_transaction: sale_count_value('90', @total_pending_sent, 'pending', current_company),
+        overdue_transaction: sale_count_value('90', @total_overdue_sent, 'overdue', current_company),
+        complete_transaction: sale_count_value('90', @total_complete_sent, 'complete', current_company)
+
+    }
+
+    three = {
+        term: "91",
+        percent: sale_count_value('more_90', @credit_given_transaction.count, 'count', current_company),
+        pending_transaction: sale_count_value('more_90', @total_pending_sent, 'pending', current_company),
+        overdue_transaction: sale_count_value('more_90', @total_overdue_sent, 'overdue', current_company),
+        complete_transaction: sale_count_value('more_90', @total_complete_sent, 'complete', current_company)
+
+    }
+
+
+    total = {
+        term: "total",
+        percent: @credit_given_transaction.count,
+        pending_transaction: @total_pending_sent,
+        overdue_transaction: @total_overdue_sent,
+        complete_transaction: @total_complete_sent
+    }
+
+
+    {"0": zero, "1": one, "2": two, "3": three, "4": total}
+
+  end
+
+
   protected
 
   def current_company

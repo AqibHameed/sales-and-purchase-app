@@ -8,7 +8,7 @@ module Api
           1 => 'Sell',
           2 => 'Inbox',
           3 => 'History',
-          4 =>  'Live Monitor',
+          4 => 'Live Monitor',
           5 => 'Public Channels',
           6 => 'Feedback',
           7 => 'Share App',
@@ -22,34 +22,34 @@ module Api
 
       def profile
         if current_customer
-          render json: { profile: profile_data(current_customer), response_code: 200 }
+          render json: {profile: profile_data(current_customer), response_code: 200}
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
+          render json: {errors: "Not authenticated", response_code: 201}
         end
       end
 
       def update_profile
         if current_customer
           if current_customer.update_attributes(customer_params)
-            render json: { success: true, message: 'Profile Updated Successfully', response_code: 200 }
+            render json: {success: true, message: 'Profile Updated Successfully', response_code: 200}
           else
-            render json: { success: false, message: 'Invalid Parameters', response_code: 201 }
+            render json: {success: false, message: 'Invalid Parameters', response_code: 201}
           end
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
+          render json: {errors: "Not authenticated", response_code: 201}
         end
       end
 
       def update_password
-        render json: { errors: "Not authenticated", response_code: 201 } and return unless current_customer
-        render json: { success: false, message: "Invalid Current Password", response_code: 201 } and return unless current_customer.valid_password?(password_params[:current_password])
-        render json: { success: false, message: "Provide New Password", response_code: 201 } and return unless password_params[:password].present?
-        render json: { success: false, message: "Provide New Password Confirmation", response_code: 201 } and return unless password_params[:password_confirmation].present?
-        render json: { success: false, message: "Doesn't Match Password", response_code: 201 } and return unless password_params[:password] == password_params[:password_confirmation]
+        render json: {errors: "Not authenticated", response_code: 201} and return unless current_customer
+        render json: {success: false, message: "Invalid Current Password", response_code: 201} and return unless current_customer.valid_password?(password_params[:current_password])
+        render json: {success: false, message: "Provide New Password", response_code: 201} and return unless password_params[:password].present?
+        render json: {success: false, message: "Provide New Password Confirmation", response_code: 201} and return unless password_params[:password_confirmation].present?
+        render json: {success: false, message: "Doesn't Match Password", response_code: 201} and return unless password_params[:password] == password_params[:password_confirmation]
         if current_customer.update(password_params.except(:current_password))
-          render json: { success: true, message: 'Password Updated Successfully', response_code: 200 }
+          render json: {success: true, message: 'Password Updated Successfully', response_code: 200}
         else
-          render json: { success: true, message: 'Invalid Parameters', response_code: 200 }
+          render json: {success: true, message: 'Invalid Parameters', response_code: 200}
         end
       end
 
@@ -66,9 +66,9 @@ module Api
               is_requested: c.is_requested
             }
           end
-          render json: { success: true, requested_customers: @requested_customers, response_code: 201 }
+          render json: {success: true, requested_customers: @requested_customers, response_code: 201}
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
+          render json: {errors: "Not authenticated", response_code: 201}
         end
       end
 
@@ -78,24 +78,25 @@ module Api
           if params[:perform] == 'accept'
             if customer.update_attributes(is_requested: false)
               CustomerMailer.approve_access(customer).deliver
-              render json: { success: true, message: 'Access Granted', response_code: 200 }
+              render json: {success: true, message: 'Access Granted', response_code: 200}
             else
-              render json: { success: false, message: 'Some thing went wrong.', response_code: 201 }
+              render json: {success: false, message: 'Some thing went wrong.', response_code: 201}
             end
           elsif params[:perform] == 'reject'
             if customer.update_attributes(is_requested: true)
               CustomerMailer.remove_access(customer).deliver
-              render json: { success: true, message: 'Access Denied successfully!!', response_code: 200 }
+              render json: {success: true, message: 'Access Denied successfully!!', response_code: 200}
             else
-              render json: { success: false, message: 'Some thing went wrong.', response_code: 201 }
+              render json: {success: false, message: 'Some thing went wrong.', response_code: 201}
             end
           else
-            render json: { success: false, message: 'Invalid Action', response_code: 201 }
+            render json: {success: false, message: 'Invalid Action', response_code: 201}
           end
         else
-          render json: { success: false, message: 'Invalid Customer ID', response_code: 201 }
+          render json: {success: false, message: 'Invalid Customer ID', response_code: 201}
         end
       end
+
 =begin
  @apiVersion 1.0.0
  @api {get} /api/v1/access_tiles?tab=inbox
@@ -129,55 +130,153 @@ module Api
       def access_tiles
 
         if current_customer
-            if current_customer.tiles_count.blank?
-              current_customer.create_tiles_count
-            end
+          if current_customer.tiles_count.blank?
+            current_customer.create_tiles_count
+          end
 
-            if params[:tab].present? && Customer::TILES.include?(params[:tab])
-                  count = current_customer.tiles_count.send(params[:tab])
-                  current_customer.tiles_count.update_attribute(params[:tab], count + 1)
-            end
+          if params[:tab].present? && Customer::TILES.include?(params[:tab])
+            count = current_customer.tiles_count.send(params[:tab])
+            current_customer.tiles_count.update_attribute(params[:tab], count + 1)
+          end
 
-            if current_customer.has_role?("Buyer")
-              @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
-                           {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
-                           {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history}]
+          if current_customer.has_role?("Buyer")
+            @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
+                         {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
+                         {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history}]
 
-              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
+            render json: {success: true, messages: @messages.sort_by {|hsh| hsh[:count]}.reverse!}
 
-            elsif current_customer.has_role?("Trader")
-              @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
-                           {MOBILE_TILES_SHOW[1] => true, count: current_customer.tiles_count.sell},
-                           {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
-                           {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history},
-                           {MOBILE_TILES_SHOW[4] => true, count: current_customer.tiles_count.live_monitor},
-                           {MOBILE_TILES_SHOW[5] => true, count: current_customer.tiles_count.public_channels},
-                           {MOBILE_TILES_SHOW[6] => true, count: current_customer.tiles_count.feedback},
-                           {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
-                           {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
-                           {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
-                           {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
-                           {MOBILE_TILES_SHOW[11] => true, count: current_customer.tiles_count.protection},
-                           {MOBILE_TILES_SHOW[12] => true, count: current_customer.tiles_count.record_sale},
-                           {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
+          elsif current_customer.has_role?("Trader")
+            @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
+                         {MOBILE_TILES_SHOW[1] => true, count: current_customer.tiles_count.sell},
+                         {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
+                         {MOBILE_TILES_SHOW[3] => true, count: current_customer.tiles_count.history},
+                         {MOBILE_TILES_SHOW[4] => true, count: current_customer.tiles_count.live_monitor},
+                         {MOBILE_TILES_SHOW[5] => true, count: current_customer.tiles_count.public_channels},
+                         {MOBILE_TILES_SHOW[6] => true, count: current_customer.tiles_count.feedback},
+                         {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
+                         {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
+                         {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
+                         {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
+                         {MOBILE_TILES_SHOW[11] => true, count: current_customer.tiles_count.protection},
+                         {MOBILE_TILES_SHOW[12] => true, count: current_customer.tiles_count.record_sale},
+                         {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
 
-              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
+            render json: {success: true, messages: @messages.sort_by {|hsh| hsh[:count]}.reverse!}
 
-            elsif current_customer.has_role?("Broker")
-              @messages =[{MOBILE_TILES_SHOW[5] => true, count: current_customer.tiles_count.public_channels},
-                          {MOBILE_TILES_SHOW[6] => true, count: current_customer.tiles_count.feedback},
-                          {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
-                          {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
-                          {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
-                          {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
-                          {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
+          elsif current_customer.has_role?("Broker")
+            @messages =[{MOBILE_TILES_SHOW[5] => true, count: current_customer.tiles_count.public_channels},
+                        {MOBILE_TILES_SHOW[6] => true, count: current_customer.tiles_count.feedback},
+                        {MOBILE_TILES_SHOW[7] => true, count: current_customer.tiles_count.share_app},
+                        {MOBILE_TILES_SHOW[8] => true, count: current_customer.tiles_count.invite},
+                        {MOBILE_TILES_SHOW[9] => true, count: current_customer.tiles_count.current_tenders},
+                        {MOBILE_TILES_SHOW[10] => true, count: current_customer.tiles_count.upcoming_tenders},
+                        {MOBILE_TILES_SHOW[13] => true, count: current_customer.tiles_count.past_tenders}]
 
-              render json: { success: true, messages: @messages.sort_by { |hsh| hsh[:count] }.reverse! }
-            end
+            render json: {success: true, messages: @messages.sort_by {|hsh| hsh[:count]}.reverse!}
+          end
 
         else
-          render json: { errors: "Not authenticated", response_code: 201 }
+          render json: {errors: "Not authenticated", response_code: 201}
         end
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} api/v1/customers/transactions
+ @apiSampleRequest off
+ @apiName customer_transactions
+ @apiGroup Customers
+ @apiDescription permission the tiles and sorting the record on the basis of count
+ @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "transactions": {
+    "total": 11,
+    "pending": 2,
+    "completed": 8,
+    "overdue": 1
+  }
+}
+=end
+
+      def transactions
+        total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
+        pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+        overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+        completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
+        render json: {success: true, transactions: {total: total, pending: pending,
+                                                    completed: completed, overdue: overdue}}
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} api/v1/customers/sales
+ @apiSampleRequest off
+ @apiName customer_sale
+ @apiGroup Customers
+ @apiDescription permission the tiles and sorting the record on the basis of count
+ @apiSuccessExample {json} SuccessResponse:
+    {
+"success": true,
+"credit_given_to": 5,
+"total_given_credit": "129823.00",
+"total_used_credit": "229022.89",
+"total_available_credit": "-$99,199.89",
+ "sales": {
+    0: {
+    "term": "cash",
+    "percent": "0(0%)",
+    "pending_transaction": "$0.00(0%)",
+    "overdue_transaction": "$0.00(0%)",
+    "complete_transaction": "$0.00(0%)"
+    },
+    1: {
+    "term": "1<=30",
+    "percent": "6(46%)",
+    "pending_transaction": "$0.00(0%)",
+    "overdue_transaction": "$40,000.00(100%)",
+    "complete_transaction": "$269,400.00(85%)"
+    },
+    2: {
+    "term": "61<=90",
+    "percent": "3(23%)",
+    "pending_transaction": "$46,200.00(100%)",
+    "overdue_transaction": "$0.00(0%)",
+    "complete_transaction": "$21,890.00(6%)"
+    },
+    3: {
+    "term": "91",
+    "percent": "0(0%)",
+    "pending_transaction": "$0.00(0%)",
+    "overdue_transaction": "$0.00(0%)",
+    "complete_transaction": "$0.00(0%)"
+    },
+    4: {
+    "term": "total",
+    "percent": 13,
+    "pending_transaction": "46200.0",
+    "overdue_transaction": "40000.0",
+    "complete_transaction": "315040.0"
+    }
+   }
+  }
+}
+=end
+
+      def sales
+        @credit_given = CreditLimit.where('seller_id =?', current_company.id)
+        credit_given_to = @credit_given.count
+        total_credit_given = overall_credit_given(current_company)
+        total_used_credit = overall_credit_spent_by_customer(current_company)
+        total_available_credit = credit_available(current_company)
+        @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
+        @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
+        @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
+        @credit_given_transaction = Transaction.where('seller_id =?', current_company.id)
+        render json: {success: true, credit_given_to: credit_given_to, total_given_credit: total_credit_given,
+                      total_used_credit: total_used_credit, total_available_credit: total_available_credit, sales: calculate_sales}
+
       end
 
       private
