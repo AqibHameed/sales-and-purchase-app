@@ -3,6 +3,7 @@ module Api
     class CustomersController < ApiController
       skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request]
       before_action :current_customer
+      before_action :current_company
       MOBILE_TILES_SHOW = {
           0 => 'Smart Search',
           1 => 'Sell',
