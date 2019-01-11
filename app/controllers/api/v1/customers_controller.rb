@@ -137,7 +137,6 @@ module Api
                   count = current_customer.tiles_count.send(params[:tab])
                   current_customer.tiles_count.update_attribute(params[:tab], count + 1)
             end
-
             if current_customer.has_role?("Buyer")
               @messages = [{MOBILE_TILES_SHOW[0] => true, count: current_customer.tiles_count.smart_search},
                            {MOBILE_TILES_SHOW[2] => true, count: current_customer.tiles_count.inbox},
