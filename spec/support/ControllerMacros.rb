@@ -19,8 +19,8 @@ module ControllerMacros
    company = Company.create(name: Faker::Name.name)
    buyer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                                       password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
-                                      role: 'Buyer', confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
-   role = create(:role, name: 'Buyer')
+                                      role: Role::BUYER, confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
+   role = Role.find_by(name: 'Buyer')
    create(:customer_role, customer: buyer, role: role)
     buyer
   end
@@ -42,7 +42,7 @@ module ControllerMacros
     broker = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                                password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
                                role: Role::BROKER, confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
-    role = create(:role, name: 'Broker')
+    role = Role.find_by(name: 'Broker')
     create(:customer_role, customer: broker, role: role)
     broker
   end
@@ -52,12 +52,13 @@ module ControllerMacros
     customer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,
                     password: FFaker::DizzleIpsum.words(4).join('!').first(8), mobile_no: Faker::PhoneNumber.phone_number,
                     role: Role::TRADER, confirmed_at: Time.current, company: company, authentication_token: Devise.friendly_token)
+    role = Role.find_by(name: 'Trader')
     create(:customer_role, customer: customer)
     customer
   end
 
   def create_roles
-    roles = [ Role::BROKER, Role::TRADER, Role::SUPPLIER]
+    roles = [Role::BUYER, Role::BROKER, Role::TRADER, Role::SUPPLIER]
     roles.each do |role|
       create(:role, name: role)
     end
