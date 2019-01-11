@@ -591,6 +591,46 @@ need to check
     @data
   end
 
+  def cutomer_puchase
+    {
+
+        "0": {term: "cash", percent: count_value('0', @credit_recieved_transaction.count, 'count', current_company),
+              Pending_Transaction: count_value('0', @total_pending_received, 'pending', current_company),
+              Overdue_Transaction: count_value('0', @total_overdue_received, 'overdue', current_company),
+              Complete_Transaction: count_value('0', @total_complete_received, 'complete', current_company)
+        },
+
+        "1": {term: "1<=30", percent: count_value('less_30', @credit_recieved_transaction.count, 'count', current_company),
+              Pending_Transaction: count_value('less_30', @total_pending_received, 'pending', current_company),
+              Overdue_Transaction: count_value('less_30', @total_overdue_received, 'overdue', current_company),
+              Complete_Transaction: count_value('less_30', @total_complete_received, 'complete', current_company)
+        },
+        "2": {term: "31<=60", percent: count_value('60', @credit_recieved_transaction.count, 'count', current_company),
+              Pending_Transaction: count_value('60', @total_pending_received, 'pending', current_company),
+              Overdue_Transaction: count_value('60', @total_overdue_received, 'overdue', current_company),
+              Complete_Transaction: count_value('60', @total_complete_received, 'complete', current_company)
+        },
+        "3": {term: "61<=90", percent: count_value('90', @credit_recieved_transaction.count, 'count', current_company),
+              Pending_Transaction: count_value('90', @total_pending_received, 'pending', current_company),
+              Overdue_Transaction: count_value('90', @total_overdue_received, 'overdue', current_company),
+              Complete_Transaction: count_value('90', @total_complete_received, 'complete', current_company)
+        },
+
+        "4": {term: "61<=90", percent: count_value('more_90', @credit_recieved_transaction.count, 'count', current_company),
+              Pending_Transaction: count_value('more_90', @total_pending_received, 'pending', current_company),
+              Overdue_Transaction: count_value('more_90', @total_overdue_received, 'overdue', current_company),
+              Complete_Transaction: count_value('more_90', @total_complete_received, 'complete', current_company)
+        },
+        "5": {term: "total", percent: @credit_recieved_transaction.count,
+              Pending_Transaction: number_to_currency(@total_pending_received),
+              Overdue_Transaction: number_to_currency(@total_overdue_received),
+              Complete_Transaction: number_to_currency(@total_complete_received)
+        }
+
+
+    }
+  end
+
   def attachment_params
     params.require(:email_attachment).permit(:file,:tender_id)
   end
