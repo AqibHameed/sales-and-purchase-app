@@ -684,6 +684,15 @@
     "name": "access_tiles",
     "group": "Customers",
     "description": "<p>permission the tiles and sorting the record on the basis of count</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"tab\": \"smart_search\",\n  \"tab\": \"sell\",\n  \"tab\": \"inbox\",\n  \"tab\": \"history\",\n  \"tab\": \"live_monitor\",\n  \"tab\": \"public_channels\",\n  \"tab\": \"feedback\",\n  \"tab\": \"share_app\",\n  \"tab\": \"invite\",\n  \"tab\": \"current_tenders\",\n  \"tab\": \"upcoming_tenders\",\n  \"tab\": \"protection\",\n  \"tab\": \"record_sale\",\n  \"tab\": \"past_tenders\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "success": {
       "examples": [
         {
@@ -749,6 +758,35 @@
         {
           "title": "SuccessResponse:",
           "content": "  {\n    \"success\": true,\n    \"transactions\": {\n    \"total\": 11,\n    \"pending\": 2,\n    \"completed\": 8,\n    \"overdue\": 1\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "api/v1/customers/feedback_rating",
+    "title": "",
+    "name": "feedback_rating",
+    "group": "Customers",
+    "description": "<p>to get customer feedback info</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"trading_parcel_id\": \"1\",\n  \"proposal_id\": \"1\",\n  \"demand_id\": \"1\",\n  \"partial_payment_id\": \"1\",\\\n  \"credit_limit_id\": \"1\"\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:{",
+          "content": " {\n  \"feedback\": {\n          \"id\": 1,\n          \"comments\": null,\n          \"feedback_rating\": 3,\n          \"trading_parcel_id\": 1\n      },\n   \"response_code\": 200\n}",
           "type": "json"
         }
       ]

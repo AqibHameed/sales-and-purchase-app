@@ -391,6 +391,7 @@ Rails.application.routes.draw do
         get :transactions
         get :sales
         get :purchases
+        get :feedback_rating
       end
 
 

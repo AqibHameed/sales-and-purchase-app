@@ -105,6 +105,23 @@ module Api
  @apiName access_tiles
  @apiGroup Customers
  @apiDescription permission the tiles and sorting the record on the basis of count
+@apiParamExample {json} Request-Example:
+{
+	"tab": "smart_search",
+  "tab": "sell",
+  "tab": "inbox",
+  "tab": "history",
+  "tab": "live_monitor",
+  "tab": "public_channels",
+  "tab": "feedback",
+  "tab": "share_app",
+  "tab": "invite",
+  "tab": "current_tenders",
+  "tab": "upcoming_tenders",
+  "tab": "protection",
+  "tab": "record_sale",
+  "tab": "past_tenders"
+}
  @apiSuccessExample {json} SuccessResponse:
  {
   {
@@ -352,6 +369,73 @@ module Api
 
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} api/v1/customers/feedback_rating
+ @apiSampleRequest off
+ @apiName feedback_rating
+ @apiGroup Customers
+ @apiDescription to get customer feedback info
+@apiParamExample {json} Request-Example:
+{
+	"trading_parcel_id": "1",
+  "proposal_id": "1",
+  "demand_id": "1",
+  "partial_payment_id": "1",\
+  "credit_limit_id": "1"
+
+}
+ @apiSuccessExample {json} SuccessResponse:{
+ {
+  "feedback": {
+          "id": 1,
+          "comments": null,
+          "feedback_rating": 3,
+          "trading_parcel_id": 1
+      },
+   "response_code": 200
+}
+=end
+      def feedback_rating
+        if current_customer
+          if params[:trading_parcel_id].present?
+            params_attribute = 'trading_parcel_id'
+            feedback_on_model = TradingParcel.find_by(id: params[:trading_parcel_id])
+          elsif  params[:proposal_id].present?
+            params_attribute = 'proposal_id'
+            feedback_on_model = Proposal.find_by(id: params[:proposal_id])
+          elsif  params[:demand_id].present?
+            params_attribute = 'demand_id'
+            feedback_on_model = Demand.find_by(id: params[:demand_id])
+          elsif  params[:partial_payment_id].present?
+            params_attribute = 'partial_payment_id'
+            feedback_on_model = PartialPayment.find_by(id: params[:partial_payment_id])
+          elsif  params[:credit_limit_id].present?
+            params_attribute = 'credit_limit_id'
+            feedback_on_model = CreditLimit.find_by(id:params[:credit_limit_id])
+          end
+          if feedback_on_model.nil?
+            errors = ['Record not found']
+            render :json => {:errors => errors, response_code: 201}
+          else
+            feedback_rating = Feedback.find_by(params_attribute => feedback_on_model.id, customer_id: current_customer.id)
+            if feedback_rating.nil?
+              feedback_rating = Feedback.new(comment: params[:comments], star: params[:rating], params_attribute => feedback_on_model.id, customer_id: current_customer.id)
+            else
+              feedback_rating.comment = params[:comment] unless params[:comment].blank?
+              feedback_rating.star = params[:rating] unless params[:rating].blank?
+            end
+            if feedback_rating.save
+              render :json => {feedback: feedback(feedback_rating, params_attribute, feedback_on_model.id), response_code: 200}
+            else
+              render :json => {:errors => feedback_rating.errors.full_messages, response_code: 201}
+            end
+          end
+        else
+          render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
+        end
+      end
+
       private
 
       def customer_params
@@ -377,6 +461,15 @@ module Api
           company_address: customer.company_address,
           created_at: customer.created_at,
           updated_at: customer.updated_at
+        }
+      end
+
+      def feedback(feedback_rating, params_attribute, model_id)
+        {
+            id: feedback_rating.id,
+            comments: feedback_rating.comment,
+            feedback_rating: feedback_rating.star,
+            params_attribute => model_id
         }
       end
     end
