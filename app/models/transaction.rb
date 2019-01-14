@@ -161,6 +161,14 @@ class Transaction < ApplicationRecord
     new_parcel.save
   end
 
+  def create_parcel_for_seller
+    new_parcel = trading_parcel.dup
+    new_parcel.company_id = self.seller_id
+    new_parcel.sold = false
+    new_parcel.sale_all = false
+    new_parcel.save
+  end
+
   rails_admin do
     configure :versions do
       label "Versions"

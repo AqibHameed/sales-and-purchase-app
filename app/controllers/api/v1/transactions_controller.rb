@@ -1,7 +1,7 @@
 module Api
   module V1
     class TransactionsController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:make_payment, :confirm, :reject]
+      skip_before_action :verify_authenticity_token, only: [:make_payment, :confirm, :reject, :seller_confirm]
       before_action :current_customer, only: [:make_payment, :confirm, :reject]
 =begin
  @apiVersion 1.0.0
@@ -62,6 +62,40 @@ module Api
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end  
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/transactions/seller_confirm
+ @apiSampleRequest off
+ @apiName seller_confirm
+ @apiGroup Transactions
+ @apiDescription seller_confirmation_of_amount
+ @apiParamExample {json} Request-Example:
+{
+	"id": 53,
+	"amount": 30
+
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+  "success": true,
+    "message": "Transaction confirm successfully"
+}
+=end
+      def seller_confirm
+        if current_company
+          @transaction = Transaction.find(params[:id])
+          @transaction.seller_confirmed = true
+          if @transaction.save
+            @transaction.create_parcel_for_seller
+            render json: {success: true, message: 'Transaction confirm successfully'}
+          else
+            render json: {success: false, message: 'Not confirm now. Please try again.'}
+          end
+        else
+          render json: {errors: "Not authenticated", response_code: 201}
+        end
       end
 
       def reject
