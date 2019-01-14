@@ -1674,11 +1674,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -1694,11 +1694,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {
@@ -1901,6 +1901,35 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n  success: true, message: \"Payment is made successfully.\",\n  response_code: 201\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/transactions_controller.rb",
+    "groupTitle": "Transactions"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/transactions/seller_confirm",
+    "title": "",
+    "name": "seller_confirm",
+    "group": "Transactions",
+    "description": "<p>seller_confirmation_of_amount</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"id\": 53,\n\t\"amount\": 30\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n    \"message\": \"Transaction confirm successfully\"\n}",
           "type": "json"
         }
       ]
