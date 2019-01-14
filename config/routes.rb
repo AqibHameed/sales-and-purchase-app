@@ -320,6 +320,7 @@ Rails.application.routes.draw do
         collection do
           post :make_payment
           post :confirm
+          post :seller_confirm
           post :reject
         end
       end
