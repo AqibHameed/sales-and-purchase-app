@@ -375,14 +375,20 @@ module Api
  @apiSampleRequest off
  @apiName feedback_rating
  @apiGroup Customers
- @apiDescription to get customer feedback info
+ @apiDescription to get customer feedback info, You can send
+  "proposal_id": "1" or
+  "demand_id": "1" or
+  "partial_payment_id": "1" or
+  "credit_limit_id": "1" or
+  trading_parcel_id": "1",
+
 @apiParamExample {json} Request-Example:
+
 {
 	"trading_parcel_id": "1",
-  "proposal_id": "1",
-  "demand_id": "1",
-  "partial_payment_id": "1",\
-  "credit_limit_id": "1"
+  "star": "4"
+    "comment": "This seller is Good"
+
 
 }
  @apiSuccessExample {json} SuccessResponse:{
