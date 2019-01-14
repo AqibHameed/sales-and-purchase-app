@@ -17,6 +17,12 @@ class Transaction < ApplicationRecord
 
   attr_accessor :weight
 
+  def self.direct_sell_confirm
+    puts "********* Confirm Transactions created before 7 days *****************"
+    paid_transactions = Transaction.where('buyer_confirmed = ? AND created_at < ? AND transaction_type= ?', false, 7.days.ago, 'manual')
+    paid_transactions.update(buyer_confirmed: true) unless paid_transactions.empty?
+  end
+
   def credit_validation
     limit = CreditLimit.where(buyer_id: buyer_id, seller_id: seller_id).first
     if limit.nil?
