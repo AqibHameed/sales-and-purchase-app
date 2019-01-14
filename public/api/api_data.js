@@ -772,12 +772,12 @@ define({ "api": [
     "title": "",
     "name": "feedback_rating",
     "group": "Customers",
-    "description": "<p>to get customer feedback info</p>",
+    "description": "<p>to get customer feedback info, You can send &quot;proposal_id&quot;: &quot;1&quot; or &quot;demand_id&quot;: &quot;1&quot; or &quot;partial_payment_id&quot;: &quot;1&quot; or &quot;credit_limit_id&quot;: &quot;1&quot; or trading_parcel_id&quot;: &quot;1&quot;,</p>",
     "parameter": {
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n\t\"trading_parcel_id\": \"1\",\n  \"proposal_id\": \"1\",\n  \"demand_id\": \"1\",\n  \"partial_payment_id\": \"1\",\\\n  \"credit_limit_id\": \"1\"\n\n}",
+          "content": "\n{\n\t\"trading_parcel_id\": \"1\",\n  \"star\": \"4\"\n    \"comment\": \"This seller is Good\"\n\n\n}",
           "type": "json"
         }
       ]
