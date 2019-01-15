@@ -471,28 +471,30 @@ module Api
                 end
               end
             end
-            if transaction.paid == true
-              save_transaction(transaction, @parcel)
-            elsif (params[:over_credit_limit].present? && params[:over_credit_limit] == true) || (params[:overdue_days_limit].present? && params[:overdue_days_limit] == true)
-              save_transaction(transaction, @parcel)
-            else
-              if registered_users < 1
-                if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.current)
-                  save_transaction(transaction, @parcel)
-                else
-                  if buyer.buyer_transactions.count < 1
-                    if params[:check_transactions].present? && params[:check_transactions] == true
-                      check_credit_limit(transaction, @parcel)
-                    elsif params[:check_transactions].present? && params[:check_transactions] == "false"
-                    else
-                      render json: {sucess: false, message: "No Information Available about this Company. Do you want to continue ?"}
-                    end
-                  else
-                    check_credit_limit(transaction, @parcel)
-                  end
-                end
-              else
+            unless transaction.nil?
+              if transaction.paid == true
                 save_transaction(transaction, @parcel)
+              elsif (params[:over_credit_limit].present? && params[:over_credit_limit] == true) || (params[:overdue_days_limit].present? && params[:overdue_days_limit] == true)
+                save_transaction(transaction, @parcel)
+              else
+                if registered_users < 1
+                  if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.current)
+                    save_transaction(transaction, @parcel)
+                  else
+                    if buyer.buyer_transactions.count < 1
+                      if params[:check_transactions].present? && params[:check_transactions] == true
+                        check_credit_limit(transaction, @parcel)
+                      elsif params[:check_transactions].present? && params[:check_transactions] == "false"
+                      else
+                        render json: {sucess: false, message: "No Information Available about this Company. Do you want to continue ?"}
+                      end
+                    else
+                      check_credit_limit(transaction, @parcel)
+                    end
+                  end
+                else
+                  save_transaction(transaction, @parcel)
+                end
               end
             end
           end
