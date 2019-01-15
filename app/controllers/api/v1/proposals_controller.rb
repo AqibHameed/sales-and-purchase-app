@@ -161,15 +161,15 @@ module Api
               accpet_proposal(@proposal)
               render :json => {:success => true, :message => ' Proposal is accepted. ', response_code: 201}
             else
-
-              errors = get_errors_for_accept_or_negotiate(@proposal)
-              if errors.present?
-                secure_center_record(current_company, @proposal.buyer_id)
-                #render :json => { :success => false, :errors => errors }
-              else
-                accpet_proposal(@proposal)
-                render :json => {:success => true, :message => ' Proposal is accepted. ', response_code: 201}
-              end
+              accpet_proposal(@proposal)
+              render :json => {:success => true, :message => ' Proposal is accepted. ', response_code: 201}
+              # errors = get_errors_for_accept_or_negotiate(@proposal)
+              # if errors.present?
+              #   secure_center_record(current_company, @proposal.buyer_id)
+              # else
+              #   accpet_proposal(@proposal)
+              #   render :json => {:success => true, :message => ' Proposal is accepted. ', response_code: 201}
+              # end
             end
           end
         elsif params[:perform] == 'reject'
@@ -362,12 +362,13 @@ module Api
             if params[:confirm] == true
               update_proposal(@proposal)
             else
-              errors = get_errors_for_accept_or_negotiate(@proposal)
-              if errors.present?
-                secure_center_record(current_company, @proposal.buyer_id)
-              else
-                update_proposal(@proposal)
-              end
+              update_proposal(@proposal)
+              # errors = get_errors_for_accept_or_negotiate(@proposal)
+              # if errors.present?
+              #   secure_center_record(current_company, @proposal.buyer_id)
+              # else
+              #   update_proposal(@proposal)
+              # end
             end
           else
             update_proposal(@proposal)
