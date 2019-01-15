@@ -9,15 +9,26 @@ module Api
  @apiSampleRequest off
  @apiName make_payment
  @apiGroup Transactions
- @apiDescription make payment of trading parcel
- @apiParamExample {json} Request-Example:
+ @apiDescription make payment of trading parcel, if current login user, role is buyer and confirm parameter value is nil or false then this Api show the message do AGree or not
+ @apiParamExample {json} Request-Example1:
 {
 	"transaction_id": 1,
 	"amount": 200
 }
- @apiSuccessExample {json} SuccessResponse:
+ @apiSuccessExample {json} SuccessResponse1:
 {
   success: true, message: "Payment is made successfully.",
+  response_code: 201
+}
+@apiParamExample {json} Request-Example2:
+{
+	"transaction_id": 1,
+	"amount": 200,
+  "confirm": false
+}
+@apiSuccessExample {json} SuccessResponse2:
+{
+  success: true, message: "Do you Agree? Yes or No.",
   response_code: 201
 }
 =end
