@@ -317,7 +317,7 @@ module Api
                   "description":"+11 SAWABLES LIGHT",
                   "my_transaction_attributes":
                                              {
-                                               "customer_id":"15",
+                                               "customer_id":"2",
                                                "paid":false,
                                                "created_at":"23/11/2018"
                                              },
@@ -344,20 +344,89 @@ module Api
     "notice": "Transaction added successfully"
   }
  ]
+@apiParamExample {json} Request-Example3:
+{
+  "trading_parcel":
+                  {
+                  "description":"+11 SAWABLES LIGHT",
+                  "activity": "buy",
+                  "my_transaction_attributes":
+                                             {
+                                               "company_id":"2",
+                                               "paid":false,
+                                               "created_at":"23/11/2018"
+                                             },
+                   "no_of_stones":10,
+                   "carats":1.0,
+                   "credit_period":20,
+                   "price":6600.0,
+                   "company":"SafeTrade",
+                   "cost":6000.0,
+                   "sight":"11/2018",
+                   "source":"RUSSIAN",
+                   "percent":10.0,
+                   "comment":"",
+                   "total_value":7000.0
+
+                  },
+                  "available_credit_limit": true
+
+}
+@apiSuccessExample {json} SuccessResponse3:
+ [
+  {
+    "success": true,
+    "notice": "Transaction added successfully"
+  }
+ ]
+@apiParamExample {json} Request-Example4:
+{
+  "trading_parcel":
+                  {
+                  "description":"+11 SAWABLES LIGHT",
+                  "activity": "sell",
+                  "my_transaction_attributes":
+                                             {
+                                               "company_id":"2",
+                                               "paid":false,
+                                               "created_at":"23/11/2018"
+                                             },
+                   "no_of_stones":10,
+                   "carats":1.0,
+                   "credit_period":20,
+                   "price":6600.0,
+                   "company":"SafeTrade",
+                   "cost":6000.0,
+                   "sight":"11/2018",
+                   "source":"RUSSIAN",
+                   "percent":10.0,
+                   "comment":"",
+                   "total_value":7000.0
+
+                  },
+                  "available_credit_limit": true
+
+}
+@apiSuccessExample {json} SuccessResponse4:
+ [
+  {
+    "success": true,
+    "notice": "Transaction added successfully"
+  }
+ ]
 =end
 
 
       def direct_sell
         if current_customer
           @parcel = TradingParcel.new(trading_parcel_params)
-          customer_id = params[:trading_parcel][:my_transaction_attributes]['customer_id']
-          customer = Customer.find_by(id: customer_id)
-          if customer.nil?
+          company_id = params[:trading_parcel][:my_transaction_attributes]['company_id']
+          company = Company.find_by(id: company_id)
+          if company.nil?
             render json: {success: false, message: "Customer does not present"}
           else
-            if current_customer.has_role?('Buyer')
-              @parcel.company_id = customer.company_id
-              @parcel.customer_id = customer.id
+            if current_customer.has_role?(Role::BUYER)
+              @parcel.company_id = company_id
               @parcel.weight = params[:trading_parcel][:carats]
               @parcel.box_value = params[:trading_parcel][:discount]
               @parcel.sold = true
@@ -367,71 +436,63 @@ module Api
                                               created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
                 buyer = Company.where(id: current_company.id).first
                 registered_users = buyer.customers.count
-                if transaction.paid == true
-                  save_transaction(transaction, @parcel)
-                elsif (params[:over_credit_limit].present? && params[:over_credit_limit] == true) || (params[:overdue_days_limit].present? && params[:overdue_days_limit] == true)
-                  save_transaction(transaction, @parcel)
-                else
-                  if registered_users < 1
-                    if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.current)
-                      save_transaction(transaction, @parcel)
-                    else
-                      if buyer.buyer_transactions.count < 1
-                        if params[:check_transactions].present? && params[:check_transactions] == true
-                          check_credit_limit(transaction, @parcel)
-                        elsif params[:check_transactions].present? && params[:check_transactions] == "false"
-                        else
-                          render json: {sucess: false, message: "No Information Available about this Company. Do you want to continue ?"}
-                        end
-                      else
-                        check_credit_limit(transaction, @parcel)
-                      end
-                    end
-                  else
-                    save_transaction(transaction, @parcel)
-                  end
-                end
               else
                 render json: {success: false, errors: @parcel.errors.full_messages}
               end
+            elsif current_customer.has_role?(Role::TRADER)
+              if params[:trading_parcel][:activity] == 'sell'
+                @parcel.company_id = current_company.id
+                @parcel.customer_id = current_customer.id
+                @parcel.weight = params[:trading_parcel][:carats]
+                @parcel.box_value = params[:trading_parcel][:discount]
+                @parcel.sold = true
+                if @parcel.save
+                  transaction = Transaction.new(buyer_id: company_id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
+                                                price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
+                                                created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
+                  buyer = Company.find_by(id: company_id)
+                  registered_users = buyer.customers.count
+                else
+                  render json: {success: false, errors: @parcel.errors.full_messages}
+                end
+              elsif params[:trading_parcel][:activity] == 'buy'
+                @parcel.company_id = company_id
+                @parcel.weight = params[:trading_parcel][:carats]
+                @parcel.box_value = params[:trading_parcel][:discount]
+                @parcel.sold = true
+                if @parcel.save
+                  transaction = Transaction.new(buyer_id: current_company.id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
+                                                price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
+                                                created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
+                  buyer = Company.where(id: current_company.id).first
+                  registered_users = buyer.customers.count
+                else
+                  render json: {success: false, errors: @parcel.errors.full_messages}
+                end
+              end
+            end
+            if transaction.paid == true
+              save_transaction(transaction, @parcel)
+            elsif (params[:over_credit_limit].present? && params[:over_credit_limit] == true) || (params[:overdue_days_limit].present? && params[:overdue_days_limit] == true)
+              save_transaction(transaction, @parcel)
             else
-              @parcel.company_id = current_company.id
-              @parcel.customer_id = current_customer.id
-              @parcel.weight = params[:trading_parcel][:carats]
-              @parcel.box_value = params[:trading_parcel][:discount]
-              @parcel.sold = true
-              if @parcel.save
-                transaction = Transaction.new(buyer_id: customer.company_id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
-                                              price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
-                                              created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
-                buyer = Company.find_by(id: customer.company_id)
-                registered_users = buyer.customers.count
-                if transaction.paid == true
-                  save_transaction(transaction, @parcel)
-                elsif (params[:over_credit_limit].present? && params[:over_credit_limit] == true) || (params[:overdue_days_limit].present? && params[:overdue_days_limit] == true)
+              if registered_users < 1
+                if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.current)
                   save_transaction(transaction, @parcel)
                 else
-                  if registered_users < 1
-                    if params[:trading_parcel][:my_transaction_attributes][:created_at].present? && (params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.current)
-                      save_transaction(transaction, @parcel)
+                  if buyer.buyer_transactions.count < 1
+                    if params[:check_transactions].present? && params[:check_transactions] == true
+                      check_credit_limit(transaction, @parcel)
+                    elsif params[:check_transactions].present? && params[:check_transactions] == "false"
                     else
-                      if buyer.buyer_transactions.count < 1
-                        if params[:check_transactions].present? && params[:check_transactions] == true
-                          check_credit_limit(transaction, @parcel)
-                        elsif params[:check_transactions].present? && params[:check_transactions] == "false"
-                        else
-                          render json: {sucess: false, message: "No Information Available about this Company. Do you want to continue ?"}
-                        end
-                      else
-                        check_credit_limit(transaction, @parcel)
-                      end
+                      render json: {sucess: false, message: "No Information Available about this Company. Do you want to continue ?"}
                     end
                   else
-                    save_transaction(transaction, @parcel)
+                    check_credit_limit(transaction, @parcel)
                   end
                 end
               else
-                render json: {success: false, errors: @parcel.errors.full_messages}
+                save_transaction(transaction, @parcel)
               end
             end
           end
