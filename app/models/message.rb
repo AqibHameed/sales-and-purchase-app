@@ -2,8 +2,10 @@ class Message < ApplicationRecord
   belongs_to :sender, class_name: 'Company', foreign_key: 'sender_id', optional: true
   belongs_to :receiver, class_name: 'Company', foreign_key: 'receiver_id', optional: true
   belongs_to :proposal, optional: true
+  belongs_to :buyer_transaction, :foreign_key => "transaction_id", :class_name => "Transaction", dependent: :destroy, optional: true
 
   scope :customer_messages, ->(current_company_id) {joins(:sender).order("created_at desc").where(receiver_id: current_company_id, message_type: "Proposal")}
+  scope :customer_payment_messages, ->(current_company_id) {joins(:sender).order("created_at desc").where(receiver_id: current_company_id, message_type: "Payment")}
 
   def self.create_message(transaction)
     message = Message.create(subject: "Reject Transaction", message: transaction.reject_reason, sender_id: transaction.buyer_id, receiver_id: transaction.seller_id, message_type: "Reject")
@@ -88,4 +90,10 @@ class Message < ApplicationRecord
     status = false if last_message and Message.where(sender_id: parcel.company.id, receiver_id: sender_id, proposal_id: parcel.id).where('id > ? and message_type in (?)', last_message.id, ['Limit Increase Accept', 'Limit Increase Reject']).present?
     status
   end
+
+  def self.buyer_payment_confirmation_message(current_company, transaction)
+    @message = "The payment is confirmed."
+    Message.create(subject: "Your Payment is confirmed.", message: @message, sender_id:  current_company.id, receiver_id: transaction.trading_parcel.company.id, message_type: "Payment", transaction_id: transaction.id)
+  end
+
 end

@@ -1906,12 +1906,17 @@
     "title": "",
     "name": "make_payment",
     "group": "Transactions",
-    "description": "<p>make payment of trading parcel</p>",
+    "description": "<p>make payment of trading parcel, if current login user, role is buyer and confirm parameter value is nil or false then this Api show the message do AGree or not</p>",
     "parameter": {
       "examples": [
         {
-          "title": "Request-Example:",
+          "title": "Request-Example1:",
           "content": "{\n\t\"transaction_id\": 1,\n\t\"amount\": 200\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n\t\"transaction_id\": 1,\n\t\"amount\": 200,\n  \"confirm\": false\n}",
           "type": "json"
         }
       ]
@@ -1919,8 +1924,13 @@
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
+          "title": "SuccessResponse1:",
           "content": "{\n  success: true, message: \"Payment is made successfully.\",\n  response_code: 201\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "{\n  success: true, message: \"Do you Agree? Yes or No.\",\n  response_code: 201\n}",
           "type": "json"
         }
       ]
