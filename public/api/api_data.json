@@ -1812,12 +1812,22 @@
       "examples": [
         {
           "title": "Request-Example1:",
-          "content": " {\n  \"trading_parcel\":\n    {\n    \"description\":\"Z -7+5T\",\n    \"my_transaction_attributes\":\n                               {\n                                 \"buyer_id\":\"3600\",\n                                 \"paid\":false,\n                                 \"created_at\":\"04/12/2018\"\n                               },\n     \"no_of_stones\":10,\n     \"carats\":1.0,\n     \"credit_period\":20,\n     \"price\":2200.0,\n     \"company\":\"SafeTrade\",\n     \"cost\":2000.0,\n     \"sight\":\"12/2018\",\n     \"source\":\"Sight\",\n     \"percent\":10.0,\n     \"comment\":\"\",\n     \"total_value\":2200.0\n\n    }\n}",
+          "content": " {\n  \"trading_parcel\":\n    {\n    \"description\":\"Z -7+5T\",\n    \"my_transaction_attributes\":\n                               {\n                                 \"customer_id\":\"3600\",\n                                 \"paid\":false,\n                                 \"created_at\":\"04/12/2018\"\n                               },\n     \"no_of_stones\":10,\n     \"carats\":1.0,\n     \"credit_period\":20,\n     \"price\":2200.0,\n     \"company\":\"SafeTrade\",\n     \"cost\":2000.0,\n     \"sight\":\"12/2018\",\n     \"source\":\"Sight\",\n     \"percent\":10.0,\n     \"comment\":\"\",\n     \"total_value\":2200.0\n\n    }\n}",
           "type": "json"
         },
         {
           "title": "Request-Example2:",
-          "content": " {\n  \"trading_parcel\":\n    {\n    \"description\":\"Z -7+5T\",\n    \"my_transaction_attributes\":\n                               {\n                                 \"buyer_id\":\"3600\",\n                                 \"paid\":false,\n                                 \"created_at\":\"04/12/2018\"\n                               },\n     \"no_of_stones\":10,\n     \"carats\":1.0,\n     \"credit_period\":20,\n     \"price\":2200.0,\n     \"company\":\"SafeTrade\",\n     \"cost\":2000.0,\n     \"sight\":\"12/2018\",\n     \"source\":\"Sight\",\n     \"percent\":10.0,\n     \"comment\":\"\",\n     \"total_value\":2200.0\n\n    },\n    \"over_credit_limit\" : true,\n    \"overdue_days_limit\" : true\n}",
+          "content": " {\n  \"trading_parcel\":\n                  {\n                  \"description\":\"+11 SAWABLES LIGHT\",\n                  \"my_transaction_attributes\":\n                                             {\n                                               \"customer_id\":\"2\",\n                                               \"paid\":false,\n                                               \"created_at\":\"23/11/2018\"\n                                             },\n                   \"no_of_stones\":10,\n                   \"carats\":1.0,\n                   \"credit_period\":20,\n                   \"price\":6600.0,\n                   \"company\":\"SafeTrade\",\n                   \"cost\":6000.0,\n                   \"sight\":\"11/2018\",\n                   \"source\":\"RUSSIAN\",\n                   \"percent\":10.0,\n                   \"comment\":\"\",\n                   \"total_value\":7000.0\n\n                  },\n                  \"available_credit_limit\": true\n\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example3:",
+          "content": "{\n  \"trading_parcel\":\n                  {\n                  \"description\":\"+11 SAWABLES LIGHT\",\n                  \"activity\": \"buy\",\n                  \"my_transaction_attributes\":\n                                             {\n                                               \"company_id\":\"2\",\n                                               \"paid\":false,\n                                               \"created_at\":\"23/11/2018\"\n                                             },\n                   \"no_of_stones\":10,\n                   \"carats\":1.0,\n                   \"credit_period\":20,\n                   \"price\":6600.0,\n                   \"company\":\"SafeTrade\",\n                   \"cost\":6000.0,\n                   \"sight\":\"11/2018\",\n                   \"source\":\"RUSSIAN\",\n                   \"percent\":10.0,\n                   \"comment\":\"\",\n                   \"total_value\":7000.0\n\n                  },\n                  \"available_credit_limit\": true\n\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example4:",
+          "content": "{\n  \"trading_parcel\":\n                  {\n                  \"description\":\"+11 SAWABLES LIGHT\",\n                  \"activity\": \"sell\",\n                  \"my_transaction_attributes\":\n                                             {\n                                               \"company_id\":\"2\",\n                                               \"paid\":false,\n                                               \"created_at\":\"23/11/2018\"\n                                             },\n                   \"no_of_stones\":10,\n                   \"carats\":1.0,\n                   \"credit_period\":20,\n                   \"price\":6600.0,\n                   \"company\":\"SafeTrade\",\n                   \"cost\":6000.0,\n                   \"sight\":\"11/2018\",\n                   \"source\":\"RUSSIAN\",\n                   \"percent\":10.0,\n                   \"comment\":\"\",\n                   \"total_value\":7000.0\n\n                  },\n                  \"available_credit_limit\": true\n\n}",
           "type": "json"
         }
       ]
@@ -1831,6 +1841,16 @@
         },
         {
           "title": "SuccessResponse2:",
+          "content": "[\n {\n   \"success\": true,\n   \"notice\": \"Transaction added successfully\"\n }\n]",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse3:",
+          "content": "[\n {\n   \"success\": true,\n   \"notice\": \"Transaction added successfully\"\n }\n]",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse4:",
           "content": "[\n {\n   \"success\": true,\n   \"notice\": \"Transaction added successfully\"\n }\n]",
           "type": "json"
         }
