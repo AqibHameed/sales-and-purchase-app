@@ -128,6 +128,7 @@ module Api
             #@transaction.update_column(:remaining_amount, amount - @payment.amount)
             if @transaction.remaining_amount == 0
               @transaction.paid = true
+              @transaction.paid_at = DateTime.now
               #@transaction.update_column(:paid, true)
             end
             @transaction.save

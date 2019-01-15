@@ -433,8 +433,16 @@ class Company < ApplicationRecord
     self.buyer_transactions.collect(&:seller_id).uniq.count
   end
 
+  def buyer_connected
+    self.seller_transactions.collect(&:buyer_id).uniq.count
+  end
+
   def supplier_paid
     supplier_connected
+  end
+
+  def buyer_paid
+    buyer_connected
   end
 
   def buyer_transaction_percentage
