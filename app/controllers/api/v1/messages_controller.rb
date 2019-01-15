@@ -44,12 +44,17 @@ module Api
 
       def index
         all_messages = []
+        payment_messages = []
         if current_company
           messages = Message.customer_messages(current_company.id).group_by(&:proposal_id)
           messages.each do |proposal_id, messages|
             all_messages << messages.last
           end
-          @messages = Kaminari.paginate_array(messages_data(all_messages, params[:status], params[:description], params[:company])).page(params[:page]).per(params[:count])
+          payment_message = Message.customer_payment_messages(current_company.id).group_by(&:transaction_id)
+          payment_message.each do |transaction_id, messages|
+            payment_messages << messages.last
+          end
+          @messages = Kaminari.paginate_array(messages_data(all_messages, payment_messages, params[:status], params[:description], params[:company])).page(params[:page]).per(params[:count])
           render json: { pagination: set_pagination(:messages), messages: @messages, response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -173,14 +178,14 @@ module Api
         params.require(:message).permit(:subject, :message, :message_type, :receiver_id)
       end
 
-      def messages_data(messages, status, description, company)
+      def messages_data(messages, payment_messages, status, description, company)
         @data = []
         @messages = messages
         if status.present?
           if status == 'negotiated'
             @messages = negotiation_messages(messages)
           elsif status == 'new'
-            @messages = new_messages(messages)
+            @messages = new_messages_payment(messages, payment_messages)
           else  
             @messages = @messages.map{ |m| m if m.proposal && m.proposal.status == status }.compact
           end
@@ -193,40 +198,56 @@ module Api
           @messages = @messages.map{ |m| m if m.sender.present? && m.sender == c}.compact
         end
         @messages.each do |message|
-          if message.proposal.present? && message.proposal.trading_parcel.present?
-            if message.proposal.status == 'accepted'
-              status = 'accepted'
-            elsif message.proposal.status == 'rejected'
-              status = 'rejected'
-            elsif message.proposal.negotiations.present?
-              who =  (current_company == message.proposal.buyer) ? 'buyer' : 'seller'
-              last_self_negotiation = message.proposal.negotiations.last
-              if last_self_negotiation.present? && last_self_negotiation.from == who
-                status = 'negotiated'
-              else
-                status = 'new'
-              end
+          if (message.proposal.present? && message.proposal.trading_parcel.present?) || (message.buyer_transaction.present?)
+            if message.buyer_transaction.present?
+              data = {
+                  id: message.id,
+                  proposal_id: message.proposal_id,
+                  sender: message.sender.name,
+                  receiver: current_company.name,
+                  message: message.message,
+                  message_type: message.message_type,
+                  subject: message.subject,
+                  created_at: message.created_at,
+                  updated_at: message.updated_at,
+                  date: message.created_at,
+                  status: 'new'
+              }
             else
-              status = 'new'
-            end
-            data = {
-              id: message.id,
-              proposal_id: message.proposal_id,
-              sender: message.sender.name,
-              receiver: current_company.name,
-              message: message.message,
-              message_type: message.message_type,
-              subject: message.subject,
-              created_at: message.created_at,
-              updated_at: message.updated_at,
-              date: message.created_at,
-              description: message.proposal.present? ? (message.proposal.trading_parcel.present? ? message.proposal.trading_parcel.description : 'N/A') : 'N/A',
-              status: status
-            }
-            if message.proposal.present? && message.proposal.trading_parcel.present? 
-              offered_price = message.proposal.price.to_f
-              offered_percent = ((offered_price.to_f/message.proposal.trading_parcel.price.to_f)-1).to_f*100
-              data.merge!(calculation: offered_percent.round(2))
+                if message.proposal.status == 'accepted'
+                  status = 'accepted'
+                elsif message.proposal.status == 'rejected'
+                  status = 'rejected'
+                elsif message.proposal.negotiations.present?
+                  who =  (current_company == message.proposal.buyer) ? 'buyer' : 'seller'
+                  last_self_negotiation = message.proposal.negotiations.last
+                  if last_self_negotiation.present? && last_self_negotiation.from == who
+                    status = 'negotiated'
+                  else
+                    status = 'new'
+                  end
+                else
+                  status = 'new'
+                end
+                data = {
+                  id: message.id,
+                  proposal_id: message.proposal_id,
+                  sender: message.sender.name,
+                  receiver: current_company.name,
+                  message: message.message,
+                  message_type: message.message_type,
+                  subject: message.subject,
+                  created_at: message.created_at,
+                  updated_at: message.updated_at,
+                  date: message.created_at,
+                  description: message.proposal.present? ? (message.proposal.trading_parcel.present? ? message.proposal.trading_parcel.description : 'N/A') : 'N/A',
+                  status: status
+                }
+                if message.proposal.present? && message.proposal.trading_parcel.present?
+                  offered_price = message.proposal.price.to_f
+                  offered_percent = ((offered_price.to_f/message.proposal.trading_parcel.price.to_f)-1).to_f*100
+                  data.merge!(calculation: offered_percent.round(2))
+                end
             end
             @data << data  
           end
