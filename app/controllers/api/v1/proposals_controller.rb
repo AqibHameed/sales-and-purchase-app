@@ -61,7 +61,7 @@ module Api
               proposal.negotiations.create(price: proposal.price, percent: proposal.percent, credit: proposal.credit, total_value: proposal.total_value, comment: proposal.buyer_comment, from: 'buyer')
               CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
               Message.create_new(proposal)
-              Message.create_new_negotiate(proposal, current_company)
+              Message.create_negotiate(proposal, current_company)
               receiver_ids = proposal.seller.customers.map {|c| c.id}.uniq
               current_company.send_notification('New Proposal', receiver_ids)
               render json: {success: true, message: 'Proposal Submitted Successfully'}
