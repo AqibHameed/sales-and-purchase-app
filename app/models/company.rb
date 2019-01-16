@@ -84,6 +84,10 @@ class Company < ApplicationRecord
     end
   end
 
+  def get_buyers_ids
+    self.seller_transactions.where(seller_id: current_company.id).collect(&:buyer_id).uniq
+  end
+
   def is_overdue
     date = Date.current
     if Transaction.where("buyer_id = ? AND due_date < ? AND paid = ?", self.id, date, false).present?

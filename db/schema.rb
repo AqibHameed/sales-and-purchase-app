@@ -666,9 +666,9 @@ ActiveRecord::Schema.define(version: 20190115161442) do
     t.datetime "updated_at", null: false
     t.decimal "buyer_percentage", precision: 10, scale: 2, default: "0.0"
     t.decimal "system_percentage", precision: 10, scale: 2, default: "0.0"
-    t.float "payment_score", limit: 24
-    t.float "market_payment_score", limit: 24
-    t.float "collection_ratio_days", limit: 24
+    t.string "payment_score"
+    t.string "market_payment_score"
+    t.string "collection_ratio_days"
   end
 
   create_table "seller_scores", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
