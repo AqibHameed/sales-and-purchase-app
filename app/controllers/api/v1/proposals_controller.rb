@@ -50,15 +50,13 @@ module Api
         else
           parcel = TradingParcel.where(id: params[:trading_parcel_id]).first
           if parcel.present?
-            credit_lmt = CreditLimit.where(buyer_id: current_company.id, seller_id: parcel.company).last
-            if credit_lmt.nil?
+            credit_lmt = CreditLimit.find_by(buyer_id: current_company.id, seller_id: parcel.company)
+            group_limit = CompaniesGroup.where(seller_id: parcel.company).map{|companies_group|  companies_group if companies_group.company_id.include?(current_company.id.to_s) == true}.first if credit_lmt.nil?
+            if credit_lmt.nil? && group_limit.nil?
               perposal_info(parcel)
             else
-              if credit_lmt.credit_limit > parcel.price
-                perposal_info(parcel)
-              else
-                render json: {success: false, message: 'Please contact seller to increase limits.'}
-              end
+              credit_lmt.credit_limit > parcel.price  ? perposal_info(parcel) : contact_to_seller if credit_lmt.present?
+              group_limit.group_overdue_limit > parcel.price  ? perposal_info(parcel) : contact_to_seller if group_limit.present?
             end
           else
             render json: {success: false, message: 'Parcel does not exists for this id.'}
@@ -592,6 +590,10 @@ module Api
         else
           render json: {success: false, errors: proposal.errors.full_messages}
         end
+      end
+
+      def contact_to_seller
+        render json: {success: false, message: 'Please contact seller to increase limits.'}
       end
 
     end
