@@ -6,6 +6,7 @@ class Message < ApplicationRecord
 
   scope :customer_messages, ->(current_company_id) {joins(:sender).order("created_at desc").where(receiver_id: current_company_id, message_type: "Proposal")}
   scope :customer_payment_messages, ->(current_company_id) {joins(:sender).order("created_at desc").where(receiver_id: current_company_id, message_type: "Payment")}
+  scope :customer_secuirty_data_messages, ->(current_company_id) {joins(:sender).order("created_at desc").where(receiver_id: current_company_id, message_type: "secuirty data")}
 
   def self.create_message(transaction)
     message = Message.create(subject: "Reject Transaction", message: transaction.reject_reason, sender_id: transaction.buyer_id, receiver_id: transaction.seller_id, message_type: "Reject")
@@ -23,6 +24,11 @@ class Message < ApplicationRecord
     @message << "#{ApplicationController.helpers.view_proposal_details(proposal, current_company)}"
 
     Message.create(subject: "You have a new proposal", message: @message, sender_id: proposal.buyer_id , receiver_id: proposal.seller_id, message_type: "Proposal", proposal_id: proposal.id)
+  end
+
+  def self.send_request_for_live_monitoring(request)
+    @message  = "A new seller sent you a request to show live monitoring data."
+    Message.find_or_create_by(subject: "You have a new live monitoring request from seller", message: @message, sender_id: request.sender_id, receiver_id: request.receiver_id, message_type: "secuirty data", live_monitoring_request_id: request.id)
   end
 
   def self.create_new_negotiate(proposal, current_company)

@@ -1674,11 +1674,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {
@@ -1694,11 +1694,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -1989,6 +1989,40 @@ define({ "api": [
     "sampleRequest": [
       {
         "url": "https://safetrade.ai/api/v1/secure_center?id=2"
+      }
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/security_data_request",
+    "title": "",
+    "name": "send_security_data_request",
+    "group": "companies_controller",
+    "description": "<p>send request to show security data</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"receiver_id\": 2\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Request send successfully.\",\n    \"response_code\": 201\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "companies_controller",
+    "sampleRequest": [
+      {
+        "url": "https://safetrade.ai/api/v1/security_data_request"
       }
     ]
   }

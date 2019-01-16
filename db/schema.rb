@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190115161442) do
+ActiveRecord::Schema.define(version: 20190116145613) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -408,6 +408,14 @@ ActiveRecord::Schema.define(version: 20190115161442) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "live_monitoring_requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "sender_id"
+    t.integer "receiver_id"
+    t.integer "status", default: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "market_buyer_scores", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.float "late_payment", limit: 24, default: 0.0, null: false
     t.float "current_risk", limit: 24, default: 0.0, null: false
@@ -443,6 +451,7 @@ ActiveRecord::Schema.define(version: 20190115161442) do
     t.datetime "updated_at", null: false
     t.integer "proposal_id"
     t.integer "transaction_id"
+    t.integer "live_monitoring_request_id"
     t.index ["receiver_id"], name: "index_messages_on_receiver_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
   end
