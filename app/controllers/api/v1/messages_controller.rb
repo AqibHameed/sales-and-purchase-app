@@ -267,8 +267,8 @@ module Api
                 }
               end
             end
-            @data << data
           end
+          @data << data
         end
         @data
       end
