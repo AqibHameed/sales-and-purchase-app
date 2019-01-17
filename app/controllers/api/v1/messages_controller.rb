@@ -289,7 +289,8 @@ module Api
                 data ={
                     request_id: request.id,
                     sender: request.sender.name,
-                    message: message.subject
+                    message: message.subject,
+                    status: request.status
                 }
               end
             end
