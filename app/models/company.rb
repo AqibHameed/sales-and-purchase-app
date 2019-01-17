@@ -86,8 +86,8 @@ class Company < ApplicationRecord
     end
   end
 
-  def get_buyers_ids
-    self.seller_transactions.where(seller_id: current_company.id).collect(&:buyer_id).uniq
+  def self.get_buyers_ids(current_company)
+    current_company.seller_transactions.where(seller_id: current_company.id).collect(&:buyer_id).uniq
   end
 
   def is_overdue
