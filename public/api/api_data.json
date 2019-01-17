@@ -708,7 +708,7 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "api/v1/customers/purchases",
+    "url": "/api/v1/customers/purchases",
     "title": "",
     "name": "customer_purchases",
     "group": "Customers",
@@ -717,7 +717,7 @@
       "examples": [
         {
           "title": "SuccessResponse:{",
-          "content": "    {\n        \"success\": true,\n        \"total_credit_recieved\": 1,\n        \"total_credit_received\": \"$316.00\",\n    \"purchases\":{\n        \"0\":{\n        \"term\": \"cash\",\n        \"percent\": \"0(0%)\",\n        \"Pending_Transaction\": \"$0.00(0%)\",\n        \"Overdue_Transaction\": \"$0.00(0%)\",\n        \"Complete_Transaction\": \"$0.00(0%)\"\n        },\n        \"1\":{\n        \"term\": \"1<=30\",\n        \"percent\": \"0(0%)\",\n        \"Pending_Transaction\": \"$0.00(0%)\",\n        \"Overdue_Transaction\": \"$0.00(0%)\",\n        \"Complete_Transaction\": \"$0.00(0%)\"\n        },\n        \"2\":{\n        \"term\": \"31<=60\",\n        \"percent\": \"0(0%)\",\n        \"Pending_Transaction\": \"$0.00(0%)\",\n        \"Overdue_Transaction\": \"$0.00(0%)\",\n        \"Complete_Transaction\": \"$0.00(0%)\"\n        },\n        \"3\":{\n        \"term\": \"61<=90\",\n        \"percent\": \"0(0%)\",\n        \"Pending_Transaction\": \"$0.00(0%)\",\n        \"Overdue_Transaction\": \"$0.00(0%)\",\n        \"Complete_Transaction\": \"$0.00(0%)\"\n        },\n        \"4\":{\n        \"term\": \"61<=90\",\n        \"percent\": \"0(0%)\",\n        \"Pending_Transaction\": \"$0.00(0%)\",\n        \"Overdue_Transaction\": \"$0.00(0%)\",\n        \"Complete_Transaction\": \"$0.00(0%)\"\n        },\n        \"5\":{\n        \"term\": \"total\",\n        \"percent\": 0,\n        \"Pending_Transaction\": \"$0.00\",\n        \"Overdue_Transaction\": \"$0.00\",\n        \"Complete_Transaction\": \"$0.00\"\n        }\n        },\n        \"response_code\": 200\n      }\n\n}",
+          "content": "    {\n        \"success\": true,\n        \"credit_recieved_count\": 1,\n        \"total_credit_received\": \"$316.00\",\n    \"purchases\":{\n        \"0\":{\n        \"term\": \"cash\",\n        \"percent\": \"0(0%)\",\n        \"pending_transaction\": \"$0.00(0%)\",\n        \"overdue_transaction\": \"$0.00(0%)\",\n        \"complete_transaction\": \"$0.00(0%)\"\n        },\n        \"1\":{\n        \"term\": \"1<=30\",\n        \"percent\": \"0(0%)\",\n        \"pending_transaction\": \"$0.00(0%)\",\n        \"overdue_transaction\": \"$0.00(0%)\",\n        \"complete_transaction\": \"$0.00(0%)\"\n        },\n        \"2\":{\n        \"term\": \"31<=60\",\n        \"percent\": \"0(0%)\",\n        \"pending_transaction\": \"$0.00(0%)\",\n        \"overdue_transaction\": \"$0.00(0%)\",\n        \"tomplete_transaction\": \"$0.00(0%)\"\n        },\n        \"3\":{\n        \"term\": \"61<=90\",\n        \"percent\": \"0(0%)\",\n        \"pending_transaction\": \"$0.00(0%)\",\n        \"overdue_transaction\": \"$0.00(0%)\",\n        \"complete_transaction\": \"$0.00(0%)\"\n        },\n        \"4\":{\n        \"term\": \"61<=90\",\n        \"percent\": \"0(0%)\",\n        \"pending_transaction\": \"$0.00(0%)\",\n        \"overdue_transaction\": \"$0.00(0%)\",\n        \"complete_transaction\": \"$0.00(0%)\"\n        },\n        \"5\":{\n        \"term\": \"total\",\n        \"percent\": 0,\n        \"pending_transaction\": \"$0.00\",\n        \"overdue_transaction\": \"$0.00\",\n        \"complete_transaction\": \"$0.00\"\n        }\n        },\n        \"response_code\": 200\n      }\n\n}",
           "type": "json"
         }
       ]
@@ -768,7 +768,7 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "api/v1/customers/feedback_rating",
+    "url": "/api/v1/customers/feedback_rating",
     "title": "",
     "name": "feedback_rating",
     "group": "Customers",
