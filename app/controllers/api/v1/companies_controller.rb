@@ -3,7 +3,7 @@ class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
-  before_action :current_company, only: [:send_security_data_request]
+  before_action :current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
 
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
@@ -168,12 +168,47 @@ class Api::V1::CompaniesController < ApplicationController
     else
       render json: { errors: "Not authenticated", response_code: 201 }
     end
-  end
+    end
+=begin
+    @apiVersion 1.0.0
+    @api {post} /api/v1/seller_companies
+    @apiSampleRequest off
+    @apiName seller_companies
+    @apiGroup Companies
+    @apiDescription shows the list of companies
+    @apiSuccessExample {json} SuccessResponse:
+    {
+      "success": true,
+      "pagination": {
+          "total_pages": 1,
+          "prev_page": null,
+          "next_page": null,
+          "current_page": 1
+      },
+      "companies": [
+          {
+              "id": 7,
+              "name": "Dummy Buyer 1",
+              "transaction_count": 5,
+              "amount_due": "10975.29",
+              "overdue_status": true
+          },
+          {
+              "id": 10,
+              "name": "Dummy Buyer 2",
+              "transaction_count": 1,
+              "amount_due": "3300.0",
+              "overdue_status": true
+          }
+      ]
+   }
+=end
+
 
   def seller_companies
     if current_company
       #transactions =  current_company.seller_transactions.select('buyer_id').where("paid = ?", false)
-      transactions = Company.select("
+      companies = Company.select("
               companies.id,
               count(companies.id) as transaction_count,
               companies.name,
@@ -183,14 +218,19 @@ class Api::V1::CompaniesController < ApplicationController
       .order(:id)
 
       result = []
-      if transactions.present?
-        transactions.uniq.each do |t|
+      if companies.present?
+        companies.uniq.each do |company|
+          company_transactions = company.buyer_transactions
+          if company_transactions.present?
+            company_transactions_with_current_seller = company_transactions.where(seller_id: current_company.id)
+          end
           data = {
-            id: t.id,
-            name: t.name,
-            transaction_count: t.transaction_count,
-            remaining_amount: t.remaining_amount,
-            overdue_status: current_company.has_overdue_that_seller_setlimit(t.id)
+            id: company.id,
+            name: company.name,
+            transaction_count: company.transaction_count,
+            remaining_amount: company.remaining_amount,
+            amount_due: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("paid = ? AND buyer_confirmed = ?", false, true).sum(:remaining_amount).round(2) : 0.0,
+            overdue_status: current_company.has_overdue_that_seller_setlimit(company.id)
           }
           result << data
         end
@@ -436,7 +476,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
  @apiVersion 1.0.0
- @api {post} /api/v1/security_data_request
+ @api {post} /api/v1/companies/send_security_data_request
  @apiName send_security_data_request
  @apiGroup companies_controller
  @apiDescription send request to show security data
@@ -455,16 +495,72 @@ class Api::V1::CompaniesController < ApplicationController
   def send_security_data_request
     live_monitor_request = LiveMonitoringRequest.find_or_initialize_by(sender_id: current_company.id,
                                                                    receiver_id: params[:receiver_id])
+    if live_monitor_request.status == 'rejected'
+      live_monitor_request.update_attributes(status: 2)
+    end
     if live_monitor_request.save
       Message.send_request_for_live_monitoring(live_monitor_request)
-    end
-    if live_monitor_request.present?
       render json: {success: true,
                     message: "Request send successfully.",
-                    response_code: 201}
+                    response_code: 200}
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/companies/accept_secuirty_data_request
+ @apiName accept_secuirty_data_request
+ @apiGroup companies_controller
+ @apiDescription accept request to show security data
+ @apiParamExample {json} Request-Example:
+{
+	"request_id": 9
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Request accepted successfully.",
+    "response_code": 200
+}
+=end
+
+  def accept_secuirty_data_request
+    request = LiveMonitoringRequest.find_by(id: params[:request_id])
+    if request && request.status == 'pending'
+      request.update_attributes(status: 1)
+    end
+    render json: {success: true,
+                  message: "Request accepted successfully.",
+                  response_code: 200}
+  end
+  
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/companies/reject_secuirty_data_request
+ @apiName reject_secuirty_data_request
+ @apiGroup companies_controller
+ @apiDescription reject request to show security data
+ @apiParamExample {json} Request-Example:
+{
+	"request_id": 9
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Request rejected successfully.",
+    "response_code": 200
+}
+=end
+
+  def reject_secuirty_data_request
+    request = LiveMonitoringRequest.find_by(id: params[:request_id])
+    if request && request.status == 'pending'
+      request.update_attributes(status: 0)
+    end
+    render json: {success: true,
+                  message: "Request rejected successfully.",
+                  response_code: 200}
+  end
 
   def cost_convert trading_parcel
     trading_parcel.cost.blank? ? nil: trading_parcel.cost.to_s

@@ -29,6 +29,16 @@ class Message < ApplicationRecord
   def self.send_request_for_live_monitoring(request)
     @message  = "A new seller sent you a request to show live monitoring data."
     Message.find_or_create_by(subject: "You have a new live monitoring request from seller", message: @message, sender_id: request.sender_id, receiver_id: request.receiver_id, message_type: "secuirty data", live_monitoring_request_id: request.id)
+    end
+
+  def self.accept_request_for_live_monitoring(request)
+    @message  = "your request has been accepted."
+    Message.find_or_create_by(subject: "your request has been accepted.", message: @message, sender_id: request.receiver_id, receiver_id: request.sender_id, message_type: "secuirty data", live_monitoring_request_id: request.id)
+  end
+
+  def self.accept_request_for_live_monitoring(request)
+    @message  = "your request has been accepted."
+    Message.find_or_create_by(subject: "your request has been accepted.", message: @message, sender_id: request.receiver_id, receiver_id: request.sender_id, message_type: "secuirty data", live_monitoring_request_id: request.id)
   end
 
   def self.create_new_negotiate(proposal, current_company)

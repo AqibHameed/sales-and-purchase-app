@@ -42,6 +42,32 @@ module Api
 }
 =end
 
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/messages?status=live_monitoring
+ @apiSampleRequest off
+ @apiName index
+ @apiGroup Messages
+ @apiDescription Get security data requests messages of authorized user
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "messages": [
+        {
+            "request_id": 9,
+            "sender": "Seller A",
+            "message": "You have a new live monitoring request from seller"
+        }
+    ],
+    "response_code": 200
+}
+=end
+
       def index
         all_messages = []
         payment_messages = []
@@ -263,7 +289,8 @@ module Api
                 data ={
                     request_id: request.id,
                     sender: request.sender.name,
-                    message: message.subject
+                    message: message.subject,
+                    status: request.status
                 }
               end
             end
