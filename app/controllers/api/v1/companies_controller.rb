@@ -3,6 +3,7 @@ class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
+  before_action :current_company, only: [:send_security_data_request]
 
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
@@ -430,6 +431,37 @@ class Api::V1::CompaniesController < ApplicationController
         @array << data
       end
       return @array
+    end
+  end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/security_data_request
+ @apiName send_security_data_request
+ @apiGroup companies_controller
+ @apiDescription send request to show security data
+ @apiParamExample {json} Request-Example:
+{
+	"receiver_id": 2
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Request send successfully.",
+    "response_code": 201
+}
+=end
+
+  def send_security_data_request
+    live_monitor_request = LiveMonitoringRequest.find_or_initialize_by(sender_id: current_company.id,
+                                                                   receiver_id: params[:receiver_id])
+    if live_monitor_request.save
+      Message.send_request_for_live_monitoring(live_monitor_request)
+    end
+    if live_monitor_request.present?
+      render json: {success: true,
+                    message: "Request send successfully.",
+                    response_code: 201}
     end
   end
 

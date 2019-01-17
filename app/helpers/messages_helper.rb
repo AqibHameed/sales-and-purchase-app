@@ -4,9 +4,15 @@ module MessagesHelper
     messages.map {|m| m if m.proposal && (m.proposal.status == 'negotiated' or m.proposal.status == 'new_proposal') && !(m.proposal.negotiations.last.whose == current_company)}.compact
   end
 
-  def new_messages_payment(messages, payment_messages)
+  def new_messages_payment(messages, payment_messages, live_monitor_request_messages)
     messages = messages.map {|m| m if m.proposal && (m.proposal.status == 'negotiated' or m.proposal.status == 'new_proposal') && !(m.proposal.negotiations.last.whose == current_company)}.compact
     messages << payment_messages
+    messages << live_monitor_request_messages
+    messages.flatten
+  end
+
+  def live_monitoring_messages(messages, live_monitor_request_messages)
+    messages << live_monitor_request_messages
     messages.flatten
   end
 

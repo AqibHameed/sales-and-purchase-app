@@ -291,6 +291,7 @@ Rails.application.routes.draw do
       get '/blocked_customers', to: 'companies#blocked_customers'
       post '/reset_limits', to: 'companies#reset_limits'
       get '/check_company', to: 'companies#check_company'
+      post '/security_data_request', to: 'companies#send_security_data_request'
       get '/countries_list', to: 'companies#country_list'
       get '/companies_list', to: 'companies#companies_list'
       post '/invite', to: 'companies#invite'

@@ -6,6 +6,8 @@ class Company < ApplicationRecord
   has_many :trading_parcels, dependent: :destroy
   has_many :sender, :class_name => 'BrokerRequest', :foreign_key => 'sender_id'
   has_many :receiver, :class_name => 'BrokerRequest', :foreign_key => 'receiver_id'
+  has_many :sender, class_name: 'LiveMonitoringRequest', :foreign_key => 'sender_id'
+  has_many :receiver,class_name: 'LiveMonitoringRequest', :foreign_key => 'receiver_id'
   has_many :buyer_credit_limits, :foreign_key => "buyer_id", :class_name => "CreditLimit", dependent: :destroy
   has_many :buyer_transactions, :foreign_key => "buyer_id", :class_name => "Transaction", dependent: :destroy
   has_many :seller_transactions, :foreign_key => "seller_id", :class_name => "Transaction", dependent: :destroy
@@ -82,6 +84,10 @@ class Company < ApplicationRecord
         return true
       end
     end
+  end
+
+  def self.get_buyers_ids(current_company)
+    current_company.seller_transactions.where(seller_id: current_company.id).collect(&:buyer_id).uniq
   end
 
   def is_overdue
@@ -433,8 +439,16 @@ class Company < ApplicationRecord
     self.buyer_transactions.collect(&:seller_id).uniq.count
   end
 
+  def buyer_connected
+    self.seller_transactions.collect(&:buyer_id).uniq.count
+  end
+
   def supplier_paid
     supplier_connected
+  end
+
+  def buyer_paid
+    buyer_connected
   end
 
   def buyer_transaction_percentage

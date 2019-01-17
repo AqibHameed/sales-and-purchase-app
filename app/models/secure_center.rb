@@ -1,4 +1,6 @@
 class SecureCenter < ApplicationRecord
+  serialize :payment_score
+  serialize :collection_ratio_days
   has_paper_trail
   def supplier_connected
     supplier_paid

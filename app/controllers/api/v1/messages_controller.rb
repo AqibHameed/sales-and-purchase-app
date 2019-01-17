@@ -45,16 +45,21 @@ module Api
       def index
         all_messages = []
         payment_messages = []
+        live_monitor_request_messages = []
         if current_company
           messages = Message.customer_messages(current_company.id).group_by(&:proposal_id)
           messages.each do |proposal_id, messages|
             all_messages << messages.last
           end
+          security_requests = Message.customer_secuirty_data_messages(current_company.id).group_by(&:live_monitoring_request_id)
+          security_requests.each do |message|
+            live_monitor_request_messages << message.last
+          end
           payment_message = Message.customer_payment_messages(current_company.id).group_by(&:transaction_id)
           payment_message.each do |transaction_id, messages|
             payment_messages << messages.last
           end
-          @messages = Kaminari.paginate_array(messages_data(all_messages, payment_messages, params[:status], params[:description], params[:company])).page(params[:page]).per(params[:count])
+          @messages = Kaminari.paginate_array(messages_data(all_messages, payment_messages, params[:status], params[:description], params[:company], live_monitor_request_messages)).page(params[:page]).per(params[:count])
           render json: { pagination: set_pagination(:messages), messages: @messages, response_code: 200 }
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -178,14 +183,16 @@ module Api
         params.require(:message).permit(:subject, :message, :message_type, :receiver_id)
       end
 
-      def messages_data(messages, payment_messages, status, description, company)
+      def messages_data(messages, payment_messages, status, description, company, live_monitor_request_messages)
         @data = []
         @messages = messages
         if status.present?
           if status == 'negotiated'
             @messages = negotiation_messages(messages)
           elsif status == 'new'
-            @messages = new_messages_payment(messages, payment_messages)
+            @messages = new_messages_payment(messages, payment_messages, live_monitor_request_messages)
+          elsif status == 'live_monitoring'
+            @messages = live_monitoring_messages(messages, live_monitor_request_messages)
           else  
             @messages = @messages.map{ |m| m if m.proposal && m.proposal.status == status }.compact
           end
@@ -249,8 +256,19 @@ module Api
                   data.merge!(calculation: offered_percent.round(2))
                 end
             end
-            @data << data  
+          else
+            unless message.live_monitoring_request_id.nil?
+              request = LiveMonitoringRequest.find_by(id: message.live_monitoring_request_id)
+              if request.status == 'pending'
+                data ={
+                    request_id: request.id,
+                    sender: request.sender.name,
+                    message: message.subject
+                }
+              end
+            end
           end
+          @data << data
         end
         @data
       end
