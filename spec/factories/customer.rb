@@ -4,7 +4,7 @@ FactoryBot.define do
     last_name {FFaker::Name.last_name}
     email {FFaker::Internet.email}
     password {FFaker::DizzleIpsum.words(4).join('!').first(8)}
-    mobile_no {Faker::PhoneNumber.phone_number}
+    mobile_no {Faker::PhoneNuzmber.phone_number}
     role {Role::TRADER}
     confirmed_at {Time.now}
     company

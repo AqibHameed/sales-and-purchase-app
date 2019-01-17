@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :supplier do
-    name {FFaker::Name.name}
-    address { FFaker::Address.address}
+    name {Faker::Name.name}
+    address { Faker::Address.country}
   end
 end
