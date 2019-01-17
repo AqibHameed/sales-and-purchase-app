@@ -1131,6 +1131,26 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
+    "url": "/api/v1/messages?status=live_monitoring",
+    "title": "",
+    "name": "index",
+    "group": "Messages",
+    "description": "<p>Get security data requests messages of authorized user</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"request_id\": 9,\n            \"sender\": \"Seller A\",\n            \"message\": \"You have a new live monitoring request from seller\"\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/messages_controller.rb",
+    "groupTitle": "Messages"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
     "url": "/api/v1/messages",
     "title": "",
     "name": "index",
@@ -1989,6 +2009,40 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/companies/accept_secuirty_data_request",
+    "title": "",
+    "name": "accept_secuirty_data_request",
+    "group": "companies_controller",
+    "description": "<p>accept request to show security data</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"request_id\": 9\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Request accepted successfully.\",\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "companies_controller",
+    "sampleRequest": [
+      {
+        "url": "https://safetrade.ai/api/v1/companies/accept_secuirty_data_request"
+      }
+    ]
+  },
+  {
+    "version": "1.0.0",
     "type": "get",
     "url": "/api/v1/secure_center?id=2",
     "title": "",
@@ -2015,7 +2069,7 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "/api/v1/security_data_request",
+    "url": "/api/v1/companies/send_security_data_request",
     "title": "",
     "name": "send_security_data_request",
     "group": "companies_controller",
@@ -2042,7 +2096,7 @@ define({ "api": [
     "groupTitle": "companies_controller",
     "sampleRequest": [
       {
-        "url": "https://safetrade.ai/api/v1/security_data_request"
+        "url": "https://safetrade.ai/api/v1/companies/send_security_data_request"
       }
     ]
   }
