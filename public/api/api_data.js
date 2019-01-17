@@ -2069,6 +2069,40 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
+    "url": "/api/v1/companies/reject_secuirty_data_request",
+    "title": "",
+    "name": "reject_secuirty_data_request",
+    "group": "companies_controller",
+    "description": "<p>reject request to show security data</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"request_id\": 9\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"message\": \"Request rejected successfully.\",\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "companies_controller",
+    "sampleRequest": [
+      {
+        "url": "https://safetrade.ai/api/v1/companies/reject_secuirty_data_request"
+      }
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
     "url": "/api/v1/companies/send_security_data_request",
     "title": "",
     "name": "send_security_data_request",
