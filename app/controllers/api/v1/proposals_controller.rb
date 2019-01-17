@@ -45,28 +45,18 @@ module Api
       def create
         existing_proposal = Proposal.where(id: params[:id]).first
         if existing_proposal.present?
-
           existing_proposal.update_attributes(proposal_params)
           render json: {success: true, message: 'Proposal Updated Successfully'}
         else
           parcel = TradingParcel.where(id: params[:trading_parcel_id]).first
           if parcel.present?
-            proposal = Proposal.new(proposal_params)
-            proposal.buyer_id = current_company.id
-            proposal.seller_id = parcel.company_id
-            proposal.notes = parcel.comment
-            proposal.action_for = parcel.company_id
-            proposal.buyer_comment = params[:comment]
-            if proposal.save
-              proposal.negotiations.create(price: proposal.price, percent: proposal.percent, credit: proposal.credit, total_value: proposal.total_value, comment: proposal.buyer_comment, from: 'buyer')
-              CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
-              Message.create_new(proposal)
-              Message.create_negotiate(proposal, current_company)
-              receiver_ids = proposal.seller.customers.map {|c| c.id}.uniq
-              current_company.send_notification('New Proposal', receiver_ids)
-              render json: {success: true, message: 'Proposal Submitted Successfully'}
+            credit_lmt = CreditLimit.find_by(buyer_id: current_company.id, seller_id: parcel.company)
+            group_limit = CompaniesGroup.where(seller_id: parcel.company).map{|companies_group|  companies_group if companies_group.company_id.include?(current_company.id.to_s) == true}.first if credit_lmt.nil?
+            if credit_lmt.nil? && group_limit.nil?
+              perposal_info(parcel)
             else
-              render json: {success: false, errors: proposal.errors.full_messages}
+              credit_lmt.credit_limit > parcel.price  ? perposal_info(parcel) : contact_to_seller if credit_lmt.present?
+              group_limit.group_overdue_limit > parcel.price  ? perposal_info(parcel) : contact_to_seller if group_limit.present?
             end
           else
             render json: {success: false, message: 'Parcel does not exists for this id.'}
@@ -577,6 +567,32 @@ module Api
           end
         end
       end
+
+
+      def perposal_info(parcel)
+        proposal = Proposal.new(proposal_params)
+        proposal.buyer_id = current_company.id
+        proposal.seller_id = parcel.company_id
+        proposal.notes = parcel.comment
+        proposal.action_for = parcel.company_id
+        proposal.buyer_comment = params[:comment]
+        if proposal.save
+          proposal.negotiations.create(price: proposal.price, percent: proposal.percent, credit: proposal.credit, total_value: proposal.total_value, comment: proposal.buyer_comment, from: 'buyer')
+          CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
+          Message.create_new(proposal)
+          Message.create_new_negotiate(proposal, current_company)
+          receiver_ids = proposal.seller.customers.map {|c| c.id}.uniq
+          current_company.send_notification('New Proposal', receiver_ids)
+          render json: {success: true, message: 'Proposal Submitted Successfully'}
+        else
+          render json: {success: false, errors: proposal.errors.full_messages}
+        end
+      end
+
+      def contact_to_seller
+        render json: {success: false, message: 'Please contact seller to increase limits.'}
+      end
+
     end
   end
 end
