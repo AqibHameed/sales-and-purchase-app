@@ -534,33 +534,7 @@ class Api::V1::CompaniesController < ApplicationController
                   response_code: 200}
   end
 
-=begin
- @apiVersion 1.0.0
- @api {post} /api/v1/companies/reject_secuirty_data_request
- @apiName reject_secuirty_data_request
- @apiGroup companies_controller
- @apiDescription reject request to show security data
- @apiParamExample {json} Request-Example:
-{
-	"request_id": 9
-}
- @apiSuccessExample {json} SuccessResponse:
-{
-    "success": true,
-    "message": "Request rejected successfully.",
-    "response_code": 200
-}
-=end
 
-  def reject_secuirty_data_request
-    request = LiveMonitoringRequest.find_by(id: params[:request_id])
-    if request && request.status == 'pending'
-      request.update_attributes(status: 0)
-    end
-    render json: {success: true,
-                  message: "Request rejected successfully.",
-                  response_code: 200}
-  end
 
 
   def cost_convert trading_parcel
