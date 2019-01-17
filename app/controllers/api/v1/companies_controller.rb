@@ -218,7 +218,6 @@ class Api::V1::CompaniesController < ApplicationController
       .order(:id)
 
       result = []
-
       if companies.present?
         companies.uniq.each do |company|
           company_transactions = company.buyer_transactions
@@ -229,6 +228,7 @@ class Api::V1::CompaniesController < ApplicationController
             id: company.id,
             name: company.name,
             transaction_count: company.transaction_count,
+            remaining_amount: company.remaining_amount,
             amount_due: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("paid = ? AND buyer_confirmed = ?", false, true).sum(:remaining_amount).round(2) : 0.0,
             overdue_status: current_company.has_overdue_that_seller_setlimit(company.id)
           }
