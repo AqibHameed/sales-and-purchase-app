@@ -299,7 +299,7 @@ module Api
 
 =begin
  @apiVersion 1.0.0
- @api {get} api/v1/customers/purchases
+ @api {get} /api/v1/customers/purchases
  @apiSampleRequest off
  @apiName customer_purchases
  @apiGroup Customers
@@ -307,50 +307,50 @@ module Api
  @apiSuccessExample {json} SuccessResponse:{
     {
         "success": true,
-        "total_credit_recieved": 1,
+        "credit_recieved_count": 1,
         "total_credit_received": "$316.00",
     "purchases":{
         "0":{
         "term": "cash",
         "percent": "0(0%)",
-        "Pending_Transaction": "$0.00(0%)",
-        "Overdue_Transaction": "$0.00(0%)",
-        "Complete_Transaction": "$0.00(0%)"
+        "pending_transaction": "$0.00(0%)",
+        "overdue_transaction": "$0.00(0%)",
+        "complete_transaction": "$0.00(0%)"
         },
         "1":{
         "term": "1<=30",
         "percent": "0(0%)",
-        "Pending_Transaction": "$0.00(0%)",
-        "Overdue_Transaction": "$0.00(0%)",
-        "Complete_Transaction": "$0.00(0%)"
+        "pending_transaction": "$0.00(0%)",
+        "overdue_transaction": "$0.00(0%)",
+        "complete_transaction": "$0.00(0%)"
         },
         "2":{
         "term": "31<=60",
         "percent": "0(0%)",
-        "Pending_Transaction": "$0.00(0%)",
-        "Overdue_Transaction": "$0.00(0%)",
-        "Complete_Transaction": "$0.00(0%)"
+        "pending_transaction": "$0.00(0%)",
+        "overdue_transaction": "$0.00(0%)",
+        "tomplete_transaction": "$0.00(0%)"
         },
         "3":{
         "term": "61<=90",
         "percent": "0(0%)",
-        "Pending_Transaction": "$0.00(0%)",
-        "Overdue_Transaction": "$0.00(0%)",
-        "Complete_Transaction": "$0.00(0%)"
+        "pending_transaction": "$0.00(0%)",
+        "overdue_transaction": "$0.00(0%)",
+        "complete_transaction": "$0.00(0%)"
         },
         "4":{
         "term": "61<=90",
         "percent": "0(0%)",
-        "Pending_Transaction": "$0.00(0%)",
-        "Overdue_Transaction": "$0.00(0%)",
-        "Complete_Transaction": "$0.00(0%)"
+        "pending_transaction": "$0.00(0%)",
+        "overdue_transaction": "$0.00(0%)",
+        "complete_transaction": "$0.00(0%)"
         },
         "5":{
         "term": "total",
         "percent": 0,
-        "Pending_Transaction": "$0.00",
-        "Overdue_Transaction": "$0.00",
-        "Complete_Transaction": "$0.00"
+        "pending_transaction": "$0.00",
+        "overdue_transaction": "$0.00",
+        "complete_transaction": "$0.00"
         }
         },
         "response_code": 200
@@ -365,13 +365,13 @@ module Api
         @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
         @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
 
-        render json: {success: true, total_credit_recieved: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
+        render json: {success: true, credit_recieved_count: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
 
       end
 
 =begin
  @apiVersion 1.0.0
- @api {get} api/v1/customers/feedback_rating
+ @api {get} /api/v1/customers/feedback_rating
  @apiSampleRequest off
  @apiName feedback_rating
  @apiGroup Customers
