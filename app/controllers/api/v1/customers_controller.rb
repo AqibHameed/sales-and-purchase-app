@@ -234,50 +234,49 @@ module Api
  @apiGroup Customers
  @apiDescription permission the tiles and sorting the record on the basis of count
  @apiSuccessExample {json} SuccessResponse:
-    {
-"success": true,
-"credit_given_to": 5,
-"total_given_credit": "129823.00",
-"total_used_credit": "229022.89",
-"total_available_credit": "-$99,199.89",
- "sales": {
-    0: {
-    "term": "cash",
-    "percent": "0(0%)",
-    "pending_transaction": "$0.00(0%)",
-    "overdue_transaction": "$0.00(0%)",
-    "complete_transaction": "$0.00(0%)"
-    },
-    1: {
-    "term": "1<=30",
-    "percent": "6(46%)",
-    "pending_transaction": "$0.00(0%)",
-    "overdue_transaction": "$40,000.00(100%)",
-    "complete_transaction": "$269,400.00(85%)"
-    },
-    2: {
-    "term": "61<=90",
-    "percent": "3(23%)",
-    "pending_transaction": "$46,200.00(100%)",
-    "overdue_transaction": "$0.00(0%)",
-    "complete_transaction": "$21,890.00(6%)"
-    },
-    3: {
-    "term": "91",
-    "percent": "0(0%)",
-    "pending_transaction": "$0.00(0%)",
-    "overdue_transaction": "$0.00(0%)",
-    "complete_transaction": "$0.00(0%)"
-    },
-    4: {
-    "term": "total",
-    "percent": 13,
-    "pending_transaction": "46200.0",
-    "overdue_transaction": "40000.0",
-    "complete_transaction": "315040.0"
-    }
-   }
-  }
+   {
+    "success": true,
+    "credit_given_to": 5,
+    "total_given_credit": "129823.00",
+    "total_used_credit": "229022.89",
+    "total_available_credit": "-$99,199.89",
+    "sales": [
+        {
+      "term": "cash",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "1<=30",
+      "percent": "6(46%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$40,000.00(100%)",
+      "complete_transaction": "$269,400.00(85%)"
+      },
+        {
+      "term": "61<=90",
+      "percent": "3(23%)",
+      "pending_transaction": "$46,200.00(100%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$21,890.00(6%)"
+      },
+        {
+      "term": "91",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "total",
+      "percent": "13",
+      "pending_transaction": "$46,200.00",
+      "overdue_transaction": "$40,000.00",
+      "complete_transaction": "$315,040.00"
+      }
+],
 }
 =end
 
@@ -304,58 +303,56 @@ module Api
  @apiName customer_purchases
  @apiGroup Customers
  @apiDescription to get customer purchasings info
- @apiSuccessExample {json} SuccessResponse:{
-    {
-        "success": true,
-        "credit_recieved_count": 1,
-        "total_credit_received": "$316.00",
-    "purchases":{
-        "0":{
-        "term": "cash",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "complete_transaction": "$0.00(0%)"
-        },
-        "1":{
-        "term": "1<=30",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "complete_transaction": "$0.00(0%)"
-        },
-        "2":{
-        "term": "31<=60",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "tomplete_transaction": "$0.00(0%)"
-        },
-        "3":{
-        "term": "61<=90",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "complete_transaction": "$0.00(0%)"
-        },
-        "4":{
-        "term": "61<=90",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "complete_transaction": "$0.00(0%)"
-        },
-        "5":{
-        "term": "total",
-        "percent": 0,
-        "pending_transaction": "$0.00",
-        "overdue_transaction": "$0.00",
-        "complete_transaction": "$0.00"
-        }
-        },
-        "response_code": 200
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "credit_recieved_count": 1,
+    "total_credit_received": "$0.00",
+    "purchases": [
+        {
+      "term": "cash",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "1<=30",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "31<=60",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "61<=90",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "61<=90",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "total",
+      "percent": "0",
+      "pending_transaction": "$0.00",
+      "overdue_transaction": "$0.00",
+      "complete_transaction": "$0.00"
       }
-
+    ],
+    "response_code": 200
 }
 =end
       def purchases
