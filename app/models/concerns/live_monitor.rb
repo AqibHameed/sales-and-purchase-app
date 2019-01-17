@@ -41,13 +41,13 @@ module LiveMonitor
       end
     end
     unless transactions.size <= 0
-      collection_payment_ratio << [
+      collection_payment_ratio << {
           zer_percent: in_zero / transactions.size,
           less_fiften: in_fiften / transactions.size,
           less_thirty: in_thirty / transactions.size,
           less_fourty_five: in_fourty_five / transactions.size,
           greater_fourty_five: greater_fourty_five / transactions.size
-      ]
+      }
     end
     if company_transactions.present?
       company_transactions_with_current_seller = company_transactions.where(seller_id: current_company.id)
