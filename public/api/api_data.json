@@ -678,6 +678,26 @@
   },
   {
     "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/seller_companies",
+    "title": "",
+    "name": "seller_companies",
+    "group": "Companies",
+    "description": "<p>shows the list of companies</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 1,\n       \"prev_page\": null,\n       \"next_page\": null,\n       \"current_page\": 1\n   },\n   \"companies\": [\n       {\n           \"id\": 7,\n           \"name\": \"Dummy Buyer 1\",\n           \"transaction_count\": 5,\n           \"amount_due\": \"10975.29\",\n           \"overdue_status\": true\n       },\n       {\n           \"id\": 10,\n           \"name\": \"Dummy Buyer 2\",\n           \"transaction_count\": 1,\n           \"amount_due\": \"3300.0\",\n           \"overdue_status\": true\n       }\n   ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
     "type": "get",
     "url": "/api/v1/access_tiles?tab=inbox",
     "title": "",
@@ -1674,11 +1694,11 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -1694,11 +1714,11 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {

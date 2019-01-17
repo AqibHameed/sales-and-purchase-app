@@ -168,12 +168,47 @@ class Api::V1::CompaniesController < ApplicationController
     else
       render json: { errors: "Not authenticated", response_code: 201 }
     end
-  end
+    end
+=begin
+    @apiVersion 1.0.0
+    @api {post} /api/v1/seller_companies
+    @apiSampleRequest off
+    @apiName seller_companies
+    @apiGroup Companies
+    @apiDescription shows the list of companies
+    @apiSuccessExample {json} SuccessResponse:
+    {
+      "success": true,
+      "pagination": {
+          "total_pages": 1,
+          "prev_page": null,
+          "next_page": null,
+          "current_page": 1
+      },
+      "companies": [
+          {
+              "id": 7,
+              "name": "Dummy Buyer 1",
+              "transaction_count": 5,
+              "amount_due": "10975.29",
+              "overdue_status": true
+          },
+          {
+              "id": 10,
+              "name": "Dummy Buyer 2",
+              "transaction_count": 1,
+              "amount_due": "3300.0",
+              "overdue_status": true
+          }
+      ]
+   }
+=end
+
 
   def seller_companies
     if current_company
       #transactions =  current_company.seller_transactions.select('buyer_id').where("paid = ?", false)
-      transactions = Company.select("
+      companies = Company.select("
               companies.id,
               count(companies.id) as transaction_count,
               companies.name,
@@ -183,14 +218,19 @@ class Api::V1::CompaniesController < ApplicationController
       .order(:id)
 
       result = []
-      if transactions.present?
-        transactions.uniq.each do |t|
+
+      if companies.present?
+        companies.uniq.each do |company|
+          company_transactions = company.buyer_transactions
+          if company_transactions.present?
+            company_transactions_with_current_seller = company_transactions.where(seller_id: current_company.id)
+          end
           data = {
-            id: t.id,
-            name: t.name,
-            transaction_count: t.transaction_count,
-            remaining_amount: t.remaining_amount,
-            overdue_status: current_company.has_overdue_that_seller_setlimit(t.id)
+            id: company.id,
+            name: company.name,
+            transaction_count: company.transaction_count,
+            amount_due: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("paid = ? AND buyer_confirmed = ?", false, true).sum(:remaining_amount).round(2) : 0.0,
+            overdue_status: current_company.has_overdue_that_seller_setlimit(company.id)
           }
           result << data
         end
