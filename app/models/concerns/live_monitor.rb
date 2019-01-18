@@ -61,7 +61,7 @@ module LiveMonitor
     secure_center.paid_date = date
     secure_center.supplier_paid = company.supplier_paid + company.buyer_connected
     secure_center.outstandings = company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("paid = ? AND buyer_confirmed = ?", false, true).sum(:remaining_amount).round(2) : 0.0
-    secure_center.overdue_amount = company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("due_date < ? AND paid = ? AND buyer_confirmed = ?", Date.current, false, true).sum(:remaining_amount).round(2) : 0
+    secure_center.overdue_amount = company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("due_date < ? AND paid = ? AND buyer_confirmed = ?", Date.current, false, true).sum(:remaining_amount).round(2) : 0.0
     secure_center.last_bought_on = last_bought_on.present? ? last_bought_on.updated_at : nil
     secure_center.buyer_percentage = company.buyer_transaction_percentage
     secure_center.system_percentage = company.system_transaction_percentage

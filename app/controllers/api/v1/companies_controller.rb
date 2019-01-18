@@ -594,6 +594,7 @@ class Api::V1::CompaniesController < ApplicationController
   def live_monitoring
     if current_company
       #secure_center_record(current_company.id, params[:id])
+      @request = LiveMonitoringRequest.find_by("sender_id=? OR receiver_id=?", current_company.id, current_company.id)
       @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
       if @secure_center.present?
         render status: :ok, template: "api/v1/companies/secure_center.json.jbuilder"
