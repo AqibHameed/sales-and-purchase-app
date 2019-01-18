@@ -297,6 +297,7 @@ Rails.application.routes.draw do
       post '/feedback', to: 'companies#send_feedback'
       get '/history', to: 'companies#history'
       get '/seller_companies', to: 'companies#seller_companies'
+      get '/companies_review', to: 'companies#companies_review'
       get '/secure_center', to: 'companies#live_monitoring'
       get '/download_secure_center', to: 'companies#download_secure_center'
       resources :tenders do
@@ -398,6 +399,8 @@ Rails.application.routes.draw do
       resource :customers do
         get :transactions
         get :sales
+        get :buyer_scores
+        get :seller_scores
         get :purchases
         get :feedback_rating
       end

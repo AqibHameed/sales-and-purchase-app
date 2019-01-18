@@ -1,7 +1,7 @@
 module Api
   module V1
     class CustomersController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request]
+      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request, :buyer_scores, :seller_scores]
       before_action :current_customer
       before_action :current_company
       MOBILE_TILES_SHOW = {
@@ -68,6 +68,144 @@ module Api
             }
           end
           render json: { success: true, requested_customers: @requested_customers, response_code: 201 }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/customers/buyer_scores
+ @apiName buyer scores
+ @apiGroup Customers
+ @apiDescription get Buyer scores
+ @apiSuccessExample {json} SuccessResponse:
+ {
+    "success": true,
+    "scores": [
+        {
+            "name": "Late Payment",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Current Risk Score",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Network Diversity",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Buyer Network Score",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Due Date Score",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Credit Used Score",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Number Of Suppliers Giving You Credit",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        }
+    ],
+    "response_code": 200
+}
+=end
+
+      def buyer_scores
+        @data = []
+        if current_company
+          buyer_score = current_company.get_buyer_score
+          market_buyer_score = MarketBuyerScore.get_scores
+          render json: {success: true,
+                        scores: get_scores(buyer_score, market_buyer_score),
+                        response_code: 200}
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/customers/seller_scores
+ @apiName seller scores
+ @apiGroup Customers
+ @apiDescription get seller scores
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "scores": [
+        {
+            "name": "Late Payment",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Current Risk Score",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Network Diversity",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Seller Network Score",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Due Date Score",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        },
+        {
+            "name": "Credit Used Score",
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0
+        }
+    ],
+    "response_code": 200
+}
+=end
+
+      def seller_scores
+        @data = []
+        if current_company
+          seller_score = current_company.get_seller_score
+          market_seller_score = MarketSellerScore.get_scores
+          render json: {success: true,
+                        scores: get_seller_scores(seller_score, market_seller_score),
+                        response_code: 200}
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+        if current_company
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
@@ -451,6 +589,97 @@ module Api
       end
 
       private
+
+      def get_scores(score, market_score)
+        [
+            {
+                name: 'Late Payment',
+                user_score: score.late_payment,
+                market_average: market_score.late_payment,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment)
+            },
+            {
+                name: 'Current Risk Score',
+                user_score: score.current_risk,
+                market_average: market_score.current_risk,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk)
+            },
+            {
+                name: 'Network Diversity',
+                user_score: score.network_diversity,
+                market_average: market_score.network_diversity,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity)
+            },
+            {
+                name: 'Buyer Network Score',
+                user_score: score.buyer_network,
+                market_average: market_score.buyer_network,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.buyer_network, market_score.buyer_network)
+            },
+            {
+                name: 'Due Date Score',
+                user_score: score.due_date,
+                market_average: market_score.due_date,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date)
+            },
+            {
+                name: 'Credit Used Score',
+                user_score: score.credit_used,
+                market_average: market_score.credit_used,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
+            },
+            {
+                name: 'Number Of Suppliers Giving You Credit',
+                user_score:  score.count_of_credit_given,
+                market_average: market_score.count_of_credit_given,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given)
+            }
+        ]
+      end
+
+      def get_seller_scores(score, market_score)
+        [
+            {
+                name: 'Late Payment',
+                user_score: score.late_payment,
+                market_average: market_score.late_payment,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment)
+            },
+            {
+                name: 'Current Risk Score',
+                user_score: score.current_risk,
+                market_average: market_score.current_risk,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk)
+            },
+            {
+                name: 'Network Diversity',
+                user_score: score.network_diversity,
+                market_average: market_score.network_diversity,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity)
+            },
+            {
+                name: 'Seller Network Score',
+                user_score: score.seller_network,
+                market_average: market_score.seller_network,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.seller_network, market_score.seller_network)
+            },
+            {
+                name: 'Due Date Score',
+                user_score: score.due_date,
+                market_average: market_score.due_date,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date)
+            },
+            {
+                name: 'Credit Used Score',
+                user_score: score.credit_used,
+                market_average: market_score.credit_used,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
+            }
+        ]
+      end
+
+      def get_current_cisk_score(buyer_score, market_buyer_score)
+      end
 
       def customer_params
         params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate)

@@ -12,7 +12,7 @@ module Api
  @apiSampleRequest off
  @apiName index
  @apiGroup Messages
- @apiDescription Get all messages of authorized user
+ @apiDescription Get all messages of authorized user if want to see security data request the pass status=live_monitoring
  @apiSuccessExample {json} SuccessResponse:
 {
     "pagination": {
@@ -40,16 +40,8 @@ module Api
     ],
     "response_code": 200
 }
-=end
 
-=begin
- @apiVersion 1.0.0
- @api {get} /api/v1/messages?status=live_monitoring
- @apiSampleRequest off
- @apiName index
- @apiGroup Messages
- @apiDescription Get security data requests messages of authorized user
- @apiSuccessExample {json} SuccessResponse:
+ @apiSuccessExample {json} SuccessResponse1:
 {
     "pagination": {
         "total_pages": 1,
