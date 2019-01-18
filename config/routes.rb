@@ -398,6 +398,8 @@ Rails.application.routes.draw do
       resource :customers do
         get :transactions
         get :sales
+        get :buyer_scores
+        get :seller_scores
         get :purchases
         get :feedback_rating
       end

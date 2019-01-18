@@ -570,7 +570,7 @@ class Api::V1::CompaniesController < ApplicationController
  @apiVersion 1.0.0
  @api {get} /api/v1/secure_center?id=2
  @apiName live_monitoring
- @apiGroup companies_controller
+ @apiGroup companies
  @apiDescription get secure center data for buyer
  @apiSuccessExample {json} SuccessResponse:
  {

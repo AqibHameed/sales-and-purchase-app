@@ -728,6 +728,31 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
+    "url": "/api/v1/customers/buyer_scores",
+    "title": "",
+    "name": "buyer_scores",
+    "group": "Customers",
+    "description": "<p>get Buyer scores</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n    \"success\": true,\n    \"scores\": [\n        {\n            \"late_payment\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"current_risk_score\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"network_diversity\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"buyer_network_score\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"due_date_score\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"credit_used_score\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"number_of_suppliers_giving_you_credit\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            }\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers",
+    "sampleRequest": [
+      {
+        "url": "https://safetrade.ai/api/v1/customers/buyer_scores"
+      }
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
     "url": "/api/v1/customers/purchases",
     "title": "",
     "name": "customer_purchases",
@@ -813,6 +838,31 @@ define({ "api": [
     },
     "filename": "app/controllers/api/v1/customers_controller.rb",
     "groupTitle": "Customers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/customers/seller_scores",
+    "title": "",
+    "name": "seller_scores",
+    "group": "Customers",
+    "description": "<p>get seller scores</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"scores\": [\n        {\n            \"late_payment\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"current_risk_score\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"network_diversity\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"seller_network_score\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"due_date_score\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            },\n            \"credit_used_score\": {\n                \"user_score\": 0,\n                \"market_average\": 0,\n                \"user_score_vs_market_score\": 0\n            }\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers",
+    "sampleRequest": [
+      {
+        "url": "https://safetrade.ai/api/v1/customers/seller_scores"
+      }
+    ]
   },
   {
     "version": "1.0.0",
@@ -1131,26 +1181,6 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/messages?status=live_monitoring",
-    "title": "",
-    "name": "index",
-    "group": "Messages",
-    "description": "<p>Get security data requests messages of authorized user</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"request_id\": 9,\n            \"sender\": \"Seller A\",\n            \"message\": \"You have a new live monitoring request from seller\"\n        }\n    ],\n    \"response_code\": 200\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/messages_controller.rb",
-    "groupTitle": "Messages"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
     "url": "/api/v1/messages",
     "title": "",
     "name": "index",
@@ -1161,6 +1191,26 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"id\": 2,\n            \"proposal_id\": 2,\n            \"sender\": \"SafeTrade\",\n            \"receiver\": \"OnGraph\",\n            \"message\": \" </br>For more Details about proposal, <a href=\\\"/proposals/2\\\">Click Here</a>\",\n            \"message_type\": \"Proposal\",\n            \"subject\": \"Seller sent a new proposal.\",\n            \"created_at\": \"2018-10-25T12:44:44.000Z\",\n            \"updated_at\": \"2018-10-25T12:44:44.000Z\",\n            \"date\": \"2018-10-25T12:44:44.000Z\",\n            \"description\": \"+100 CT\",\n            \"status\": \"accepted\",\n            \"calculation\": -9.09\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/messages_controller.rb",
+    "groupTitle": "Messages"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/messages?status=live_monitoring",
+    "title": "",
+    "name": "index",
+    "group": "Messages",
+    "description": "<p>Get security data requests messages of authorized user</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"request_id\": 9,\n            \"sender\": \"Seller A\",\n            \"message\": \"You have a new live monitoring request from seller\"\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1714,11 +1764,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {
@@ -1734,11 +1784,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -2043,31 +2093,6 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/secure_center?id=2",
-    "title": "",
-    "name": "live_monitoring",
-    "group": "companies_controller",
-    "description": "<p>get secure center data for buyer</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": " {\n    \"success\": true,\n    \"details\": {\n        \"id\": 273,\n        \"invoices_overdue\": 0,\n        \"paid_date\": null,\n        \"buyer_id\": 2,\n        \"seller_id\": 1,\n        \"last_bought_on\": null,\n        \"supplier_connected\": 0,\n        \"overdue_amount\": 0,\n        \"outstandings\": 0,\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 5\n    }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/companies_controller.rb",
-    "groupTitle": "companies_controller",
-    "sampleRequest": [
-      {
-        "url": "https://safetrade.ai/api/v1/secure_center?id=2"
-      }
-    ]
-  },
-  {
-    "version": "1.0.0",
     "type": "post",
     "url": "/api/v1/companies/reject_secuirty_data_request",
     "title": "",
@@ -2131,6 +2156,31 @@ define({ "api": [
     "sampleRequest": [
       {
         "url": "https://safetrade.ai/api/v1/companies/send_security_data_request"
+      }
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/secure_center?id=2",
+    "title": "",
+    "name": "live_monitoring",
+    "group": "companies",
+    "description": "<p>get secure center data for buyer</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n    \"success\": true,\n    \"details\": {\n        \"id\": 273,\n        \"invoices_overdue\": 0,\n        \"paid_date\": null,\n        \"buyer_id\": 2,\n        \"seller_id\": 1,\n        \"last_bought_on\": null,\n        \"supplier_connected\": 0,\n        \"overdue_amount\": 0,\n        \"outstandings\": 0,\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 5\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "companies",
+    "sampleRequest": [
+      {
+        "url": "https://safetrade.ai/api/v1/secure_center?id=2"
       }
     ]
   }
