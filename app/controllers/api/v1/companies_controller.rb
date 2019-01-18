@@ -243,6 +243,75 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
 =begin
+  @apiVersion 1.0.0
+  @api {post} /api/v1/companies_review
+  @apiSampleRequest off
+  @apiName companies_review
+  @apiGroup Companies
+  @apiDescription review the companies
+  @apiParamExample {json} Request-Example1:
+  {
+   review_id: 1,
+   company_id: 1
+  }
+  @apiSuccessExample {json} SuccessResponse1:
+  {
+    "review": {
+        "id": 1,
+        "know": true,
+        "trade": false,
+        "recommend": null,
+        "experience": null
+    },
+    "response_code": 200
+  }
+  @apiParamExample {json} Request-Example2:
+    {
+     company_id: 1,
+     know: true,
+     trade: false,
+     recommend: true,
+     experience: true
+    }
+    @apiSuccessExample {json} SuccessResponse2:
+    {
+      "review": {
+          "id": 1,
+          "know": true,
+          "trade": false,
+          "recommend": true,
+          "experience": true
+      },
+      "response_code": 200
+    }
+=end
+
+  def companies_review
+    if current_customer
+      if params[:review_id].present?
+          review = Review.find_by(id: params[:review_id])
+          if review.present?
+            review.update_attributes(review_params)
+            render :json => {review: review(review), response_code: 200}
+          else
+              render json: {errors: "review id is not exist", response_code: 201}
+          end
+      else
+        review_company = Review.new(review_params)
+        if review_company.save
+          render :json => {review: review(review_company), response_code: 200}
+        else
+          render json: {success: false, errors: review_company.errors.full_messages}
+        end
+      end
+    else
+       render json: {errors: "Not authenticated", response_code: 201}
+    end
+  end
+
+
+
+=begin
  @apiVersion 1.0.0
  @api {get} /api/v1/history
  @apiSampleRequest off
@@ -657,6 +726,20 @@ class Api::V1::CompaniesController < ApplicationController
     uri.query = URI.encode_www_form(params)
     query = ''
     query = '&'+uri.query unless uri.query.blank?
+  end
+
+  def review_params
+    params.permit(:company_id, :know, :trade, :recommend, :experience).merge(customer_id: current_user.id)
+  end
+
+  def review(review_company)
+    {
+        id: review_company.id,
+        know: review_company.know,
+        trade: review_company.trade,
+        recommend: review_company.recommend,
+        experience: review_company.experience
+    }
   end
 
 
