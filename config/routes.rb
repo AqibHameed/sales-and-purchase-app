@@ -403,6 +403,7 @@ Rails.application.routes.draw do
         get :seller_scores
         get :purchases
         get :feedback_rating
+        get :info
       end
 
 
