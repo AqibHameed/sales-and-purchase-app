@@ -16,6 +16,7 @@ class Company < ApplicationRecord
   has_many :company_group_seller, :foreign_key => "seller_id", :class_name => "CompaniesGroup", dependent: :destroy
   has_many :buyer_proposals, class_name: 'Proposal', foreign_key: 'buyer_id', dependent: :destroy
   has_many :seller_proposals, class_name: 'Proposal', foreign_key: 'seller_id', dependent: :destroy
+  has_many :reviews, dependent: :destroy
 
   has_paper_trail
   acts_as_paranoid

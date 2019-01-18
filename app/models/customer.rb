@@ -48,6 +48,7 @@ class Customer < ApplicationRecord
   has_many :sellers, :foreign_key => "seller_id", :class_name => "CompaniesGroup"
   has_one  :tiles_count
   has_many :feedbacks
+  has_many :reviews, dependent: :destroy
 
   validates :mobile_no, uniqueness: true
   validates :first_name, :mobile_no, :presence => true
