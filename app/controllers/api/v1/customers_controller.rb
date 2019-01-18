@@ -218,12 +218,16 @@ module Api
 =end
 
       def transactions
-        total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
-        pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
-        overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
-        completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
-        render json: {success: true, transactions: {total: total, pending: pending,
-                                                    completed: completed, overdue: overdue}}
+        if current_customer
+          total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
+          pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+          overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+          completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
+          render json: {success: true, transactions: {total: total, pending: pending,
+                                                      completed: completed, overdue: overdue}}
+        else
+          render json: {errors: "Not authenticated", response_code: 201}
+        end
       end
 
 =begin
@@ -281,17 +285,21 @@ module Api
 =end
 
       def sales
-        @credit_given = CreditLimit.where('seller_id =?', current_company.id)
-        credit_given_to = @credit_given.count
-        total_credit_given = overall_credit_given(current_company)
-        total_used_credit = overall_credit_spent_by_customer(current_company)
-        total_available_credit = credit_available(current_company)
-        @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
-        @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
-        @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
-        @credit_given_transaction = Transaction.where('seller_id =?', current_company.id)
-        render json: {success: true, credit_given_to: credit_given_to, total_given_credit: total_credit_given,
-                      total_used_credit: total_used_credit, total_available_credit: total_available_credit, sales: calculate_sales}
+        if current_customer
+          @credit_given = CreditLimit.where('seller_id =?', current_company.id)
+          credit_given_to = @credit_given.count
+          total_credit_given = overall_credit_given(current_company)
+          total_used_credit = overall_credit_spent_by_customer(current_company)
+          total_available_credit = credit_available(current_company)
+          @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
+          @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
+          @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
+          @credit_given_transaction = Transaction.where('seller_id =?', current_company.id)
+          render json: {success: true, credit_given_to: credit_given_to, total_given_credit: total_credit_given,
+                        total_used_credit: total_used_credit, total_available_credit: total_available_credit, sales: calculate_sales}
+        else
+          render json: {errors: "Not authenticated", response_code: 201}
+        end
 
       end
 
@@ -356,14 +364,17 @@ module Api
 }
 =end
       def purchases
-        @credit_recieved_transaction = Transaction.where('buyer_id =?', current_company.id)
-        @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
-        @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
-        @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
-        @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
+        if current_customer
+          @credit_recieved_transaction = Transaction.where('buyer_id =?', current_company.id)
+          @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
+          @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
+          @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
+          @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
 
-        render json: {success: true, credit_recieved_count: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
-
+          render json: {success: true, credit_recieved_count: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
+        else
+          render json: {errors: "Not authenticated", response_code: 201}
+        end
       end
 
 =begin
