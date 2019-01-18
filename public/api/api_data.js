@@ -1185,31 +1185,16 @@ define({ "api": [
     "title": "",
     "name": "index",
     "group": "Messages",
-    "description": "<p>Get all messages of authorized user</p>",
+    "description": "<p>Get all messages of authorized user if want to see security data request the pass status=live_monitoring</p>",
     "success": {
       "examples": [
         {
           "title": "SuccessResponse:",
           "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"id\": 2,\n            \"proposal_id\": 2,\n            \"sender\": \"SafeTrade\",\n            \"receiver\": \"OnGraph\",\n            \"message\": \" </br>For more Details about proposal, <a href=\\\"/proposals/2\\\">Click Here</a>\",\n            \"message_type\": \"Proposal\",\n            \"subject\": \"Seller sent a new proposal.\",\n            \"created_at\": \"2018-10-25T12:44:44.000Z\",\n            \"updated_at\": \"2018-10-25T12:44:44.000Z\",\n            \"date\": \"2018-10-25T12:44:44.000Z\",\n            \"description\": \"+100 CT\",\n            \"status\": \"accepted\",\n            \"calculation\": -9.09\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/messages_controller.rb",
-    "groupTitle": "Messages"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/messages?status=live_monitoring",
-    "title": "",
-    "name": "index",
-    "group": "Messages",
-    "description": "<p>Get security data requests messages of authorized user</p>",
-    "success": {
-      "examples": [
+        },
         {
-          "title": "SuccessResponse:",
+          "title": "SuccessResponse1:",
           "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"request_id\": 9,\n            \"sender\": \"Seller A\",\n            \"message\": \"You have a new live monitoring request from seller\"\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
         }
