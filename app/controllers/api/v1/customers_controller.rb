@@ -525,97 +525,97 @@ module Api
   @apiSuccessExample {json} SuccessResponse:
   {
     "success": true,
-    "sales": [
-        {
-            "credit_given_to": 3,
-            "total_given_credit": "22695.00",
-            "total_used_credit": "16154.33",
-            "total_available_credit": "$6,540.67"
-        },
-        {
-            "term": "cash",
-            "percent": "0(0%)",
-            "pending_transaction": "$0.00(0%)",
-            "overdue_transaction": "$0.00(0%)",
-            "complete_transaction": "$0.00(0%)"
-        },
-        {
-            "term": "1<=30",
-            "percent": "11(68%)",
-            "pending_transaction": "$0.00(0%)",
-            "overdue_transaction": "$13,200.00(89%)",
-            "complete_transaction": "$18,849.26(75%)"
-        },
-        {
-            "term": "61<=90",
-            "percent": "1(6%)",
-            "pending_transaction": "$0.00(0%)",
-            "overdue_transaction": "$0.00(0%)",
-            "complete_transaction": "$4,500.00(18%)"
-        },
-        {
-            "term": "91",
-            "percent": "2(12%)",
-            "pending_transaction": "$26.25(100%)",
-            "overdue_transaction": "$0.00(0%)",
-            "complete_transaction": "$1,549.04(6%)"
-        },
-        {
-            "term": "total",
-            "percent": "16",
-            "pending_transaction": "$26.25",
-            "overdue_transaction": "$14,749.04",
-            "complete_transaction": "$24,898.30"
-        }
-    ],
-    "purchases": [
-        {
-            "credit_recieved_count": 1,
-            "total_credit_received": "$3,300.00"
-        },
-        {
-            "term": "cash",
-            "percent": "0(0%)",
-            "pending_transaction": "$0.00(0%)",
-            "overdue_transaction": "$0.00(0%)",
-            "complete_transaction": "$0.00(0%)"
-        },
-        {
-            "term": "1<=30",
-            "percent": "1(100%)",
-            "pending_transaction": "$0.00(0%)",
-            "overdue_transaction": "$0.00(0%)",
-            "complete_transaction": "$3,300.00(100%)"
-        },
-        {
-            "term": "31<=60",
-            "percent": "0(0%)",
-            "pending_transaction": "$0.00(0%)",
-            "overdue_transaction": "$0.00(0%)",
-            "complete_transaction": "$0.00(0%)"
-        },
-        {
-            "term": "61<=90",
-            "percent": "0(0%)",
-            "pending_transaction": "$0.00(0%)",
-            "overdue_transaction": "$0.00(0%)",
-            "complete_transaction": "$0.00(0%)"
-        },
-        {
-            "term": "61<=90",
-            "percent": "0(0%)",
-            "pending_transaction": "$0.00(0%)",
-            "overdue_transaction": "$0.00(0%)",
-            "complete_transaction": "$0.00(0%)"
-        },
-        {
-            "term": "total",
-            "percent": "1",
-            "pending_transaction": "$0.00",
-            "overdue_transaction": "$0.00",
-            "complete_transaction": "$3,300.00"
-        }
-    ],
+    "sales": {
+        "credit_given_to": 3,
+        "total_given_credit": "22695.00",
+        "total_used_credit": "16154.33",
+        "total_available_credit": "$6,540.67",
+        "sales": [
+            {
+                "term": "cash",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "1<=30",
+                "percent": "11(68%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$13,200.00(89%)",
+                "complete_transaction": "$18,849.26(75%)"
+            },
+            {
+                "term": "61<=90",
+                "percent": "1(6%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$4,500.00(18%)"
+            },
+            {
+                "term": "91",
+                "percent": "2(12%)",
+                "pending_transaction": "$26.25(100%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$1,549.04(6%)"
+            },
+            {
+                "term": "total",
+                "percent": "16",
+                "pending_transaction": "$26.25",
+                "overdue_transaction": "$14,749.04",
+                "complete_transaction": "$24,898.30"
+            }
+        ]
+    },
+    "purchases": {
+        "credit_recieved_count": 1,
+        "total_credit_received": "$3,300.00",
+        "purchases": [
+            {
+                "term": "cash",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "1<=30",
+                "percent": "1(100%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$3,300.00(100%)"
+            },
+            {
+                "term": "31<=60",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "61<=90",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "61<=90",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "total",
+                "percent": "1",
+                "pending_transaction": "$0.00",
+                "overdue_transaction": "$0.00",
+                "complete_transaction": "$3,300.00"
+            }
+        ]
+    },
     "transactions": {
         "total": 15,
         "pending": 1,
@@ -650,8 +650,13 @@ module Api
           @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
 
           render json: {success: true,
-                        sales: calculate_sales,
-                        purchases: cutomer_puchase,
+                        sales: { credit_given_to: @credit_given_to,
+                                 total_given_credit: @total_credit_given,
+                                 total_used_credit: @total_used_credit,
+                                 total_available_credit: @total_available_credit, sales: calculate_sales},
+                        purchases: {credit_recieved_count: @credit_recieved.count,
+                                    total_credit_received: number_to_currency(overall_credit_received(current_company)),
+                                    purchases: cutomer_puchase},
                         transactions: {total: total, pending: pending,
                                                       completed: completed, overdue: overdue}}
         else

@@ -470,12 +470,6 @@ need to check
 
   def calculate_sales
     [
-        {
-            credit_given_to: @credit_given_to,
-            total_given_credit: @total_credit_given,
-            total_used_credit: @total_used_credit,
-            total_available_credit: @total_available_credit
-        },
 
         {
             term: "cash",
@@ -590,11 +584,6 @@ need to check
 
   def cutomer_puchase
     [
-        {
-            credit_recieved_count: @credit_recieved.count,
-            total_credit_received: number_to_currency(overall_credit_received(current_company))
-
-        },
 
         {term: "cash", percent: count_value('0', @credit_recieved_transaction.count, 'count', current_company),
          pending_transaction: count_value('0', @total_pending_received, 'pending', current_company),
