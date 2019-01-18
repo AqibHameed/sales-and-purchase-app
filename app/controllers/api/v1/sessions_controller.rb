@@ -105,7 +105,7 @@ class Api::V1::SessionsController < Devise::SessionsController
 
   def customer_by_token
     token = request.headers['Authorization']
-    customer = Customer.where(authentication_token: token).first
+    customer = Customer.where(authentication_token: token).first if token.present?
     if customer.present?
       jwt_token = customer.generate_jwt_token
       render :json => { customer: customer_data(customer, jwt_token), response_code: 200 }

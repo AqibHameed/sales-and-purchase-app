@@ -291,7 +291,6 @@ Rails.application.routes.draw do
       get '/blocked_customers', to: 'companies#blocked_customers'
       post '/reset_limits', to: 'companies#reset_limits'
       get '/check_company', to: 'companies#check_company'
-      post '/security_data_request', to: 'companies#send_security_data_request'
       get '/countries_list', to: 'companies#country_list'
       get '/companies_list', to: 'companies#companies_list'
       post '/invite', to: 'companies#invite'
@@ -311,6 +310,13 @@ Rails.application.routes.draw do
         collection do
           get :notifications
           get :clear
+        end
+      end
+      resources :companies do
+        collection do
+          post :send_security_data_request
+          post :accept_secuirty_data_request
+          post :reject_secuirty_data_request
         end
       end
       resources :stones, path: '/parcels' do
@@ -393,6 +399,8 @@ Rails.application.routes.draw do
       resource :customers do
         get :transactions
         get :sales
+        get :buyer_scores
+        get :seller_scores
         get :purchases
         get :feedback_rating
       end

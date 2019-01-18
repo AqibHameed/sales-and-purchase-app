@@ -12,7 +12,7 @@ module Api
  @apiSampleRequest off
  @apiName index
  @apiGroup Messages
- @apiDescription Get all messages of authorized user
+ @apiDescription Get all messages of authorized user if want to see security data request the pass status=live_monitoring
  @apiSuccessExample {json} SuccessResponse:
 {
     "pagination": {
@@ -36,6 +36,24 @@ module Api
             "description": "+100 CT",
             "status": "accepted",
             "calculation": -9.09
+        }
+    ],
+    "response_code": 200
+}
+
+ @apiSuccessExample {json} SuccessResponse1:
+{
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "messages": [
+        {
+            "request_id": 9,
+            "sender": "Seller A",
+            "message": "You have a new live monitoring request from seller"
         }
     ],
     "response_code": 200
@@ -263,7 +281,8 @@ module Api
                 data ={
                     request_id: request.id,
                     sender: request.sender.name,
-                    message: message.subject
+                    message: message.subject,
+                    status: request.status
                 }
               end
             end

@@ -1,7 +1,7 @@
 module Api
   module V1
     class CustomersController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request]
+      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request, :buyer_scores, :seller_scores]
       before_action :current_customer
       before_action :current_company
       MOBILE_TILES_SHOW = {
@@ -68,6 +68,135 @@ module Api
             }
           end
           render json: { success: true, requested_customers: @requested_customers, response_code: 201 }
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/customers/buyer_scores
+ @apiName buyer scores
+ @apiGroup Customers
+ @apiDescription get Buyer scores
+ @apiSuccessExample {json} SuccessResponse:
+ {
+    "success": true,
+    "scores": [
+        {
+            "late_payment": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "current_risk_score": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "network_diversity": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "buyer_network_score": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "due_date_score": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "credit_used_score": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "number_of_suppliers_giving_you_credit": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            }
+        }
+    ],
+    "response_code": 200
+}
+=end
+
+      def buyer_scores
+        @data = []
+        if current_company
+          buyer_score = current_company.get_buyer_score
+          market_buyer_score = MarketBuyerScore.get_scores
+          render json: {success: true,
+                        scores: get_scores(buyer_score, market_buyer_score),
+                        response_code: 200}
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/customers/seller_scores
+ @apiName seller scores
+ @apiGroup Customers
+ @apiDescription get seller scores
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "scores": [
+        {
+            "late_payment": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "current_risk_score": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "network_diversity": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "seller_network_score": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "due_date_score": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            },
+            "credit_used_score": {
+                "user_score": 0,
+                "market_average": 0,
+                "user_score_vs_market_score": 0
+            }
+        }
+    ],
+    "response_code": 200
+}
+=end
+
+      def seller_scores
+        @data = []
+        if current_company
+          seller_score = current_company.get_seller_score
+          market_seller_score = MarketSellerScore.get_scores
+          render json: {success: true,
+                        scores: get_seller_scores(seller_score, market_seller_score),
+                        response_code: 200}
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+        if current_company
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
@@ -218,12 +347,16 @@ module Api
 =end
 
       def transactions
-        total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
-        pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
-        overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
-        completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
-        render json: {success: true, transactions: {total: total, pending: pending,
-                                                    completed: completed, overdue: overdue}}
+        if current_customer
+          total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
+          pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+          overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+          completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
+          render json: {success: true, transactions: {total: total, pending: pending,
+                                                      completed: completed, overdue: overdue}}
+        else
+          render json: {errors: "Not authenticated", response_code: 201}
+        end
       end
 
 =begin
@@ -234,65 +367,68 @@ module Api
  @apiGroup Customers
  @apiDescription permission the tiles and sorting the record on the basis of count
  @apiSuccessExample {json} SuccessResponse:
-    {
-"success": true,
-"credit_given_to": 5,
-"total_given_credit": "129823.00",
-"total_used_credit": "229022.89",
-"total_available_credit": "-$99,199.89",
- "sales": {
-    0: {
-    "term": "cash",
-    "percent": "0(0%)",
-    "pending_transaction": "$0.00(0%)",
-    "overdue_transaction": "$0.00(0%)",
-    "complete_transaction": "$0.00(0%)"
-    },
-    1: {
-    "term": "1<=30",
-    "percent": "6(46%)",
-    "pending_transaction": "$0.00(0%)",
-    "overdue_transaction": "$40,000.00(100%)",
-    "complete_transaction": "$269,400.00(85%)"
-    },
-    2: {
-    "term": "61<=90",
-    "percent": "3(23%)",
-    "pending_transaction": "$46,200.00(100%)",
-    "overdue_transaction": "$0.00(0%)",
-    "complete_transaction": "$21,890.00(6%)"
-    },
-    3: {
-    "term": "91",
-    "percent": "0(0%)",
-    "pending_transaction": "$0.00(0%)",
-    "overdue_transaction": "$0.00(0%)",
-    "complete_transaction": "$0.00(0%)"
-    },
-    4: {
-    "term": "total",
-    "percent": 13,
-    "pending_transaction": "46200.0",
-    "overdue_transaction": "40000.0",
-    "complete_transaction": "315040.0"
-    }
-   }
-  }
+   {
+    "success": true,
+    "credit_given_to": 5,
+    "total_given_credit": "129823.00",
+    "total_used_credit": "229022.89",
+    "total_available_credit": "-$99,199.89",
+    "sales": [
+        {
+      "term": "cash",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "1<=30",
+      "percent": "6(46%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$40,000.00(100%)",
+      "complete_transaction": "$269,400.00(85%)"
+      },
+        {
+      "term": "61<=90",
+      "percent": "3(23%)",
+      "pending_transaction": "$46,200.00(100%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$21,890.00(6%)"
+      },
+        {
+      "term": "91",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "total",
+      "percent": "13",
+      "pending_transaction": "$46,200.00",
+      "overdue_transaction": "$40,000.00",
+      "complete_transaction": "$315,040.00"
+      }
+],
 }
 =end
 
       def sales
-        @credit_given = CreditLimit.where('seller_id =?', current_company.id)
-        credit_given_to = @credit_given.count
-        total_credit_given = overall_credit_given(current_company)
-        total_used_credit = overall_credit_spent_by_customer(current_company)
-        total_available_credit = credit_available(current_company)
-        @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
-        @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
-        @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
-        @credit_given_transaction = Transaction.where('seller_id =?', current_company.id)
-        render json: {success: true, credit_given_to: credit_given_to, total_given_credit: total_credit_given,
-                      total_used_credit: total_used_credit, total_available_credit: total_available_credit, sales: calculate_sales}
+        if current_customer
+          @credit_given = CreditLimit.where('seller_id =?', current_company.id)
+          credit_given_to = @credit_given.count
+          total_credit_given = overall_credit_given(current_company)
+          total_used_credit = overall_credit_spent_by_customer(current_company)
+          total_available_credit = credit_available(current_company)
+          @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
+          @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
+          @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
+          @credit_given_transaction = Transaction.where('seller_id =?', current_company.id)
+          render json: {success: true, credit_given_to: credit_given_to, total_given_credit: total_credit_given,
+                        total_used_credit: total_used_credit, total_available_credit: total_available_credit, sales: calculate_sales}
+        else
+          render json: {errors: "Not authenticated", response_code: 201}
+        end
 
       end
 
@@ -304,69 +440,70 @@ module Api
  @apiName customer_purchases
  @apiGroup Customers
  @apiDescription to get customer purchasings info
- @apiSuccessExample {json} SuccessResponse:{
-    {
-        "success": true,
-        "credit_recieved_count": 1,
-        "total_credit_received": "$316.00",
-    "purchases":{
-        "0":{
-        "term": "cash",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "complete_transaction": "$0.00(0%)"
-        },
-        "1":{
-        "term": "1<=30",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "complete_transaction": "$0.00(0%)"
-        },
-        "2":{
-        "term": "31<=60",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "tomplete_transaction": "$0.00(0%)"
-        },
-        "3":{
-        "term": "61<=90",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "complete_transaction": "$0.00(0%)"
-        },
-        "4":{
-        "term": "61<=90",
-        "percent": "0(0%)",
-        "pending_transaction": "$0.00(0%)",
-        "overdue_transaction": "$0.00(0%)",
-        "complete_transaction": "$0.00(0%)"
-        },
-        "5":{
-        "term": "total",
-        "percent": 0,
-        "pending_transaction": "$0.00",
-        "overdue_transaction": "$0.00",
-        "complete_transaction": "$0.00"
-        }
-        },
-        "response_code": 200
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "credit_recieved_count": 1,
+    "total_credit_received": "$0.00",
+    "purchases": [
+        {
+      "term": "cash",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "1<=30",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "31<=60",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "61<=90",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "61<=90",
+      "percent": "0(0%)",
+      "pending_transaction": "$0.00(0%)",
+      "overdue_transaction": "$0.00(0%)",
+      "complete_transaction": "$0.00(0%)"
+      },
+        {
+      "term": "total",
+      "percent": "0",
+      "pending_transaction": "$0.00",
+      "overdue_transaction": "$0.00",
+      "complete_transaction": "$0.00"
       }
-
+    ],
+    "response_code": 200
 }
 =end
       def purchases
-        @credit_recieved_transaction = Transaction.where('buyer_id =?', current_company.id)
-        @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
-        @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
-        @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
-        @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
+        if current_customer
+          @credit_recieved_transaction = Transaction.where('buyer_id =?', current_company.id)
+          @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
+          @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
+          @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
+          @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
 
-        render json: {success: true, credit_recieved_count: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
-
+          render json: {success: true, credit_recieved_count: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
+        else
+          render json: {errors: "Not authenticated", response_code: 201}
+        end
       end
 
 =begin
@@ -443,6 +580,84 @@ module Api
       end
 
       private
+
+      def get_scores(score, market_score)
+        [
+            late_payment: {
+                user_score: score.late_payment,
+                market_average: market_score.late_payment,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment)
+            },
+            current_risk_score: {
+                user_score: score.current_risk,
+                market_average: market_score.current_risk,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk)
+            },
+            network_diversity: {
+                user_score: score.network_diversity,
+                market_average: market_score.network_diversity,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity)
+            },
+            buyer_network_score: {
+                user_score: score.buyer_network,
+                market_average: market_score.buyer_network,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.buyer_network, market_score.buyer_network)
+            },
+            due_date_score: {
+                user_score: score.due_date,
+                market_average: market_score.due_date,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date)
+            },
+            credit_used_score: {
+                user_score: score.credit_used,
+                market_average: market_score.credit_used,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
+            },
+            number_of_suppliers_giving_you_credit: {
+                user_score:  score.count_of_credit_given,
+                market_average: market_score.count_of_credit_given,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given)
+            }
+        ]
+      end
+
+      def get_seller_scores(score, market_score)
+        [
+            late_payment: {
+                user_score: score.late_payment,
+                market_average: market_score.late_payment,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment)
+            },
+            current_risk_score: {
+                user_score: score.current_risk,
+                market_average: market_score.current_risk,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk)
+            },
+            network_diversity: {
+                user_score: score.network_diversity,
+                market_average: market_score.network_diversity,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity)
+            },
+            seller_network_score: {
+                user_score: score.seller_network,
+                market_average: market_score.seller_network,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.seller_network, market_score.seller_network)
+            },
+            due_date_score: {
+                user_score: score.due_date,
+                market_average: market_score.due_date,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date)
+            },
+            credit_used_score: {
+                user_score: score.credit_used,
+                market_average: market_score.credit_used,
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
+            }
+        ]
+      end
+
+      def get_current_cisk_score(buyer_score, market_buyer_score)
+      end
 
       def customer_params
         params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate)

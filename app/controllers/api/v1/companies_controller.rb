@@ -3,7 +3,7 @@ class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
-  before_action :current_company, only: [:send_security_data_request]
+  before_action :current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
 
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
@@ -218,7 +218,6 @@ class Api::V1::CompaniesController < ApplicationController
       .order(:id)
 
       result = []
-
       if companies.present?
         companies.uniq.each do |company|
           company_transactions = company.buyer_transactions
@@ -229,6 +228,7 @@ class Api::V1::CompaniesController < ApplicationController
             id: company.id,
             name: company.name,
             transaction_count: company.transaction_count,
+            remaining_amount: company.remaining_amount,
             amount_due: company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("paid = ? AND buyer_confirmed = ?", false, true).sum(:remaining_amount).round(2) : 0.0,
             overdue_status: current_company.has_overdue_that_seller_setlimit(company.id)
           }
@@ -545,7 +545,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
  @apiVersion 1.0.0
- @api {post} /api/v1/security_data_request
+ @api {post} /api/v1/companies/send_security_data_request
  @apiName send_security_data_request
  @apiGroup companies_controller
  @apiDescription send request to show security data
@@ -564,16 +564,72 @@ class Api::V1::CompaniesController < ApplicationController
   def send_security_data_request
     live_monitor_request = LiveMonitoringRequest.find_or_initialize_by(sender_id: current_company.id,
                                                                    receiver_id: params[:receiver_id])
+    if live_monitor_request.status == 'rejected'
+      live_monitor_request.update_attributes(status: 2)
+    end
     if live_monitor_request.save
       Message.send_request_for_live_monitoring(live_monitor_request)
-    end
-    if live_monitor_request.present?
       render json: {success: true,
                     message: "Request send successfully.",
-                    response_code: 201}
+                    response_code: 200}
     end
   end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/companies/accept_secuirty_data_request
+ @apiName accept_secuirty_data_request
+ @apiGroup companies_controller
+ @apiDescription accept request to show security data
+ @apiParamExample {json} Request-Example:
+{
+	"request_id": 9
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Request accepted successfully.",
+    "response_code": 200
+}
+=end
+
+  def accept_secuirty_data_request
+    request = LiveMonitoringRequest.find_by(id: params[:request_id])
+    if request && request.status == 'pending'
+      request.update_attributes(status: 1)
+    end
+    render json: {success: true,
+                  message: "Request accepted successfully.",
+                  response_code: 200}
+  end
+  
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/companies/reject_secuirty_data_request
+ @apiName reject_secuirty_data_request
+ @apiGroup companies_controller
+ @apiDescription reject request to show security data
+ @apiParamExample {json} Request-Example:
+{
+	"request_id": 9
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "message": "Request rejected successfully.",
+    "response_code": 200
+}
+=end
+
+  def reject_secuirty_data_request
+    request = LiveMonitoringRequest.find_by(id: params[:request_id])
+    if request && request.status == 'pending'
+      request.update_attributes(status: 0)
+    end
+    render json: {success: true,
+                  message: "Request rejected successfully.",
+                  response_code: 200}
+  end
 
   def cost_convert trading_parcel
     trading_parcel.cost.blank? ? nil: trading_parcel.cost.to_s
@@ -583,7 +639,7 @@ class Api::V1::CompaniesController < ApplicationController
  @apiVersion 1.0.0
  @api {get} /api/v1/secure_center?id=2
  @apiName live_monitoring
- @apiGroup companies_controller
+ @apiGroup companies
  @apiDescription get secure center data for buyer
  @apiSuccessExample {json} SuccessResponse:
  {
