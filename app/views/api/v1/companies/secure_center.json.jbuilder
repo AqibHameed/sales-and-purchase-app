@@ -1,6 +1,6 @@
 json.success true
 json.details do
-  if @request.status == 'accepted'
+  if @request.present? && @request.status == 'accepted' && @request.live_monitor
     json.extract! @secure_center, :id, :invoices_overdue, :buyer_id, :seller_id, :last_bought_on
     json.supplier_connected @secure_center.supplier_paid
     json.overdue_amount @secure_center.overdue_amount.to_f

@@ -69,10 +69,12 @@ module Api
           messages.each do |proposal_id, messages|
             all_messages << messages.last
           end
-          security_requests = Message.customer_secuirty_data_messages(current_company.id).group_by(&:live_monitoring_request_id)
+          security_requests = Message.customer_secuirty_data_messages(current_company.id).group_by(&:premission_request_id)
           security_requests.each do |message|
             live_monitor_request_messages << message.last
           end
+          binding.pry
+
           payment_message = Message.customer_payment_messages(current_company.id).group_by(&:transaction_id)
           payment_message.each do |transaction_id, messages|
             payment_messages << messages.last
@@ -209,6 +211,7 @@ module Api
             @messages = negotiation_messages(messages)
           elsif status == 'new'
             @messages = new_messages_payment(messages, payment_messages, live_monitor_request_messages)
+            binding.pry
           elsif status == 'live_monitoring'
             @messages = live_monitoring_messages(messages, live_monitor_request_messages)
           else  
@@ -275,7 +278,8 @@ module Api
                 end
             end
           else
-            unless message.live_monitoring_request_id.nil?
+            binding.pry
+            unless message.premission_request_id.nil?
               request = PremissionRequest.find_by(id: message.live_monitoring_request_id)
               if request.status == 'pending'
                 data ={
