@@ -562,7 +562,7 @@ class Api::V1::CompaniesController < ApplicationController
 =end
 
   def send_security_data_request
-    live_monitor_request = LiveMonitoringRequest.find_or_initialize_by(sender_id: current_company.id,
+    live_monitor_request = PremissionRequest.find_or_initialize_by(sender_id: current_company.id,
                                                                    receiver_id: params[:receiver_id])
     if live_monitor_request.status == 'rejected'
       live_monitor_request.update_attributes(status: 2)
@@ -594,9 +594,10 @@ class Api::V1::CompaniesController < ApplicationController
 =end
 
   def accept_secuirty_data_request
-    request = LiveMonitoringRequest.find_by(id: params[:request_id])
+    request = PremissionRequest.find_by(id: params[:request_id])
     if request && request.status == 'pending'
-      request.update_attributes(status: 1)
+      request.update_attributes(permission_params)
+      request.update(status: 1)
     end
     render json: {success: true,
                   message: "Request accepted successfully.",
@@ -622,7 +623,7 @@ class Api::V1::CompaniesController < ApplicationController
 =end
 
   def reject_secuirty_data_request
-    request = LiveMonitoringRequest.find_by(id: params[:request_id])
+    request = PremissionRequest.find_by(id: params[:request_id])
     if request && request.status == 'pending'
       request.update_attributes(status: 0)
     end
@@ -731,6 +732,11 @@ class Api::V1::CompaniesController < ApplicationController
   def review_params
     params.permit(:company_id, :know, :trade, :recommend, :experience).merge(customer_id: current_user.id)
   end
+
+  def permission_params
+    params.permit(:live_monitor, :secure_center, :buyer_score, :seller_score, :customer_info)
+  end
+
 
   def review(review_company)
     {

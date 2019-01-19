@@ -276,7 +276,7 @@ module Api
             end
           else
             unless message.live_monitoring_request_id.nil?
-              request = LiveMonitoringRequest.find_by(id: message.live_monitoring_request_id)
+              request = PremissionRequest.find_by(id: message.live_monitoring_request_id)
               if request.status == 'pending'
                 data ={
                     request_id: request.id,
