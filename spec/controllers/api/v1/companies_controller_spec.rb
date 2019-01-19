@@ -3,6 +3,7 @@ RSpec.describe Api::V1::CompaniesController do
   before(:all) do
     create_roles
     @customer = create_customer
+    @trader = create_customer
     @buyer = create_buyer
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
   end
@@ -242,6 +243,30 @@ RSpec.describe Api::V1::CompaniesController do
       it 'does show message Feedback is submitted successfully' do
         post :send_feedback, params: {star: Faker::Number.number(1), comment: Faker::Lorem.sentence}
         response.body.should have_content('Feedback is submitted successfully')
+      end
+    end
+  end
+
+  describe "#send_security_data_request" do
+    context "when unauthenticated Trader want try to send request to buyer" do
+      it 'does show user is not authenticated' do
+        request.headers.merge!(authorization: 'unknown user')
+        post :send_security_data_request, params: {receiver_id: @buyer.company_id}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context "when authenticated trader want try to send request to buyer" do
+      it 'does show request sent successfully' do
+        post :send_security_data_request, params: {receiver_id: @buyer.company_id}
+        response.body.should have_content('Request send successfully.')
+      end
+    end
+
+    context "when authenticated trader want try to send request to trader" do
+      it 'does show request sent successfully' do
+        post :send_security_data_request, params: {receiver_id: @trader.company_id}
+        response.body.should have_content('Request send successfully.')
       end
     end
   end

@@ -12,7 +12,7 @@ module Api
  @apiSampleRequest off
  @apiName index
  @apiGroup Messages
- @apiDescription Get all messages of authorized user if want to see security data request the pass status=live_monitoring
+ @apiDescription Get all messages of authorized user
  @apiSuccessExample {json} SuccessResponse:
 {
     "pagination": {
@@ -36,20 +36,7 @@ module Api
             "description": "+100 CT",
             "status": "accepted",
             "calculation": -9.09
-        }
-    ],
-    "response_code": 200
-}
-
- @apiSuccessExample {json} SuccessResponse1:
-{
-    "pagination": {
-        "total_pages": 1,
-        "prev_page": null,
-        "next_page": null,
-        "current_page": 1
-    },
-    "messages": [
+        },
         {
             "request_id": 9,
             "sender": "Seller A",
@@ -58,6 +45,7 @@ module Api
     ],
     "response_code": 200
 }
+
 =end
 
       def index
@@ -209,8 +197,7 @@ module Api
             @messages = negotiation_messages(messages)
           elsif status == 'new'
             @messages = new_messages_payment(messages, payment_messages, live_monitor_request_messages)
-          elsif status == 'live_monitoring'
-            @messages = live_monitoring_messages(messages, live_monitor_request_messages)
+            binding.pry
           else  
             @messages = @messages.map{ |m| m if m.proposal && m.proposal.status == status }.compact
           end
@@ -222,8 +209,10 @@ module Api
           c = Company.where(name: company).first
           @messages = @messages.map{ |m| m if m.sender.present? && m.sender == c}.compact
         end
+        binding.pry
         @messages.each do |message|
           if (message.proposal.present? && message.proposal.trading_parcel.present?) || (message.buyer_transaction.present?)
+            binding.pry
             if message.buyer_transaction.present?
               data = {
                   id: message.id,
@@ -275,6 +264,7 @@ module Api
                 end
             end
           else
+            binding.pry
             unless message.live_monitoring_request_id.nil?
               request = LiveMonitoringRequest.find_by(id: message.live_monitoring_request_id)
               if request.status == 'pending'
