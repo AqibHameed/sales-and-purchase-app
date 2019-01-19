@@ -3,7 +3,9 @@ module Api
     class CustomersController < ApiController
       skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request, :buyer_scores, :seller_scores]
       before_action :current_customer
-      before_action :current_company
+      before_action :info_permission, only: [:info]
+      before_action :buyer_score_permission, only: [:buyer_scores]
+      before_action :seller_scores_permission, only: [:seller_scores]
       MOBILE_TILES_SHOW = {
           0 => 'Smart Search',
           1 => 'Sell',
@@ -79,7 +81,12 @@ module Api
  @apiName buyer scores
  @apiGroup Customers
  @apiDescription get Buyer scores
- @apiSuccessExample {json} SuccessResponse:
+ @apiSuccessExample {json} SuccessResponse1:
+ {
+    "errors": "permission Access denied",
+    "response_code": 201
+ }
+ @apiSuccessExample {json} SuccessResponse2:
  {
     "success": true,
     "scores": [
@@ -149,6 +156,11 @@ module Api
  @apiName seller scores
  @apiGroup Customers
  @apiDescription get seller scores
+ @apiSuccessExample {json} SuccessResponse1:
+ {
+    "errors": "permission Access denied",
+    "response_code": 201
+ }
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
@@ -522,6 +534,11 @@ module Api
   @apiName info
   @apiGroup Customers
   @apiDescription to get customer purchasings, transaction and sales info
+  @apiSuccessExample {json} SuccessResponse1:
+   {
+      "errors": "permission Access denied",
+      "response_code": 201
+   }
   @apiSuccessExample {json} SuccessResponse:
   {
     "success": true,

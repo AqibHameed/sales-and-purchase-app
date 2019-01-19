@@ -17,6 +17,41 @@ class Api::V1::ApiController < ApplicationController
        @current_customer ||= Customer.find_by_authentication_token(token)
      end
   end
+
+  def info_permission
+    permission = PremissionRequest.find_by(receiver_id: current_company.id, customer_info: true)
+    if permission.nil?
+      render json: { errors: "permission Access denied", response_code: 201 }
+    end
+  end
+
+  def buyer_score_permission
+    permission = PremissionRequest.find_by(receiver_id: current_company.id, buyer_score: true)
+    if permission.nil?
+      render json: { errors: "permission Access denied", response_code: 201 }
+    end
+  end
+
+  def seller_scores_permission
+    permission = PremissionRequest.find_by(receiver_id: current_company.id, seller_score: true)
+    if permission.nil?
+      render json: { errors: "permission Access denied", response_code: 201 }
+    end
+  end
+
+  # def seller_companies_permission
+  #   permission = PremissionRequest.find_by(receiver_id: current_company.id, live_monitor: true)
+  #   if permission.nil?
+  #     render json: { errors: "permission Access denied", response_code: 201 }
+  #   end
+  # end
+  #
+  # def live_monitoring_permission
+  #   permission = PremissionRequest.find_by(receiver_id: current_company.id, secure_center: true)
+  #   if permission.nil?
+  #     render json: { errors: "permission Access denied", response_code: 201 }
+  #   end
+  # end
   
 
 =begin
