@@ -667,11 +667,13 @@ class Api::V1::CompaniesController < ApplicationController
       @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
       @credit_limit = CreditLimit.find_by(seller_id: current_company.id, buyer_id: params[:id])
       @number_of_seller_offer_credit_limit = CreditLimit.where(buyer_id: params[:id]).uniq.count
+      company = Company.find_by(id: params[:id])
+      @buyer_score =  company.get_buyer_score
+      @seller_score = company.get_seller_score
       if @secure_center.present?
         render status: :ok, template: "api/v1/companies/secure_center.json.jbuilder"
         #render json: { success: true, details: secure_center }
       else
-        company = Company.where(id: params[:id]).first
         if company.present?
           secure_center = SecureCenter.new(seller_id: current_company.id, buyer_id: company.id)
           @secure_center = create_or_update_secure_center(secure_center, company, current_company)
