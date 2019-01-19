@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190119082521) do
+ActiveRecord::Schema.define(version: 20190118115312) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -689,8 +689,6 @@ ActiveRecord::Schema.define(version: 20190119082521) do
     t.string "payment_score"
     t.string "market_payment_score"
     t.string "collection_ratio_days"
-    t.float "balance_credit_limit", limit: 24
-    t.float "number_of_seller_offer_credit", limit: 24
   end
 
   create_table "seller_scores", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|

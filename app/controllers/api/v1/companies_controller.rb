@@ -665,6 +665,8 @@ class Api::V1::CompaniesController < ApplicationController
       #secure_center_record(current_company.id, params[:id])
       @request = LiveMonitoringRequest.find_by("sender_id=? OR receiver_id=?", current_company.id, current_company.id)
       @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
+      @credit_limit = CreditLimit.find_by(seller_id: current_company.id, buyer_id: params[:id])
+      @number_of_seller_offer_credit_limit = CreditLimit.where(buyer_id: params[:id]).uniq.count
       if @secure_center.present?
         render status: :ok, template: "api/v1/companies/secure_center.json.jbuilder"
         #render json: { success: true, details: secure_center }

@@ -277,7 +277,7 @@ module Api
           else
             unless message.live_monitoring_request_id.nil?
               request = LiveMonitoringRequest.find_by(id: message.live_monitoring_request_id)
-              if request.status == 'pending'
+              if request.present? && request.status == 'pending'
                 data ={
                     request_id: request.id,
                     sender: request.sender.name,
