@@ -4,6 +4,8 @@ class Api::V1::CompaniesController < ApplicationController
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
   before_action :current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
+  before_action :seller_companies_permission, only: [:seller_companies]
+  before_action :live_monitoring_permission, only: [:live_monitoring]
 
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
@@ -176,6 +178,11 @@ class Api::V1::CompaniesController < ApplicationController
     @apiName seller_companies
     @apiGroup Companies
     @apiDescription shows the list of companies
+    @apiSuccessExample {json} SuccessResponse1:
+     {
+        "errors": "permission Access denied",
+        "response_code": 201
+     }
     @apiSuccessExample {json} SuccessResponse:
     {
       "success": true,
@@ -583,7 +590,12 @@ class Api::V1::CompaniesController < ApplicationController
  @apiDescription accept request to show security data
  @apiParamExample {json} Request-Example:
 {
-	"request_id": 9
+	"request_id": 9,
+  "live_monitor":true,
+  "buyer_score":true,
+  "seller_score":false,
+  "customer_info":true
+
 }
  @apiSuccessExample {json} SuccessResponse:
 {
@@ -642,6 +654,11 @@ class Api::V1::CompaniesController < ApplicationController
  @apiName live_monitoring
  @apiGroup companies
  @apiDescription get secure center data for buyer
+ @apiSuccessExample {json} SuccessResponse1:
+ {
+    "errors": "permission Access denied",
+    "response_code": 201
+ }
  @apiSuccessExample {json} SuccessResponse:
  {
     "success": true,

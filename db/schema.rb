@@ -578,7 +578,7 @@ ActiveRecord::Schema.define(version: 20190119135258) do
   create_table "premission_requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "sender_id"
     t.integer "receiver_id"
-    t.integer "status"
+    t.integer "status", default: 2
     t.boolean "live_monitor"
     t.boolean "secure_center"
     t.boolean "buyer_score"
