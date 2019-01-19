@@ -2,7 +2,7 @@ class Message < ApplicationRecord
   belongs_to :sender, class_name: 'Company', foreign_key: 'sender_id', optional: true
   belongs_to :receiver, class_name: 'Company', foreign_key: 'receiver_id', optional: true
   belongs_to :proposal, optional: true
-  # belongs_to :premission_request
+  belongs_to :premission_request, optional: true
   belongs_to :buyer_transaction, :foreign_key => "transaction_id", :class_name => "Transaction", dependent: :destroy, optional: true
 
   scope :customer_messages, ->(current_company_id) {joins(:sender).order("created_at desc").where(receiver_id: current_company_id, message_type: "Proposal")}
