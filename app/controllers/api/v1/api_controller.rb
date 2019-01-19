@@ -470,6 +470,7 @@ need to check
 
   def calculate_sales
     [
+
         {
             term: "cash",
             percent: sale_count_value('0', @credit_given_transaction.count, 'count', current_company),
@@ -583,6 +584,7 @@ need to check
 
   def cutomer_puchase
     [
+
         {term: "cash", percent: count_value('0', @credit_recieved_transaction.count, 'count', current_company),
          pending_transaction: count_value('0', @total_pending_received, 'pending', current_company),
          overdue_transaction: count_value('0', @total_overdue_received, 'overdue', current_company),

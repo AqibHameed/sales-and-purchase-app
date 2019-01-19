@@ -881,6 +881,26 @@
   {
     "version": "1.0.0",
     "type": "get",
+    "url": "/api/v1/customers/info",
+    "title": "",
+    "name": "info",
+    "group": "Customers",
+    "description": "<p>to get customer purchasings, transaction and sales info</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"sales\": {\n      \"credit_given_to\": 3,\n      \"total_given_credit\": \"22695.00\",\n      \"total_used_credit\": \"16154.33\",\n      \"total_available_credit\": \"$6,540.67\",\n      \"sales\": [\n          {\n              \"term\": \"cash\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"1<=30\",\n              \"percent\": \"11(68%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$13,200.00(89%)\",\n              \"complete_transaction\": \"$18,849.26(75%)\"\n          },\n          {\n              \"term\": \"61<=90\",\n              \"percent\": \"1(6%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$4,500.00(18%)\"\n          },\n          {\n              \"term\": \"91\",\n              \"percent\": \"2(12%)\",\n              \"pending_transaction\": \"$26.25(100%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$1,549.04(6%)\"\n          },\n          {\n              \"term\": \"total\",\n              \"percent\": \"16\",\n              \"pending_transaction\": \"$26.25\",\n              \"overdue_transaction\": \"$14,749.04\",\n              \"complete_transaction\": \"$24,898.30\"\n          }\n      ]\n  },\n  \"purchases\": {\n      \"credit_recieved_count\": 1,\n      \"total_credit_received\": \"$3,300.00\",\n      \"purchases\": [\n          {\n              \"term\": \"cash\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"1<=30\",\n              \"percent\": \"1(100%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$3,300.00(100%)\"\n          },\n          {\n              \"term\": \"31<=60\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"61<=90\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"61<=90\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"total\",\n              \"percent\": \"1\",\n              \"pending_transaction\": \"$0.00\",\n              \"overdue_transaction\": \"$0.00\",\n              \"complete_transaction\": \"$3,300.00\"\n          }\n      ]\n  },\n  \"transactions\": {\n      \"total\": 15,\n      \"pending\": 1,\n      \"completed\": 9,\n      \"overdue\": 5\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
     "url": "/api/v1/customers/seller_scores",
     "title": "",
     "name": "seller_scores",
@@ -1151,7 +1171,7 @@
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"limits\": {\n        \"id\": 1,\n        \"name\": \"Dummy co. 1\",\n        \"total_limit\": 0,\n        \"used_limit\": 200,\n        \"available_limit\": 0,\n        \"overdue_limit\": \"30 days\",\n        \"supplier_connected\": 3588\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"success\": true,\n    \"limits\": {\n        \"id\": 1,\n        \"name\": \"Dummy co. 1\",\n        \"total_limit\": 0,\n        \"used_limit\": 200,\n        \"available_limit\": 0,\n        \"overdue_limit\": \"30 days\",\n        \"supplier_connected\": 3588,\n        \"reviewed\": false\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1788,11 +1808,11 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -1808,11 +1828,11 @@
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {
