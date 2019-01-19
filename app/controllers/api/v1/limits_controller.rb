@@ -175,7 +175,8 @@ module Api
         "used_limit": 200,
         "available_limit": 0,
         "overdue_limit": "30 days",
-        "supplier_connected": 3588
+        "supplier_connected": 3588,
+        "reviewed": false
     },
     "response_code": 200
 }
@@ -188,6 +189,7 @@ module Api
             if company.nil?
               render json: {success: false, errors: "Company not found", response_code: 201}
             else
+              review = Review.where(customer_id: current_customer.id, company_id: current_company.id)
               @data = {
                   id: company.id,
                   name: company.try(:name),
@@ -196,7 +198,8 @@ module Api
                   available_limit: get_available_credit_limit(company, current_company).round(2),
                   overdue_limit: get_days_limit(company, current_company),
                   #market_limit: get_market_limit_from_credit_limit_table(company, current_company).to_s,
-                  supplier_connected: company.supplier_paid
+                  supplier_connected: company.supplier_paid,
+                  reviewed: review.present? ? true : false
               }
               render json: {success: true, limits: @data, response_code: 200}
             end
@@ -221,6 +224,7 @@ module Api
             end
             companies = Company.where("id in (?)", @array.uniq)
             companies.each do |c|
+              review = Review.where(customer_id: current_customer.id, company_id: c.id)
               @data << {
                   id: c.id,
                   name: c.try(:name),
@@ -229,7 +233,9 @@ module Api
                   available_limit: get_available_credit_limit(c, current_company).round(2),
                   overdue_limit: get_days_limit(c, current_company),
                   #market_limit: get_market_limit_from_credit_limit_table(c, current_company).to_s,
-                  supplier_connected: c.supplier_paid}
+                  supplier_connected: c.supplier_paid,
+                  reviewed: review.present? ? true : false
+              }
             end
             @companies = Kaminari.paginate_array(@data).page(params[:page]).per(params[:count])
             render json: {success: true, pagination: set_pagination(:companies), limits: @companies, response_code: 200}

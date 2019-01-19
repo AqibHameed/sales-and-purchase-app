@@ -1171,7 +1171,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"limits\": {\n        \"id\": 1,\n        \"name\": \"Dummy co. 1\",\n        \"total_limit\": 0,\n        \"used_limit\": 200,\n        \"available_limit\": 0,\n        \"overdue_limit\": \"30 days\",\n        \"supplier_connected\": 3588\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"success\": true,\n    \"limits\": {\n        \"id\": 1,\n        \"name\": \"Dummy co. 1\",\n        \"total_limit\": 0,\n        \"used_limit\": 200,\n        \"available_limit\": 0,\n        \"overdue_limit\": \"30 days\",\n        \"supplier_connected\": 3588,\n        \"reviewed\": false\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
