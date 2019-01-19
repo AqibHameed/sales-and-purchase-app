@@ -3,7 +3,9 @@ module Api
     class CustomersController < ApiController
       skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request, :buyer_scores, :seller_scores]
       before_action :current_customer
-      before_action :current_company
+      before_action :info_permission, only: [:info]
+      before_action :buyer_score_permission, only: [:buyer_scores]
+      before_action :seller_scores_permission, only: [:seller_scores]
       MOBILE_TILES_SHOW = {
           0 => 'Smart Search',
           1 => 'Sell',
@@ -79,7 +81,12 @@ module Api
  @apiName buyer scores
  @apiGroup Customers
  @apiDescription get Buyer scores
- @apiSuccessExample {json} SuccessResponse:
+ @apiSuccessExample {json} SuccessResponse1:
+ {
+    "errors": "permission Access denied",
+    "response_code": 201
+ }
+ @apiSuccessExample {json} SuccessResponse2:
  {
     "success": true,
     "scores": [
@@ -149,6 +156,11 @@ module Api
  @apiName seller scores
  @apiGroup Customers
  @apiDescription get seller scores
+ @apiSuccessExample {json} SuccessResponse1:
+ {
+    "errors": "permission Access denied",
+    "response_code": 201
+ }
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
@@ -510,6 +522,160 @@ module Api
           @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
 
           render json: {success: true, credit_recieved_count: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
+        else
+          render json: {errors: "Not authenticated", response_code: 201}
+        end
+      end
+
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/customers/info
+  @apiSampleRequest off
+  @apiName info
+  @apiGroup Customers
+  @apiDescription to get customer purchasings, transaction and sales info
+  @apiSuccessExample {json} SuccessResponse1:
+   {
+      "errors": "permission Access denied",
+      "response_code": 201
+   }
+  @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "sales": {
+        "credit_given_to": 3,
+        "total_given_credit": "22695.00",
+        "total_used_credit": "16154.33",
+        "total_available_credit": "$6,540.67",
+        "sales": [
+            {
+                "term": "cash",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "1<=30",
+                "percent": "11(68%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$13,200.00(89%)",
+                "complete_transaction": "$18,849.26(75%)"
+            },
+            {
+                "term": "61<=90",
+                "percent": "1(6%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$4,500.00(18%)"
+            },
+            {
+                "term": "91",
+                "percent": "2(12%)",
+                "pending_transaction": "$26.25(100%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$1,549.04(6%)"
+            },
+            {
+                "term": "total",
+                "percent": "16",
+                "pending_transaction": "$26.25",
+                "overdue_transaction": "$14,749.04",
+                "complete_transaction": "$24,898.30"
+            }
+        ]
+    },
+    "purchases": {
+        "credit_recieved_count": 1,
+        "total_credit_received": "$3,300.00",
+        "purchases": [
+            {
+                "term": "cash",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "1<=30",
+                "percent": "1(100%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$3,300.00(100%)"
+            },
+            {
+                "term": "31<=60",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "61<=90",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "61<=90",
+                "percent": "0(0%)",
+                "pending_transaction": "$0.00(0%)",
+                "overdue_transaction": "$0.00(0%)",
+                "complete_transaction": "$0.00(0%)"
+            },
+            {
+                "term": "total",
+                "percent": "1",
+                "pending_transaction": "$0.00",
+                "overdue_transaction": "$0.00",
+                "complete_transaction": "$3,300.00"
+            }
+        ]
+    },
+    "transactions": {
+        "total": 15,
+        "pending": 1,
+        "completed": 9,
+        "overdue": 5
+    }
+  }
+=end
+
+
+      def info
+        if current_customer
+          total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
+          pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+          overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
+          completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
+
+          @credit_given = CreditLimit.where('seller_id =?', current_company.id)
+          @credit_given_to = @credit_given.count
+          @total_credit_given = overall_credit_given(current_company)
+          @total_used_credit = overall_credit_spent_by_customer(current_company)
+          @total_available_credit = credit_available(current_company)
+          @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
+          @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
+          @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
+          @credit_given_transaction = Transaction.where('seller_id =?', current_company.id)
+
+          @credit_recieved_transaction = Transaction.where('buyer_id =?', current_company.id)
+          @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
+          @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
+          @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
+          @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
+
+          render json: {success: true,
+                        sales: { credit_given_to: @credit_given_to,
+                                 total_given_credit: @total_credit_given,
+                                 total_used_credit: @total_used_credit,
+                                 total_available_credit: @total_available_credit, sales: calculate_sales},
+                        purchases: {credit_recieved_count: @credit_recieved.count,
+                                    total_credit_received: number_to_currency(overall_credit_received(current_company)),
+                                    purchases: cutomer_puchase},
+                        transactions: {total: total, pending: pending,
+                                                      completed: completed, overdue: overdue}}
         else
           render json: {errors: "Not authenticated", response_code: 201}
         end

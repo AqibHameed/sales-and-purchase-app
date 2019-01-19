@@ -3,7 +3,8 @@ class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
-  before_action :check_current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
+  before_action :current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
+  before_action :seller_companies_permission, only: [:seller_companies]
 
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
@@ -176,6 +177,11 @@ class Api::V1::CompaniesController < ApplicationController
     @apiName seller_companies
     @apiGroup Companies
     @apiDescription shows the list of companies
+    @apiSuccessExample {json} SuccessResponse1:
+     {
+        "errors": "permission Access denied",
+        "response_code": 201
+     }
     @apiSuccessExample {json} SuccessResponse:
     {
       "success": true,
@@ -562,7 +568,7 @@ class Api::V1::CompaniesController < ApplicationController
 =end
 
   def send_security_data_request
-    live_monitor_request = LiveMonitoringRequest.find_or_initialize_by(sender_id: current_company.id,
+    live_monitor_request = PremissionRequest.find_or_initialize_by(sender_id: current_company.id,
                                                                    receiver_id: params[:receiver_id])
     if live_monitor_request.status == 'rejected'
       live_monitor_request.update_attributes(status: 2)
@@ -583,7 +589,12 @@ class Api::V1::CompaniesController < ApplicationController
  @apiDescription accept request to show security data
  @apiParamExample {json} Request-Example:
 {
-	"request_id": 9
+	"request_id": 9,
+  "live_monitor":true,
+  "buyer_score":true,
+  "seller_score":false,
+  "customer_info":true
+
 }
  @apiSuccessExample {json} SuccessResponse:
 {
@@ -594,9 +605,10 @@ class Api::V1::CompaniesController < ApplicationController
 =end
 
   def accept_secuirty_data_request
-    request = LiveMonitoringRequest.find_by(id: params[:request_id])
+    request = PremissionRequest.find_by(id: params[:request_id])
     if request && request.status == 'pending'
-      request.update_attributes(status: 1)
+      request.update_attributes(permission_params)
+      request.update(status: 1)
     end
     render json: {success: true,
                   message: "Request accepted successfully.",
@@ -622,7 +634,7 @@ class Api::V1::CompaniesController < ApplicationController
 =end
 
   def reject_secuirty_data_request
-    request = LiveMonitoringRequest.find_by(id: params[:request_id])
+    request = PremissionRequest.find_by(id: params[:request_id])
     if request && request.status == 'pending'
       request.update_attributes(status: 0)
     end
@@ -641,6 +653,11 @@ class Api::V1::CompaniesController < ApplicationController
  @apiName live_monitoring
  @apiGroup companies
  @apiDescription get secure center data for buyer
+ @apiSuccessExample {json} SuccessResponse1:
+ {
+    "errors": "permission Access denied",
+    "response_code": 201
+ }
  @apiSuccessExample {json} SuccessResponse:
  {
     "success": true,
@@ -663,12 +680,17 @@ class Api::V1::CompaniesController < ApplicationController
   def live_monitoring
     if current_company
       #secure_center_record(current_company.id, params[:id])
+      @request = PremissionRequest.find_by("sender_id=? OR receiver_id=?", current_company.id, current_company.id)
       @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
+      @credit_limit = CreditLimit.find_by(seller_id: current_company.id, buyer_id: params[:id])
+      @number_of_seller_offer_credit_limit = CreditLimit.where(buyer_id: params[:id]).uniq.count
+      company = Company.find_by(id: params[:id])
+      @buyer_score =  company.get_buyer_score
+      @seller_score = company.get_seller_score
       if @secure_center.present?
         render status: :ok, template: "api/v1/companies/secure_center.json.jbuilder"
         #render json: { success: true, details: secure_center }
       else
-        company = Company.where(id: params[:id]).first
         if company.present?
           secure_center = SecureCenter.new(seller_id: current_company.id, buyer_id: company.id)
           @secure_center = create_or_update_secure_center(secure_center, company, current_company)
@@ -688,11 +710,6 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   private
-  def check_current_company
-    if current_company.nil?
-      render json: { errors: "Not authenticated", response_code: 201 }
-    end
-  end
 
   def check_token
     if request.headers["Authorization"].blank?
@@ -737,6 +754,11 @@ class Api::V1::CompaniesController < ApplicationController
   def review_params
     params.permit(:company_id, :know, :trade, :recommend, :experience).merge(customer_id: current_user.id)
   end
+
+  def permission_params
+    params.permit(:live_monitor, :secure_center, :buyer_score, :seller_score, :customer_info)
+  end
+
 
   def review(review_company)
     {
