@@ -256,12 +256,12 @@ RSpec.describe Api::V1::CompaniesController do
     #   end
     # end
 
-    context "when authenticated trader want try to send request to buyer" do
-      it 'does show request sent successfully' do
-        post :send_security_data_request, params: {receiver_id: @buyer.company_id}
-        response.body.should have_content('Request send successfully.')
-      end
-    end
+    # context "when authenticated trader want try to send request to buyer" do
+    #   it 'does show request sent successfully' do
+    #     post :send_security_data_request, params: {receiver_id: @buyer.company_id}
+    #     response.body.should have_content('Request send successfully.')
+    #   end
+    # end
     #
     # context "when authenticated trader want try to send request to trader" do
     #   it 'does show request sent successfully' do
