@@ -3,7 +3,7 @@ class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
-  before_action :current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
+  before_action :check_current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
   before_action :seller_companies_permission, only: [:seller_companies]
 
   include ActionView::Helpers::NumberHelper
@@ -568,8 +568,7 @@ class Api::V1::CompaniesController < ApplicationController
 =end
 
   def send_security_data_request
-    live_monitor_request = PremissionRequest.find_or_initialize_by(sender_id: current_company.id,
-                                                                   receiver_id: params[:receiver_id])
+    live_monitor_request = PremissionRequest.find_or_initialize_by(sender_id: current_company.id, receiver_id: params[:receiver_id])
     if live_monitor_request.status == 'rejected'
       live_monitor_request.update_attributes(status: 2)
     end
@@ -710,6 +709,12 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   private
+
+  def check_current_company
+    if current_company.nil?
+      render json: { errors: "Not authenticated", response_code: 201 }
+    end
+  end
 
   def check_token
     if request.headers["Authorization"].blank?

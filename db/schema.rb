@@ -444,7 +444,7 @@ ActiveRecord::Schema.define(version: 20190119135258) do
     t.datetime "updated_at", null: false
     t.integer "proposal_id"
     t.integer "transaction_id"
-    t.integer "premission_request_id"
+    t.integer "live_monitoring_request_id"
     t.index ["receiver_id"], name: "index_messages_on_receiver_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
   end
