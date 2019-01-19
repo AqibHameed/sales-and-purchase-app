@@ -197,7 +197,6 @@ module Api
             @messages = negotiation_messages(messages)
           elsif status == 'new'
             @messages = new_messages_payment(messages, payment_messages, live_monitor_request_messages)
-            binding.pry
           else  
             @messages = @messages.map{ |m| m if m.proposal && m.proposal.status == status }.compact
           end
@@ -209,10 +208,8 @@ module Api
           c = Company.where(name: company).first
           @messages = @messages.map{ |m| m if m.sender.present? && m.sender == c}.compact
         end
-        binding.pry
         @messages.each do |message|
           if (message.proposal.present? && message.proposal.trading_parcel.present?) || (message.buyer_transaction.present?)
-            binding.pry
             if message.buyer_transaction.present?
               data = {
                   id: message.id,
@@ -264,7 +261,6 @@ module Api
                 end
             end
           else
-            binding.pry
             unless message.live_monitoring_request_id.nil?
               request = LiveMonitoringRequest.find_by(id: message.live_monitoring_request_id)
               if request.status == 'pending'
