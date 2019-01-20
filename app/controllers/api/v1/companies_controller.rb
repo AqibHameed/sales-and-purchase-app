@@ -4,7 +4,7 @@ class Api::V1::CompaniesController < ApplicationController
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
   before_action :check_current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
-  before_action :seller_companies_permission, only: [:seller_companies]
+  # before_action :seller_companies_permission, only: [:seller_companies]
 
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
