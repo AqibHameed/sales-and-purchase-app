@@ -1956,7 +1956,7 @@ define({ "api": [
     "title": "",
     "name": "direct_sell",
     "group": "TradingParcels",
-    "description": "<p>direct sell with buyer</p>",
+    "description": "<p>direct sell (3,4 request where role is trader and have to send activity param with buy or sell) and direct buyer (2 request where role is buyer)</p>",
     "parameter": {
       "examples": [
         {
