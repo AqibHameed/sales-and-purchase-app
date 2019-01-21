@@ -648,11 +648,13 @@ class Api::V1::CompaniesController < ApplicationController
     trading_parcel.cost.blank? ? nil: trading_parcel.cost.to_s
   end
 
+
 =begin
  @apiVersion 1.0.0
  @api {get} /api/v1/secure_center?id=2
+ @apiSampleRequest off
  @apiName live_monitoring
- @apiGroup companies
+ @apiGroup Companies
  @apiDescription get secure center data for buyer
  @apiParamExample {json} Request-Example1:
   {

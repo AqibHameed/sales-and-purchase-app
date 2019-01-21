@@ -688,6 +688,45 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/secure_center?id=2",
+    "title": "",
+    "name": "live_monitoring",
+    "group": "Companies",
+    "description": "<p>get secure center data for buyer</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n  receiver_id: \"\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n  receiver_id: \"2\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n  \"errors\": \"company id not exist\",\n  \"response_code\": 201\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": " {\n    \"success\": true,\n    \"details\": {\n        \"id\": 273,\n        \"invoices_overdue\": 0,\n        \"paid_date\": null,\n        \"buyer_id\": 2,\n        \"seller_id\": 1,\n        \"last_bought_on\": null,\n        \"supplier_connected\": 0,\n        \"overdue_amount\": 0,\n        \"outstandings\": 0,\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 5\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
     "type": "post",
     "url": "/api/v1/reset_limits",
     "title": "",
@@ -1895,11 +1934,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {
@@ -1915,11 +1954,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -2287,50 +2326,6 @@ define({ "api": [
     "sampleRequest": [
       {
         "url": "https://safetrade.ai/api/v1/companies/send_security_data_request"
-      }
-    ]
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/secure_center?id=2",
-    "title": "",
-    "name": "live_monitoring",
-    "group": "companies",
-    "description": "<p>get secure center data for buyer</p>",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Request-Example1:",
-          "content": "{\n  receiver_id: \"\"\n}",
-          "type": "json"
-        },
-        {
-          "title": "Request-Example2:",
-          "content": "{\n  receiver_id: \"2\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse1:",
-          "content": "{\n  \"errors\": \"company id not exist\",\n  \"response_code\": 201\n}",
-          "type": "json"
-        },
-        {
-          "title": "SuccessResponse2:",
-          "content": " {\n    \"success\": true,\n    \"details\": {\n        \"id\": 273,\n        \"invoices_overdue\": 0,\n        \"paid_date\": null,\n        \"buyer_id\": 2,\n        \"seller_id\": 1,\n        \"last_bought_on\": null,\n        \"supplier_connected\": 0,\n        \"overdue_amount\": 0,\n        \"outstandings\": 0,\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 5\n    }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/companies_controller.rb",
-    "groupTitle": "companies",
-    "sampleRequest": [
-      {
-        "url": "https://safetrade.ai/api/v1/secure_center?id=2"
       }
     ]
   }
