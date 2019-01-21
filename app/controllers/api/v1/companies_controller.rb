@@ -221,8 +221,7 @@ class Api::V1::CompaniesController < ApplicationController
               companies.name,
               sum(t.remaining_amount) as remaining_amount
       ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{current_company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )"
-      ).joins("inner join premission_requests p on(companies.id = p.receiver_id and p.sender_id = #{current_company.id} and p.live_monitor = true)")
-      .group(:id)
+      ).group(:id)
       .order(:id)
 
       result = []
