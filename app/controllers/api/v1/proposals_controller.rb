@@ -22,19 +22,31 @@ module Api
 "price" : "4500",
 "total_value" : "4000"
 }
- @apiSuccessExample {json} SuccessResponse1:
+@apiSuccessExample {json} SuccessResponse1:
+{
+    "success": false,
+    "message": "Please contact seller to increase limits."
+}
+ @apiParamExample {json} Request-Example2:
+{
+"trading_parcel_id" : "3",
+"credit" : "2000",
+"price" : "4500",
+"total_value" : "4000"
+}
+ @apiSuccessExample {json} SuccessResponse2:
 {
     "success": true,
     "message": "Proposal Submitted Successfully"
 }
-@apiParamExample {json} Request-Example2:
+@apiParamExample {json} Request-Example3:
 {
 "id" : "3",
 "credit" : "2000",
 "price" : "5000",
 "total_value" : "500000"
 }
-@apiSuccessExample {json} SuccessResponse2:
+@apiSuccessExample {json} SuccessResponse3:
 {
     "success": true,
     "message": "Proposal Updated Successfully"
@@ -50,8 +62,8 @@ module Api
         else
           parcel = TradingParcel.where(id: params[:trading_parcel_id]).first
           if parcel.present?
-            credit_lmt = CreditLimit.find_by(buyer_id: current_company.id, seller_id: parcel.company)
-            group_limit = CompaniesGroup.where(seller_id: parcel.company).map{|companies_group|  companies_group if companies_group.company_id.include?(current_company.id.to_s) == true}.first if credit_lmt.nil?
+            credit_lmt = CreditLimit.find_by(buyer_id: current_company.id, seller_id: parcel.company.id)
+            group_limit = CompaniesGroup.where(seller_id: parcel.company.id).map{|companies_group|  companies_group if companies_group.company_id.include?(current_company.id.to_s) == true}.first if credit_lmt.nil?
             if credit_lmt.nil? && group_limit.nil?
               perposal_info(parcel)
             else
