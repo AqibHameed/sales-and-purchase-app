@@ -263,7 +263,7 @@ module Api
  @apiSampleRequest off
  @apiName direct sell
  @apiGroup TradingParcels
- @apiDescription direct sell with buyer
+ @apiDescription direct sell (3,4 request where role is trader and have to send activity param with buy or sell) and direct buyer (2 request where role is buyer)
  @apiParamExample {json} Request-Example1:
  {
   "trading_parcel":
