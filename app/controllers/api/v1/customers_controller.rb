@@ -81,12 +81,29 @@ module Api
  @apiName buyer scores
  @apiGroup Customers
  @apiDescription get Buyer scores
- @apiSuccessExample {json} SuccessResponse1:
- {
-    "errors": "permission Access denied",
+ @apiParamExample {json} Request-Example1:
+  {
+    receiver_id: ""
+  }
+  @apiSuccessExample {json} SuccessResponse1:
+  {
+    "errors": "company id not exist",
     "response_code": 201
- }
- @apiSuccessExample {json} SuccessResponse2:
+  }
+  @apiParamExample {json} Request-Example2:
+  {
+    receiver_id: "1"
+  }
+  @apiSuccessExample {json} SuccessResponse2:
+   {
+      "errors": "permission Access denied",
+      "response_code": 201
+   }
+  @apiParamExample {json} Request-Example3:
+  {
+    receiver_id: "2"
+  }
+ @apiSuccessExample {json} SuccessResponse3:
  {
     "success": true,
     "scores": [
@@ -156,13 +173,30 @@ module Api
  @apiName seller scores
  @apiGroup Customers
  @apiDescription get seller scores
- @apiSuccessExample {json} SuccessResponse1:
- {
-    "errors": "permission Access denied",
+ @apiParamExample {json} Request-Example1:
+  {
+    receiver_id: ""
+  }
+  @apiSuccessExample {json} SuccessResponse1:
+  {
+    "errors": "company id not exist",
     "response_code": 201
- }
- @apiSuccessExample {json} SuccessResponse:
-{
+  }
+  @apiParamExample {json} Request-Example2:
+  {
+    receiver_id: "1"
+  }
+  @apiSuccessExample {json} SuccessResponse2:
+   {
+      "errors": "permission Access denied",
+      "response_code": 201
+   }
+  @apiParamExample {json} Request-Example3:
+  {
+    receiver_id: "2"
+  }
+ @apiSuccessExample {json} SuccessResponse3:
+ {
     "success": true,
     "scores": [
         {
@@ -534,12 +568,29 @@ module Api
   @apiName info
   @apiGroup Customers
   @apiDescription to get customer purchasings, transaction and sales info
+  @apiParamExample {json} Request-Example1:
+  {
+    receiver_id: ""
+  }
   @apiSuccessExample {json} SuccessResponse1:
+  {
+    "errors": "company id not exist",
+    "response_code": 201
+  }
+  @apiParamExample {json} Request-Example2:
+  {
+    receiver_id: "1"
+  }
+  @apiSuccessExample {json} SuccessResponse2:
    {
       "errors": "permission Access denied",
       "response_code": 201
    }
-  @apiSuccessExample {json} SuccessResponse:
+  @apiParamExample {json} Request-Example3:
+  {
+    receiver_id: "2"
+  }
+  @apiSuccessExample {json} SuccessResponse3:
   {
     "success": true,
     "sales": {

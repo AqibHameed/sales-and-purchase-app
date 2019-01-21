@@ -19,23 +19,41 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def info_permission
-    permission = PremissionRequest.find_by(receiver_id: current_company.id, customer_info: true)
-    if permission.nil?
-      render json: { errors: "permission Access denied", response_code: 201 }
+    if params[:receiver_id].present?
+      unless  params[:receiver_id] == current_company.id
+        permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], customer_info: true)
+        if permission.nil?
+          render json: { errors: "permission Access denied", response_code: 201 }
+        end
+      end
+    else
+      render json: { errors: "company id not exist", response_code: 201 }
     end
   end
 
   def buyer_score_permission
-    permission = PremissionRequest.find_by(receiver_id: current_company.id, buyer_score: true)
-    if permission.nil?
-      render json: { errors: "permission Access denied", response_code: 201 }
+    if params[:receiver_id].present?
+      unless  params[:receiver_id] == current_company.id
+        permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], buyer_score: true)
+        if permission.nil?
+          render json: { errors: "permission Access denied", response_code: 201 }
+        end
+      end
+    else
+      render json: { errors: "company id not exist", response_code: 201 }
     end
   end
 
   def seller_scores_permission
-    permission = PremissionRequest.find_by(receiver_id: current_company.id, seller_score: true)
-    if permission.nil?
-      render json: { errors: "permission Access denied", response_code: 201 }
+    if params[:receiver_id].present?
+      unless  params[:receiver_id] == current_company.id
+        permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], seller_score: true)
+        if permission.nil?
+          render json: { errors: "permission Access denied", response_code: 201 }
+        end
+      end
+    else
+      render json: { errors: "company id not exist", response_code: 201 }
     end
   end
 

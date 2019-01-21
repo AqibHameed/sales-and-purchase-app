@@ -10,6 +10,16 @@ class ApplicationController < ActionController::Base
     customer_signed_in? ? current_customer.id : 'Guest'
   end
 
+  def live_monitoring_permission
+    if params[:receiver_id].present?
+      unless  params[:receiver_id] == current_company.id
+        @request = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], secure_center: true)
+      end
+    else
+      render json: { errors: "company id not exist", response_code: 201 }
+    end
+  end
+
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
       format.json { head :forbidden, content_type: 'text/html' }

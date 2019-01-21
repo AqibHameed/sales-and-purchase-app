@@ -5,6 +5,7 @@ class Api::V1::CompaniesController < ApplicationController
   helper_method :current_company
   before_action :check_current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
   # before_action :seller_companies_permission, only: [:seller_companies]
+  before_action :live_monitoring_permission, only: [:live_monitoring]
 
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
@@ -219,7 +220,8 @@ class Api::V1::CompaniesController < ApplicationController
               count(companies.id) as transaction_count,
               companies.name,
               sum(t.remaining_amount) as remaining_amount
-      ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{current_company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )")
+      ").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{current_company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )"
+      ).joins("inner join premission_requests p on(companies.id = p.receiver_id and p.sender_id = #{current_company.id} and p.live_monitor = true)")
       .group(:id)
       .order(:id)
 
@@ -652,12 +654,20 @@ class Api::V1::CompaniesController < ApplicationController
  @apiName live_monitoring
  @apiGroup companies
  @apiDescription get secure center data for buyer
- @apiSuccessExample {json} SuccessResponse1:
- {
-    "errors": "permission Access denied",
+ @apiParamExample {json} Request-Example1:
+  {
+    receiver_id: ""
+  }
+  @apiSuccessExample {json} SuccessResponse1:
+  {
+    "errors": "company id not exist",
     "response_code": 201
- }
- @apiSuccessExample {json} SuccessResponse:
+  }
+  @apiParamExample {json} Request-Example2:
+  {
+    receiver_id: "2"
+  }
+ @apiSuccessExample {json} SuccessResponse2:
  {
     "success": true,
     "details": {
@@ -679,7 +689,6 @@ class Api::V1::CompaniesController < ApplicationController
   def live_monitoring
     if current_company
       #secure_center_record(current_company.id, params[:id])
-      @request = PremissionRequest.find_by("sender_id=? OR receiver_id=?", current_company.id, current_company.id)
       @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
       @credit_limit = CreditLimit.find_by(seller_id: current_company.id, buyer_id: params[:id])
       @number_of_seller_offer_credit_limit = CreditLimit.where(buyer_id: params[:id]).uniq.count

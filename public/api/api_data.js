@@ -777,15 +777,39 @@ define({ "api": [
     "name": "buyer_scores",
     "group": "Customers",
     "description": "<p>get Buyer scores</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n  receiver_id: \"\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n  receiver_id: \"1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example3:",
+          "content": "{\n  receiver_id: \"2\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "success": {
       "examples": [
         {
           "title": "SuccessResponse1:",
-          "content": "{\n   \"errors\": \"permission Access denied\",\n   \"response_code\": 201\n}",
+          "content": "{\n  \"errors\": \"company id not exist\",\n  \"response_code\": 201\n}",
           "type": "json"
         },
         {
           "title": "SuccessResponse2:",
+          "content": "{\n   \"errors\": \"permission Access denied\",\n   \"response_code\": 201\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse3:",
           "content": " {\n    \"success\": true,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Buyer Network Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Number Of Suppliers Giving You Credit\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
         }
@@ -896,15 +920,39 @@ define({ "api": [
     "name": "info",
     "group": "Customers",
     "description": "<p>to get customer purchasings, transaction and sales info</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n  receiver_id: \"\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n  receiver_id: \"1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example3:",
+          "content": "{\n  receiver_id: \"2\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "success": {
       "examples": [
         {
           "title": "SuccessResponse1:",
+          "content": "{\n  \"errors\": \"company id not exist\",\n  \"response_code\": 201\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
           "content": "{\n   \"errors\": \"permission Access denied\",\n   \"response_code\": 201\n}",
           "type": "json"
         },
         {
-          "title": "SuccessResponse:",
+          "title": "SuccessResponse3:",
           "content": "{\n  \"success\": true,\n  \"sales\": {\n      \"credit_given_to\": 3,\n      \"total_given_credit\": \"22695.00\",\n      \"total_used_credit\": \"16154.33\",\n      \"total_available_credit\": \"$6,540.67\",\n      \"sales\": [\n          {\n              \"term\": \"cash\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"1<=30\",\n              \"percent\": \"11(68%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$13,200.00(89%)\",\n              \"complete_transaction\": \"$18,849.26(75%)\"\n          },\n          {\n              \"term\": \"61<=90\",\n              \"percent\": \"1(6%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$4,500.00(18%)\"\n          },\n          {\n              \"term\": \"91\",\n              \"percent\": \"2(12%)\",\n              \"pending_transaction\": \"$26.25(100%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$1,549.04(6%)\"\n          },\n          {\n              \"term\": \"total\",\n              \"percent\": \"16\",\n              \"pending_transaction\": \"$26.25\",\n              \"overdue_transaction\": \"$14,749.04\",\n              \"complete_transaction\": \"$24,898.30\"\n          }\n      ]\n  },\n  \"purchases\": {\n      \"credit_recieved_count\": 1,\n      \"total_credit_received\": \"$3,300.00\",\n      \"purchases\": [\n          {\n              \"term\": \"cash\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"1<=30\",\n              \"percent\": \"1(100%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$3,300.00(100%)\"\n          },\n          {\n              \"term\": \"31<=60\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"61<=90\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"61<=90\",\n              \"percent\": \"0(0%)\",\n              \"pending_transaction\": \"$0.00(0%)\",\n              \"overdue_transaction\": \"$0.00(0%)\",\n              \"complete_transaction\": \"$0.00(0%)\"\n          },\n          {\n              \"term\": \"total\",\n              \"percent\": \"1\",\n              \"pending_transaction\": \"$0.00\",\n              \"overdue_transaction\": \"$0.00\",\n              \"complete_transaction\": \"$3,300.00\"\n          }\n      ]\n  },\n  \"transactions\": {\n      \"total\": 15,\n      \"pending\": 1,\n      \"completed\": 9,\n      \"overdue\": 5\n  }\n}",
           "type": "json"
         }
@@ -921,16 +969,40 @@ define({ "api": [
     "name": "seller_scores",
     "group": "Customers",
     "description": "<p>get seller scores</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n  receiver_id: \"\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n  receiver_id: \"1\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example3:",
+          "content": "{\n  receiver_id: \"2\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "success": {
       "examples": [
         {
           "title": "SuccessResponse1:",
+          "content": "{\n  \"errors\": \"company id not exist\",\n  \"response_code\": 201\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
           "content": "{\n   \"errors\": \"permission Access denied\",\n   \"response_code\": 201\n}",
           "type": "json"
         },
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Seller Network Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        }\n    ],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse3:",
+          "content": " {\n    \"success\": true,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Seller Network Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -2226,15 +2298,29 @@ define({ "api": [
     "name": "live_monitoring",
     "group": "companies",
     "description": "<p>get secure center data for buyer</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n  receiver_id: \"\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n  receiver_id: \"2\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "success": {
       "examples": [
         {
           "title": "SuccessResponse1:",
-          "content": "{\n   \"errors\": \"permission Access denied\",\n   \"response_code\": 201\n}",
+          "content": "{\n  \"errors\": \"company id not exist\",\n  \"response_code\": 201\n}",
           "type": "json"
         },
         {
-          "title": "SuccessResponse:",
+          "title": "SuccessResponse2:",
           "content": " {\n    \"success\": true,\n    \"details\": {\n        \"id\": 273,\n        \"invoices_overdue\": 0,\n        \"paid_date\": null,\n        \"buyer_id\": 2,\n        \"seller_id\": 1,\n        \"last_bought_on\": null,\n        \"supplier_connected\": 0,\n        \"overdue_amount\": 0,\n        \"outstandings\": 0,\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 5\n    }\n}",
           "type": "json"
         }
