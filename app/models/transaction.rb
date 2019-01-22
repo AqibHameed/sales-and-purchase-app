@@ -25,7 +25,7 @@ class Transaction < ApplicationRecord
 
   def self.sell_confirm_auto
     puts "********* Confirm Transactions created before 7 days *****************"
-    paid_transactions = Transaction.where('buyer_confirmed = ? AND created_at < ? AND transaction_type!= ?', false, 7.days.ago, 'manual')
+    paid_transactions = Transaction.where('buyer_confirmed = ? AND created_at < ? AND transaction_type!= ?', false, 7.days.ago, nil)
     paid_transactions.update(buyer_confirmed: true) unless paid_transactions.empty?
   end
 

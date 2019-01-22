@@ -251,28 +251,12 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
   @apiVersion 1.0.0
-  @api {post} /api/v1/companies_review
+  @api {get} /api/v1/companies_review
   @apiSampleRequest off
   @apiName companies_review
   @apiGroup Companies
   @apiDescription review the companies
-  @apiParamExample {json} Request-Example1:
-  {
-   review_id: 1,
-   company_id: 1
-  }
-  @apiSuccessExample {json} SuccessResponse1:
-  {
-    "review": {
-        "id": 1,
-        "know": true,
-        "trade": false,
-        "recommend": null,
-        "experience": null
-    },
-    "response_code": 200
-  }
-  @apiParamExample {json} Request-Example2:
+  @apiParamExample {json} Request-Example:
     {
      company_id: 1,
      know: true,
@@ -280,7 +264,7 @@ class Api::V1::CompaniesController < ApplicationController
      recommend: true,
      experience: true
     }
-    @apiSuccessExample {json} SuccessResponse2:
+    @apiSuccessExample {json} SuccessResponse:
     {
       "review": {
           "id": 1,
@@ -295,14 +279,10 @@ class Api::V1::CompaniesController < ApplicationController
 
   def companies_review
     if current_customer
-      if params[:review_id].present?
-          review = Review.find_by(id: params[:review_id])
-          if review.present?
-            review.update_attributes(review_params)
-            render :json => {review: review(review), response_code: 200}
-          else
-              render json: {errors: "review id is not exist", response_code: 201}
-          end
+      review = Review.find_by(company_id: params[:company_id], customer_id: current_customer.id)
+      if review.present?
+        review.update_attributes(review_params)
+        render :json => {review: review(review), response_code: 200}
       else
         review_company = Review.new(review_params)
         if review_company.save
@@ -312,7 +292,7 @@ class Api::V1::CompaniesController < ApplicationController
         end
       end
     else
-       render json: {errors: "Not authenticated", response_code: 201}
+      render json: {errors: "Not authenticated", response_code: 201}
     end
   end
 
@@ -724,6 +704,76 @@ class Api::V1::CompaniesController < ApplicationController
     else
       render json: { errors: "Not authenticated", response_code: 201 }
     end  
+  end
+
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/companies/list_permission_companies
+  @apiSampleRequest off
+  @apiName list_permission_companies
+  @apiGroup Companies
+  @apiDescription list of companies who has given permission to view his financial data.
+  @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "companies": [
+        {
+            "id": 8,
+            "name": "Dummy Seller 1",
+            "city": "",
+            "county": "India",
+            "created_at": "2018-12-06T09:12:54.000Z",
+            "updated_at": "2018-12-06T09:12:54.000Z",
+            "is_anonymous": false,
+            "add_polished": false,
+            "is_broker": false,
+            "email": null,
+            "deleted_at": null
+        }
+    ],
+   "response_code": 200
+  }
+=end
+
+
+  def list_permission_companies
+    if current_company
+        @companies = PremissionRequest.where(receiver_id: current_company.id, status: 1).map{|p|p.sender}
+        render json: {success: true, companies: @companies, response_code: 200}
+    else
+      render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
+    end
+  end
+
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/companies/remove_permission
+  @apiSampleRequest off
+  @apiName remove_permission
+  @apiGroup Companies
+  @apiDescription remove the permission of the company.
+  @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "message": "Request is removed successfully.",
+    "response_code": 200
+  }
+=end
+
+  def remove_permission
+    if current_company
+        premission_request = PremissionRequest.where(sender_id: params[:id], receiver_id: current_company.id, status: 1)
+        if premission_request.present?
+          premission_request.update(status: 3)
+          render json: {success: true,
+                        message: "Request is removed successfully.",
+                        response_code: 200}
+        else
+          render json: {errors: "Request is not exist against this company.", response_code: 201}
+        end
+    else
+      render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
+    end
   end
   
   protected
