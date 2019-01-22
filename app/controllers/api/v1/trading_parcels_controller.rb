@@ -265,51 +265,47 @@ module Api
  @apiGroup TradingParcels
  @apiDescription direct sell (3,4 request where role is trader and have to send activity param with buy or sell) and direct buyer (2 request where role is buyer)
  @apiParamExample {json} Request-Example1:
- {
-  "trading_parcel":
-    {
-    "description":"Z -7+5T",
-    "my_transaction_attributes":
-                               {
-                                 "customer_id":"3600",
-                                 "paid":false,
-                                 "created_at":"04/12/2018"
-                               },
-     "no_of_stones":10,
-     "carats":1.0,
-     "credit_period":20,
-     "price":2200.0,
-     "company":"SafeTrade",
-     "cost":2000.0,
-     "sight":"12/2018",
-     "source":"Sight",
-     "percent":10.0,
-     "comment":"",
-     "total_value":2200.0
-
-    }
+{
+            "trading_parcel": {
+                "description": "Z -7+5T",
+                "activity": "sell",
+                "my_transaction_attributes": {
+                    "company_id": "11",
+                    "paid": false
+                },
+                "no_of_stones": 10,
+                "carats": 1,
+                "credit_period": 20,
+                "price": 2200,
+                "company": "SafeTrade",
+                "cost": 2000,
+                "sight": "12/2018",
+                "source": "DTC",
+                "percent": 10,
+                "comment": "",
+                "total_value": 2200
+            },
+            "check_transactions": true
 }
  @apiSuccessExample {json} SuccessResponse1:
- [
-  {
+{
     "success": false,
     "details": {
-        "id": 706,
+        "id": 257,
         "invoices_overdue": 0,
         "paid_date": null,
-        "buyer_id": 3600,
-        "seller_id": 7188,
-        "outstandings": 0,
-        "overdue_amount": 0,
-        "last_bought_on": "2018-11-24",
-        "buyer_percentage": 0,
-        "system_percentage": 6,
-        "supplier_connected": 1,
+        "buyer_id": 11,
+        "seller_id": 4,
+        "last_bought_on": null,
+        "supplier_connected": 0,
         "credit_limit": true,
-        "overdue_limit": false
+        "overdue_limit": false,
+        "overdue_amount": 0,
+        "outstandings": 0,
+        "buyer_percentage": 0,
+        "system_percentage": 31.46
     }
-  }
- ]
+}
 @apiParamExample {json} Request-Example2:
  {
   "trading_parcel":
