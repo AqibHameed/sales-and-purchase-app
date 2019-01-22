@@ -600,7 +600,7 @@
   },
   {
     "version": "1.0.0",
-    "type": "post",
+    "type": "get",
     "url": "/api/v1/companies_review",
     "title": "",
     "name": "companies_review",
@@ -609,12 +609,7 @@
     "parameter": {
       "examples": [
         {
-          "title": "Request-Example1:",
-          "content": "{\n review_id: 1,\n company_id: 1\n}",
-          "type": "json"
-        },
-        {
-          "title": "Request-Example2:",
+          "title": "Request-Example:",
           "content": "{\n company_id: 1,\n know: true,\n trade: false,\n recommend: true,\n experience: true\n}",
           "type": "json"
         }
@@ -623,12 +618,7 @@
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse1:",
-          "content": "{\n  \"review\": {\n      \"id\": 1,\n      \"know\": true,\n      \"trade\": false,\n      \"recommend\": null,\n      \"experience\": null\n  },\n  \"response_code\": 200\n}",
-          "type": "json"
-        },
-        {
-          "title": "SuccessResponse2:",
+          "title": "SuccessResponse:",
           "content": "{\n  \"review\": {\n      \"id\": 1,\n      \"know\": true,\n      \"trade\": false,\n      \"recommend\": true,\n      \"experience\": true\n  },\n  \"response_code\": 200\n}",
           "type": "json"
         }
