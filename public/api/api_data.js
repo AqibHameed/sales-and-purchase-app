@@ -1283,7 +1283,7 @@ define({ "api": [
     "title": "",
     "name": "credit_limit_list",
     "group": "Limits",
-    "description": "<p>buyer send or update proposal</p>",
+    "description": "<p>show list of credit limit</p>",
     "success": {
       "examples": [
         {

@@ -126,5 +126,6 @@ RSpec.describe Api::V1::LimitsController do
         expect(supplier_paid).to eq(JSON.parse(response.body)['limits'].first['supplier_connected'])
       end
     end
+
   end
 end
