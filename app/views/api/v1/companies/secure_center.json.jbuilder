@@ -1,6 +1,6 @@
 json.success true
 json.details do
-  if @request.present? && @request.status == 'accepted' && @request.secure_center
+  if @request.present? && @request.status == 'accepted' && @request.secure_center || params[:receiver_id] == current_company.id.to_s
     json.extract! @secure_center, :id, :invoices_overdue, :buyer_id, :seller_id, :last_bought_on
     json.supplier_connected @secure_center.supplier_paid
     json.overdue_amount @secure_center.overdue_amount.to_f

@@ -650,25 +650,12 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
  @apiVersion 1.0.0
- @api {get} /api/v1/secure_center?id=2
+ @api {get} /api/v1/secure_center?receiver_id=2
  @apiSampleRequest off
  @apiName live_monitoring
  @apiGroup Companies
  @apiDescription get secure center data for buyer
- @apiParamExample {json} Request-Example1:
-  {
-    receiver_id: ""
-  }
-  @apiSuccessExample {json} SuccessResponse1:
-  {
-    "errors": "company id not exist",
-    "response_code": 201
-  }
-  @apiParamExample {json} Request-Example2:
-  {
-    receiver_id: "2"
-  }
- @apiSuccessExample {json} SuccessResponse2:
+ @apiSuccessExample {json} SuccessResponse1:
  {
     "success": true,
     "details": {
@@ -683,6 +670,30 @@ class Api::V1::CompaniesController < ApplicationController
         "outstandings": 0,
         "buyer_percentage": 0,
         "system_percentage": 5
+    }
+}
+ @apiSuccessExample {json} SuccessResponse2:
+{
+    "success": true,
+    "details": {
+        "id": 251,
+        "invoices_overdue": 6,
+        "buyer_id": 4,
+        "seller_id": 4,
+        "last_bought_on": "2019-01-14",
+        "supplier_connected": 3,
+        "overdue_amount": 0,
+        "outstandings": 0,
+        "buyer_percentage": 0,
+        "system_percentage": 31.46,
+        "balance_credit_limit": 7000,
+        "payment_score": null,
+        "number_of_seller_offer_credit": 2,
+        "market_payment_score": null,
+        "collection_ratio_days": null,
+        "buyer_score": 0,
+        "seller_score": 0,
+        "paid_date": "N/A"
     }
 }
 =end
