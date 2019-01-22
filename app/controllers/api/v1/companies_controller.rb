@@ -690,10 +690,10 @@ class Api::V1::CompaniesController < ApplicationController
   def live_monitoring
     if current_company
       #secure_center_record(current_company.id, params[:id])
-      @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:id]).last
-      @credit_limit = CreditLimit.find_by(seller_id: current_company.id, buyer_id: params[:id])
-      @number_of_seller_offer_credit_limit = CreditLimit.where(buyer_id: params[:id]).uniq.count
-      company = Company.find_by(id: params[:id])
+      @secure_center = SecureCenter.where("seller_id = ? AND buyer_id = ? ", current_company.id, params[:receiver_id]).last
+      @credit_limit = CreditLimit.find_by(seller_id: current_company.id, buyer_id: params[:receiver_id])
+      @number_of_seller_offer_credit_limit = CreditLimit.where(buyer_id: params[:receiver_id]).uniq.count
+      company = Company.find_by(id: params[:receiver_id])
       @buyer_score =  company.get_buyer_score
       @seller_score = company.get_seller_score
       if @secure_center.present?
