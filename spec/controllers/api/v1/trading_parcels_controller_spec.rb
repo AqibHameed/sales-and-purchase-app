@@ -303,7 +303,8 @@ RSpec.describe Api::V1::TradingParcelsController do
                 source: 'DTC',
                 percent: 10,
                 comment: '',
-                total_value: 2200
+                total_value: 2200,
+                check_transactions: true
             }
         }
         response.body.should have_content('No Information Available about this Company. Do you want to continue ?')

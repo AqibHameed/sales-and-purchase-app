@@ -430,7 +430,7 @@ module Api
                 transaction = Transaction.new(buyer_id: current_company.id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
                                               price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                               created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
-                buyer = Company.where(id: current_company.id).first
+                buyer = Company.where(id: @parcel.company_id).first
                 registered_users = buyer.customers.count
               else
                 render json: {success: false, errors: @parcel.errors.full_messages}
@@ -460,7 +460,7 @@ module Api
                   transaction = Transaction.new(buyer_id: current_company.id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
                                                 price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                                 created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
-                  buyer = Company.where(id: current_company.id).first
+                  buyer = Company.where(id: @parcel.company_id).first
                   registered_users = buyer.customers.count
                 else
                   render json: {success: false, errors: @parcel.errors.full_messages}
