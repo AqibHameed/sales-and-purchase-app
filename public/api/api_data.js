@@ -689,6 +689,26 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
+    "url": "/api/v1/companies/list_permission_companies",
+    "title": "",
+    "name": "list_permission_companies",
+    "group": "Companies",
+    "description": "<p>list of companies who has given permission to view his financial data.</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"companies\": [\n      {\n          \"id\": 8,\n          \"name\": \"Dummy Seller 1\",\n          \"city\": \"\",\n          \"county\": \"India\",\n          \"created_at\": \"2018-12-06T09:12:54.000Z\",\n          \"updated_at\": \"2018-12-06T09:12:54.000Z\",\n          \"is_anonymous\": false,\n          \"add_polished\": false,\n          \"is_broker\": false,\n          \"email\": null,\n          \"deleted_at\": null\n      }\n  ],\n \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
     "url": "/api/v1/secure_center?receiver_id=2",
     "title": "",
     "name": "live_monitoring",
@@ -704,6 +724,26 @@ define({ "api": [
         {
           "title": "SuccessResponse2:",
           "content": "{\n    \"success\": true,\n    \"details\": {\n        \"id\": 251,\n        \"invoices_overdue\": 6,\n        \"buyer_id\": 4,\n        \"seller_id\": 4,\n        \"last_bought_on\": \"2019-01-14\",\n        \"supplier_connected\": 3,\n        \"overdue_amount\": 0,\n        \"outstandings\": 0,\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 31.46,\n        \"balance_credit_limit\": 7000,\n        \"payment_score\": null,\n        \"number_of_seller_offer_credit\": 2,\n        \"market_payment_score\": null,\n        \"collection_ratio_days\": null,\n        \"buyer_score\": 0,\n        \"seller_score\": 0,\n        \"paid_date\": \"N/A\"\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/companies/remove_permission",
+    "title": "",
+    "name": "remove_permission",
+    "group": "Companies",
+    "description": "<p>remove the permission of the company.</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n  \"success\": true,\n  \"message\": \"Request is removed successfully.\",\n  \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1632,7 +1672,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"customer\": {\n        \"id\": 21,\n        \"email\": \"umair.raza101@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-12-07T15:00:19.000Z\",\n        \"updated_at\": \"2018-12-17T18:32:41.000Z\",\n        \"first_name\": \"Umair\",\n        \"last_name\": \"Raza\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy Seller 1\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+1\",\n        \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"customer\": {\n        \"id\": 21,\n        \"email\": \"umair.raza101@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-12-07T15:00:19.000Z\",\n        \"updated_at\": \"2018-12-17T18:32:41.000Z\",\n        \"first_name\": \"Umair\",\n        \"last_name\": \"Raza\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company_id\": \"7\",\n        \"company\": \"Dummy Seller 1\",\n        \"company_email\": null,\n        \"company_country\":  \"India\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+1\",\n        \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]

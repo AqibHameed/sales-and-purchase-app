@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   def live_monitoring_permission
     if params[:receiver_id].present?
-      unless  params[:receiver_id] == current_company.id
+      unless  params[:receiver_id].to_i == current_company.id
         @request = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], secure_center: true)
       end
     else

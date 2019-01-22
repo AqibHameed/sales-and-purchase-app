@@ -723,6 +723,76 @@ class Api::V1::CompaniesController < ApplicationController
       render json: { errors: "Not authenticated", response_code: 201 }
     end  
   end
+
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/companies/list_permission_companies
+  @apiSampleRequest off
+  @apiName list_permission_companies
+  @apiGroup Companies
+  @apiDescription list of companies who has given permission to view his financial data.
+  @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "companies": [
+        {
+            "id": 8,
+            "name": "Dummy Seller 1",
+            "city": "",
+            "county": "India",
+            "created_at": "2018-12-06T09:12:54.000Z",
+            "updated_at": "2018-12-06T09:12:54.000Z",
+            "is_anonymous": false,
+            "add_polished": false,
+            "is_broker": false,
+            "email": null,
+            "deleted_at": null
+        }
+    ],
+   "response_code": 200
+  }
+=end
+
+
+  def list_permission_companies
+    if current_company
+        @companies = PremissionRequest.where(receiver_id: current_company.id, status: 1).map{|p|p.sender}
+        render json: {success: true, companies: @companies, response_code: 200}
+    else
+      render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
+    end
+  end
+
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/companies/remove_permission
+  @apiSampleRequest off
+  @apiName remove_permission
+  @apiGroup Companies
+  @apiDescription remove the permission of the company.
+  @apiSuccessExample {json} SuccessResponse:
+  {
+    "success": true,
+    "message": "Request is removed successfully.",
+    "response_code": 200
+  }
+=end
+
+  def remove_permission
+    if current_company
+        premission_request = PremissionRequest.where(sender_id: params[:id], receiver_id: current_company.id, status: 1)
+        if premission_request.present?
+          premission_request.update(status: 3)
+          render json: {success: true,
+                        message: "Request is removed successfully.",
+                        response_code: 200}
+        else
+          render json: {errors: "Request is not exist against this company.", response_code: 201}
+        end
+    else
+      render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
+    end
+  end
   
   protected
   def current_company
