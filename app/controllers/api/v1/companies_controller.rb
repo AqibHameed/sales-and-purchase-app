@@ -764,7 +764,7 @@ class Api::V1::CompaniesController < ApplicationController
     if current_company
         premission_request = PremissionRequest.where(sender_id: params[:id], receiver_id: current_company.id, status: 1)
         if premission_request.present?
-          premission_request.update(status: 3)
+          premission_request.update_attributes(permission_params)
           render json: {success: true,
                         message: "Request is removed successfully.",
                         response_code: 200}

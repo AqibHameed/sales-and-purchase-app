@@ -1,7 +1,7 @@
 module Api
   module V1
     class TransactionsController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:make_payment, :confirm, :reject, :seller_confirm]
+      skip_before_action :verify_authenticity_token, only: [:make_payment, :confirm, :reject, :seller_confirm, :seller_accept_or_reject]
       before_action :current_customer, only: [:make_payment, :confirm, :reject]
 =begin
  @apiVersion 1.0.0
@@ -82,15 +82,25 @@ module Api
     "message": "Transaction confirm successfully"
 }
 =end
-      def seller_confirm
+      def seller_accept_or_reject
         if current_company
           @transaction = Transaction.find(params[:id])
-          @transaction.seller_confirmed = true
-          if @transaction.save
-            @transaction.create_parcel_for_seller
-            render json: {success: true, message: 'Transaction confirm successfully'}
-          else
-            render json: {success: false, message: 'Not confirm now. Please try again.'}
+          if params[:seller_confirm] == "true"
+            @transaction.seller_confirmed = true
+            if @transaction.save
+              @transaction.create_parcel_for_seller
+              render json: {success: true, message: 'Transaction confirm successfully'}
+            else
+              render json: {success: false, message: 'Not confirm now. Please try again.'}
+            end
+          elsif params[:seller_reject] == "true"
+            @transaction.seller_reject = true
+            if @transaction.save
+              TenderMailer.seller_reject_transaction(@transaction).deliver
+              render json: { success: true, message: 'Transaction rejected successfully' }
+            else
+              render json: { success: false, message: 'Not rejected now. Please try again.' }
+            end
           end
         else
           render json: {errors: "Not authenticated", response_code: 201}
@@ -103,6 +113,21 @@ module Api
           @transaction.buyer_reject = true
           if @transaction.save
             TenderMailer.buyer_reject_transaction(@transaction).deliver
+            render json: { success: true, message: 'Transaction rejected successfully' }
+          else
+            render json: { success: false, message: 'Not rejected now. Please try again.' }
+          end
+        else
+          render json: { errors: "Not authenticated", response_code: 201 }
+        end
+      end
+
+      def seller_reject
+        if current_company
+          @transaction = Transaction.find(params[:id])
+          @transaction.seller_reject = true
+          if @transaction.save
+            TenderMailer.seller_reject_transaction(@transaction).deliver
             render json: { success: true, message: 'Transaction rejected successfully' }
           else
             render json: { success: false, message: 'Not rejected now. Please try again.' }
@@ -132,7 +157,6 @@ module Api
               #@transaction.update_column(:paid, true)
             end
             @transaction.save
-
             if current_customer.has_role?("Buyer")
                 Message.buyer_payment_confirmation_message(current_company, @transaction)
             end
