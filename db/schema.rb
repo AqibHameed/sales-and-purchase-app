@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190119135258) do
+ActiveRecord::Schema.define(version: 20190122154231) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -289,7 +289,6 @@ ActiveRecord::Schema.define(version: 20190119135258) do
     t.boolean "is_requested", default: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
-    t.index ["email"], name: "index_customers_on_email", unique: true
     t.index ["invitation_token"], name: "index_customers_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_customers_on_invitations_count"
     t.index ["invited_by_id"], name: "index_customers_on_invited_by_id"
@@ -445,6 +444,8 @@ ActiveRecord::Schema.define(version: 20190119135258) do
     t.integer "proposal_id"
     t.integer "transaction_id"
     t.integer "live_monitoring_request_id"
+    t.bigint "premission_request_id"
+    t.index ["premission_request_id"], name: "index_messages_on_premission_request_id"
     t.index ["receiver_id"], name: "index_messages_on_receiver_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
   end
@@ -1121,5 +1122,6 @@ ActiveRecord::Schema.define(version: 20190119135258) do
     t.index ["yes_no_buyer_interest_id"], name: "index_yes_no_buyer_winners_on_yes_no_buyer_interest_id"
   end
 
+  add_foreign_key "messages", "premission_requests"
   add_foreign_key "negotiations", "proposals"
 end
