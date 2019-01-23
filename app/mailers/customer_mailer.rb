@@ -65,4 +65,17 @@ class CustomerMailer < ApplicationMailer
     all_user_emails = transaction.buyer.customers.map{|c| c.email}
     mail(to: all_user_emails, from: seller.email, subject: '[SafeTrade] You have a new direct sell.')
   end
+
+  def unregistered_seller_mail_to_company(buyer, buyer_company, transaction)
+    @transaction = transaction
+    @buyer = buyer_company
+    mail(to: transaction.seller.email, from: buyer, subject: '[SafeTrade] You have a new direct sell.')
+  end
+
+  def mail_to_registered_sellers(buyer, buyer_company, transaction)
+    @transaction = transaction
+    @buyer = buyer_company
+    all_user_emails = transaction.seller.customers.map{|c| c.email}
+    mail(to: all_user_emails, from: buyer.email, subject: '[SafeTrade] You have a new direct sell.')
+  end
 end

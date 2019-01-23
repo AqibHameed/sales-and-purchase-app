@@ -688,21 +688,12 @@ ActiveRecord::Schema.define(version: 20190122173133) do
     t.integer "buyer_id"
     t.integer "invoices_overdue"
     t.date "paid_date"
-    t.integer "late_days"
-    t.integer "buyer_days_limit"
-    t.decimal "market_limit", precision: 10, scale: 2
     t.integer "supplier_paid"
     t.decimal "outstandings", precision: 10, scale: 2
     t.decimal "overdue_amount", precision: 10, scale: 2
-    t.decimal "given_credit_limit", precision: 10, scale: 2
-    t.decimal "given_market_limit", precision: 10, scale: 2
-    t.decimal "given_overdue_limit", precision: 10, scale: 2
     t.date "last_bought_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "supplier_unpaid", default: 0
-    t.decimal "percentage", precision: 10, scale: 2, default: "0.0"
-    t.decimal "activity_bought", precision: 10, scale: 2
     t.decimal "buyer_percentage", precision: 10, scale: 2, default: "0.0"
     t.decimal "system_percentage", precision: 10, scale: 2, default: "0.0"
     t.string "payment_score"
@@ -904,6 +895,10 @@ ActiveRecord::Schema.define(version: 20190122173133) do
     t.string "country"
     t.string "city"
     t.string "tender_type", default: "", null: false
+    t.datetime "bidding_start"
+    t.datetime "bidding_end"
+    t.string "timezone"
+    t.integer "supplier_mine_id"
     t.string "diamond_type"
     t.string "sight_document_file_name"
     t.string "sight_document_content_type"
@@ -918,14 +913,10 @@ ActiveRecord::Schema.define(version: 20190122173133) do
     t.string "sight_no_field"
     t.string "price_no_field"
     t.string "credit_no_field"
-    t.datetime "bidding_start"
-    t.datetime "bidding_end"
-    t.string "timezone"
     t.string "reserved_field"
     t.datetime "bid_open"
     t.datetime "bid_close"
     t.integer "round_duration"
-    t.integer "supplier_mine_id"
     t.string "sight_reserved_field"
     t.integer "rounds_between_duration"
     t.datetime "round_open_time"
