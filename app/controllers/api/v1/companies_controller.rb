@@ -663,33 +663,29 @@ class Api::V1::CompaniesController < ApplicationController
 {
     "success": true,
     "details": {
-        "id": 251,
-        "invoices_overdue": 6,
+        "id": 263,
         "buyer_id": 1,
-        "seller_id": 1,
-        "last_bought_on": "2019-01-14",
-        "supplier_connected": 3,
+        "seller_id": 4,
+        "supplier_connected": 10,
         "overdue_amount": 0,
+        "invoices_overdue": 11,
         "outstandings": 0,
-        "permitted": true,
+        "last_bought_on": "2019-01-22",
         "buyer_percentage": 0,
-        "system_percentage": 31.46,
+        "system_percentage": 30.61,
         "balance_credit_limit": 7000,
-        "payment_score": null,
+        "permitted": true,
         "number_of_seller_offer_credit": 2,
-        "market_payment_score": null,
-        "collection_ratio_days": [
-            {
-                "zer_percent": 0,
-                "less_fiften": 1,
-                "less_thirty": 0,
-                "less_fourty_five": 0,
-                "greater_fourty_five": 0
-            }
-        ],
+        "collection_ratio_days": {
+            "zero_percent": 0,
+            "less_fifteen": 1,
+            "less_thirty": 0,
+            "less_fourty_five": 0,
+            "greater_fourty_five": 0
+        },
         "buyer_score": 0,
         "seller_score": 0,
-        "paid_date": "N/A"
+        "paid_date": null
     }
 }
 =end
