@@ -1,23 +1,23 @@
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<%= stylesheet_link_tag "application" %>
-<%= javascript_include_tag 'application' %>
-<title>SafeTrade</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%= stylesheet_link_tag "application" %>
+  <%= javascript_include_tag 'application' %>
+  <title>SafeTrade</title>
 </head>
 <body>
 <%= render :partial => "layouts/unauthenticate_navigation" %>
-<div class="wrapper center-block faq">
+<div class="wrapper center-block">
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
-      <div class="panel-heading active" role="tab" id="headingOne">
-        <h4 class="panel-title faq">
-          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+      <div class="panel-heading" role="tab" id="headingTwo">
+        <h4 class="panel-title">
+          <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
             1. Why should I use SafeTrade to sell goods?
           </a>
         </h4>
       </div>
-      <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
         <div class="panel-body">
           <ul>
             <li id="faq_ul_li"> Safe trade offers protection against risky clients and live monitoring of the buyers who
