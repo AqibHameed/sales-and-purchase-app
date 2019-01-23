@@ -729,6 +729,15 @@ define({ "api": [
     "name": "remove_permission",
     "group": "Companies",
     "description": "<p>remove the permission of the company.</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  \"company_id\": 1,\n  \"live_monitor\": false,\n  \"secure_center\": false,\n  \"buyer_score\": false,\n  \"seller_score\": false,\n  \"customer_info\": false\n}",
+          "type": "json"
+        }
+      ]
+    },
     "success": {
       "examples": [
         {
@@ -2227,16 +2236,21 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "/api/v1/transactions/seller_confirm",
+    "url": "/api/v1/transactions/seller_accept_or_reject",
     "title": "",
-    "name": "seller_confirm",
+    "name": "seller_accept_or_reject",
     "group": "Transactions",
-    "description": "<p>seller_confirmation_of_amount</p>",
+    "description": "<p>seller acept or reject buyer request if seller_confirm is true then transaction will be confirm and if seller_reject is true then transaction will be reject</p>",
     "parameter": {
       "examples": [
         {
-          "title": "Request-Example:",
-          "content": "{\n\t\"id\": 53,\n\t\"amount\": 30\n\n}",
+          "title": "Request-Example1:",
+          "content": "{\n  \"id\": 17,\n  \"seller_confirm\": \"true\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n  \"id\": 17,\n  \"seller_reject\": \"true\"\n}",
           "type": "json"
         }
       ]
@@ -2244,8 +2258,13 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
+          "title": "SuccessResponse1:",
           "content": "{\n  \"success\": true,\n    \"message\": \"Transaction confirm successfully\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "{\n  \"success\": true,\n  \"message\": \"Transaction rejected successfully\"\n}",
           "type": "json"
         }
       ]

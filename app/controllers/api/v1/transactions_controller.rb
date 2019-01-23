@@ -65,22 +65,31 @@ module Api
 
 =begin
  @apiVersion 1.0.0
- @api {post} /api/v1/transactions/seller_confirm
+ @api {post} /api/v1/transactions/seller_accept_or_reject
  @apiSampleRequest off
- @apiName seller_confirm
+ @apiName seller_accept_or_reject
  @apiGroup Transactions
- @apiDescription seller_confirmation_of_amount
- @apiParamExample {json} Request-Example:
-{
-	"id": 53,
-	"amount": 30
-
-}
- @apiSuccessExample {json} SuccessResponse:
-{
-  "success": true,
-    "message": "Transaction confirm successfully"
-}
+ @apiDescription seller acept or reject buyer request if seller_confirm is true then transaction will be confirm and if seller_reject is true then transaction will be reject
+ @apiParamExample {json} Request-Example1:
+  {
+    "id": 17,
+    "seller_confirm": "true"
+  }
+  @apiSuccessExample {json} SuccessResponse1:
+  {
+    "success": true,
+      "message": "Transaction confirm successfully"
+  }
+  @apiParamExample {json} Request-Example2:
+  {
+    "id": 17,
+    "seller_reject": "true"
+  }
+  @apiSuccessExample {json} SuccessResponse2:
+  {
+    "success": true,
+    "message": "Transaction rejected successfully"
+  }
 =end
       def seller_accept_or_reject
         if current_company

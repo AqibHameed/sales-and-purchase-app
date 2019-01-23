@@ -752,6 +752,15 @@ class Api::V1::CompaniesController < ApplicationController
   @apiName remove_permission
   @apiGroup Companies
   @apiDescription remove the permission of the company.
+  @apiParamExample {json} Request-Example:
+  {
+    "company_id": 1,
+    "live_monitor": false,
+    "secure_center": false,
+    "buyer_score": false,
+    "seller_score": false,
+    "customer_info": false
+  }
   @apiSuccessExample {json} SuccessResponse:
   {
     "success": true,
@@ -762,7 +771,7 @@ class Api::V1::CompaniesController < ApplicationController
 
   def remove_permission
     if current_company
-        premission_request = PremissionRequest.where(sender_id: params[:id], receiver_id: current_company.id, status: 1)
+        premission_request = PremissionRequest.where(sender_id: params[:company_id], receiver_id: current_company.id, status: 1)
         if premission_request.present?
           premission_request.update_attributes(permission_params)
           render json: {success: true,
