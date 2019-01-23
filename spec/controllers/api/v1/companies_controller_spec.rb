@@ -5,11 +5,11 @@ RSpec.describe Api::V1::CompaniesController do
     @customer = create_customer
     @trader = create_customer
     @buyer = create_buyer
-    @permission_request = create_permission_request(@customer.id, @buyer.id, true)
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
   end
 
   before(:each) do
+    @permission_request = create_permission_request(@customer.company_id, @buyer.company_id, true)
     request.headers.merge!(authorization: @customer.authentication_token)
     1.upto(5) do
       @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
@@ -281,10 +281,43 @@ RSpec.describe Api::V1::CompaniesController do
       end
     end
 
-    context "when authenticated user try to accept request" do
+    context "when authenticated but unknown user user try to accept request" do
       it 'does show not authenticated user ' do
         post :accept_secuirty_data_request, params:{request_id: @permission_request.id}
-        response.body.should have_content('Request accepted successfully.')
+        response.body.should have_content("you don't have permission perform this action")
+      end
+    end
+
+    context "when authenticated but unknown user user try to accept request" do
+      it 'does show not authenticated user ' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        post :accept_secuirty_data_request, params:{request_id: @permission_request.id}
+        response.body.should have_content("Request accepted successfully.")
+      end
+    end
+  end
+
+  describe "#reject_secuirty_data_request" do
+    context "when unauthenticated user try to reject request" do
+      it 'does show not authenticated' do
+        request.headers.merge!(authorization: 'unknowtoken')
+        post :reject_secuirty_data_request, params: {request_id: @permission_request.id}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context "when authenticated but unknown user try to reject request" do
+      it 'does show not authenticated' do
+        post :reject_secuirty_data_request, params: {request_id: @permission_request.id}
+        response.body.should have_content("you don't have permission perform this action")
+      end
+    end
+
+    context "when authenticated but unknown user try to reject request" do
+      it 'does show not authenticated' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        post :reject_secuirty_data_request, params: {request_id: @permission_request.id}
+        response.body.should have_content("Request rejected successfully.")
       end
     end
   end

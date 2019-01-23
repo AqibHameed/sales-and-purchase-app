@@ -713,7 +713,7 @@
         },
         {
           "title": "SuccessResponse2:",
-          "content": "{\n    \"success\": true,\n    \"details\": {\n        \"id\": 263,\n        \"buyer_id\": 1,\n        \"seller_id\": 4,\n        \"supplier_connected\": 10,\n        \"overdue_amount\": 0,\n        \"invoices_overdue\": 11,\n        \"outstandings\": 0,\n        \"last_bought_on\": \"2019-01-22\",\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 30.61,\n        \"balance_credit_limit\": 7000,\n        \"permitted\": true,\n        \"number_of_seller_offer_credit\": 2,\n        \"collection_ratio_days\": {\n            \"zero_percent\": 0,\n            \"less_fifteen\": 1,\n            \"less_thirty\": 0,\n            \"less_fourty_five\": 0,\n            \"greater_fourty_five\": 0\n        },\n        \"buyer_score\": 0,\n        \"seller_score\": 0,\n        \"paid_date\": null\n    }\n}",
+          "content": "{\n    \"success\": true,\n    \"details\": {\n        \"id\": 263,\n        \"buyer_id\": 1,\n        \"seller_id\": 4,\n        \"supplier_connected\": 10,\n        \"overdue_amount\": 0,\n        \"invoices_overdue\": 11,\n        \"outstandings\": 0,\n        \"last_bought_on\": \"2019-01-22\",\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 30.61,\n        \"balance_credit_limit\": 7000,\n        \"permitted\": true,\n        \"number_of_seller_offer_credit\": 2,\n        \"collection_ratio_days\": {\n            \"zero_percent\": 0,\n            \"less_fifteen\": 1,\n            \"less_thirty\": 0,\n            \"less_fourty_five\": 0,\n            \"greater_fourty_five\": 0\n        },\n        \"buyer_score\": 0,\n        \"paid_date\": null\n    }\n}",
           "type": "json"
         }
       ]
