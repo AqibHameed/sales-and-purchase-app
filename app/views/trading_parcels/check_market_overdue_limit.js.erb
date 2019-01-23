@@ -1,5 +1,6 @@
 $('#credit_warning').modal('show');
-$('#credit_warning .modal-body').html('<h1>This Company does not meet your risk parameters. Do you wish to cancel the transaction?</h1><div class="row text-center mt10"> <button type="button" class="btn btn-primary hide-credit-limit-modal" data-value= <%= @parcel.id%>>Yes</button><%=link_to "No", direct_sell_trading_parcels_path(trading_parcel: {my_transaction_attributes: { buyer_id: buyer_id, created_at: created_at, paid: paid}}, market_limit: true, id: parcel_id), class: "btn btn-default",remote: true, method: :post %></div>')
+
+$('#credit_warning .modal-body').html('<h1>This Company does not meet your risk parameters. Do you wish to cancel the transaction?</h1><div class="row text-center mt10"> <button type="button" class="btn btn-primary hide-credit-limit-modal" data-value= <%= @parcel.id%>>Yes</button><%=link_to "No", direct_sell_trading_parcels_path(trading_parcel: {my_transaction_attributes: { buyer_id: buyer_id, created_at: created_at, paid: paid}}, market_limit: true, id: parcel_id, activity: params[:activity]), class: "btn btn-default",remote: true, method: :post %></div>')
 
 $('.hide-credit-limit-modal').click(function() {
   id = $('.hide-credit-limit-modal').data('value')

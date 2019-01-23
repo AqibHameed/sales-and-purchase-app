@@ -165,9 +165,20 @@
   </div>
   </br>
 </div>
+
 <div class="clear10"></div>
 <div class="direct-sell <%=(direct_sell) ? '' : 'hide'%>">
   <%= render partial: 'trading_parcels/transaction_fields', locals: {f: f} %>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-2 control-label">Activity:</label>
+  <div class="col-sm-2">
+    <%= radio_button_tag 'activity', 'sell' %>
+    <label for="activity_sell">Sell</label>
+    <%= radio_button_tag 'activity', 'buy' %>
+    <label for="activity_buy">Buy</label>
+  </div>
 </div>
 
 <div class="clear10"></div>
