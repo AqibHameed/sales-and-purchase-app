@@ -16,7 +16,7 @@ json.details do
     # json.market_payment_score @secure_center.market_payment_score
     json.collection_ratio_days @secure_center.collection_ratio_days
     json.buyer_score @buyer_score.total
-    json.seller_score @seller_score.total
+    # json.seller_score @seller_score.total
   else
     json.outstandings @secure_center.outstandings.to_f
     json.overdue_amount @secure_center.overdue_amount.to_f

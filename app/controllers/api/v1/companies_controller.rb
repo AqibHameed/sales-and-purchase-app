@@ -685,7 +685,6 @@ class Api::V1::CompaniesController < ApplicationController
             "greater_fourty_five": 0
         },
         "buyer_score": 0,
-        "seller_score": 0,
         "paid_date": null
     }
 }
