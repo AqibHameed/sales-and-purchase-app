@@ -636,21 +636,27 @@ class Api::V1::CompaniesController < ApplicationController
  @apiGroup Companies
  @apiDescription get secure center data for buyer
  @apiSuccessExample {json} SuccessResponse1:
- {
+{
     "success": true,
     "details": {
-        "id": 273,
-        "invoices_overdue": 0,
-        "paid_date": null,
-        "buyer_id": 2,
-        "seller_id": 1,
-        "last_bought_on": null,
-        "supplier_connected": 0,
+        "id": 255,
+        "buyer_id": 1,
+        "seller_id": 4,
+        "outstandings": 47000,
+        "overdue_amount": 47000,
+        "supplier_connected": 1,
         "permitted": false,
-        "overdue_amount": 0,
-        "outstandings": 0,
-        "buyer_percentage": 0,
-        "system_percentage": 5
+        "balance_credit_limit": 57000,
+        "collection_ratio_days": [
+            {
+                "zer_percent": 0,
+                "less_fiften": 1,
+                "less_thirty": 0,
+                "less_fourty_five": 0,
+                "greater_fourty_five": 0
+            }
+        ],
+        "paid_date": "2018-12-11"
     }
 }
  @apiSuccessExample {json} SuccessResponse2:
@@ -659,8 +665,8 @@ class Api::V1::CompaniesController < ApplicationController
     "details": {
         "id": 251,
         "invoices_overdue": 6,
-        "buyer_id": 4,
-        "seller_id": 4,
+        "buyer_id": 1,
+        "seller_id": 1,
         "last_bought_on": "2019-01-14",
         "supplier_connected": 3,
         "overdue_amount": 0,
@@ -672,7 +678,15 @@ class Api::V1::CompaniesController < ApplicationController
         "payment_score": null,
         "number_of_seller_offer_credit": 2,
         "market_payment_score": null,
-        "collection_ratio_days": null,
+        "collection_ratio_days": [
+            {
+                "zer_percent": 0,
+                "less_fiften": 1,
+                "less_thirty": 0,
+                "less_fourty_five": 0,
+                "greater_fourty_five": 0
+            }
+        ],
         "buyer_score": 0,
         "seller_score": 0,
         "paid_date": "N/A"

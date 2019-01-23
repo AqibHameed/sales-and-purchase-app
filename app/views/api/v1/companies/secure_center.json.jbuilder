@@ -1,10 +1,12 @@
 json.success true
 json.details do
+  json.extract! @secure_center, :id, :buyer_id, :seller_id
   if @request.present? && @request.status == 'accepted' && @request.secure_center || params[:receiver_id] == current_company.id.to_s
-    json.extract! @secure_center, :id, :invoices_overdue, :buyer_id, :seller_id, :last_bought_on
     json.supplier_connected @secure_center.supplier_paid
     json.overdue_amount @secure_center.overdue_amount.to_f
+    json.invoices_overdue @secure_center.invoices_overdue
     json.outstandings @secure_center.outstandings.to_f
+    json.last_bought_on @secure_center.last_bought_on
     json.buyer_percentage @secure_center.buyer_percentage.to_f
     json.system_percentage @secure_center.system_percentage.to_f
     json.balance_credit_limit @credit_limit.credit_limit

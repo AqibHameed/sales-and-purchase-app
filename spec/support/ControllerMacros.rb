@@ -15,6 +15,10 @@ module ControllerMacros
     login_user @customer
   end
 
+  def create_permission_request(sender_id, receiver_id, secure_center)
+    create(:premission_request, sender_id: sender_id, receiver_id: receiver_id, secure_center: secure_center)
+  end
+
   def create_buyer
    company = Company.create(name: Faker::Name.name)
    buyer = Customer.create(first_name: FFaker::Name.first_name, last_name: FFaker::Name.last_name, email: FFaker::Internet.email,

@@ -164,7 +164,7 @@ module Api
  @apiSampleRequest off
  @apiName credit limit list
  @apiGroup Limits
- @apiDescription buyer send or update proposal
+ @apiDescription show list of credit limit
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,

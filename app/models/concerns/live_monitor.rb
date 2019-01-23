@@ -15,7 +15,7 @@ module LiveMonitor
   def create_or_update_secure_center(secure_center, company, current_company)
     over_due_count = 0
     all_buyer_scores = []
-    collection_payment_ratio = []
+    collection_payment_ratio = {}
     in_zero = in_fiften = in_thirty = in_fourty_five = greater_fourty_five = 0
     company_transactions = company.buyer_transactions
     buyers_company = Company.get_buyers_ids(current_company)
@@ -41,7 +41,7 @@ module LiveMonitor
       end
     end
     unless transactions.size <= 0
-      collection_payment_ratio << {
+      collection_payment_ratio = {
           zer_percent: in_zero / transactions.size,
           less_fiften: in_fiften / transactions.size,
           less_thirty: in_thirty / transactions.size,
