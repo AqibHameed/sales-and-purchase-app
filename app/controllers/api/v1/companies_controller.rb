@@ -3,7 +3,8 @@ class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
-  before_action :check_current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
+  before_action :check_current_company, only: [:send_security_data_request]
+  before_action :check_request, only: [:accept_secuirty_data_request, :reject_secuirty_data_request]
   # before_action :seller_companies_permission, only: [:seller_companies]
   before_action :live_monitoring_permission, only: [:live_monitoring]
 
@@ -801,6 +802,17 @@ class Api::V1::CompaniesController < ApplicationController
   end
 
   private
+
+  def check_request
+    if current_company
+      request = PremissionRequest.find_by(id: params[:request_id])
+      unless request.receiver_id == current_company.id
+        render json: { errors: "you don't have permission perform this action", response_code: 201 }
+      end
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }
+    end
+  end
 
   def check_current_company
     if current_company.nil?
