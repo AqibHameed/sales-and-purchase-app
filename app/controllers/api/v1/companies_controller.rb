@@ -844,7 +844,49 @@ class Api::V1::CompaniesController < ApplicationController
       render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
     end
   end
-  
+
+
+=begin
+    @apiVersion 1.0.0
+    @api {get} /api/v1/companies/show_review
+    @apiSampleRequest off
+    @apiName show_review
+    @apiGroup Companies
+    @apiDescription Show reviews  of the company.
+        @apiParamExample {json} Request-Example:
+        {
+            "company_id": 4,
+        }
+    @apiSuccessExample {json} SuccessResponse:
+      {
+    "review": {
+        "id": 7,
+        "know": true,
+        "trade": false,
+        "recommend": true,
+        "experience": false
+    },
+    "response_code": 200
+
+=end
+
+
+
+
+  def show_review
+    if current_customer
+      companies_review = Review.find_by(company_id: params[:company_id], customer_id: current_customer.id)
+      if companies_review.present?
+        render :json => {review: review(companies_review), response_code: 200}
+      else
+        render json: {errors: "Record not Found", response_code: 404}
+      end
+    else
+      render json: {errors: "Not authenticated", response_code: 201}
+    end
+  end
+
+
   protected
   def current_company
     @company ||= current_customer.company unless current_customer.nil?
@@ -949,6 +991,8 @@ class Api::V1::CompaniesController < ApplicationController
         total_number_of_comapnies_rated: @total_number_of_comapnies_rated
     }
   end
+
+
 
 
 
