@@ -65,4 +65,43 @@ RSpec.describe Api::V1::CustomersController do
       end
     end
   end
+
+
+
+  describe '#feedback_rating' do
+    context 'when unauhorized user want to access the feedback_rating api' do
+      it 'does show Not Authenticated ' do
+        request.headers.merge!(authorization: 'unknown_token')
+        get :feedback_rating
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when auhorized user want to access the feedback_rating api' do
+      it 'does show Not Authenticated ' do
+        get :feedback_rating, params: {trading_parcel_id: @parcel.id, rating: 5, comment: "It is good"}
+        expect(JSON.parse(response.body)['feedback']['trading_parcel_id']).to eq(@parcel.id)
+        expect(JSON.parse(response.body)['feedback']['feedback_rating']).to eq(5)
+        expect(JSON.parse(response.body)['feedback']['comments']).to eq('It is good')
+      end
+    end
+
+    context 'when auhorized user want to access the feedback_rating api' do
+      it 'does show Not Authenticated ' do
+        get :feedback_rating, params: {trading_parcel_id: @parcel.id, rating: 6, comment: "It is bad"}
+        expect(JSON.parse(response.body)['feedback']['trading_parcel_id']).to eq(@parcel.id)
+        expect(JSON.parse(response.body)['feedback']['feedback_rating']).to eq(6)
+        expect(JSON.parse(response.body)['feedback']['comments']).to eq('It is bad')
+      end
+    end
+
+    context 'when auhorized user want to access the feedback_rating api' do
+      it 'does show Not Authenticated ' do
+        get :feedback_rating
+        response.body.should have_content('Record not found')
+      end
+    end
+
+  end
+
 end

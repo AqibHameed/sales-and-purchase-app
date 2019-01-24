@@ -107,12 +107,44 @@ RSpec.describe Api::V1::TransactionsController do
       end
     end
 
-    context 'when unauthorized user accept or reject the transaction' do
-      it 'does show an error un authorized user' do
+    context 'when authorized user accept the transaction, and transaction not exist' do
+      it 'does show an error Transaction is not exist' do
         post :seller_accept_or_reject
         response.body.should have_content('Transaction is not exist')
       end
     end
+
+    context 'when authorized user accept the transaction' do
+      it 'does match the seller confirmed value true' do
+        post :seller_accept_or_reject, params: {id: @transaction.id, seller_confirm: "true"}
+        expect(Transaction.find(@transaction.id).seller_confirmed).to eq(true)
+      end
+    end
+
+    context 'when authorized user accept the transaction' do
+      it 'does show the message Transaction confirm successfully' do
+        post :seller_accept_or_reject, params: {id: @transaction.id, seller_confirm: "true"}
+        response.body.should have_content('Transaction confirm successfully')
+      end
+    end
+
+    context 'when authorized user reject the transaction' do
+      it 'does match the seller reject value true' do
+        transaction =  create_transaction(@buyer, @customer, @parcel)
+        post :seller_accept_or_reject, params: {id: transaction.id, seller_reject: "true"}
+        expect(Transaction.find(transaction.id).seller_reject).to eq(true)
+      end
+    end
+
+    context 'when authorized  reject the transaction' do
+      it 'does match the message Transaction rejected successfully' do
+        transaction =  create_transaction(@buyer, @customer, @parcel)
+        post :seller_accept_or_reject, params: {id: transaction.id, seller_reject: "true"}
+        response.body.should have_content('Transaction rejected successfully')
+      end
+    end
+
+
   end
 
 end

@@ -617,7 +617,7 @@ module Api
           else
             feedback_rating = Feedback.find_by(params_attribute => feedback_on_model.id, customer_id: current_customer.id)
             if feedback_rating.nil?
-              feedback_rating = Feedback.new(comment: params[:comments], star: params[:rating], params_attribute => feedback_on_model.id, customer_id: current_customer.id)
+              feedback_rating = Feedback.new(comment: params[:comment], star: params[:rating], params_attribute => feedback_on_model.id, customer_id: current_customer.id)
             else
               feedback_rating.comment = params[:comment] unless params[:comment].blank?
               feedback_rating.star = params[:rating] unless params[:rating].blank?
