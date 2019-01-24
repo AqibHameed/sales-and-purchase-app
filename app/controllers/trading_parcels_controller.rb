@@ -133,21 +133,56 @@ class TradingParcelsController < ApplicationController
         @parcel = TradingParcel.find_by(id: params[:id])
       end
     end
-    transaction = Transaction.new(buyer_id: params[:trading_parcel][:my_transaction_attributes][:buyer_id], seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
-                                    price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
-                                    created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
 
-    buyer =  Company.where(id: transaction.buyer_id).first
-    registered_users = Company.where(id: params[:trading_parcel][:my_transaction_attributes][:buyer_id]).first.customers.count
+    company_id = params[:trading_parcel][:my_transaction_attributes]['buyer_id']
+    company = Company.find_by(id: company_id)
+    if company.nil?
+      render json: {success: false, message: "Customer does not present"}
+    else
+
+      if current_customer.has_role?(Role::BUYER)
+        @parcel.company_id = company_id
+        @parcel.save
+        transaction = Transaction.new(buyer_id: current_company.id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
+                                      price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
+                                      created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
+        buyer = Company.find_by(id: @parcel.company_id)
+        registered_users = buyer.customers.count
+      elsif current_customer.has_role?(Role::TRADER)
+        if params[:activity] == 'sell'
+          transaction = Transaction.new(buyer_id: company_id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
+                                        price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
+                                        created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
+
+          buyer =  Company.find_by(id: transaction.buyer_id)
+          registered_users = buyer.customers.count
+        elsif params[:activity] == 'buy'
+          @parcel.company_id = company_id
+          @parcel.save
+
+          transaction = Transaction.new(buyer_id: current_company.id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
+                                        price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
+                                        created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
+          buyer = Company.find_by(id: @parcel.company_id)
+          registered_users = buyer.customers.count
+
+
+        end
+
+      end
+    end
+
     if transaction.paid == true
       save_transaction(transaction, @parcel)
     elsif params[:check].present? && params[:check] == "true"
+
       if registered_users < 1
         if params[:trading_parcel][:my_transaction_attributes][:created_at].to_date < Date.current
           save_transaction(transaction, @parcel)
         else
           if buyer.buyer_transactions.count < 1
             if params[:check_transactions].present? && params[:check_transactions] == "true"
+
               check_overdue_and_market_limit(transaction, @parcel)
             elsif params[:check_transactions].present? && params[:check_transactions] == "false"
             else
@@ -177,10 +212,18 @@ class TradingParcelsController < ApplicationController
     #buyer = Company.where(id: transaction.buyer_id).first
     #available_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
     if transaction.save
-      if transaction.buyer.customers.count < 1
-        CustomerMailer.unregistered_users_mail_to_company(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
-      else
-        CustomerMailer.mail_to_registered_users(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
+      if current_customer.has_role?(Role::TRADER) && params[:activity] == 'sell'
+        if transaction.buyer.customers.count < 1
+          CustomerMailer.unregistered_users_mail_to_company(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
+        else
+          CustomerMailer.mail_to_registered_users(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
+        end
+      elsif current_customer.has_role?(Role::BUYER) || (current_customer.has_role?(Role::TRADER) && params[:activity] == 'buy')
+        if transaction.seller.customers.count < 1
+          CustomerMailer.unregistered_seller_mail_to_company(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
+        else
+          CustomerMailer.mail_to_registered_sellers(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
+        end
       end
       all_user_ids = transaction.buyer.customers.map{|c| c.id}.uniq
       current_company.send_notification('New Direct Sell', all_user_ids)
