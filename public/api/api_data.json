@@ -827,6 +827,35 @@
   {
     "version": "1.0.0",
     "type": "get",
+    "url": "/api/v1/companies/show_review",
+    "title": "",
+    "name": "show_review",
+    "group": "Companies",
+    "description": "<p>Show reviews  of the company.</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n    \"company_id\": 4,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "  {\n\"review\": {\n    \"id\": 7,\n    \"know\": true,\n    \"trade\": false,\n    \"recommend\": true,\n    \"experience\": false\n},\n\"response_code\": 200",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
     "url": "/api/v1/access_tiles?tab=inbox",
     "title": "",
     "name": "access_tiles",
@@ -906,66 +935,6 @@
         "url": "https://safetrade.ai/api/v1/customers/buyer_scores"
       }
     ]
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/customers/purchases",
-    "title": "",
-    "name": "customer_purchases",
-    "group": "Customers",
-    "description": "<p>to get customer purchasings info</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"credit_recieved_count\": 1,\n    \"total_credit_received\": \"$0.00\",\n    \"purchases\": [\n        {\n      \"term\": \"cash\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"1<=30\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"31<=60\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"total\",\n      \"percent\": \"0\",\n      \"pending_transaction\": \"$0.00\",\n      \"overdue_transaction\": \"$0.00\",\n      \"complete_transaction\": \"$0.00\"\n      }\n    ],\n    \"response_code\": 200\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "api/v1/customers/sales",
-    "title": "",
-    "name": "customer_sale",
-    "group": "Customers",
-    "description": "<p>permission the tiles and sorting the record on the basis of count</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "   {\n    \"success\": true,\n    \"credit_given_to\": 5,\n    \"total_given_credit\": \"129823.00\",\n    \"total_used_credit\": \"229022.89\",\n    \"total_available_credit\": \"-$99,199.89\",\n    \"sales\": [\n        {\n      \"term\": \"cash\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"1<=30\",\n      \"percent\": \"6(46%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$40,000.00(100%)\",\n      \"complete_transaction\": \"$269,400.00(85%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"3(23%)\",\n      \"pending_transaction\": \"$46,200.00(100%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$21,890.00(6%)\"\n      },\n        {\n      \"term\": \"91\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"total\",\n      \"percent\": \"13\",\n      \"pending_transaction\": \"$46,200.00\",\n      \"overdue_transaction\": \"$40,000.00\",\n      \"complete_transaction\": \"$315,040.00\"\n      }\n],\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "api/v1/customers/transactions",
-    "title": "",
-    "name": "customer_transactions",
-    "group": "Customers",
-    "description": "<p>permission the tiles and sorting the record on the basis of count</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "  {\n    \"success\": true,\n    \"transactions\": {\n    \"total\": 11,\n    \"pending\": 2,\n    \"completed\": 8,\n    \"overdue\": 1\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
   },
   {
     "version": "1.0.0",
