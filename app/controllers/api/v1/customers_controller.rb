@@ -110,44 +110,47 @@ module Api
         {
             "name": "Late Payment",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 12.11,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Current Risk Score",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 144.77,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 90.4,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Buyer Network Score",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 1.15,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Due Date Score",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 35.06,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Credit Used Score",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 0.64,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Number Of Suppliers Giving You Credit",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 3,
             "user_score_vs_market_score": 0
+        },
+        {
+            "buyer_score": 0
         }
     ],
     "response_code": 200
@@ -201,39 +204,42 @@ module Api
     "scores": [
         {
             "name": "Late Payment",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 62.25,
+            "market_average": 13.9,
+            "user_score_vs_market_score": 4.48
         },
         {
             "name": "Current Risk Score",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 75,
+            "market_average": 198.95,
+            "user_score_vs_market_score": 0.38
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 477.13,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Seller Network Score",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 3.46,
+            "market_average": 1.41,
+            "user_score_vs_market_score": 2.45
         },
         {
             "name": "Due Date Score",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 43.31,
+            "market_average": 37.37,
+            "user_score_vs_market_score": 1.16
         },
         {
             "name": "Credit Used Score",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 1.78,
+            "market_average": 1.1,
+            "user_score_vs_market_score": 1.62
+        },
+        {
+            "seller_score": 2.02
         }
     ],
     "response_code": 200
@@ -382,184 +388,6 @@ module Api
         end
       end
 
-=begin
- @apiVersion 1.0.0
- @api {get} api/v1/customers/transactions
- @apiSampleRequest off
- @apiName customer_transactions
- @apiGroup Customers
- @apiDescription permission the tiles and sorting the record on the basis of count
- @apiSuccessExample {json} SuccessResponse:
-  {
-    "success": true,
-    "transactions": {
-    "total": 11,
-    "pending": 2,
-    "completed": 8,
-    "overdue": 1
-  }
-}
-=end
-
-      def transactions
-        if current_customer
-          total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
-          pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
-          overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
-          completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
-          render json: {success: true, transactions: {total: total, pending: pending,
-                                                      completed: completed, overdue: overdue}}
-        else
-          render json: {errors: "Not authenticated", response_code: 201}
-        end
-      end
-
-=begin
- @apiVersion 1.0.0
- @api {get} api/v1/customers/sales
- @apiSampleRequest off
- @apiName customer_sale
- @apiGroup Customers
- @apiDescription permission the tiles and sorting the record on the basis of count
- @apiSuccessExample {json} SuccessResponse:
-   {
-    "success": true,
-    "credit_given_to": 5,
-    "total_given_credit": "129823.00",
-    "total_used_credit": "229022.89",
-    "total_available_credit": "-$99,199.89",
-    "sales": [
-        {
-      "term": "cash",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "1<=30",
-      "percent": "6(46%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$40,000.00(100%)",
-      "complete_transaction": "$269,400.00(85%)"
-      },
-        {
-      "term": "61<=90",
-      "percent": "3(23%)",
-      "pending_transaction": "$46,200.00(100%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$21,890.00(6%)"
-      },
-        {
-      "term": "91",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "total",
-      "percent": "13",
-      "pending_transaction": "$46,200.00",
-      "overdue_transaction": "$40,000.00",
-      "complete_transaction": "$315,040.00"
-      }
-],
-}
-=end
-
-      def sales
-        if current_customer
-          @credit_given = CreditLimit.where('seller_id =?', current_company.id)
-          credit_given_to = @credit_given.count
-          total_credit_given = overall_credit_given(current_company)
-          total_used_credit = overall_credit_spent_by_customer(current_company)
-          total_available_credit = credit_available(current_company)
-          @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
-          @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
-          @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
-          @credit_given_transaction = Transaction.where('seller_id =?', current_company.id)
-          render json: {success: true, credit_given_to: credit_given_to, total_given_credit: total_credit_given,
-                        total_used_credit: total_used_credit, total_available_credit: total_available_credit, sales: calculate_sales}
-        else
-          render json: {errors: "Not authenticated", response_code: 201}
-        end
-
-      end
-
-
-=begin
- @apiVersion 1.0.0
- @api {get} /api/v1/customers/purchases
- @apiSampleRequest off
- @apiName customer_purchases
- @apiGroup Customers
- @apiDescription to get customer purchasings info
- @apiSuccessExample {json} SuccessResponse:
-{
-    "success": true,
-    "credit_recieved_count": 1,
-    "total_credit_received": "$0.00",
-    "purchases": [
-        {
-      "term": "cash",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "1<=30",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "31<=60",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "61<=90",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "61<=90",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "total",
-      "percent": "0",
-      "pending_transaction": "$0.00",
-      "overdue_transaction": "$0.00",
-      "complete_transaction": "$0.00"
-      }
-    ],
-    "response_code": 200
-}
-=end
-      def purchases
-        if current_customer
-          @credit_recieved_transaction = Transaction.where('buyer_id =?', current_company.id)
-          @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
-          @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
-          @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
-          @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
-
-          render json: {success: true, credit_recieved_count: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
-        else
-          render json: {errors: "Not authenticated", response_code: 201}
-        end
-      end
 
 =begin
   @apiVersion 1.0.0
@@ -850,7 +678,8 @@ module Api
                 user_score:  score.count_of_credit_given,
                 market_average: market_score.count_of_credit_given,
                 user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given)
-            }
+            },
+            buyer_score: score.total
         ]
       end
 
@@ -891,7 +720,8 @@ module Api
                 user_score: score.credit_used,
                 market_average: market_score.credit_used,
                 user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
-            }
+            },
+            seller_score: score.total
         ]
       end
 
