@@ -5,11 +5,15 @@ RSpec.describe Api::V1::CompaniesController do
     @customer = create_customer
     @trader = create_customer
     @buyer = create_buyer
+    @permissions = {sender_id: @customer.company_id,
+                    receiver_id: @buyer.company_id,
+                    secure_center: true,
+                    seller_score: true}
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
   end
 
   before(:each) do
-    @permission_request = create_permission_request(@customer.company_id, @buyer.company_id, true)
+    @permission_request = create_permission_request(@permissions)
     request.headers.merge!(authorization: @customer.authentication_token)
     1.upto(5) do
       @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
