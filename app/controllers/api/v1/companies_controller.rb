@@ -297,6 +297,56 @@ class Api::V1::CompaniesController < ApplicationController
     end
   end
 
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/count_companies_review
+  @apiSampleRequest off
+  @apiName count_companies_review
+  @apiGroup Companies
+  @apiDescription count the companies review questions
+  @apiParamExample {json} Request-Example:
+  {
+    "success": true,
+    "companies_rated_count": {
+        "know": {
+            "yes": 1,
+            "no": 0
+        },
+        "trade": {
+            "yes": 0,
+            "no": 1
+        },
+        "recommend": {
+            "yes": 0,
+            "no": 0
+        },
+        "experience": {
+            "yes": 0,
+            "no": 0
+        },
+        "total_number_of_comapnies_rated": 1
+    }
+  }
+=end
+
+  def count_companies_review
+    if current_company
+       current_companies_review = Review.where(company_id: current_company.id)
+       @yes_know = current_companies_review.where(know: true).count
+       @not_know = current_companies_review.where(know: false).count
+       @yes_trade = current_companies_review.where(trade: true).count
+       @not_trade = current_companies_review.where(trade: false).count
+       @yes_recommend = current_companies_review.where(recommend: true).count
+       @not_recommend = current_companies_review.where(recommend: false).count
+       @yes_experience = current_companies_review.where(experience: true).count
+       @not_experience = current_companies_review.where(experience: false).count
+       @total_number_of_comapnies_rated = current_companies_review.count
+
+       render json: {success: true, companies_rated_count: companies_rated_count}
+    else
+      render json: {errors: "Not authenticated", response_code: 201}
+    end
+  end
 
 
 =begin
@@ -875,6 +925,28 @@ class Api::V1::CompaniesController < ApplicationController
         trade: review_company.trade,
         recommend: review_company.recommend,
         experience: review_company.experience
+    }
+  end
+
+  def companies_rated_count
+    {
+        know:{
+            yes: @yes_know,
+            no: @not_know
+        },
+        trade:{
+            yes: @yes_trade,
+            no: @not_trade
+        },
+        recommend:{
+            yes: @yes_recommend,
+            no: @not_recommend
+        },
+        experience:{
+            yes: @yes_experience,
+            no: @not_experience
+        },
+        total_number_of_comapnies_rated: @total_number_of_comapnies_rated
     }
   end
 

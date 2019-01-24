@@ -630,6 +630,26 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
+    "url": "/api/v1/count_companies_review",
+    "title": "",
+    "name": "count_companies_review",
+    "group": "Companies",
+    "description": "<p>count the companies review questions</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  \"success\": true,\n  \"companies_rated_count\": {\n      \"know\": {\n          \"yes\": 1,\n          \"no\": 0\n      },\n      \"trade\": {\n          \"yes\": 0,\n          \"no\": 1\n      },\n      \"recommend\": {\n          \"yes\": 0,\n          \"no\": 0\n      },\n      \"experience\": {\n          \"yes\": 0,\n          \"no\": 0\n      },\n      \"total_number_of_comapnies_rated\": 1\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
     "url": "/api/v1/history",
     "title": "",
     "name": "history",

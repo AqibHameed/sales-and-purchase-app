@@ -319,6 +319,7 @@ Rails.application.routes.draw do
           post :reject_secuirty_data_request
           get :list_permission_companies
           get :remove_permission
+          get :count_companies_review
         end
       end
       resources :stones, path: '/parcels' do
