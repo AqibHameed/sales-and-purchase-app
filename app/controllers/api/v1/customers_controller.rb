@@ -850,7 +850,8 @@ module Api
                 user_score:  score.count_of_credit_given,
                 market_average: market_score.count_of_credit_given,
                 user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given)
-            }
+            },
+            buyer_score: score.total
         ]
       end
 
@@ -891,7 +892,8 @@ module Api
                 user_score: score.credit_used,
                 market_average: market_score.credit_used,
                 user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
-            }
+            },
+            seller_score: score.total
         ]
       end
 
