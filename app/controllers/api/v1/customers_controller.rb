@@ -110,44 +110,47 @@ module Api
         {
             "name": "Late Payment",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 12.11,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Current Risk Score",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 144.77,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 90.4,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Buyer Network Score",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 1.15,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Due Date Score",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 35.06,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Credit Used Score",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 0.64,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Number Of Suppliers Giving You Credit",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 3,
             "user_score_vs_market_score": 0
+        },
+        {
+            "buyer_score": 0
         }
     ],
     "response_code": 200
@@ -201,39 +204,42 @@ module Api
     "scores": [
         {
             "name": "Late Payment",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 62.25,
+            "market_average": 13.9,
+            "user_score_vs_market_score": 4.48
         },
         {
             "name": "Current Risk Score",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 75,
+            "market_average": 198.95,
+            "user_score_vs_market_score": 0.38
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
-            "market_average": 0,
+            "market_average": 477.13,
             "user_score_vs_market_score": 0
         },
         {
             "name": "Seller Network Score",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 3.46,
+            "market_average": 1.41,
+            "user_score_vs_market_score": 2.45
         },
         {
             "name": "Due Date Score",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 43.31,
+            "market_average": 37.37,
+            "user_score_vs_market_score": 1.16
         },
         {
             "name": "Credit Used Score",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 1.78,
+            "market_average": 1.1,
+            "user_score_vs_market_score": 1.62
+        },
+        {
+            "seller_score": 2.02
         }
     ],
     "response_code": 200
@@ -850,7 +856,8 @@ module Api
                 user_score:  score.count_of_credit_given,
                 market_average: market_score.count_of_credit_given,
                 user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given)
-            }
+            },
+            buyer_score: score.total
         ]
       end
 
@@ -891,7 +898,8 @@ module Api
                 user_score: score.credit_used,
                 market_average: market_score.credit_used,
                 user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
-            }
+            },
+            seller_score: score.total
         ]
       end
 

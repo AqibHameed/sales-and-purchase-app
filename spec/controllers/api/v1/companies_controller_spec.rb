@@ -31,7 +31,7 @@ RSpec.describe Api::V1::CompaniesController do
   describe '#live_monitering' do
     context 'when secure center already exists' do
       it 'does fetch secure center data' do
-        get 'live_monitoring', params: {id: @buyer.company_id}
+        get 'live_monitoring', params: {receiver_id: @buyer.company_id}
         expect(@secure_center).should equal?(seller_id: @customer.company_id,
                                              buyer_id: @buyer.company_id)
         expect(response.status).to eq(200)
@@ -40,10 +40,38 @@ RSpec.describe Api::V1::CompaniesController do
 
     context 'when secure center not already exists' do
       it 'does create secure center and return secure center data' do
-        get 'live_monitoring', params: {id: @buyer.company_id}
+        get 'live_monitoring', params: {receiver_id: @buyer.company_id}
         expect(@secure_center).should equal?(seller_id: @customer.company_id,
                                              buyer_id: @buyer.company_id)
         expect(response.status).to eq(200)
+      end
+    end
+
+    context 'when user want to access data without permission' do
+      it 'does show security center data few fields' do
+        get 'live_monitoring', params: {receiver_id: @buyer.company_id}
+        expect(assigns(:secure_center).seller_id).to eq(@customer.company_id)
+        expect(assigns(:secure_center).buyer_id).to eq(@buyer.company_id)
+        assigns(:secure_center).collection_ratio_days
+        assigns(:secure_center).system_percentage
+        assigns(:secure_center).buyer_percentage
+      end
+    end
+
+    context 'when user want to access data with permission' do
+      it 'does show security center data all fields' do
+        get 'live_monitoring', params: {receiver_id: @buyer.company_id}
+        expect(assigns(:secure_center).seller_id).to eq(@customer.company_id)
+        expect(assigns(:secure_center).buyer_id).to eq(@buyer.company_id)
+        assigns(:secure_center).collection_ratio_days
+        assigns(:secure_center).system_percentage
+        assigns(:secure_center).buyer_percentage
+        assigns(:secure_center).supplier_paid
+        assigns(:secure_center).overdue_amount
+        assigns(:secure_center).invoices_overdue
+        assigns(:secure_center).outstandings
+        assigns(:secure_center).last_bought_on
+        assigns(:credit_limit)
       end
     end
   end
