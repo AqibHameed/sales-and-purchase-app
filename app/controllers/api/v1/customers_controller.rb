@@ -257,10 +257,6 @@ module Api
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
-        if current_company
-        else
-          render json: { errors: "Not authenticated", response_code: 201 }
-        end
       end
 
       def approve_reject_customer_request
