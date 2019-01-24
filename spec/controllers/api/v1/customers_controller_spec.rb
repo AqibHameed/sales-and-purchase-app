@@ -10,7 +10,8 @@ RSpec.describe Api::V1::CustomersController do
                     receiver_id: @buyer.company_id,
                     secure_center: true,
                     seller_score: true,
-                    status: 'accepted'}
+                    status: 'accepted',
+                    buyer_score: true}
   end
 
   before(:each) do
@@ -104,6 +105,44 @@ RSpec.describe Api::V1::CustomersController do
         request.headers.merge!(authorization: 'unknown token')
         @permission_request = create_permission_request(@permissions)
         get :seller_scores, params: {receiver_id: @buyer.company_id}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+  end
+
+
+  describe "#buyer_scores" do
+    context 'when authenticated user want to see his own buyer score'do
+      it 'does show his seller score' do
+        get :buyer_scores, params: {receiver_id: @customer.company_id}
+        expect(JSON.parse(response.body)['success']).to be true
+        JSON.parse(response.body)['scores'].present?
+        JSON.parse(response.body)['scores'].last['buyer_score'].present?
+      end
+    end
+
+    context 'when authenticated user want to other buyers buyer score without permission'do
+      it 'does show permission Access denied' do
+        get :buyer_scores, params: {receiver_id: @buyer.company_id}
+        response.body.should have_content('permission Access denied')
+      end
+    end
+
+    context 'when authenticated user want to other buyers buyer score with permission'do
+      it 'does show his seller score' do
+        @permission_request = create_permission_request(@permissions)
+        get :buyer_scores, params: {receiver_id: @buyer.company_id}
+        expect(JSON.parse(response.body)['success']).to be true
+        JSON.parse(response.body)['scores'].present?
+        JSON.parse(response.body)['scores'].last['buyer_score'].present?
+      end
+    end
+
+    context 'when unauthenticated user want to other buyers buyer score with permission'do
+      it 'does show Not authenticated' do
+        request.headers.merge!(authorization: 'unknown token')
+        @permission_request = create_permission_request(@permissions)
+        get :buyer_scores, params: {receiver_id: @buyer.company_id}
         response.body.should have_content('Not authenticated')
       end
     end
