@@ -283,7 +283,7 @@ class Api::V1::CompaniesController < ApplicationController
       review = Review.find_by(company_id: params[:company_id], customer_id: current_customer.id)
       if review.present?
         review.update_attributes(review_params)
-        render :json => {review: review(review), response_code: 200}
+        render :json => {review: review(review), response_code: 201}
       else
         review_company = Review.new(review_params)
         if review_company.save
@@ -293,7 +293,7 @@ class Api::V1::CompaniesController < ApplicationController
         end
       end
     else
-      render json: {errors: "Not authenticated", response_code: 201}
+      render json: {errors: "Not authenticated", response_code: 401}
     end
   end
 
@@ -860,6 +860,7 @@ class Api::V1::CompaniesController < ApplicationController
     "response_code": 200
 
 =end
+
 
 
 

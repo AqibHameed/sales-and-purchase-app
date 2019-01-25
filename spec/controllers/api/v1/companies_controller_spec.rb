@@ -353,4 +353,75 @@ RSpec.describe Api::V1::CompaniesController do
       end
     end
   end
+
+  describe '#companies_review' do
+    context 'when unauthorized user review a company' do
+      it 'does show error un authorized user' do
+        request.headers.merge!(authorization: 'unknown token')
+        get :companies_review
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user to review the company' do
+      it 'does match the parameters' do
+        get :companies_review, params: {company_id: @buyer.company.id, know: true, trade: false, recommend:true, experience:false}
+        expect(JSON.parse(response.body)['review']['know']).to eq(true)
+        expect(JSON.parse(response.body)['review']['trade']).to eq(false)
+        expect(JSON.parse(response.body)['review']['recommend']).to eq(true)
+        expect(JSON.parse(response.body)['review']['experience']).to eq(false)
+      end
+
+      it 'does match the status code 200' do
+        get :companies_review, params: {company_id: @buyer.company.id, know: true, trade: false, recommend:true, experience:false}
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+
+    context 'when authorized user to review the company' do
+      it 'does match the parameters' do
+        create(:review, company_id: @buyer.company.id, customer_id: @customer.id)
+        get :companies_review, params: {company_id: @buyer.company.id, know: true, trade: false, recommend:true, experience:false}
+        expect(JSON.parse(response.body)['review']['know']).to eq(true)
+        expect(JSON.parse(response.body)['review']['trade']).to eq(false)
+        expect(JSON.parse(response.body)['review']['recommend']).to eq(true)
+        expect(JSON.parse(response.body)['review']['experience']).to eq(false)
+      end
+
+      it 'does match the status code 201' do
+        create(:review, company_id: @buyer.company.id, customer_id: @customer.id)
+        get :companies_review, params: {company_id: @buyer.company.id, know: true, trade: false, recommend:true, experience:false}
+        expect(JSON.parse(response.body)['response_code']).to eq(201)
+      end
+    end
+
+  end
+
+  describe '#show_review' do
+    context "when unauthenticated user try to access show_review" do
+      it 'does show not authenticated' do
+        request.headers.merge!(authorization: 'unknowtoken')
+        get :show_review
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context "when authenticated user try to access show_review if record not found" do
+      it 'does show Record not Found' do
+        get :show_review, params: {company_id: 'ul'}
+        response.body.should have_content('Record not Found')
+      end
+    end
+
+    context "when authenticated user try to access show_review" do
+      it 'does match the status code 200' do
+        create(:review, company_id: @buyer.company.id, customer_id: @customer.id)
+        get :show_review, params: {company_id: @buyer.company.id}
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+  end
+
+
+
 end
