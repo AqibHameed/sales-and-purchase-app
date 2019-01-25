@@ -93,23 +93,27 @@ module Api
 =end
       def seller_accept_or_reject
         if current_company
-          @transaction = Transaction.find(params[:id])
-          if params[:seller_confirm] == "true"
-            @transaction.seller_confirmed = true
-            if @transaction.save
-              @transaction.create_parcel_for_seller
-              render json: {success: true, message: 'Transaction confirm successfully'}
-            else
-              render json: {success: false, message: 'Not confirm now. Please try again.'}
+          @transaction = Transaction.find_by(id: params[:id])
+          if @transaction.present?
+            if params[:seller_confirm] == "true"
+              @transaction.seller_confirmed = true
+              if @transaction.save
+                @transaction.create_parcel_for_seller
+                render json: {success: true, message: 'Transaction confirm successfully'}
+              else
+                render json: {success: false, message: 'Not confirm now. Please try again.'}
+              end
+            elsif params[:seller_reject] == "true"
+              @transaction.seller_reject = true
+              if @transaction.save
+                TenderMailer.seller_reject_transaction(@transaction).deliver
+                render json: { success: true, message: 'Transaction rejected successfully' }
+              else
+                render json: { success: false, message: 'Not rejected now. Please try again.' }
+              end
             end
-          elsif params[:seller_reject] == "true"
-            @transaction.seller_reject = true
-            if @transaction.save
-              TenderMailer.seller_reject_transaction(@transaction).deliver
-              render json: { success: true, message: 'Transaction rejected successfully' }
-            else
-              render json: { success: false, message: 'Not rejected now. Please try again.' }
-            end
+          else
+            render json: {errors: "Transaction is not exist", response_code: 201}
           end
         else
           render json: {errors: "Not authenticated", response_code: 201}
