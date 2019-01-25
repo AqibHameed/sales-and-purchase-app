@@ -252,7 +252,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
   @apiVersion 1.0.0
-  @api {get} /api/v1/companies_review
+  @api {post} /api/v1/companies_review
   @apiSampleRequest off
   @apiName companies_review
   @apiGroup Companies
@@ -309,40 +309,31 @@ class Api::V1::CompaniesController < ApplicationController
     "success": true,
     "companies_rated_count": {
         "know": {
-            "yes": 1,
+            "yes": 9,
             "no": 0
         },
         "trade": {
-            "yes": 0,
-            "no": 1
+            "yes": 5,
+            "no": 4
         },
         "recommend": {
-            "yes": 0,
-            "no": 0
+            "yes": 6,
+            "no": null
         },
         "experience": {
-            "yes": 0,
-            "no": 0
+            "yes": 5,
+            "no": null
         },
-        "total_number_of_comapnies_rated": 1
+        "total_number_of_comapnies_rated": 9,
+        "rank": "top 20"
     }
-  }
+}
 =end
 
   def count_companies_review
     if current_company
-       current_companies_review = Review.where(company_id: current_company.id)
-       @yes_know = current_companies_review.where(know: true).count
-       @not_know = current_companies_review.where(know: false).count
-       @yes_trade = current_companies_review.where(trade: true).count
-       @not_trade = current_companies_review.where(trade: false).count
-       @yes_recommend = current_companies_review.where(recommend: true).count
-       @not_recommend = current_companies_review.where(recommend: false).count
-       @yes_experience = current_companies_review.where(experience: true).count
-       @not_experience = current_companies_review.where(experience: false).count
-       @total_number_of_comapnies_rated = current_companies_review.count
-
-       render json: {success: true, companies_rated_count: companies_rated_count}
+      rank = Rank.find_by(company_id: current_company.id)
+      render json: {success: true, companies_rated_count: companies_rated_count(rank)}
     else
       render json: {errors: "Not authenticated", response_code: 201}
     end
@@ -970,25 +961,26 @@ class Api::V1::CompaniesController < ApplicationController
     }
   end
 
-  def companies_rated_count
+  def companies_rated_count(rank)
     {
         know:{
-            yes: @yes_know,
-            no: @not_know
+            yes: rank.yes_know,
+            no: rank.not_know
         },
         trade:{
-            yes: @yes_trade,
-            no: @not_trade
+            yes: rank.yes_trade,
+            no: rank.not_trade
         },
         recommend:{
-            yes: @yes_recommend,
+            yes: rank.yes_recommend,
             no: @not_recommend
         },
         experience:{
-            yes: @yes_experience,
+            yes: rank.yes_experience,
             no: @not_experience
         },
-        total_number_of_comapnies_rated: @total_number_of_comapnies_rated
+        total_number_of_comapnies_rated: rank.total_number_of_comapnies_rated,
+        rank: rank.rank
     }
   end
 

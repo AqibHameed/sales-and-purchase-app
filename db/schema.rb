@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190122173133) do
+ActiveRecord::Schema.define(version: 20190125135404) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -632,6 +632,28 @@ ActiveRecord::Schema.define(version: 20190122173133) do
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
+  create_table "ranks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "company_id"
+    t.integer "yes_know"
+    t.integer "not_know"
+    t.integer "yes_trade"
+    t.integer "not_trade"
+    t.integer "yes_recommend"
+    t.integer "not_recommend"
+    t.integer "yes_experience"
+    t.integer "not_experience"
+    t.float "total_know", limit: 24
+    t.float "total_trade", limit: 24
+    t.float "total_recommend", limit: 24
+    t.float "total_experience", limit: 24
+    t.float "total_average", limit: 24
+    t.string "rank"
+    t.integer "total_number_of_comapnies_rated"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_ranks_on_company_id"
+  end
+
   create_table "ratings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "tender_id"
     t.integer "customer_id"
@@ -891,10 +913,6 @@ ActiveRecord::Schema.define(version: 20190122173133) do
     t.string "country"
     t.string "city"
     t.string "tender_type", default: "", null: false
-    t.datetime "bidding_start"
-    t.datetime "bidding_end"
-    t.string "timezone"
-    t.integer "supplier_mine_id"
     t.string "diamond_type"
     t.string "sight_document_file_name"
     t.string "sight_document_content_type"
@@ -909,10 +927,14 @@ ActiveRecord::Schema.define(version: 20190122173133) do
     t.string "sight_no_field"
     t.string "price_no_field"
     t.string "credit_no_field"
+    t.datetime "bidding_start"
+    t.datetime "bidding_end"
+    t.string "timezone"
     t.string "reserved_field"
     t.datetime "bid_open"
     t.datetime "bid_close"
     t.integer "round_duration"
+    t.integer "supplier_mine_id"
     t.string "sight_reserved_field"
     t.integer "rounds_between_duration"
     t.datetime "round_open_time"
@@ -1115,4 +1137,5 @@ ActiveRecord::Schema.define(version: 20190122173133) do
 
   add_foreign_key "messages", "premission_requests"
   add_foreign_key "negotiations", "proposals"
+  add_foreign_key "ranks", "companies"
 end
