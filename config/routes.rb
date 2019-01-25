@@ -320,6 +320,7 @@ Rails.application.routes.draw do
           get :list_permission_companies
           get :remove_permission
           get :count_companies_review
+          get :show_review
         end
       end
       resources :stones, path: '/parcels' do
