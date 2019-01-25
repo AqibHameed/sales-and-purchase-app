@@ -106,6 +106,7 @@ module Api
  @apiSuccessExample {json} SuccessResponse3:
  {
     "success": true,
+    "buyer_score": 0,
     "scores": [
         {
             "name": "Late Payment",
@@ -148,9 +149,6 @@ module Api
             "user_score": 0,
             "market_average": 3,
             "user_score_vs_market_score": 0
-        },
-        {
-            "buyer_score": 0
         }
     ],
     "response_code": 200
@@ -163,6 +161,7 @@ module Api
           buyer_score = current_company.get_buyer_score
           market_buyer_score = MarketBuyerScore.get_scores
           render json: {success: true,
+                        buyer_score: buyer_score.total,
                         scores: get_scores(buyer_score, market_buyer_score),
                         response_code: 200}
         else
@@ -201,6 +200,7 @@ module Api
  @apiSuccessExample {json} SuccessResponse3:
  {
     "success": true,
+    "seller_score": 2.02,
     "scores": [
         {
             "name": "Late Payment",
@@ -237,9 +237,6 @@ module Api
             "user_score": 1.78,
             "market_average": 1.1,
             "user_score_vs_market_score": 1.62
-        },
-        {
-            "seller_score": 2.02
         }
     ],
     "response_code": 200
@@ -251,7 +248,7 @@ module Api
         if current_company
           seller_score = current_company.get_seller_score
           market_seller_score = MarketSellerScore.get_scores
-          render json: {success: true,
+          render json: {success: true, seller_score: seller_score.total,
                         scores: get_seller_scores(seller_score, market_seller_score),
                         response_code: 200}
         else
@@ -674,8 +671,7 @@ module Api
                 user_score:  score.count_of_credit_given,
                 market_average: market_score.count_of_credit_given,
                 user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given)
-            },
-            buyer_score: score.total
+            }
         ]
       end
 
@@ -716,8 +712,7 @@ module Api
                 user_score: score.credit_used,
                 market_average: market_score.credit_used,
                 user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
-            },
-            seller_score: score.total
+            }
         ]
       end
 
