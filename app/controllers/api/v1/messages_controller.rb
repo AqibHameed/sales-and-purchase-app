@@ -33,6 +33,7 @@ module Api
             "created_at": "2018-10-25T12:44:44.000Z",
             "updated_at": "2018-10-25T12:44:44.000Z",
             "date": "2018-10-25T12:44:44.000Z",
+             "description":"SafeTrade send you payment request",
             "description": "+100 CT",
             "status": "accepted",
             "calculation": -9.09
@@ -45,6 +46,7 @@ module Api
             "message_type": "secuirty_data",
             "subject": "You have a new live monitoring request from seller",
             "message": "A new seller sent you a request to show live monitoring data.",
+            "description":"Buyer B send you security data request",
             "created_at": "2019-01-26T08:42:14.000Z",
             "updated_at": "2019-01-26T08:42:14.000Z",
             "date": "2019-01-26T08:42:14.000Z",
@@ -230,7 +232,7 @@ module Api
                   message_type: message.message_type.downcase,
                   subject: message.subject,
                   created_at: message.created_at,
-                  description:"#{message.sender.name} send you new payment message",
+                  description:"#{message.sender.name}send you payment request",
                   updated_at: message.updated_at,
                   date: message.created_at,
                   status: 'new'
@@ -282,7 +284,7 @@ module Api
                     message_type: 'secuirty_data',
                     subject: message.subject,
                     message: message.message,
-                    description:"#{message.sender.name} send you security data request",
+                    description: "#{message.premission_request.sender.name} send you security data request",
                     created_at: message.created_at,
                     updated_at: message.updated_at,
                     date: message.created_at,
