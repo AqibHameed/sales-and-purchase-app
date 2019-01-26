@@ -101,7 +101,8 @@ RSpec.describe Api::V1::MessagesController do
     context 'when authorized user to access the message' do
       it 'does show the message Buyer payment messages' do
         transaction = create_transaction(@buyer, @customer, @parcel)
-        message = Message.buyer_payment_confirmation_message(@customer.company, transaction)
+        payment = create(:partial_payment, company_id:@buyer.company_id, transaction_id: transaction.id)
+        message = Message.buyer_payment_confirmation_message(@customer.company, transaction, payment)
         get :index, params: {status: 'new'}
         response.body.should have_content('Your Payment is confirmed.')
         expect(JSON.parse(response.body)['messages'].last['id']).to eq(message.id)
