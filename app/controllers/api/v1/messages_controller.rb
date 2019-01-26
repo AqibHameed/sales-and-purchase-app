@@ -37,10 +37,18 @@ module Api
             "status": "accepted",
             "calculation": -9.09
         },
-        {
-            "request_id": 9,
-            "sender": "Seller A",
-            "message": "You have a new live monitoring request from seller"
+          {
+            "id": 134,
+            "request_id": 4,
+            "sender": "Buyer B",
+            "receiver": "Buyer A",
+            "message_type": "secuirty data",
+            "subject": "You have a new live monitoring request from seller",
+            "message": "A new seller sent you a request to show live monitoring data.",
+            "created_at": "2019-01-26T08:42:14.000Z",
+            "updated_at": "2019-01-26T08:42:14.000Z",
+            "permission_status": "pending",
+            "status": "new"
         }
     ],
     "response_code": 200
@@ -265,10 +273,17 @@ module Api
             unless message.premission_request.blank?
               if message.premission_request.status == 'pending'
                 data ={
+                    id: message.id,
                     request_id: message.premission_request.id,
                     sender: message.premission_request.sender.name,
-                    message: message.subject,
-                    status: message.premission_request.status
+                    receiver: current_company.name,
+                    message_type: message.message_type,
+                    subject: message.subject,
+                    message: message.message,
+                    created_at: message.created_at,
+                    updated_at: message.updated_at,
+                    permission_status: message.premission_request.status,
+                    status: status
                 }
               end
             end
