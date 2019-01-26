@@ -36,7 +36,8 @@ module Api
              "description":"SafeTrade send you payment request",
             "description": "+100 CT",
             "status": "accepted",
-            "calculation": -9.09
+            "calculation": -9.09,
+            "payment_id": 50
         },
           {
             "id": 134,
@@ -235,7 +236,8 @@ module Api
                   description:"#{message.sender.name}send you payment request",
                   updated_at: message.updated_at,
                   date: message.created_at,
-                  status: 'new'
+                  status: 'new',
+                  payment_id: message.partial_payment.id
               }
             else
                 if message.proposal.status == 'accepted'
