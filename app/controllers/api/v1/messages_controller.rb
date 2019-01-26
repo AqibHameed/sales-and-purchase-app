@@ -35,7 +35,8 @@ module Api
             "date": "2018-10-25T12:44:44.000Z",
             "description": "+100 CT",
             "status": "accepted",
-            "calculation": -9.09
+            "calculation": -9.09,
+            "payment_id": 50
         },
           {
             "id": 134,
@@ -232,7 +233,8 @@ module Api
                   created_at: message.created_at,
                   updated_at: message.updated_at,
                   date: message.created_at,
-                  status: 'new'
+                  status: 'new',
+                  payment_id: message.partial_payment.id
               }
             else
                 if message.proposal.status == 'accepted'
