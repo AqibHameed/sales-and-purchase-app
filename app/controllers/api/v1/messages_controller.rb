@@ -62,7 +62,7 @@ module Api
             live_monitor_request_messages << message.last
           end
 
-          payment_message = Message.customer_payment_messages(current_company.id).group_by(&:transaction_id)
+          payment_message = Message.customer_payment_messages(current_company.id).group_by(&:partial_payment_id)
           payment_message.each do |transaction_id, messages|
             payment_messages << messages.last
           end
@@ -210,8 +210,8 @@ module Api
           @messages = @messages.map{ |m| m if m.sender.present? && m.sender == c}.compact
         end
         @messages.each do |message|
-          if (message.proposal.present? && message.proposal.trading_parcel.present?) || (message.buyer_transaction.present?)
-            if message.buyer_transaction.present?
+          if (message.proposal.present? && message.proposal.trading_parcel.present?) || (message.partial_payment.present?)
+            if message.partial_payment.present?
               data = {
                   id: message.id,
                   proposal_id: message.proposal_id,
