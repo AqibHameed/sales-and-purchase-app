@@ -4056,6 +4056,9 @@
         null,
         null,
         null,
+        null,
+        null,
+        null,
         1,
         8,
         8,
@@ -4234,6 +4237,8 @@
         null,
         null,
         null,
+        null,
+        null,
         7,
         0,
         null,
@@ -4273,6 +4278,7 @@
         1,
         1,
         1,
+        null,
         null,
         null,
         null,
@@ -8068,6 +8074,7 @@
         null
       ],
       "/home/muhammad/idt/app/models/demand_supplier.rb": [
+        1,
         1,
         1,
         1,
@@ -17615,6 +17622,6 @@
         null
       ]
     },
-    "timestamp": 1548512915
+    "timestamp": 1548516556
   }
 }
