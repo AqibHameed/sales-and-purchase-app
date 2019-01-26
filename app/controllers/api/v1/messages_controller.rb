@@ -230,6 +230,7 @@ module Api
                   message_type: message.message_type.downcase,
                   subject: message.subject,
                   created_at: message.created_at,
+                  description:"#{message.sender.name} send you new payment message",
                   updated_at: message.updated_at,
                   date: message.created_at,
                   status: 'new'
@@ -281,6 +282,7 @@ module Api
                     message_type: 'secuirty_data',
                     subject: message.subject,
                     message: message.message,
+                    description:"#{message.sender.name} send you security data request",
                     created_at: message.created_at,
                     updated_at: message.updated_at,
                     date: message.created_at,
