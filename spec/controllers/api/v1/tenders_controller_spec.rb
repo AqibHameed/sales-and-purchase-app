@@ -1,11 +1,17 @@
 require 'rails_helper'
 RSpec.describe Api::V1::TendersController do
   before(:all) do
-    # create_roles
+    create_roles
+    @customer = create_customer
     @supplier = create(:supplier)
     # @tender = create_tender
     @tender = create(:tender, supplier: @supplier, open_date: DateTime.now - 1, close_date: DateTime.now + 2)
     @tender = create(:tender, supplier: @supplier, open_date: DateTime.now + 1, close_date: DateTime.now + 2)
+    @stone = create(:stone, tender_id: @tender.id)
+  end
+
+  before(:each) do
+    request.headers.merge!(authorization: @customer.authentication_token)
   end
 
   describe '#tender_index' do
@@ -79,6 +85,41 @@ RSpec.describe Api::V1::TendersController do
         get :index, params: {supplier: @tender.supplier_id}
         tender = Tender.find_by(id: JSON.parse(response.body)['tenders'].first['id'])
         expect(tender.supplier.name).to eq(@tender.supplier.name)
+      end
+    end
+  end
+
+  describe '#stone_parcel' do
+    context 'when unknown user want to access stone parcel Api' do
+      it 'does show message not authenticated user' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        post :stone_parcel
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user want to access stone parcel Api' do
+      it 'does show message not authenticated user' do
+        post :stone_parcel
+        response.body.should have_content('Parcel not found')
+      end
+    end
+
+    context 'when authorized user want to access stone parcel Api' do
+      it 'does show message not authenticated user' do
+        post :stone_parcel, params: {id: @stone.id}
+        expect(JSON.parse(response.body)['stone_parcel']['id']).to eq(@stone.id)
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+
+    context 'when authorized user want to access stone parcel Api' do
+      it 'does show message not authenticated user' do
+        post :stone_parcel, params: {id: @stone.id, comments: "It is good", parcel_rating: 5}
+        expect(JSON.parse(response.body)['stone_parcel']['id']).to eq(@stone.id)
+        expect(JSON.parse(response.body)['stone_parcel']['comments']).to eq('It is good')
+        expect(JSON.parse(response.body)['stone_parcel']['parcel_rating']).to eq(5)
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
       end
     end
   end
