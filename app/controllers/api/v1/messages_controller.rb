@@ -47,6 +47,7 @@ module Api
             "message": "A new seller sent you a request to show live monitoring data.",
             "created_at": "2019-01-26T08:42:14.000Z",
             "updated_at": "2019-01-26T08:42:14.000Z",
+            "date": "2019-01-26T08:42:14.000Z",
             "permission_status": "pending",
             "status": "new"
         }
@@ -282,6 +283,7 @@ module Api
                     message: message.message,
                     created_at: message.created_at,
                     updated_at: message.updated_at,
+                    date: message.created_at,
                     permission_status: message.premission_request.status,
                     status: status
                 }
