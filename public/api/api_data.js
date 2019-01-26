@@ -2234,7 +2234,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-Example1:",
-          "content": "{\n  \"id\": 17,\n  \"seller_confirm\": \"true\"\n}",
+          "content": "{\n  \"payment_id\": 17,\n  \"seller_confirm\": \"true\"\n}",
           "type": "json"
         },
         {
@@ -2248,12 +2248,12 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse1:",
-          "content": "{\n  \"success\": true,\n    \"message\": \"Transaction confirm successfully\"\n}",
+          "content": "{\n  \"success\": true,\n    \"message\": \"Payment confirm successfully\"\n}",
           "type": "json"
         },
         {
           "title": "SuccessResponse2:",
-          "content": "{\n  \"success\": true,\n  \"message\": \"Transaction rejected successfully\"\n}",
+          "content": "{\n  \"success\": true,\n  \"message\": \"Payment rejected successfully\"\n}",
           "type": "json"
         }
       ]

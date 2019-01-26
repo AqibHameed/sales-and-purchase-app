@@ -1,0 +1,6 @@
+<p>Dear <%=@transaction.seller.name %>,</p>
+<p>Thank you, we have received your payment of <%=@payment.amount %> amount</p>
+
+Thanks & Regards,<br>
+<%= @transaction.buyer.try(:name) %>
+
