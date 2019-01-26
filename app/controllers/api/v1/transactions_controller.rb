@@ -82,7 +82,7 @@ module Api
   }
   @apiParamExample {json} Request-Example2:
   {
-    "id": 17,
+    "payment_id": 17,
     "seller_reject": "true"
   }
   @apiSuccessExample {json} SuccessResponse2:
