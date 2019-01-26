@@ -26,9 +26,9 @@ class Rank < ApplicationRecord
       end
       rank_data = Rank.find_by(company_id: percentage[:company_id])
       if rank_data.present?
-        rank_data.update_attributes(percentage, rank: rank)
+        rank_data.update_attributes(percentage.merge(rank: rank))
       else
-        Rank.create(percentage, rank: rank)
+        Rank.create(percentage.merge(rank: rank))
       end
     end
   end

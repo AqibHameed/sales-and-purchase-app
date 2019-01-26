@@ -965,23 +965,23 @@ class Api::V1::CompaniesController < ApplicationController
   def companies_rated_count(rank)
     {
         know:{
-            yes: rank.yes_know,
-            no: rank.not_know
+            yes: rank.present? ? rank.yes_know : nil,
+            no: rank.present? ? rank.not_know : nil
         },
         trade:{
-            yes: rank.yes_trade,
-            no: rank.not_trade
+            yes: rank.present? ? rank.yes_trade : nil,
+            no: rank.present? ? rank.not_trade : nil
         },
         recommend:{
-            yes: rank.yes_recommend,
-            no: @not_recommend
+            yes: rank.present? ? rank.yes_recommend : nil,
+            no: rank.present? ? rank.not_recommend : nil
         },
         experience:{
-            yes: rank.yes_experience,
-            no: @not_experience
+            yes: rank.present? ? rank.yes_experience : nil,
+            no: rank.present? ? rank.not_experience : nil
         },
-        total_number_of_comapnies_rated: rank.total_number_of_comapnies_rated,
-        rank: rank.rank
+        total_number_of_comapnies_rated: rank.present? ? rank.total_number_of_comapnies_rated : nil,
+        rank: rank.present? ? rank.rank : nil
     }
   end
 

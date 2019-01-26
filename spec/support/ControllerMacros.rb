@@ -68,6 +68,12 @@ module ControllerMacros
     end
   end
 
+
+  def create_review(buyer_id, company_id)
+    create(:review, customer_id: buyer_id, company_id: company_id)
+    Rank.update_rank
+  end
+
   def create_sources(source, seller, buyer)
     created_source = create(:demand_supplier, name: source)
 
