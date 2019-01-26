@@ -6,7 +6,7 @@ json.details do
     json.overdue_amount @secure_center.overdue_amount.to_f
     json.invoices_overdue @secure_center.invoices_overdue
     json.outstandings @secure_center.outstandings.to_f
-    json.last_bought_on @secure_center.last_bought_on
+    json.last_bought_on  @secure_center.last_bought_on.present? ?  @secure_center.last_bought_on.iso8601 : @secure_center.last_bought_on
     json.buyer_percentage @secure_center.buyer_percentage.to_f
     json.system_percentage @secure_center.system_percentage.to_f
     json.balance_credit_limit @credit_limit.credit_limit
@@ -16,7 +16,7 @@ json.details do
     # json.market_payment_score @secure_center.market_payment_score
     json.collection_ratio_days @secure_center.collection_ratio_days
     json.buyer_score @buyer_score.total
-    json.seller_score @seller_score.total
+    # json.seller_score @seller_score.total
   else
     json.outstandings @secure_center.outstandings.to_f
     json.overdue_amount @secure_center.overdue_amount.to_f
@@ -27,9 +27,5 @@ json.details do
     json.collection_ratio_days @secure_center.collection_ratio_days
     # json.market_payment_score @secure_center.market_payment_score
   end
-  if @secure_center.paid_date.present?
-    json.paid_date @secure_center.paid_date
-  else
-    json.paid_date 'N/A'
-  end
+  json.paid_date @secure_center.paid_date.present? ? @secure_center.paid_date.iso8601 : @secure_center.paid_date
 end

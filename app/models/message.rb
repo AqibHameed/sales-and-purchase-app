@@ -3,7 +3,7 @@ class Message < ApplicationRecord
   belongs_to :receiver, class_name: 'Company', foreign_key: 'receiver_id', optional: true
   belongs_to :proposal, optional: true
   belongs_to :premission_request, optional: true
-  belongs_to :buyer_transaction, :foreign_key => "transaction_id", :class_name => "Transaction", dependent: :destroy, optional: true
+  belongs_to :partial_payment, dependent: :destroy, optional: true
 
   scope :customer_messages, ->(current_company_id) {joins(:sender).order("created_at desc").where(receiver_id: current_company_id, message_type: "Proposal")}
   scope :customer_payment_messages, ->(current_company_id) {joins(:sender).order("created_at desc").where(receiver_id: current_company_id, message_type: "Payment")}
@@ -118,9 +118,9 @@ class Message < ApplicationRecord
     status
   end
 
-  def self.buyer_payment_confirmation_message(current_company, transaction)
+  def self.buyer_payment_confirmation_message(current_company, transaction, payment)
     @message = "The payment is confirmed."
-    Message.create(subject: "Your Payment is confirmed.", message: @message, sender_id:  current_company.id, receiver_id: transaction.trading_parcel.company.id, message_type: "Payment", transaction_id: transaction.id)
+    Message.create(subject: "Your Payment is confirmed.", message: @message, sender_id:  current_company.id, receiver_id: transaction.trading_parcel.company.id, message_type: "Payment", partial_payment_id: payment.id)
   end
 
 end

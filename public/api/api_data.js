@@ -600,7 +600,7 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
-    "type": "get",
+    "type": "post",
     "url": "/api/v1/companies_review",
     "title": "",
     "name": "companies_review",
@@ -620,6 +620,26 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n  \"review\": {\n      \"id\": 1,\n      \"know\": true,\n      \"trade\": false,\n      \"recommend\": true,\n      \"experience\": true\n  },\n  \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/count_companies_review",
+    "title": "",
+    "name": "count_companies_review",
+    "group": "Companies",
+    "description": "<p>count the companies review questions</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "  {\n    \"success\": true,\n    \"companies_rated_count\": {\n        \"know\": {\n            \"yes\": 9,\n            \"no\": 0\n        },\n        \"trade\": {\n            \"yes\": 5,\n            \"no\": 4\n        },\n        \"recommend\": {\n            \"yes\": 6,\n            \"no\": null\n        },\n        \"experience\": {\n            \"yes\": 5,\n            \"no\": null\n        },\n        \"total_number_of_comapnies_rated\": 9,\n        \"rank\": \"top 20\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -713,7 +733,7 @@ define({ "api": [
         },
         {
           "title": "SuccessResponse2:",
-          "content": "{\n    \"success\": true,\n    \"details\": {\n        \"id\": 251,\n        \"invoices_overdue\": 6,\n        \"buyer_id\": 1,\n        \"seller_id\": 1,\n        \"last_bought_on\": \"2019-01-14\",\n        \"supplier_connected\": 3,\n        \"overdue_amount\": 0,\n        \"outstandings\": 0,\n        \"permitted\": true,\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 31.46,\n        \"balance_credit_limit\": 7000,\n        \"payment_score\": null,\n        \"number_of_seller_offer_credit\": 2,\n        \"market_payment_score\": null,\n        \"collection_ratio_days\": [\n            {\n                \"zer_percent\": 0,\n                \"less_fiften\": 1,\n                \"less_thirty\": 0,\n                \"less_fourty_five\": 0,\n                \"greater_fourty_five\": 0\n            }\n        ],\n        \"buyer_score\": 0,\n        \"seller_score\": 0,\n        \"paid_date\": \"N/A\"\n    }\n}",
+          "content": "{\n    \"success\": true,\n    \"details\": {\n        \"id\": 263,\n        \"buyer_id\": 1,\n        \"seller_id\": 4,\n        \"supplier_connected\": 10,\n        \"overdue_amount\": 0,\n        \"invoices_overdue\": 11,\n        \"outstandings\": 0,\n        \"last_bought_on\": \"2019-01-22\",\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 30.61,\n        \"balance_credit_limit\": 7000,\n        \"permitted\": true,\n        \"number_of_seller_offer_credit\": 2,\n        \"collection_ratio_days\": {\n            \"zero_percent\": 0,\n            \"less_fifteen\": 1,\n            \"less_thirty\": 0,\n            \"less_fourty_five\": 0,\n            \"greater_fourty_five\": 0\n        },\n        \"buyer_score\": 0,\n        \"paid_date\": null\n    }\n}",
           "type": "json"
         }
       ]
@@ -729,6 +749,15 @@ define({ "api": [
     "name": "remove_permission",
     "group": "Companies",
     "description": "<p>remove the permission of the company.</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  \"company_id\": 1,\n  \"live_monitor\": false,\n  \"secure_center\": false,\n  \"buyer_score\": false,\n  \"seller_score\": false,\n  \"customer_info\": false\n}",
+          "type": "json"
+        }
+      ]
+    },
     "success": {
       "examples": [
         {
@@ -788,6 +817,35 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": " {\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 1,\n       \"prev_page\": null,\n       \"next_page\": null,\n       \"current_page\": 1\n   },\n   \"companies\": [\n       {\n           \"id\": 7,\n           \"name\": \"Dummy Buyer 1\",\n           \"transaction_count\": 5,\n           \"amount_due\": \"10975.29\",\n           \"overdue_status\": true\n       },\n       {\n           \"id\": 10,\n           \"name\": \"Dummy Buyer 2\",\n           \"transaction_count\": 1,\n           \"amount_due\": \"3300.0\",\n           \"overdue_status\": true\n       }\n   ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/companies/show_review",
+    "title": "",
+    "name": "show_review",
+    "group": "Companies",
+    "description": "<p>Show reviews  of the company.</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n    \"company_id\": 4,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "  {\n\"review\": {\n    \"id\": 7,\n    \"know\": true,\n    \"trade\": false,\n    \"recommend\": true,\n    \"experience\": false\n},\n\"response_code\": 200",
           "type": "json"
         }
       ]
@@ -865,7 +923,7 @@ define({ "api": [
         },
         {
           "title": "SuccessResponse3:",
-          "content": " {\n    \"success\": true,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Buyer Network Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Number Of Suppliers Giving You Credit\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        }\n    ],\n    \"response_code\": 200\n}",
+          "content": " {\n    \"success\": true,\n    \"buyer_score\": 0,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 0,\n            \"market_average\": 12.11,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 0,\n            \"market_average\": 144.77,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 90.4,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Buyer Network Score\",\n            \"user_score\": 0,\n            \"market_average\": 1.15,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 0,\n            \"market_average\": 35.06,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 0,\n            \"market_average\": 0.64,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Number Of Suppliers Giving You Credit\",\n            \"user_score\": 0,\n            \"market_average\": 3,\n            \"user_score_vs_market_score\": 0\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -877,66 +935,6 @@ define({ "api": [
         "url": "https://safetrade.ai/api/v1/customers/buyer_scores"
       }
     ]
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/customers/purchases",
-    "title": "",
-    "name": "customer_purchases",
-    "group": "Customers",
-    "description": "<p>to get customer purchasings info</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"credit_recieved_count\": 1,\n    \"total_credit_received\": \"$0.00\",\n    \"purchases\": [\n        {\n      \"term\": \"cash\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"1<=30\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"31<=60\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"total\",\n      \"percent\": \"0\",\n      \"pending_transaction\": \"$0.00\",\n      \"overdue_transaction\": \"$0.00\",\n      \"complete_transaction\": \"$0.00\"\n      }\n    ],\n    \"response_code\": 200\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "api/v1/customers/sales",
-    "title": "",
-    "name": "customer_sale",
-    "group": "Customers",
-    "description": "<p>permission the tiles and sorting the record on the basis of count</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "   {\n    \"success\": true,\n    \"credit_given_to\": 5,\n    \"total_given_credit\": \"129823.00\",\n    \"total_used_credit\": \"229022.89\",\n    \"total_available_credit\": \"-$99,199.89\",\n    \"sales\": [\n        {\n      \"term\": \"cash\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"1<=30\",\n      \"percent\": \"6(46%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$40,000.00(100%)\",\n      \"complete_transaction\": \"$269,400.00(85%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"3(23%)\",\n      \"pending_transaction\": \"$46,200.00(100%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$21,890.00(6%)\"\n      },\n        {\n      \"term\": \"91\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"total\",\n      \"percent\": \"13\",\n      \"pending_transaction\": \"$46,200.00\",\n      \"overdue_transaction\": \"$40,000.00\",\n      \"complete_transaction\": \"$315,040.00\"\n      }\n],\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "api/v1/customers/transactions",
-    "title": "",
-    "name": "customer_transactions",
-    "group": "Customers",
-    "description": "<p>permission the tiles and sorting the record on the basis of count</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "  {\n    \"success\": true,\n    \"transactions\": {\n    \"total\": 11,\n    \"pending\": 2,\n    \"completed\": 8,\n    \"overdue\": 1\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
   },
   {
     "version": "1.0.0",
@@ -1057,7 +1055,7 @@ define({ "api": [
         },
         {
           "title": "SuccessResponse3:",
-          "content": " {\n    \"success\": true,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Seller Network Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        }\n    ],\n    \"response_code\": 200\n}",
+          "content": " {\n    \"success\": true,\n    \"seller_score\": 2.02,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 62.25,\n            \"market_average\": 13.9,\n            \"user_score_vs_market_score\": 4.48\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 75,\n            \"market_average\": 198.95,\n            \"user_score_vs_market_score\": 0.38\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 477.13,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Seller Network Score\",\n            \"user_score\": 3.46,\n            \"market_average\": 1.41,\n            \"user_score_vs_market_score\": 2.45\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 43.31,\n            \"market_average\": 37.37,\n            \"user_score_vs_market_score\": 1.16\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 1.78,\n            \"market_average\": 1.1,\n            \"user_score_vs_market_score\": 1.62\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1396,7 +1394,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"id\": 2,\n            \"proposal_id\": 2,\n            \"sender\": \"SafeTrade\",\n            \"receiver\": \"OnGraph\",\n            \"message\": \" </br>For more Details about proposal, <a href=\\\"/proposals/2\\\">Click Here</a>\",\n            \"message_type\": \"Proposal\",\n            \"subject\": \"Seller sent a new proposal.\",\n            \"created_at\": \"2018-10-25T12:44:44.000Z\",\n            \"updated_at\": \"2018-10-25T12:44:44.000Z\",\n            \"date\": \"2018-10-25T12:44:44.000Z\",\n            \"description\": \"+100 CT\",\n            \"status\": \"accepted\",\n            \"calculation\": -9.09\n        },\n        {\n            \"request_id\": 9,\n            \"sender\": \"Seller A\",\n            \"message\": \"You have a new live monitoring request from seller\"\n        }\n    ],\n    \"response_code\": 200\n}",
+          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"id\": 2,\n            \"proposal_id\": 2,\n            \"sender\": \"SafeTrade\",\n            \"receiver\": \"OnGraph\",\n            \"message\": \" </br>For more Details about proposal, <a href=\\\"/proposals/2\\\">Click Here</a>\",\n            \"message_type\": \"proposal\",\n            \"subject\": \"Seller sent a new proposal.\",\n            \"created_at\": \"2018-10-25T12:44:44.000Z\",\n            \"updated_at\": \"2018-10-25T12:44:44.000Z\",\n            \"date\": \"2018-10-25T12:44:44.000Z\",\n             \"description\":\"SafeTrade send you payment request\",\n            \"description\": \"+100 CT\",\n            \"status\": \"accepted\",\n            \"calculation\": -9.09,\n            \"payment_id\": 50\n        },\n          {\n            \"id\": 134,\n            \"request_id\": 4,\n            \"sender\": \"Buyer B\",\n            \"receiver\": \"Buyer A\",\n            \"message_type\": \"security_data\",\n            \"subject\": \"You have a new live monitoring request from seller\",\n            \"message\": \"A new seller sent you a request to show live monitoring data.\",\n            \"description\":\"Buyer B send you security data request\",\n            \"created_at\": \"2019-01-26T08:42:14.000Z\",\n            \"updated_at\": \"2019-01-26T08:42:14.000Z\",\n            \"date\": \"2019-01-26T08:42:14.000Z\",\n            \"permission_status\": \"pending\",\n            \"status\": \"new\"\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1633,7 +1631,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"customer\": {\n        \"id\": 5,\n        \"email\": \"testing@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-10-30T07:26:20.000Z\",\n        \"updated_at\": \"2018-11-01T11:19:12.000Z\",\n        \"first_name\": \"abc\",\n        \"last_name\": \"def\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy co. 3\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+971 551114466\",\n        \"authentication_token\": \"hGazWDBk_Pkh8wn2jA\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"customer\": {\n        \"id\": 5,\n        \"email\": \"testing@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-10-30T07:26:20.000Z\",\n        \"updated_at\": \"2018-11-01T11:19:12.000Z\",\n        \"first_name\": \"abc\",\n        \"last_name\": \"def\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company_id\": \"7\",\n        \"company\": \"Dummy co. 3\",\n        \"company_email\": null,\n        \"company_country\":  \"India\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+971 551114466\",\n        \"authentication_token\": \"hGazWDBk_Pkh8wn2jA\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -2227,16 +2225,21 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "/api/v1/transactions/seller_confirm",
+    "url": "/api/v1/transactions/seller_accept_or_reject",
     "title": "",
-    "name": "seller_confirm",
+    "name": "seller_accept_or_reject",
     "group": "Transactions",
-    "description": "<p>seller_confirmation_of_amount</p>",
+    "description": "<p>seller acept or reject buyer request if seller_confirm is true then transaction will be confirm and if seller_reject is true then transaction will be reject</p>",
     "parameter": {
       "examples": [
         {
-          "title": "Request-Example:",
-          "content": "{\n\t\"id\": 53,\n\t\"amount\": 30\n\n}",
+          "title": "Request-Example1:",
+          "content": "{\n  \"payment_id\": 17,\n  \"seller_confirm\": \"true\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n  \"payment_id\": 17,\n  \"seller_reject\": \"true\"\n}",
           "type": "json"
         }
       ]
@@ -2244,8 +2247,13 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n  \"success\": true,\n    \"message\": \"Transaction confirm successfully\"\n}",
+          "title": "SuccessResponse1:",
+          "content": "{\n  \"success\": true,\n    \"message\": \"Payment confirm successfully\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "{\n  \"success\": true,\n  \"message\": \"Payment rejected successfully\"\n}",
           "type": "json"
         }
       ]

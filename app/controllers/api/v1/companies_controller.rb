@@ -3,7 +3,8 @@ class Api::V1::CompaniesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :check_token, :current_customer, except: [:check_company, :country_list, :companies_list]
   helper_method :current_company
-  before_action :check_current_company, only: [:send_security_data_request, :accept_secuirty_data_request, :reject_secuirty_data_request]
+  before_action :check_current_company, only: [:send_security_data_request]
+  before_action :check_request, only: [:accept_secuirty_data_request, :reject_secuirty_data_request]
   # before_action :seller_companies_permission, only: [:seller_companies]
   before_action :live_monitoring_permission, only: [:live_monitoring]
 
@@ -251,7 +252,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
   @apiVersion 1.0.0
-  @api {get} /api/v1/companies_review
+  @api {post} /api/v1/companies_review
   @apiSampleRequest off
   @apiName companies_review
   @apiGroup Companies
@@ -282,7 +283,7 @@ class Api::V1::CompaniesController < ApplicationController
       review = Review.find_by(company_id: params[:company_id], customer_id: current_customer.id)
       if review.present?
         review.update_attributes(review_params)
-        render :json => {review: review(review), response_code: 200}
+        render :json => {review: review(review), response_code: 201}
       else
         review_company = Review.new(review_params)
         if review_company.save
@@ -292,10 +293,51 @@ class Api::V1::CompaniesController < ApplicationController
         end
       end
     else
-      render json: {errors: "Not authenticated", response_code: 201}
+      render json: {errors: "Not authenticated", response_code: 401}
     end
   end
 
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/count_companies_review
+  @apiSampleRequest off
+  @apiName count_companies_review
+  @apiGroup Companies
+  @apiDescription count the companies review questions
+  @apiParamExample {json} Request-Example:
+  {
+    "success": true,
+    "companies_rated_count": {
+        "know": {
+            "yes": 9,
+            "no": 0
+        },
+        "trade": {
+            "yes": 5,
+            "no": 4
+        },
+        "recommend": {
+            "yes": 6,
+            "no": null
+        },
+        "experience": {
+            "yes": 5,
+            "no": null
+        },
+        "total_number_of_comapnies_rated": 9,
+        "rank": "top 20"
+    }
+}
+=end
+
+  def count_companies_review
+    if current_company
+      rank = Rank.find_by(company_id: current_company.id)
+      render json: {success: true, companies_rated_count: companies_rated_count(rank)}
+    else
+      render json: {errors: "Not authenticated", response_code: 201}
+    end
+  end
 
 
 =begin
@@ -663,33 +705,28 @@ class Api::V1::CompaniesController < ApplicationController
 {
     "success": true,
     "details": {
-        "id": 251,
-        "invoices_overdue": 6,
+        "id": 263,
         "buyer_id": 1,
-        "seller_id": 1,
-        "last_bought_on": "2019-01-14",
-        "supplier_connected": 3,
+        "seller_id": 4,
+        "supplier_connected": 10,
         "overdue_amount": 0,
+        "invoices_overdue": 11,
         "outstandings": 0,
-        "permitted": true,
+        "last_bought_on": "2019-01-22",
         "buyer_percentage": 0,
-        "system_percentage": 31.46,
+        "system_percentage": 30.61,
         "balance_credit_limit": 7000,
-        "payment_score": null,
+        "permitted": true,
         "number_of_seller_offer_credit": 2,
-        "market_payment_score": null,
-        "collection_ratio_days": [
-            {
-                "zer_percent": 0,
-                "less_fiften": 1,
-                "less_thirty": 0,
-                "less_fourty_five": 0,
-                "greater_fourty_five": 0
-            }
-        ],
+        "collection_ratio_days": {
+            "zero_percent": 0,
+            "less_fifteen": 1,
+            "less_thirty": 0,
+            "less_fourty_five": 0,
+            "greater_fourty_five": 0
+        },
         "buyer_score": 0,
-        "seller_score": 0,
-        "paid_date": "N/A"
+        "paid_date": null
     }
 }
 =end
@@ -766,6 +803,15 @@ class Api::V1::CompaniesController < ApplicationController
   @apiName remove_permission
   @apiGroup Companies
   @apiDescription remove the permission of the company.
+  @apiParamExample {json} Request-Example:
+  {
+    "company_id": 1,
+    "live_monitor": false,
+    "secure_center": false,
+    "buyer_score": false,
+    "seller_score": false,
+    "customer_info": false
+  }
   @apiSuccessExample {json} SuccessResponse:
   {
     "success": true,
@@ -776,9 +822,9 @@ class Api::V1::CompaniesController < ApplicationController
 
   def remove_permission
     if current_company
-        premission_request = PremissionRequest.where(sender_id: params[:id], receiver_id: current_company.id, status: 1)
+        premission_request = PremissionRequest.where(sender_id: params[:company_id], receiver_id: current_company.id, status: 1)
         if premission_request.present?
-          premission_request.update(status: 3)
+          premission_request.update_attributes(permission_params)
           render json: {success: true,
                         message: "Request is removed successfully.",
                         response_code: 200}
@@ -789,13 +835,67 @@ class Api::V1::CompaniesController < ApplicationController
       render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
     end
   end
-  
+
+
+=begin
+    @apiVersion 1.0.0
+    @api {get} /api/v1/companies/show_review
+    @apiSampleRequest off
+    @apiName show_review
+    @apiGroup Companies
+    @apiDescription Show reviews  of the company.
+        @apiParamExample {json} Request-Example:
+        {
+            "company_id": 4,
+        }
+    @apiSuccessExample {json} SuccessResponse:
+      {
+    "review": {
+        "id": 7,
+        "know": true,
+        "trade": false,
+        "recommend": true,
+        "experience": false
+    },
+    "response_code": 200
+
+=end
+
+
+
+
+
+  def show_review
+    if current_customer
+      companies_review = Review.find_by(company_id: params[:company_id], customer_id: current_customer.id)
+      if companies_review.present?
+        render :json => {review: review(companies_review), response_code: 200}
+      else
+        render json: {errors: "Record not Found", response_code: 404}
+      end
+    else
+      render json: {errors: "Not authenticated", response_code: 201}
+    end
+  end
+
+
   protected
   def current_company
     @company ||= current_customer.company unless current_customer.nil?
   end
 
   private
+
+  def check_request
+    if current_company
+      request = PremissionRequest.find_by(id: params[:request_id])
+      unless request.receiver_id == current_company.id
+        render json: { errors: "you don't have permission perform this action", response_code: 201 }
+      end
+    else
+      render json: { errors: "Not authenticated", response_code: 201 }
+    end
+  end
 
   def check_current_company
     if current_company.nil?
@@ -861,6 +961,31 @@ class Api::V1::CompaniesController < ApplicationController
         experience: review_company.experience
     }
   end
+
+  def companies_rated_count(rank)
+    {
+        know:{
+            yes: rank.present? ? rank.yes_know : nil,
+            no: rank.present? ? rank.not_know : nil
+        },
+        trade:{
+            yes: rank.present? ? rank.yes_trade : nil,
+            no: rank.present? ? rank.not_trade : nil
+        },
+        recommend:{
+            yes: rank.present? ? rank.yes_recommend : nil,
+            no: rank.present? ? rank.not_recommend : nil
+        },
+        experience:{
+            yes: rank.present? ? rank.yes_experience : nil,
+            no: rank.present? ? rank.not_experience : nil
+        },
+        total_number_of_comapnies_rated: rank.present? ? rank.total_number_of_comapnies_rated : nil,
+        rank: rank.present? ? rank.rank : nil
+    }
+  end
+
+
 
 
 

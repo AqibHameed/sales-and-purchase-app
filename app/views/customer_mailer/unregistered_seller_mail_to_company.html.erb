@@ -1,0 +1,20 @@
+<p>Purchase Recorded</p>
+</br>
+<p>Dear <%=@transaction.seller.try(:name)%>, A transaction has been created by <%=@buyer%></p>
+<p> Buyer: <%= @buyer %> has added the following transaction on SafeTrade: </p>
+<p> A transaction has been created by <%=@transaction %>*Creator Company Name*</p>
+<p>1. Source: <%= @transaction.trading_parcel.source %></p>
+<p>2. Description: <%= @transaction.description %></p>
+<p>3. Carats: <%= @transaction.trading_parcel.weight %></p>
+<p>4. Cost: <%= @transaction.trading_parcel.weight %></p>
+<p>5. Percentage: <%= @transaction.trading_parcel.percent %></p>
+<p>6. Average Price: <%= @transaction.price %></p>
+<p>7. Total Amount: <%= @transaction.total_amount %></p>
+<p>8. Credit Period: <%= @transaction.credit %></p>
+<p>9. Invoice Date: <%= @transaction.created_at %></p>
+<p><%= @buyer%> uses SafeTrade for business protection against late and risky payers. You can join as well, immediately and for free. Download SafeTrade now:</p>
+<p>Please login to SafeTrade and accept or reject this transaction. If you do not respond within 7 days, the transaction will be confirmed.</p>
+</br>
+<p>Regards,</p>
+</br>
+<p>The SafeTrade Team</p>

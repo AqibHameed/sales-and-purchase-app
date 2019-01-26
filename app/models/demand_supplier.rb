@@ -6,5 +6,6 @@ class DemandSupplier < ApplicationRecord
   RUSSIAN = 'RUSSIAN'
   OUTSIDE = 'OUTSIDE'
   SPECIAL = 'SPECIAL'
+  CATOCA = 'Catoca'
   POLISHED = 'POLISHED'
 end

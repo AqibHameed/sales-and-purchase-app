@@ -2,6 +2,7 @@ class Company < ApplicationRecord
 
   has_many :customers, dependent: :destroy
   has_many :demands, dependent: :destroy
+  has_one :rank, dependent: :destroy
   has_many :polished_demands, dependent: :destroy
   has_many :trading_parcels, dependent: :destroy
   has_many :sender, :class_name => 'BrokerRequest', :foreign_key => 'sender_id'

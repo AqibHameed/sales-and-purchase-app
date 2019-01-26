@@ -28,19 +28,31 @@ module Api
             "sender": "SafeTrade",
             "receiver": "OnGraph",
             "message": " </br>For more Details about proposal, <a href=\"/proposals/2\">Click Here</a>",
-            "message_type": "Proposal",
+            "message_type": "proposal",
             "subject": "Seller sent a new proposal.",
             "created_at": "2018-10-25T12:44:44.000Z",
             "updated_at": "2018-10-25T12:44:44.000Z",
             "date": "2018-10-25T12:44:44.000Z",
+             "description":"SafeTrade send you payment request",
             "description": "+100 CT",
             "status": "accepted",
-            "calculation": -9.09
+            "calculation": -9.09,
+            "payment_id": 50
         },
-        {
-            "request_id": 9,
-            "sender": "Seller A",
-            "message": "You have a new live monitoring request from seller"
+          {
+            "id": 134,
+            "request_id": 4,
+            "sender": "Buyer B",
+            "receiver": "Buyer A",
+            "message_type": "security_data",
+            "subject": "You have a new live monitoring request from seller",
+            "message": "A new seller sent you a request to show live monitoring data.",
+            "description":"Buyer B send you security data request",
+            "created_at": "2019-01-26T08:42:14.000Z",
+            "updated_at": "2019-01-26T08:42:14.000Z",
+            "date": "2019-01-26T08:42:14.000Z",
+            "permission_status": "pending",
+            "status": "new"
         }
     ],
     "response_code": 200
@@ -62,7 +74,7 @@ module Api
             live_monitor_request_messages << message.last
           end
 
-          payment_message = Message.customer_payment_messages(current_company.id).group_by(&:transaction_id)
+          payment_message = Message.customer_payment_messages(current_company.id).group_by(&:partial_payment_id)
           payment_message.each do |transaction_id, messages|
             payment_messages << messages.last
           end
@@ -210,20 +222,22 @@ module Api
           @messages = @messages.map{ |m| m if m.sender.present? && m.sender == c}.compact
         end
         @messages.each do |message|
-          if (message.proposal.present? && message.proposal.trading_parcel.present?) || (message.buyer_transaction.present?)
-            if message.buyer_transaction.present?
+          if (message.proposal.present? && message.proposal.trading_parcel.present?) || (message.partial_payment.present?)
+            if message.partial_payment.present?
               data = {
                   id: message.id,
                   proposal_id: message.proposal_id,
                   sender: message.sender.name,
                   receiver: current_company.name,
                   message: message.message,
-                  message_type: message.message_type,
+                  message_type: message.message_type.downcase,
                   subject: message.subject,
                   created_at: message.created_at,
+                  description:"#{message.sender.name}send you payment request",
                   updated_at: message.updated_at,
                   date: message.created_at,
-                  status: 'new'
+                  status: 'new',
+                  payment_id: message.partial_payment.id
               }
             else
                 if message.proposal.status == 'accepted'
@@ -247,7 +261,7 @@ module Api
                   sender: message.sender.name,
                   receiver: current_company.name,
                   message: message.message,
-                  message_type: message.message_type,
+                  message_type: message.message_type.downcase,
                   subject: message.subject,
                   created_at: message.created_at,
                   updated_at: message.updated_at,
@@ -265,10 +279,19 @@ module Api
             unless message.premission_request.blank?
               if message.premission_request.status == 'pending'
                 data ={
+                    id: message.id,
                     request_id: message.premission_request.id,
                     sender: message.premission_request.sender.name,
-                    message: message.subject,
-                    status: message.premission_request.status
+                    receiver: current_company.name,
+                    message_type: 'security_data',
+                    subject: message.subject,
+                    message: message.message,
+                    description: "#{message.premission_request.sender.name} send you security data request",
+                    created_at: message.created_at,
+                    updated_at: message.updated_at,
+                    date: message.created_at,
+                    permission_status: message.premission_request.status,
+                    status: status
                 }
               end
             end

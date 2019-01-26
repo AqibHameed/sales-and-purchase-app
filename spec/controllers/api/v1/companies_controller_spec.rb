@@ -5,11 +5,15 @@ RSpec.describe Api::V1::CompaniesController do
     @customer = create_customer
     @trader = create_customer
     @buyer = create_buyer
-    @permission_request = create_permission_request(@customer.id, @buyer.id, true)
+    @permissions = {sender_id: @customer.company_id,
+                    receiver_id: @buyer.company_id,
+                    secure_center: true,
+                    seller_score: true}
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
   end
 
   before(:each) do
+    @permission_request = create_permission_request(@permissions)
     request.headers.merge!(authorization: @customer.authentication_token)
     1.upto(5) do
       @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
@@ -31,7 +35,7 @@ RSpec.describe Api::V1::CompaniesController do
   describe '#live_monitering' do
     context 'when secure center already exists' do
       it 'does fetch secure center data' do
-        get 'live_monitoring', params: {id: @buyer.company_id}
+        get 'live_monitoring', params: {receiver_id: @buyer.company_id}
         expect(@secure_center).should equal?(seller_id: @customer.company_id,
                                              buyer_id: @buyer.company_id)
         expect(response.status).to eq(200)
@@ -40,10 +44,38 @@ RSpec.describe Api::V1::CompaniesController do
 
     context 'when secure center not already exists' do
       it 'does create secure center and return secure center data' do
-        get 'live_monitoring', params: {id: @buyer.company_id}
+        get 'live_monitoring', params: {receiver_id: @buyer.company_id}
         expect(@secure_center).should equal?(seller_id: @customer.company_id,
                                              buyer_id: @buyer.company_id)
         expect(response.status).to eq(200)
+      end
+    end
+
+    context 'when user want to access data without permission' do
+      it 'does show security center data few fields' do
+        get 'live_monitoring', params: {receiver_id: @buyer.company_id}
+        expect(assigns(:secure_center).seller_id).to eq(@customer.company_id)
+        expect(assigns(:secure_center).buyer_id).to eq(@buyer.company_id)
+        assigns(:secure_center).collection_ratio_days
+        assigns(:secure_center).system_percentage
+        assigns(:secure_center).buyer_percentage
+      end
+    end
+
+    context 'when user want to access data with permission' do
+      it 'does show security center data all fields' do
+        get 'live_monitoring', params: {receiver_id: @buyer.company_id}
+        expect(assigns(:secure_center).seller_id).to eq(@customer.company_id)
+        expect(assigns(:secure_center).buyer_id).to eq(@buyer.company_id)
+        assigns(:secure_center).collection_ratio_days
+        assigns(:secure_center).system_percentage
+        assigns(:secure_center).buyer_percentage
+        assigns(:secure_center).supplier_paid
+        assigns(:secure_center).overdue_amount
+        assigns(:secure_center).invoices_overdue
+        assigns(:secure_center).outstandings
+        assigns(:secure_center).last_bought_on
+        assigns(:credit_limit)
       end
     end
   end
@@ -281,11 +313,147 @@ RSpec.describe Api::V1::CompaniesController do
       end
     end
 
-    context "when authenticated user try to accept request" do
+    context "when authenticated but unknown user user try to accept request" do
       it 'does show not authenticated user ' do
         post :accept_secuirty_data_request, params:{request_id: @permission_request.id}
-        response.body.should have_content('Request accepted successfully.')
+        response.body.should have_content("you don't have permission perform this action")
+      end
+    end
+
+    context "when authenticated but unknown user user try to accept request" do
+      it 'does show not authenticated user ' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        post :accept_secuirty_data_request, params:{request_id: @permission_request.id}
+        response.body.should have_content("Request accepted successfully.")
       end
     end
   end
+
+  describe "#reject_secuirty_data_request" do
+    context "when unauthenticated user try to reject request" do
+      it 'does show not authenticated' do
+        request.headers.merge!(authorization: 'unknowtoken')
+        post :reject_secuirty_data_request, params: {request_id: @permission_request.id}
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context "when authenticated but unknown user try to reject request" do
+      it 'does show not authenticated' do
+        post :reject_secuirty_data_request, params: {request_id: @permission_request.id}
+        response.body.should have_content("you don't have permission perform this action")
+      end
+    end
+
+    context "when authenticated but unknown user try to reject request" do
+      it 'does show not authenticated' do
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        post :reject_secuirty_data_request, params: {request_id: @permission_request.id}
+        response.body.should have_content("Request rejected successfully.")
+      end
+    end
+  end
+
+  describe '#companies_review' do
+    context 'when unauthorized user review a company' do
+      it 'does show error un authorized user' do
+        request.headers.merge!(authorization: 'unknown token')
+        post :companies_review
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user to review the company' do
+      it 'does match the parameters' do
+        post :companies_review, params: {company_id: @buyer.company.id, know: true, trade: false, recommend:true, experience:false}
+        expect(JSON.parse(response.body)['review']['know']).to eq(true)
+        expect(JSON.parse(response.body)['review']['trade']).to eq(false)
+        expect(JSON.parse(response.body)['review']['recommend']).to eq(true)
+        expect(JSON.parse(response.body)['review']['experience']).to eq(false)
+      end
+
+      it 'does match the status code 200' do
+        post :companies_review, params: {company_id: @buyer.company.id, know: true, trade: false, recommend:true, experience:false}
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+
+    context 'when authorized user to review the company' do
+      it 'does match the parameters' do
+        create(:review, company_id: @buyer.company.id, customer_id: @customer.id)
+        post :companies_review, params: {company_id: @buyer.company.id, know: true, trade: false, recommend:true, experience:false}
+        expect(JSON.parse(response.body)['review']['know']).to eq(true)
+        expect(JSON.parse(response.body)['review']['trade']).to eq(false)
+        expect(JSON.parse(response.body)['review']['recommend']).to eq(true)
+        expect(JSON.parse(response.body)['review']['experience']).to eq(false)
+      end
+
+      it 'does match the status code 201' do
+        create(:review, company_id: @buyer.company.id, customer_id: @customer.id)
+        post :companies_review, params: {company_id: @buyer.company.id, know: true, trade: false, recommend:true, experience:false}
+        expect(JSON.parse(response.body)['response_code']).to eq(201)
+      end
+    end
+
+  end
+
+  describe '#show_review' do
+    context "when unauthenticated user try to access show_review" do
+      it 'does show not authenticated' do
+        request.headers.merge!(authorization: 'unknowtoken')
+        get :show_review
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context "when authenticated user try to access show_review if record not found" do
+      it 'does show Record not Found' do
+        get :show_review, params: {company_id: 'ul'}
+        response.body.should have_content('Record not Found')
+      end
+    end
+
+    context "when authenticated user try to access show_review" do
+      it 'does match the status code 200' do
+        create(:review, company_id: @buyer.company.id, customer_id: @customer.id)
+        get :show_review, params: {company_id: @buyer.company.id}
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+  end
+
+
+  describe '#count_companies_review' do
+    context 'when unauthenticated user want to show customer info' do
+      it 'does show Not authenticated' do
+        request.headers.merge!(authorization: 'Unknown token')
+        get :count_companies_review
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when Authenticated user want to show own info' do
+      it 'does show info of company' do
+        create_review(@buyer.id, @customer.company_id)
+        get :count_companies_review
+        rank = Rank.find_by(company_id: @customer.company_id)
+        expect(JSON.parse(response.body)['success']).to be true
+        expect(JSON.parse(response.body)['companies_rated_count']['rank']).to eq(rank.rank)
+      end
+    end
+
+    context 'when Authenticated user want to show own info' do
+      it 'does show info of company' do
+        create_review(@buyer.id, @customer.company_id)
+        create_review(@buyer.id, @customer.company_id)
+        create_review(@customer.id, @buyer.company_id)
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        get :count_companies_review
+        rank = Rank.find_by(company_id: @customer.company_id)
+        expect(JSON.parse(response.body)['success']).to be true
+        expect(JSON.parse(response.body)['companies_rated_count']['rank']).to eq(rank.rank)
+      end
+    end
+  end
+
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190122154231) do
+ActiveRecord::Schema.define(version: 20190126121041) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -442,9 +442,8 @@ ActiveRecord::Schema.define(version: 20190122154231) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "proposal_id"
-    t.integer "transaction_id"
-    t.integer "live_monitoring_request_id"
     t.bigint "premission_request_id"
+    t.integer "partial_payment_id"
     t.index ["premission_request_id"], name: "index_messages_on_premission_request_id"
     t.index ["receiver_id"], name: "index_messages_on_receiver_id"
     t.index ["sender_id"], name: "index_messages_on_sender_id"
@@ -526,6 +525,8 @@ ActiveRecord::Schema.define(version: 20190122154231) do
     t.decimal "amount", precision: 16, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "seller_reject"
+    t.boolean "seller_confirmed"
     t.index ["company_id"], name: "index_partial_payments_on_company_id"
     t.index ["transaction_id"], name: "index_partial_payments_on_transaction_id"
   end
@@ -633,6 +634,28 @@ ActiveRecord::Schema.define(version: 20190122154231) do
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
+  create_table "ranks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "company_id"
+    t.integer "yes_know"
+    t.integer "not_know"
+    t.integer "yes_trade"
+    t.integer "not_trade"
+    t.integer "yes_recommend"
+    t.integer "not_recommend"
+    t.integer "yes_experience"
+    t.integer "not_experience"
+    t.float "total_know", limit: 24
+    t.float "total_trade", limit: 24
+    t.float "total_recommend", limit: 24
+    t.float "total_experience", limit: 24
+    t.float "total_average", limit: 24
+    t.string "rank"
+    t.integer "total_number_of_comapnies_rated"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_ranks_on_company_id"
+  end
+
   create_table "ratings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "tender_id"
     t.integer "customer_id"
@@ -685,21 +708,12 @@ ActiveRecord::Schema.define(version: 20190122154231) do
     t.integer "buyer_id"
     t.integer "invoices_overdue"
     t.date "paid_date"
-    t.integer "late_days"
-    t.integer "buyer_days_limit"
-    t.decimal "market_limit", precision: 10, scale: 2
     t.integer "supplier_paid"
     t.decimal "outstandings", precision: 10, scale: 2
     t.decimal "overdue_amount", precision: 10, scale: 2
-    t.decimal "given_credit_limit", precision: 10, scale: 2
-    t.decimal "given_market_limit", precision: 10, scale: 2
-    t.decimal "given_overdue_limit", precision: 10, scale: 2
     t.date "last_bought_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "supplier_unpaid", default: 0
-    t.decimal "percentage", precision: 10, scale: 2, default: "0.0"
-    t.decimal "activity_bought", precision: 10, scale: 2
     t.decimal "buyer_percentage", precision: 10, scale: 2, default: "0.0"
     t.decimal "system_percentage", precision: 10, scale: 2, default: "0.0"
     t.string "payment_score"
@@ -1052,7 +1066,6 @@ ActiveRecord::Schema.define(version: 20190122154231) do
     t.boolean "buyer_reject", default: false
     t.boolean "cancel", default: false
     t.datetime "deleted_at"
-    t.boolean "seller_confirmed", default: false
     t.datetime "paid_at"
     t.index ["deleted_at"], name: "index_transactions_on_deleted_at"
   end
@@ -1124,4 +1137,5 @@ ActiveRecord::Schema.define(version: 20190122154231) do
 
   add_foreign_key "messages", "premission_requests"
   add_foreign_key "negotiations", "proposals"
+  add_foreign_key "ranks", "companies"
 end

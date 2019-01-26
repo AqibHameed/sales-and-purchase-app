@@ -17,14 +17,22 @@
       $('#trading_document_credit_field').val('E')
       $('#trading_document_price_field').val('F')
     }
-    else if(val == "<%= DemandSupplier::RUSSIAN %>" || val == "Russian"){
-      $('#trading_parcel_diamond_type').val('Sight')
-      $('.common').removeClass('hide')
-      $('.rough_diamond').addClass('hide')
-      $('.sight_diamond').removeClass('hide')
-      $('.polished').addClass('hide')
-      $('#trading_document_credit_field').val('I')
-      $('#trading_document_price_field').val('H')
+    else if(val == "<%= DemandSupplier::RUSSIAN %>" || val == "Russian") {
+        $('#trading_parcel_diamond_type').val('Sight')
+        $('.common').removeClass('hide')
+        $('.rough_diamond').addClass('hide')
+        $('.sight_diamond').removeClass('hide')
+        $('.polished').addClass('hide')
+        $('#trading_document_credit_field').val('I')
+        $('#trading_document_price_field').val('H')
+    }else if(val == "<%= DemandSupplier::CATOCA %>" || val == "Russian"){
+            $('#trading_parcel_diamond_type').val('Sight')
+            $('.common').removeClass('hide')
+            $('.rough_diamond').addClass('hide')
+            $('.sight_diamond').removeClass('hide')
+            $('.polished').addClass('hide')
+            $('#trading_document_credit_field').val('I')
+            $('#trading_document_price_field').val('H')
     }else if(val == "<%= DemandSupplier::DTC %>") {
       $('#trading_parcel_diamond_type').val('Sight')
       $('.common').removeClass('hide')
@@ -41,7 +49,7 @@
       $('.polished').addClass('hide')
       $('#trading_document_credit_field').val('E')
       $('#trading_document_price_field').val('F')
-    }else if(val == "<%= DemandSupplier::POLISHED %>>" || val == "Polished") {
+    }else if(val == "<%= DemandSupplier::POLISHED %>" || val == "Polished") {
       $('#trading_parcel_diamond_type').val('Polished')
       $('.polished').removeClass('hide')
       $('.common').addClass('hide')
