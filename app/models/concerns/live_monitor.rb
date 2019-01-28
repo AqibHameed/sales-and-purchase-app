@@ -56,7 +56,6 @@ module LiveMonitor
 
       date = transactions.present? ? transactions.last.partial_payment.last.updated_at : nil
     end
-
     secure_center.invoices_overdue = company_transactions.where("due_date < ? AND paid = ? AND remaining_amount > 2000", Date.current, false).count
     secure_center.paid_date = date
     secure_center.supplier_paid = company.supplier_paid + company.buyer_connected
