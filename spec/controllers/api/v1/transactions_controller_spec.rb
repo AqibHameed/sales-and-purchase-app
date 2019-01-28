@@ -6,7 +6,7 @@ RSpec.describe Api::V1::TransactionsController do
     @buyer = create_buyer
     @parcel = create_parcel(@customer)
 
-    @transaction =  create_transaction(@buyer, @customer, @parcel)
+      @transaction =  create_transaction(@buyer, @customer, @parcel)
   end
 
   before(:each) do
