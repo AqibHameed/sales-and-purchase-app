@@ -2239,7 +2239,7 @@
         },
         {
           "title": "Request-Example2:",
-          "content": "{\n  \"id\": 17,\n  \"seller_reject\": \"true\"\n}",
+          "content": "{\n  \"payment_id\": 17,\n  \"seller_reject\": \"true\"\n}",
           "type": "json"
         }
       ]
