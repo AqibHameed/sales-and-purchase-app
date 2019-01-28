@@ -24,9 +24,9 @@ class Transaction < ApplicationRecord
   end
 
   def self.sell_confirm_auto
-    puts "********* Confirm Transactions created before 7 days *****************"
-    partial_payments = PartialPayment.where('buyer_confirmed = ? AND created_at < ?', false, 7.days.ago)
-    partial_payments.update(buyer_confirmed: true) unless partial_payments.empty?
+    puts "********* Confirm Pyament created before 7 days *****************"
+    partial_payments = PartialPayment.where('payment_status IN (?) AND created_at < ?', [0, 2], 7.days.ago)
+    partial_payments.update(payment_status: 1) unless partial_payments.empty?
   end
 
 
