@@ -8,6 +8,7 @@ RSpec.describe Api::V1::TendersController do
     @tender = create(:tender, supplier: @supplier, open_date: DateTime.now - 1, close_date: DateTime.now + 2)
     @tender = create(:tender, supplier: @supplier, open_date: DateTime.now + 1, close_date: DateTime.now + 2)
     @stone = create(:stone, tender_id: @tender.id)
+    @tender_winner = create(:tender_winner, tender: @tender)
   end
 
   before(:each) do
@@ -119,6 +120,33 @@ RSpec.describe Api::V1::TendersController do
         expect(JSON.parse(response.body)['stone_parcel']['id']).to eq(@stone.id)
         expect(JSON.parse(response.body)['stone_parcel']['comments']).to eq('It is good')
         expect(JSON.parse(response.body)['stone_parcel']['parcel_rating']).to eq(5)
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+  end
+
+  describe '#tender_winners' do
+    context 'when user access tender_winners if tender winner not found' do
+      it 'does match the status 200' do
+        get :tender_winners
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+
+    context 'when user access tender_winners if tender winner is found' do
+      it 'does match the record' do
+        get :tender_winners, params: {tender_id: @tender.id}
+        expect(JSON.parse(response.body).first.last.last['description']).to eq(@tender_winner.description)
+        expect(JSON.parse(response.body).first.last.last['selling_price']).to eq(@tender_winner.selling_price)
+        expect(JSON.parse(response.body).first.last.last['deec_no']).to eq(@stone.deec_no)
+        expect(JSON.parse(response.body).first.last.last['lot_no']).to eq(@stone.lot_no)
+        expect(JSON.parse(response.body).first.last.last['weight']).to eq(@stone.weight)
+      end
+    end
+
+    context 'when user access tender_winners if tender winner is found' do
+      it 'does match the status 200' do
+        get :tender_winners, params: {tender_id: @tender.id}
         expect(JSON.parse(response.body)['response_code']).to eq(200)
       end
     end
