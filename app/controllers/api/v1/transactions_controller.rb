@@ -96,14 +96,22 @@ module Api
           @partial_payment = PartialPayment.find_by(id: params[:payment_id])
           if @partial_payment.present?
             if params[:seller_confirm] == "true"
-              @partial_payment.seller_confirmed = true
+              @transaction = @partial_payment.user_transaction
+              if (current_customer.has_role?("Trader") || @transaction.seller_id == current_company.id ) && @transaction.remaining_amount == 0
+                unless @transaction.partial_payment.where(payment_status: [0, 2]).present?
+                  @transaction.paid = true
+                  @transaction.paid_at = DateTime.now
+                  @transaction.save
+                end
+              end
+              @partial_payment.payment_status = 1
               if @partial_payment.save
                 render json: {success: true, message: 'Payment confirm successfully'}
               else
                 render json: {success: false, message: 'Not confirm now. Please try again.'}
               end
             elsif params[:seller_reject] == "true"
-              @partial_payment.seller_reject = true
+              @partial_payment.payment_status = 0
               if @partial_payment.save
                 TenderMailer.seller_reject_transaction(@partial_payment).deliver
                 render json: { success: true, message: 'Payment rejected successfully' }
@@ -162,11 +170,14 @@ module Api
           if @transaction.present?
             amount = @transaction.remaining_amount
             @transaction.remaining_amount = amount - @payment.amount
-            #@transaction.update_column(:remaining_amount, amount - @payment.amount)
-            if @transaction.remaining_amount == 0
+            if (current_customer.has_role?("Buyer") || @transaction.buyer_id == current_company.id ) && @transaction.remaining_amount == 0
+              unless @transaction.partial_payment.where(payment_status: [0, 2]).present?
+                  @transaction.paid = true
+                  @transaction.paid_at = DateTime.now
+              end
+            else
               @transaction.paid = true
               @transaction.paid_at = DateTime.now
-              #@transaction.update_column(:paid, true)
             end
             @transaction.save
             if current_customer.has_role?("Buyer")
