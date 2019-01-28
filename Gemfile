@@ -27,7 +27,7 @@ gem 'bootstrap-sass'
 gem 'delayed_job_active_record'
 gem 'momentjs-rails', '>= 2.9.0'
 gem "jquery-monthpicker-rails", "~> 1.0.0"
-gem 'countdown'
+# gem 'countdown'
 gem 'exception_notification'
 gem 'faker'
 gem  'ffaker'

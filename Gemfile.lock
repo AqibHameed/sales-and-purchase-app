@@ -152,8 +152,6 @@ GEM
     commander (4.4.3)
       highline (~> 1.7.2)
     concurrent-ruby (1.1.4)
-    countdown (0.1.0)
-      json
     countries (2.1.4)
       i18n_data (~> 0.8.0)
       money (~> 6.9)
@@ -632,7 +630,6 @@ DEPENDENCIES
   chromedriver-helper
   cloudinary
   coffee-rails
-  countdown
   country_select
   database_cleaner
   delayed_job_active_record
@@ -702,6 +699,3 @@ DEPENDENCIES
   webmock
   whenever
   xray-rails
-
-BUNDLED WITH
-   1.16.6

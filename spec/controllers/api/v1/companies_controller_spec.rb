@@ -11,7 +11,14 @@ RSpec.describe Api::V1::CompaniesController do
                     seller_score: true}
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
 
-  create (:transaction,)
+    create(:transaction, buyer_id:@customer.company_id,
+           seller_id:  @buyer.company_id,
+           trading_parcel_id: @parcel.id,
+           due_date: Date.current + 12,
+           created_at: 10.days.ago,
+           paid: false,
+           credit: 20
+    )
 
   end
 
