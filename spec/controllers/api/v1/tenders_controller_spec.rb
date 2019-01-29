@@ -151,6 +151,26 @@ RSpec.describe Api::V1::TendersController do
       end
     end
   end
+
+  describe '#tender_parcel' do
+    context 'when user access tender_parcel if stone not found' do
+      it 'does match the status 200' do
+        get :tender_parcel
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+
+    context 'when user access tender_parcel if stone is found' do
+      it 'does match the record' do
+        get :tender_parcel, params: {tender_id: @tender.id}
+        expect(JSON.parse(response.body)['tender_parcels'].first['stone_type']).to eq(@stone.stone_type)
+        expect(JSON.parse(response.body)['tender_parcels'].first['no_of_stones']).to eq(@stone.no_of_stones)
+        expect(JSON.parse(response.body)['tender_parcels'].first['weight']).to eq( @stone.weight)
+        expect(JSON.parse(response.body)['tender_parcels'].first['deec_no']).to eq( @stone.deec_no)
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+  end
 end
 
 
