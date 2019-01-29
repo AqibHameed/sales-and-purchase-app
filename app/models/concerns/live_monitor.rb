@@ -27,26 +27,26 @@ module LiveMonitor
     market_score = MarketBuyerScore.get_scores
     transactions = Transaction.where('due_date < ? AND paid=? AND seller_id=? AND paid_at > due_date', DateTime.now, true, current_company.id)
     transactions.each do |transaction|
-      late_days_payment = transaction.paid_at.to_date - transaction.due_date.to_date
-      if late_days_payment <= 0.day
+      late_days_payment = (transaction.paid_at.to_date - transaction.due_date.to_date).to_i
+      if late_days_payment <= 0
         in_zero += 1
-      elsif late_days_payment > 0.day && late_days_payment <= 15.days
+      elsif late_days_payment > 0 && late_days_payment <= 15
         in_fiften += 1
-      elsif late_days_payment > 15.days && late_days_payment <= 30.days
+      elsif late_days_payment > 15 && late_days_payment <= 30
         in_thirty += 1
-      elsif late_days_payment > 30.days && late_days_payment <= 45.days
+      elsif late_days_payment > 30 && late_days_payment <= 45
         in_fourty_five += 1
-      elsif late_days_payment > 45.days
+      elsif late_days_payment > 45
         greater_fourty_five += 1
       end
     end
     unless transactions.size <= 0
       collection_payment_ratio = {
-          zero_percent: in_zero / transactions.size,
-          less_fifteen: in_fiften / transactions.size,
-          less_thirty: in_thirty / transactions.size,
-          less_fourty_five: in_fourty_five / transactions.size,
-          greater_fourty_five: greater_fourty_five / transactions.size
+          zero_percent: (in_zero / transactions.size.to_f).round(2),
+          less_fifteen: (in_fiften / transactions.size.to_f).round(2),
+          less_thirty: (in_thirty / transactions.size.to_f).round(2),
+          less_fourty_five: (in_fourty_five / transactions.size.to_f).round(2),
+          greater_fourty_five: (greater_fourty_five / transactions.size.to_f).round(2)
       }
     end
     if company_transactions.present?
