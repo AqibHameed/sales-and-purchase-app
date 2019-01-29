@@ -5,8 +5,8 @@ RSpec.describe Api::V1::TendersController do
     @customer = create_customer
     @supplier = create(:supplier)
     # @tender = create_tender
-    @tender = create(:tender, supplier: @supplier, open_date: DateTime.now - 1, close_date: DateTime.now + 2)
-    @tender = create(:tender, supplier: @supplier, open_date: DateTime.now + 1, close_date: DateTime.now + 2)
+    @tender = create(:tender, supplier: @supplier, open_date: DateTime.current - 1, close_date: DateTime.current + 2)
+    @tender = create(:tender, supplier: @supplier, open_date: DateTime.current + 1, close_date: DateTime.current + 2)
     @stone = create(:stone, tender_id: @tender.id)
     @tender_winner = create(:tender_winner, tender: @tender)
   end
@@ -39,17 +39,17 @@ RSpec.describe Api::V1::TendersController do
     end
     context 'when authorized  tender access the api' do
       it 'does show the upcoming tenders' do
-        tender = create(:tender, supplier: @supplier, open_date: DateTime.now + 1, close_date: DateTime.now + 2)
+        tender = create(:tender, supplier: @supplier, open_date: DateTime.current + 1, close_date: DateTime.current + 2)
         get :index
-        expect(JSON.parse(response.body)['tenders'].last['start_date'].to_datetime).to be > DateTime.now
+        expect(JSON.parse(response.body)['tenders'].last['start_date'].to_datetime).to be > DateTime.current
       end
     end
 
     context 'when authorized  tender access the api' do
       it 'does show the past tenders' do
-        tender = create(:tender, supplier: @supplier, open_date: DateTime.now - 2, close_date: DateTime.now - 1)
+        tender = create(:tender, supplier: @supplier, open_date: DateTime.current - 2, close_date: DateTime.current - 1)
         get :index
-        expect(JSON.parse(response.body)['tenders'].first['end_date'].to_datetime).to be < DateTime.now
+        expect(JSON.parse(response.body)['tenders'].first['end_date'].to_datetime).to be < DateTime.current
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Api::V1::TendersController do
     context 'when authorized  tender access the api' do
       it 'does show the upcoming tenders' do
         get :index
-        expect(JSON.parse(response.body)['tenders'].last['start_date'].to_datetime).to be > DateTime.now
+        expect(JSON.parse(response.body)['tenders'].last['start_date'].to_datetime).to be > DateTime.current
       end
     end
 
