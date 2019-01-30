@@ -100,7 +100,7 @@ module ApplicationHelper
     elsif condition =='less_30'
       transactions = Transaction.where('credit >= ? and credit <= ? and buyer_id =?',1, 30, customer.id)
       count = transactions.count
-      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.current, false, true, 1, 0).sum(:total_amount)
+      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.current, false, true, 1, 30).sum(:total_amount)
       overdue = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.current, false, true, 1, 30).sum(:total_amount)
       complete = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, true, true, 1, 30).sum(:total_amount)
     elsif condition =='60'
