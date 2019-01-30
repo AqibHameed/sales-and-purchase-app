@@ -318,11 +318,11 @@ class Api::V1::CompaniesController < ApplicationController
         },
         "recommend": {
             "yes": 6,
-            "no": null
+            "no": 0
         },
         "experience": {
             "yes": 5,
-            "no": null
+            "no": 0
         },
         "total_number_of_comapnies_rated": 9,
         "rank": "top 20"
@@ -965,23 +965,23 @@ class Api::V1::CompaniesController < ApplicationController
   def companies_rated_count(rank)
     {
         know:{
-            yes: rank.present? ? rank.yes_know : nil,
-            no: rank.present? ? rank.not_know : nil
+            yes: rank.present? ? rank.yes_know : 0,
+            no: rank.present? ? rank.not_know : 0
         },
         trade:{
-            yes: rank.present? ? rank.yes_trade : nil,
-            no: rank.present? ? rank.not_trade : nil
+            yes: rank.present? ? rank.yes_trade : 0,
+            no: rank.present? ? rank.not_trade : 0
         },
         recommend:{
-            yes: rank.present? ? rank.yes_recommend : nil,
-            no: rank.present? ? rank.not_recommend : nil
+            yes: rank.present? ? rank.yes_recommend : 0,
+            no: rank.present? ? rank.not_recommend : 0
         },
         experience:{
-            yes: rank.present? ? rank.yes_experience : nil,
-            no: rank.present? ? rank.not_experience : nil
+            yes: rank.present? ? rank.yes_experience : 0,
+            no: rank.present? ? rank.not_experience : 0
         },
-        total_number_of_comapnies_rated: rank.present? ? rank.total_number_of_comapnies_rated : nil,
-        rank: rank.present? ? rank.rank : nil
+        total_number_of_comapnies_rated: rank.present? ? rank.total_number_of_comapnies_rated : 0,
+        rank: rank.present? ? rank.rank : 0
     }
   end
 
