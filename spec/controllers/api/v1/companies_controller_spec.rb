@@ -425,7 +425,7 @@ RSpec.describe Api::V1::CompaniesController do
   end
 
 
-  describe '#count_companies_review' do 
+  describe '#count_companies_review' do
     context 'when unauthenticated user want to show customer info' do
       it 'does show Not authenticated' do
         request.headers.merge!(authorization: 'Unknown token')
@@ -476,32 +476,14 @@ RSpec.describe Api::V1::CompaniesController do
         companies = Company.select(" companies.id,count(companies.id) as transaction_count,companies.name,sum(t.remaining_amount) as remaining_amount").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{@customer.company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )").group(:id).order(:id)
         get :seller_companies, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['companies'].first['id']).to eq(companies.first.id)
-      end
-    end
-
-
-    context 'when unknown user wants to access api' do
-      it 'does show check name of the selected company against current customer' do
-        companies = Company.select(" companies.id,count(companies.id) as transaction_count,companies.name,sum(t.remaining_amount) as remaining_amount").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{@customer.company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )").group(:id).order(:id)
-        get :seller_companies, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['companies'].first['name']).to eq(companies.first.name)
-      end
-    end
-
-    context 'when unknown user wants to access api' do
-      it 'does show check transaction_count  of the selected company against current customer' do
-        companies = Company.select(" companies.id,count(companies.id) as transaction_count,companies.name,sum(t.remaining_amount) as remaining_amount").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{@customer.company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )").group(:id).order(:id)
-        get :seller_companies, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['companies'].first['transaction_count']).to eq(companies.first.transaction_count )
-      end
-    end
-    context 'when unknown user wants to access api' do
-      it 'does show check remaining_amount  of the selected company against current customer' do
-        companies = Company.select(" companies.id,count(companies.id) as transaction_count,companies.name,sum(t.remaining_amount) as remaining_amount").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{@customer.company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )").group(:id).order(:id)
-        get :seller_companies, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['companies'].first['remaining_amount'].to_f).to eq(companies.first.remaining_amount.to_f)
       end
     end
+
+
+
 
     context 'when unknown user wants to access api' do
       it 'does show check amount_due  of the selected company against current customer' do
