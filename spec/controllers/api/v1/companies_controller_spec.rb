@@ -447,11 +447,11 @@ RSpec.describe Api::V1::CompaniesController do
     context 'when Authenticated user want to show own info' do
       it 'does show info of company' do
         create_review(@buyer.id, @customer.company_id)
-        # create_review(@buyer.id, @customer.company_id)
+        create_review(@buyer.id, @customer.company_id)
         create_review(@customer.id, @buyer.company_id)
-        request.headers.merge!(authorization: @buyer.authentication_token)
+        request.headers.merge!(authorization: @customer.authentication_token)
         get :count_companies_review
-        rank = Rank.find_by(company_id: @buyer.company_id)
+        rank = Rank.find_by(company_id: @customer.company_id)
         expect(JSON.parse(response.body)['success']).to be true
         expect(JSON.parse(response.body)['companies_rated_count']['rank']).to eq(rank.rank)
       end
