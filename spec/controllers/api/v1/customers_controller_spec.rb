@@ -13,39 +13,8 @@ RSpec.describe Api::V1::CustomersController do
                     secure_center: true,
                     seller_score: true,
                     status: 'accepted',
-                    buyer_score: true}
-    create(:transaction, buyer_id: @customer.company_id,
-           seller_id: @buyer.company_id,
-           trading_parcel_id: @parcel.id,
-           due_date: Date.current + 12,
-           created_at: 10.days.ago,
-           paid: false,
-           credit:0
-    )
-    create(:transaction, buyer_id: @buyer.company_id,
-           seller_id: @customer.company_id,
-           trading_parcel_id: @parcel.id,
-           due_date: Date.current + 12,
-           created_at: 10.days.ago,
-           paid: false,
-           credit:0
-    )
-    create(:transaction, buyer_id: @buyer.company_id,
-           seller_id: @customer.company_id,
-           trading_parcel_id: @parcel.id,
-           due_date: Date.current - 12,
-           created_at: 10.days.ago,
-           paid: false,
-           credit:0
-    )
-    create(:transaction, buyer_id: @customer.company_id,
-           seller_id: @buyer.company_id,
-           trading_parcel_id: @parcel.id,
-           due_date: Date.current - 12,
-           created_at: 10.days.ago,
-           paid: false,
-           credit:0
-    )
+                    buyer_score: true,
+                    }
     create(:transaction, buyer_id: @buyer.company_id,
            seller_id: @customer.company_id,
            trading_parcel_id: @parcel.id,
@@ -110,44 +79,42 @@ RSpec.describe Api::V1::CustomersController do
 
   before(:each) do
     request.headers.merge!(authorization: @customer.authentication_token)
-    1.upto(5) do
-      create(:transaction, buyer_id: @buyer.company_id,
-             seller_id: @customer.company_id,
-             trading_parcel_id: @parcel.id,
-             due_date: Date.current + 30,
-             created_at: 10.days.ago,
-             paid: true
-      )
-    end
 
-    1.upto(5) do
-      create(:transaction, buyer_id: @buyer.company_id,
-             seller_id: @customer.company_id,
-             trading_parcel_id: @parcel.id,
-             due_date: Date.current + 30,
-             created_at: 10.days.ago,
-             paid: false
-      )
-    end
-    1.upto(5) do
-      create(:transaction, buyer_id:@customer.company_id,
-             seller_id: @buyer.company_id,
-             trading_parcel_id: @parcel.id,
-             due_date: Date.current + 30,
-             created_at: 10.days.ago,
-             paid: true
-      )
-    end
+    create(:transaction, buyer_id: @buyer.company_id,
+           seller_id: @customer.company_id,
+           trading_parcel_id: @parcel.id,
+           due_date: Date.current - 12,
+           created_at: 10.days.ago,
+           paid: false,
+           credit:0
+    )
+    create(:transaction, buyer_id: @customer.company_id,
+           seller_id: @buyer.company_id,
+           trading_parcel_id: @parcel.id,
+           due_date: Date.current - 12,
+           created_at: 10.days.ago,
+           paid: false,
+           credit:0
+    )
 
-    1.upto(5) do
-      create(:transaction, buyer_id:  @customer.company_id,
-             seller_id:@buyer.company_id,
-             trading_parcel_id: @parcel.id,
-             due_date: Date.current + 30,
-             created_at: 10.days.ago,
-             paid: false
-      )
-    end
+
+    create(:transaction, buyer_id: @buyer.company_id,
+           seller_id: @customer.company_id,
+           trading_parcel_id: @parcel.id,
+           due_date: Date.current + 30,
+           created_at: 10.days.ago,
+           paid: false,
+           credit:0
+    )
+    create(:transaction, buyer_id:  @customer.company_id,
+           seller_id:@buyer.company_id,
+           trading_parcel_id: @parcel.id,
+           due_date: Date.current + 12,
+           created_at: 10.days.ago,
+           paid: false,
+           credit:0
+    )
+
   end
   describe '#access_tiles' do
     context 'when unauhorized user want to access the api' do
@@ -225,12 +192,12 @@ RSpec.describe Api::V1::CustomersController do
     end
 
     context 'when unauhorized user want to access the api' do
-          it 'does show Not Authenticated ' do
-            request.headers.merge!(authorization: 'unknown_token')
-            get :info, params: {receiver_id: @customer.company.id}
-            response.body.should have_content('Not authenticated')
-          end
-        end
+      it 'does show Not Authenticated ' do
+        request.headers.merge!(authorization: 'unknown_token')
+        get :info, params: {receiver_id: @customer.company.id}
+        response.body.should have_content('Not authenticated')
+      end
+    end
 
     context 'when authorized user want to access the info api' do
       it 'does check pending transection of current customer' do
@@ -261,7 +228,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does check credit_given_to of sales of current customer(saller)' do
         credit_limit = CreditLimit.where(seller_id: @customer.company_id)
         get :info , params:{receiver_id: @customer.company.id}
-
         expect(JSON.parse(response.body)['sales']['credit_given_to']).to eq(credit_limit.size)
       end
     end
@@ -270,7 +236,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does check credit_given_to of sales of current customer(saller)' do
         credit_given = CreditLimit.where(seller_id: @customer.company_id).sum(:credit_limit)
         get :info , params:{receiver_id: @customer.company.id}
-
         expect(JSON.parse(response.body)['sales']['total_given_credit'].to_i).to eq(credit_given)
       end
     end
@@ -321,7 +286,6 @@ RSpec.describe Api::V1::CustomersController do
         pending_percent = ((pending / total_pending.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(pending)}(#{pending_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-
         expect(JSON.parse(response.body)['sales']['sales'].first['pending_transaction']).to eq(final)
 
       end
@@ -559,6 +523,7 @@ RSpec.describe Api::V1::CustomersController do
     end
 
   end
+
   describe "#seller_scores" do
     context 'when authenticated user want to see his own seller score'do
       it 'does show his seller score' do
@@ -595,6 +560,7 @@ RSpec.describe Api::V1::CustomersController do
       end
     end
   end
+
   describe "#buyer_scores" do
     context 'when authenticated user want to see his own buyer score'do
       it 'does show his seller score' do
