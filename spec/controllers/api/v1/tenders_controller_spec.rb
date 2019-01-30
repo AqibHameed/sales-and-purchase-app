@@ -1,11 +1,18 @@
 require 'rails_helper'
 RSpec.describe Api::V1::TendersController do
   before(:all) do
-    # create_roles
+    create_roles
+    @customer = create_customer
     @supplier = create(:supplier)
     # @tender = create_tender
-    @tender = create(:tender, supplier: @supplier, open_date: DateTime.now - 1, close_date: DateTime.now + 2)
-    @tender = create(:tender, supplier: @supplier, open_date: DateTime.now + 1, close_date: DateTime.now + 2)
+    @tender = create(:tender, supplier: @supplier, open_date: DateTime.current - 1, close_date: DateTime.current + 2)
+    @tender = create(:tender, supplier: @supplier, open_date: DateTime.current + 1, close_date: DateTime.current + 2)
+    @stone = create(:stone, tender_id: @tender.id)
+    @tender_winner = create(:tender_winner, tender: @tender)
+  end
+
+  before(:each) do
+    request.headers.merge!(authorization: @customer.authentication_token)
   end
 
   describe '#tender_index' do
@@ -32,17 +39,17 @@ RSpec.describe Api::V1::TendersController do
     end
     context 'when authorized  tender access the api' do
       it 'does show the upcoming tenders' do
-        tender = create(:tender, supplier: @supplier, open_date: DateTime.now + 1, close_date: DateTime.now + 2)
+        tender = create(:tender, supplier: @supplier, open_date: DateTime.current + 1, close_date: DateTime.current + 2)
         get :index
-        expect(JSON.parse(response.body)['tenders'].last['start_date'].to_datetime).to be > DateTime.now
+        expect(JSON.parse(response.body)['tenders'].last['start_date'].to_datetime).to be > DateTime.current
       end
     end
 
     context 'when authorized  tender access the api' do
       it 'does show the past tenders' do
-        tender = create(:tender, supplier: @supplier, open_date: DateTime.now - 2, close_date: DateTime.now - 1)
+        tender = create(:tender, supplier: @supplier, open_date: DateTime.current - 2, close_date: DateTime.current - 1)
         get :index
-        expect(JSON.parse(response.body)['tenders'].first['end_date'].to_datetime).to be < DateTime.now
+        expect(JSON.parse(response.body)['tenders'].first['end_date'].to_datetime).to be < DateTime.current
       end
     end
 
@@ -57,7 +64,7 @@ RSpec.describe Api::V1::TendersController do
     context 'when authorized  tender access the api' do
       it 'does show the upcoming tenders' do
         get :index
-        expect(JSON.parse(response.body)['tenders'].last['start_date'].to_datetime).to be > DateTime.now
+        expect(JSON.parse(response.body)['tenders'].last['start_date'].to_datetime).to be > DateTime.current
       end
     end
 
@@ -79,6 +86,68 @@ RSpec.describe Api::V1::TendersController do
         get :index, params: {supplier: @tender.supplier_id}
         tender = Tender.find_by(id: JSON.parse(response.body)['tenders'].first['id'])
         expect(tender.supplier.name).to eq(@tender.supplier.name)
+      end
+    end
+  end
+
+  describe '#stone_parcel' do
+    context 'when unknown user want to access stone parcel Api' do
+      it 'does show message not authenticated user' do
+        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+        post :stone_parcel
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user want to access stone parcel Api' do
+      it 'does show message not authenticated user' do
+        post :stone_parcel
+        response.body.should have_content('Parcel not found')
+      end
+    end
+
+    context 'when authorized user want to access stone parcel Api' do
+      it 'does show message not authenticated user' do
+        post :stone_parcel, params: {id: @stone.id}
+        expect(JSON.parse(response.body)['stone_parcel']['id']).to eq(@stone.id)
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+
+    context 'when authorized user want to access stone parcel Api' do
+      it 'does show message not authenticated user' do
+        post :stone_parcel, params: {id: @stone.id, comments: "It is good", parcel_rating: 5}
+        expect(JSON.parse(response.body)['stone_parcel']['id']).to eq(@stone.id)
+        expect(JSON.parse(response.body)['stone_parcel']['comments']).to eq('It is good')
+        expect(JSON.parse(response.body)['stone_parcel']['parcel_rating']).to eq(5)
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+  end
+
+  describe '#tender_winners' do
+    context 'when user access tender_winners if tender winner not found' do
+      it 'does match the status 200' do
+        get :tender_winners
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
+      end
+    end
+
+    context 'when user access tender_winners if tender winner is found' do
+      it 'does match the record' do
+        get :tender_winners, params: {tender_id: @tender.id}
+        expect(JSON.parse(response.body).first.last.last['description']).to eq(@tender_winner.description)
+        expect(JSON.parse(response.body).first.last.last['selling_price']).to eq(@tender_winner.selling_price)
+        expect(JSON.parse(response.body).first.last.last['deec_no']).to eq(@stone.deec_no)
+        expect(JSON.parse(response.body).first.last.last['lot_no']).to eq(@stone.lot_no)
+        expect(JSON.parse(response.body).first.last.last['weight']).to eq(@stone.weight)
+      end
+    end
+
+    context 'when user access tender_winners if tender winner is found' do
+      it 'does match the status 200' do
+        get :tender_winners, params: {tender_id: @tender.id}
+        expect(JSON.parse(response.body)['response_code']).to eq(200)
       end
     end
   end

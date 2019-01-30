@@ -19,7 +19,7 @@ class YesNoBuyerInterest < ApplicationRecord
   end
 
   def before_bidding_start
-   if DateTime.now.to_i < self.bid_open_time.to_i  and self.round == 1
+   if DateTime.current.to_i < self.bid_open_time.to_i  and self.round == 1
     return true
   else
     return false
@@ -27,7 +27,7 @@ class YesNoBuyerInterest < ApplicationRecord
   end
 
   def break_time
-    if (DateTime.now.to_i >  (self.bid_open_time.to_i + self.tender.round_duration.minutes)) && (DateTime.now.to_i < (self.bid_open_time.to_i + self.tender.round_duration.minutes + self.tender.rounds_between_duration.minutes))
+    if (DateTime.current.to_i >  (self.bid_open_time.to_i + self.tender.round_duration.minutes)) && (DateTime.current.to_i < (self.bid_open_time.to_i + self.tender.round_duration.minutes + self.tender.rounds_between_duration.minutes))
       return true
     else
       return false
@@ -35,7 +35,7 @@ class YesNoBuyerInterest < ApplicationRecord
   end
 
   def bidding_start
-    if DateTime.now.to_i >  self.bid_open_time.to_i  && (DateTime.now.to_i <  (self.bid_open_time.to_i + self.tender.round_duration.minutes))
+    if DateTime.current.to_i >  self.bid_open_time.to_i  && (DateTime.current.to_i <  (self.bid_open_time.to_i + self.tender.round_duration.minutes))
       return true
     else
       return false
