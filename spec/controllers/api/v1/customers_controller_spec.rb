@@ -122,7 +122,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does show Not Authenticated ' do
         request.headers.merge!(authorization: 'unknown_token')
         get :access_tiles, params: {tab: 'history'}
-        binding.pry
         response.body.should have_content('Not authenticated')
       end
     end
@@ -130,7 +129,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when authorized Trader want to access the api' do
       it 'does count increase of related tab' do
         get :access_tiles, params: {tab: 'history'}
-        binding.pry
         expect(JSON.parse(response.body)['messages'].first['History']).to eq(true)
         expect(JSON.parse(response.body)['messages'].first['count']).to eq(@customer.tiles_count.history)
       end
@@ -139,7 +137,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when authorized Trader want to access the api' do
       it 'does count increase of related tab' do
         get :access_tiles, params: {tab: 'record_sale'}
-        binding.pry
         expect(JSON.parse(response.body)['messages'].first['Record Sale']).to eq(true)
         expect(JSON.parse(response.body)['messages'].first['count']).to eq(1)
       end
@@ -148,7 +145,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when authorized broker want to access the api' do
       it 'does count increase of related tab' do
         get :access_tiles, params: {tab: 'sell'}
-        binding.pry
         expect(JSON.parse(response.body)['messages'].first['Sell']).to eq(true)
         expect(JSON.parse(response.body)['messages'].first['count']).to eq(1)
       end
@@ -158,7 +154,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does count increase of related tab' do
         request.headers.merge!(authorization: @broker.authentication_token)
         get :access_tiles, params: {tab: 'upcoming_tenders'}
-        binding.pry
         expect(JSON.parse(response.body)['messages'].first['Upcoming Tenders']).to eq(true)
         expect(JSON.parse(response.body)['messages'].first['count']).to eq(@broker.tiles_count.upcoming_tenders)
       end
@@ -169,7 +164,6 @@ RSpec.describe Api::V1::CustomersController do
         request.headers.merge!(authorization: @buyer.authentication_token)
         request.content_type = 'application/json'
         get :access_tiles, params: {tab: 'history'}
-        binding.pry
         expect(JSON.parse(response.body)['messages'].first['History']).to eq(true)
         expect(JSON.parse(response.body)['messages'].first['count']).to eq(@buyer.tiles_count.history)
       end
@@ -179,7 +173,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when not permit user want to access the info api' do
       it 'does show Not company_not_exist ' do
         get :info
-        binding.pry
         response.body.should have_content('company id not exist')
       end
     end
@@ -187,7 +180,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when permited user want to access the info api' do
       it 'does show permissons are not allowed ' do
         get :info, params: {receiver_id: 12}
-        binding.pry
         response.body.should have_content('permission Access denied')
       end
     end
@@ -196,7 +188,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does check total transection of currunt customer' do
         transactions = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', @customer.company.id, @customer.company.id, true).count
         get :info , params:{receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['transactions']['total']).to eq(transactions)
       end
     end
@@ -204,7 +195,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when unauhorized user want to access the api' do
       it 'does show Not Authenticated ' do
         request.headers.merge!(authorization: 'unknown_token')
-        binding.pry
         get :info, params: {receiver_id: @customer.company.id}
         response.body.should have_content('Not authenticated')
       end
@@ -214,7 +204,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does check pending transection of current customer' do
         pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", @customer.company.id, @customer.company.id, Date.current, false, true).count
         get :info , params:{receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['transactions']['pending']).to eq(pending)
       end
     end
@@ -223,7 +212,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does check overdue transection of current customer' do
         overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?",  @customer.company.id,  @customer.company.id, Date.current, false, true).count
         get :info , params:{receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['transactions']['overdue']).to eq(overdue)
       end
     end
@@ -232,8 +220,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does check completed transection of current customer' do
         completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", @customer.company.id, @customer.company.id, true, true).count
         get :info , params:{receiver_id: @customer.company.id}
-        binding.pry
-
         expect(JSON.parse(response.body)['transactions']['completed']).to eq(completed)
       end
     end
@@ -243,7 +229,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does check credit_given_to of sales of current customer(saller)' do
         credit_limit = CreditLimit.where(seller_id: @customer.company_id)
         get :info , params:{receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['credit_given_to']).to eq(credit_limit.size)
       end
     end
@@ -252,7 +237,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does check credit_given_to of sales of current customer(saller)' do
         credit_given = CreditLimit.where(seller_id: @customer.company_id).sum(:credit_limit)
         get :info , params:{receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['total_given_credit'].to_i).to eq(credit_given)
       end
     end
@@ -262,7 +246,6 @@ RSpec.describe Api::V1::CustomersController do
 
         used_credit = Transaction.where(seller_id: @customer.company.id).sum(:remaining_amount)
         get :info , params:{receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['total_used_credit'].to_i).to eq(used_credit.to_i)
       end
     end
@@ -274,7 +257,6 @@ RSpec.describe Api::V1::CustomersController do
         used_credit = Transaction.where(seller_id: @customer.company.id).sum(:remaining_amount)
         available_credit = credit_given - used_credit
         get :info , params:{receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['total_available_credit']).to eq(number_to_currency(available_credit))
       end
     end
@@ -284,7 +266,6 @@ RSpec.describe Api::V1::CustomersController do
         request.headers.merge!(authorization: @buyer.authentication_token)
         credit_limit = CreditLimit.where(buyer_id: @buyer.company_id)
         get :info , params:{receiver_id: @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['credit_recieved_count']).to eq(credit_limit.size)
       end
     end
@@ -294,7 +275,6 @@ RSpec.describe Api::V1::CustomersController do
         request.headers.merge!(authorization: @buyer.authentication_token)
         credit_given = CreditLimit.where(buyer_id: @buyer.company_id).sum(:credit_limit)
         get :info , params:{receiver_id: @buyer .company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['total_credit_received']).to eq(number_to_currency(credit_given))
       end
     end
@@ -307,7 +287,6 @@ RSpec.describe Api::V1::CustomersController do
         pending_percent = ((pending / total_pending.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(pending)}(#{pending_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['sales'].first['pending_transaction']).to eq(final)
 
       end
@@ -320,7 +299,6 @@ RSpec.describe Api::V1::CustomersController do
         overdue_percent = ((overdue / total_overdue.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(overdue)}(#{overdue_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['sales'].first['overdue_transaction']).to eq(final)
 
       end
@@ -335,7 +313,6 @@ RSpec.describe Api::V1::CustomersController do
         complete_percent = ((complete / total_complete.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(complete)}(#{complete_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['sales'].first['complete_transaction']).to eq(final)
 
       end
@@ -348,7 +325,6 @@ RSpec.describe Api::V1::CustomersController do
         count_percent = ((count/credit_given.to_f)*100).to_i rescue 0
         final = "#{count}(#{count_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['sales'].first['percent']).to eq(final)
 
       end
@@ -361,7 +337,6 @@ RSpec.describe Api::V1::CustomersController do
         pending_percent = (( pending / total_pending.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(pending)}(#{pending_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['sales'].second['pending_transaction']).to eq(final)
 
       end
@@ -375,7 +350,6 @@ RSpec.describe Api::V1::CustomersController do
         overdue_percent = ((overdue / total_overdue.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(overdue)}(#{overdue_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['sales'].second['overdue_transaction']).to eq(final)
 
       end
@@ -388,7 +362,6 @@ RSpec.describe Api::V1::CustomersController do
         complete_percent = ((complete / total_complete.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(complete)}(#{complete_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['sales'].second['complete_transaction']).to eq(final)
 
       end
@@ -402,7 +375,6 @@ RSpec.describe Api::V1::CustomersController do
         count_percent = ((count/credit_given.to_f)*100).to_i rescue 0
         final = "#{count}(#{count_percent}%)"
         get :info, params: {receiver_id: @customer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['sales']['sales'].second['percent']).to eq(final)
 
       end
@@ -417,7 +389,6 @@ RSpec.describe Api::V1::CustomersController do
         pending_percent = ((pending / total_pending.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(pending)}(#{pending_percent}%)"
         get :info, params: {receiver_id: @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['purchases'].first['pending_transaction']).to eq(final)
 
       end
@@ -432,7 +403,6 @@ RSpec.describe Api::V1::CustomersController do
         overdue_percent = ((overdue / total_overdue.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(overdue)}(#{overdue_percent}%)"
         get :info, params: {receiver_id: @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['purchases'].first['overdue_transaction']).to eq(final)
 
       end
@@ -447,7 +417,6 @@ RSpec.describe Api::V1::CustomersController do
         complete_percent = ((complete / total_complete.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(complete)}(#{complete_percent}%)"
         get :info, params: {receiver_id:  @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['purchases'].first['complete_transaction']).to eq(final)
 
       end
@@ -461,7 +430,6 @@ RSpec.describe Api::V1::CustomersController do
         count_percent = ((count/credit_given.to_f)*100).to_i rescue 0
         final = "#{count}(#{count_percent}%)"
         get :info, params: {receiver_id:  @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['purchases'].first['percent']).to eq(final)
 
       end
@@ -476,7 +444,6 @@ RSpec.describe Api::V1::CustomersController do
         pending_percent = ((pending / total_pending.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(pending)}(#{pending_percent}%)"
         get :info, params: {receiver_id: @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['purchases'].second['pending_transaction']).to eq(final)
 
       end
@@ -489,7 +456,6 @@ RSpec.describe Api::V1::CustomersController do
         overdue_percent = ((overdue / total_overdue.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(overdue)}(#{overdue_percent}%)"
         get :info, params: {receiver_id: @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['purchases'].second['overdue_transaction']).to eq(final)
 
       end
@@ -502,7 +468,6 @@ RSpec.describe Api::V1::CustomersController do
         complete_percent = ((complete / total_complete.to_f) * 100).to_i rescue 0
         final = "#{number_to_currency(complete)}(#{complete_percent}%)"
         get :info, params: {receiver_id: @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['purchases'].second['complete_transaction']).to eq(final)
 
       end
@@ -515,7 +480,6 @@ RSpec.describe Api::V1::CustomersController do
         count_percent = ((count/credit_given.to_f)*100).to_i rescue 0
         final = "#{count}(#{count_percent}%)"
         get :info, params: {receiver_id: @buyer.company.id}
-        binding.pry
         expect(JSON.parse(response.body)['purchases']['purchases'].second['percent']).to eq(final)
 
       end
@@ -528,7 +492,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does show Not Authenticated ' do
         request.headers.merge!(authorization: 'unknown_token')
         get :feedback_rating
-        binding.pry
         response.body.should have_content('Not authenticated')
       end
     end
@@ -536,7 +499,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when auhorized user want to access the feedback_rating api' do
       it 'does show Not Authenticated ' do
         get :feedback_rating, params: {trading_parcel_id: @parcel.id, rating: 5, comment: "It is good"}
-        binding.pry
         expect(JSON.parse(response.body)['feedback']['trading_parcel_id']).to eq(@parcel.id)
         expect(JSON.parse(response.body)['feedback']['feedback_rating']).to eq(5)
         expect(JSON.parse(response.body)['feedback']['comments']).to eq('It is good')
@@ -546,7 +508,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when auhorized user want to access the feedback_rating api' do
       it 'does show Not Authenticated ' do
         get :feedback_rating, params: {trading_parcel_id: @parcel.id, rating: 6, comment: "It is bad"}
-        binding.pry
         expect(JSON.parse(response.body)['feedback']['trading_parcel_id']).to eq(@parcel.id)
         expect(JSON.parse(response.body)['feedback']['feedback_rating']).to eq(6)
         expect(JSON.parse(response.body)['feedback']['comments']).to eq('It is bad')
@@ -556,7 +517,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when auhorized user want to access the feedback_rating api' do
       it 'does show Not Authenticated ' do
         get :feedback_rating
-        binding.pry
         response.body.should have_content('Record not found')
 
       end
@@ -569,7 +529,6 @@ RSpec.describe Api::V1::CustomersController do
       it 'does show his seller score' do
         get :seller_scores, params: {receiver_id: @customer.company_id}
         expect(JSON.parse(response.body)['success']).to be true
-        binding.pry
         JSON.parse(response.body)['scores'].present?
         JSON.parse(response.body)['scores'].last['seller_score'].present?
       end
@@ -578,7 +537,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when authenticated user want to other buyers seller score without permission'do
       it 'does show permission Access denied' do
         get :seller_scores, params: {receiver_id: @buyer.company_id}
-        binding.pry
         response.body.should have_content('permission Access denied')
       end
     end
@@ -588,7 +546,6 @@ RSpec.describe Api::V1::CustomersController do
         @permission_request = create_permission_request(@permissions)
         get :seller_scores, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['success']).to be true
-        binding.pry
         JSON.parse(response.body)['scores'].present?
         JSON.parse(response.body)['scores'].last['seller_score'].present?
       end
@@ -599,7 +556,6 @@ RSpec.describe Api::V1::CustomersController do
         request.headers.merge!(authorization: 'unknown token')
         @permission_request = create_permission_request(@permissions)
         get :seller_scores, params: {receiver_id: @buyer.company_id}
-        binding.pry
         response.body.should have_content('Not authenticated')
       end
     end
@@ -609,7 +565,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when authenticated user want to see his own buyer score'do
       it 'does show his seller score' do
         get :buyer_scores, params: {receiver_id: @customer.company_id}
-        binding.pry
         expect(JSON.parse(response.body)['success']).to be true
         JSON.parse(response.body)['scores'].present?
         JSON.parse(response.body)['scores'].last['buyer_score'].present?
@@ -619,7 +574,6 @@ RSpec.describe Api::V1::CustomersController do
     context 'when authenticated user want to other buyers buyer score without permission'do
       it 'does show permission Access denied' do
         get :buyer_scores, params: {receiver_id: @buyer.company_id}
-        binding.pry
         response.body.should have_content('permission Access denied')
       end
     end
@@ -629,7 +583,6 @@ RSpec.describe Api::V1::CustomersController do
         @permission_request = create_permission_request(@permissions)
         get :buyer_scores, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['success']).to be true
-        binding.pry
         JSON.parse(response.body)['scores'].present?
         JSON.parse(response.body)['scores'].last['buyer_score'].present?
       end
@@ -640,7 +593,6 @@ RSpec.describe Api::V1::CustomersController do
         request.headers.merge!(authorization: 'unknown token')
         @permission_request = create_permission_request(@permissions)
         get :buyer_scores, params: {receiver_id: @buyer.company_id}
-        binding.pry
         response.body.should have_content('Not authenticated')
       end
     end
