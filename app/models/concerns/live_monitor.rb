@@ -25,7 +25,7 @@ module LiveMonitor
       all_buyer_scores << buyer_score.late_payment
     end
     market_score = MarketBuyerScore.get_scores
-    transactions = Transaction.where('due_date < ? AND paid=? AND seller_id=? AND DATE(paid_at) >= DATE(due_date)', DateTime.current, true, current_company.id)
+    transactions = Transaction.where(seller_id: current_company.id, paid: true)
     transactions.each do |transaction|
       late_days_payment = (transaction.paid_at.to_date - transaction.due_date.to_date).to_i
       if late_days_payment <= 0
