@@ -1,24 +1,19 @@
 default: &default
   adapter: mysql2
-  host: <%= ENV.fetch('DB_HOST') { 'localhost' } %>
-  pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 5 } %>
-  database: <%= ENV.fetch('DB_NAME')  {'dialuck_dev'}%>
-  port: <%= ENV.fetch('DB_PORT') { 3360 } %>
-  username: <%= ENV.fetch('DB_USERNAME') { 'root' } %>
-  password: <%= ENV.fetch('DB_PASSWORD') { 'root' } %>
+  host: localhost
+  pool: 50
+  port: 3306
+  username: root
+  password: usman
 
 development:
   <<: *default
-
+  database: dialucks_development
 
 test:
   <<: *default
-  database: <%= ENV.fetch('DB_NAME')  {'dialuck_test'}%>
+  database: dialucks_test
 
-staging:
-  <<: *default
 production:
   <<: *default
-
-
-
+  database: dialucks_production

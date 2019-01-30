@@ -12,6 +12,7 @@ RSpec.describe Api::V1::CustomersController do
                     seller_score: true,
                     status: 'accepted',
                     buyer_score: true}
+
   end
 
   before(:each) do
