@@ -106,53 +106,60 @@ module Api
  @apiSuccessExample {json} SuccessResponse3:
  {
     "success": true,
-    "buyer_score": 0,
+    "buyer_score": 0.78,
     "scores": [
         {
             "name": "Late Payment",
             "user_score": 0,
-            "market_average": 12.11,
-            "user_score_vs_market_score": 0
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "late_payment_rank": "top 20"
         },
         {
             "name": "Current Risk Score",
             "user_score": 0,
-            "market_average": 144.77,
-            "user_score_vs_market_score": 0
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "current_risk_rank": "top 20"
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
-            "market_average": 90.4,
-            "user_score_vs_market_score": 0
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "network_diversity_rank": "top 20"
         },
         {
             "name": "Buyer Network Score",
             "user_score": 0,
-            "market_average": 1.15,
-            "user_score_vs_market_score": 0
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "buyer_network_rank": "top 20"
         },
         {
             "name": "Due Date Score",
             "user_score": 0,
-            "market_average": 35.06,
-            "user_score_vs_market_score": 0
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "due_date_rank": "top 20"
         },
         {
             "name": "Credit Used Score",
             "user_score": 0,
-            "market_average": 0.64,
-            "user_score_vs_market_score": 0
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "credit_used_rank": "top 20"
         },
         {
             "name": "Number Of Suppliers Giving You Credit",
-            "user_score": 0,
-            "market_average": 3,
-            "user_score_vs_market_score": 0
+            "user_score": 2,
+            "market_average": 2.57,
+            "user_score_vs_market_score": 0.78,
+            "count_of_credit_given_rank": "51 to 70"
         }
     ],
     "response_code": 200
-}
+  }
 =end
 
       def buyer_scores
@@ -200,47 +207,53 @@ module Api
  @apiSuccessExample {json} SuccessResponse3:
  {
     "success": true,
-    "seller_score": 2.02,
+    "seller_score": 0,
     "scores": [
         {
             "name": "Late Payment",
-            "user_score": 62.25,
-            "market_average": 13.9,
-            "user_score_vs_market_score": 4.48
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "seller_late_payment_rank": "top 20"
         },
         {
             "name": "Current Risk Score",
-            "user_score": 75,
-            "market_average": 198.95,
-            "user_score_vs_market_score": 0.38
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "seller_current_risk_rank": "top 20"
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
-            "market_average": 477.13,
-            "user_score_vs_market_score": 0
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "seller_network_diversity_rank": "top 20"
         },
         {
             "name": "Seller Network Score",
-            "user_score": 3.46,
-            "market_average": 1.41,
-            "user_score_vs_market_score": 2.45
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "seller_buyer_network_rank": "top 20"
         },
         {
             "name": "Due Date Score",
-            "user_score": 43.31,
-            "market_average": 37.37,
-            "user_score_vs_market_score": 1.16
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "seller_due_date_rank": "top 20"
         },
         {
             "name": "Credit Used Score",
-            "user_score": 1.78,
-            "market_average": 1.1,
-            "user_score_vs_market_score": 1.62
+            "user_score": 0,
+            "market_average": 0,
+            "user_score_vs_market_score": 0,
+            "seller_credit_used_rank": "top 20"
         }
     ],
     "response_code": 200
-}
+  }
 =end
 
       def seller_scores
@@ -634,43 +647,50 @@ module Api
                 name: 'Late Payment',
                 user_score: score.late_payment,
                 market_average: market_score.late_payment,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment),
+                late_payment_rank: score.late_payment_rank
             },
             {
                 name: 'Current Risk Score',
                 user_score: score.current_risk,
                 market_average: market_score.current_risk,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk),
+                current_risk_rank: score.current_risk_rank
             },
             {
                 name: 'Network Diversity',
                 user_score: score.network_diversity,
                 market_average: market_score.network_diversity,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity),
+                network_diversity_rank: score.network_diversity_rank
             },
             {
                 name: 'Buyer Network Score',
                 user_score: score.buyer_network,
                 market_average: market_score.buyer_network,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.buyer_network, market_score.buyer_network)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.buyer_network, market_score.buyer_network),
+                buyer_network_rank: score.buyer_network_rank
             },
             {
                 name: 'Due Date Score',
                 user_score: score.due_date,
                 market_average: market_score.due_date,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date),
+                due_date_rank: score.due_date_rank
             },
             {
                 name: 'Credit Used Score',
                 user_score: score.credit_used,
                 market_average: market_score.credit_used,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used),
+                credit_used_rank: score.credit_used_rank
             },
             {
                 name: 'Number Of Suppliers Giving You Credit',
                 user_score:  score.count_of_credit_given,
                 market_average: market_score.count_of_credit_given,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given),
+                count_of_credit_given_rank: score.count_of_credit_given_rank
             }
         ]
       end
@@ -681,37 +701,43 @@ module Api
                 name: 'Late Payment',
                 user_score: score.late_payment,
                 market_average: market_score.late_payment,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment),
+                seller_late_payment_rank: score.seller_late_payment_rank
             },
             {
                 name: 'Current Risk Score',
                 user_score: score.current_risk,
                 market_average: market_score.current_risk,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk),
+                seller_current_risk_rank: score.seller_current_risk_rank
             },
             {
                 name: 'Network Diversity',
                 user_score: score.network_diversity,
                 market_average: market_score.network_diversity,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity),
+                seller_network_diversity_rank: score.seller_network_diversity_rank
             },
             {
                 name: 'Seller Network Score',
                 user_score: score.seller_network,
                 market_average: market_score.seller_network,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.seller_network, market_score.seller_network)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.seller_network, market_score.seller_network),
+                seller_buyer_network_rank: score.seller_network_rank
             },
             {
                 name: 'Due Date Score',
                 user_score: score.due_date,
                 market_average: market_score.due_date,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date),
+                seller_due_date_rank: score.seller_due_date_rank
             },
             {
                 name: 'Credit Used Score',
                 user_score: score.credit_used,
                 market_average: market_score.credit_used,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used),
+                seller_credit_used_rank: score.seller_credit_used_rank
             }
         ]
       end

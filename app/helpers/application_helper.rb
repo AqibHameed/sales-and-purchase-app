@@ -632,6 +632,9 @@ module ApplicationHelper
 
     BuyerScore.calculate_scores_second_step
     SellerScore.calculate_scores_second_step
+
+    UpdatePercentileRankJob.perform_now
+    UpdateSellerPercentileRankJob.perform_now
   end
 
   def self.safe_divide_float(numerator, denominator, precision = 2)
