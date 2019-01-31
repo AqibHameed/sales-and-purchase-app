@@ -11,7 +11,7 @@ class BuyerScore < ApplicationRecord
       #Calculate BuyerScores without "buyer network"
       companies.each do |company|
 
-        buyer_score = BuyerScore.new
+        buyer_score = BuyerScore.find_or_initialize_by(company_id: company.id)
         buyer_score.company_id = company.id
         buyer_score.late_payment = self.calculate_late_payment(company.id)
         buyer_score.current_risk = self.calculate_current_risk(company.id)
@@ -20,8 +20,7 @@ class BuyerScore < ApplicationRecord
         buyer_score.credit_used = self.calculate_credit_used(company.id)
         buyer_score.count_of_credit_given = self.calculate_credit_given(company.id)
         buyer_score.actual = true
-        buyer_score.created_at = Time.now
-        buyer_score.updated_at = Time.now
+
 
         buyer_score.save
       end
@@ -57,13 +56,26 @@ class BuyerScore < ApplicationRecord
         buyer_score = self.get_score(company.id)
         unless buyer_score.nil?
           buyer_score.update(
-              total: self.calculate_total(buyer_score, market_buyer_scores),
-              updated_at: Time.now
+              total: self.calculate_total(buyer_score, market_buyer_scores)
           )
         end
+        update_score_comparison(buyer_score, market_buyer_scores)
       end
     end
 
+  end
+
+  def self.update_score_comparison(buyer_score, market_buyer_scores)
+    late_payment = ApplicationHelper.safe_divide_float(buyer_score.late_payment, market_buyer_scores.late_payment)
+    current_risk = ApplicationHelper.safe_divide_float(buyer_score.current_risk, market_buyer_scores.current_risk)
+    network_diversity = ApplicationHelper.safe_divide_float(buyer_score.network_diversity, market_buyer_scores.network_diversity)
+    buyer_network = ApplicationHelper.safe_divide_float(buyer_score.buyer_network, market_buyer_scores.buyer_network)
+    due_date = ApplicationHelper.safe_divide_float(buyer_score.due_date, market_buyer_scores.due_date)
+    credit_used = ApplicationHelper.safe_divide_float(buyer_score.credit_used, market_buyer_scores.credit_used)
+    count_of_credit_given = ApplicationHelper.safe_divide_float(buyer_score.count_of_credit_given, market_buyer_scores.count_of_credit_given)
+    buyer_score.update_attributes(late_payment_comparison: late_payment, current_risk_comparison: current_risk, network_diversity_comparison: network_diversity,
+                                  buyer_network_comparison: buyer_network, due_date_comparison: due_date, credit_used_comparison: credit_used,
+                                  count_of_credit_given_comparison: count_of_credit_given)
   end
 
   def self.get_score(company_id)
@@ -79,8 +91,6 @@ class BuyerScore < ApplicationRecord
       scores.credit_used = 0
       scores.count_of_credit_given = 0
       scores.actual = true
-      scores.created_at = Time.now
-      scores.updated_at = Time.now
       scores.save
     end
     return scores
@@ -207,7 +217,10 @@ class BuyerScore < ApplicationRecord
 
   def self.calculate_total(buyer_score, avg_scores, exclude_fields = [])
     #add fields to exclude always
-    exclude_fields.push( "id", "company_id", "actual", "created_at", "updated_at", "total")
+    exclude_fields.push( "id", "company_id", "actual", "created_at", "updated_at", "total", "late_payment_rank",
+                         "current_risk_rank", "network_diversity_rank", "buyer_network_rank", "due_date_rank","credit_used_rank",
+                          "count_of_credit_given_rank", "late_payment_comparison", "current_risk_comparison", "network_diversity_comparison",
+                           "buyer_network_comparison", "due_date_comparison", "credit_used_comparison", "count_of_credit_given_comparison")
     #init variables
     fields_count = 0
     fields_sum = 0
@@ -231,4 +244,77 @@ class BuyerScore < ApplicationRecord
     end
     return total
   end
+
+  def self.update_percentile_rank
+    companies_total_scores = []
+    comapnies = Company.joins(:buyer_transactions).uniq
+    comapnies.each do |company|
+      companies_total_scores << calculate_score(company)
+    end
+    late_payment = companies_total_scores.sort_by {|k| k[:late_payment]}
+    current_risk = companies_total_scores.sort_by {|k| k[:current_risk]}
+    network_diversity = companies_total_scores.sort_by {|k| k[:network_diversity]}
+    buyer_network = companies_total_scores.sort_by {|k| k[:buyer_network]}
+    due_date = companies_total_scores.sort_by {|k| k[:due_date]}
+    credit_used = companies_total_scores.sort_by {|k| k[:credit_used]}
+    count_of_credit_given = companies_total_scores.sort_by {|k| k[:count_of_credit_given]}.reverse
+
+    total_companies = companies_total_scores.count
+    twenty_percent = ((total_companies / 100.to_f) * 20)
+    fifty_percent = ((total_companies / 100.to_f) * 50)
+    seventy_percent = ((total_companies / 100.to_f) * 70)
+    hundred_percent = ((total_companies / 100.to_f) * 100)
+
+    percentile_rank(late_payment, 'late_payment_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+    percentile_rank(current_risk, 'current_risk_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+    percentile_rank(network_diversity, 'network_diversity_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+    percentile_rank(buyer_network, 'buyer_network_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+    percentile_rank(due_date, 'due_date_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+    percentile_rank(credit_used, 'credit_used_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+    percentile_rank(count_of_credit_given, 'count_of_credit_given_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+  end
+
+  def self.calculate_score(company)
+    buyer_score = company.get_buyer_score
+
+    late_payment = buyer_score.late_payment_comparison
+    current_risk = buyer_score.current_risk_comparison
+    network_diversity = buyer_score.network_diversity_comparison
+    buyer_network = buyer_score.buyer_network_comparison
+    due_date = buyer_score.due_date_comparison
+    credit_used = buyer_score.credit_used_comparison
+    count_of_credit_given = buyer_score.count_of_credit_given_comparison
+
+    company_data = {
+        company_id: company.id,
+        late_payment: late_payment,
+        current_risk: current_risk,
+        network_diversity: network_diversity,
+        buyer_network: buyer_network,
+        due_date: due_date,
+        credit_used: credit_used,
+        count_of_credit_given: count_of_credit_given
+    }
+    return company_data
+  end
+
+  def self.percentile_rank(buyer_score_vs_market_score, rank_attribute, twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+    rank = ''
+    buyer_score_vs_market_score.each do |percentage|
+      if buyer_score_vs_market_score.index(percentage) <= twenty_percent
+        rank = 'top 20'
+      elsif buyer_score_vs_market_score.index(percentage) > twenty_percent && buyer_score_vs_market_score.index(percentage) <= fifty_percent
+        rank = '21 to 50'
+      elsif buyer_score_vs_market_score.index(percentage) > fifty_percent && buyer_score_vs_market_score.index(percentage) <= seventy_percent
+        rank = '51 to 70'
+      elsif buyer_score_vs_market_score.index(percentage) > seventy_percent && buyer_score_vs_market_score.index(percentage) <= hundred_percent
+        rank = '71 to 100'
+      end
+      buyer_score = BuyerScore.find_by(company_id: percentage[:company_id])
+      if buyer_score.present?
+        buyer_score.update_attribute(rank_attribute, rank)
+      end
+    end
+  end
+
 end
