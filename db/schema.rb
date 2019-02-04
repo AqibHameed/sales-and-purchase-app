@@ -244,9 +244,6 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "stone_id"
-    t.integer "partial_payment_id"
-    t.integer "demand_id"
-    t.integer "trading_parcel_id"
     t.index ["customer_id"], name: "index_customer_ratings_on_customer_id"
     t.index ["stone_id"], name: "index_customer_ratings_on_stone_id"
     t.index ["tender_id"], name: "index_customer_ratings_on_tender_id"
@@ -306,6 +303,7 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.boolean "is_requested", default: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
+    t.index ["email"], name: "index_customers_on_email", unique: true
     t.index ["invitation_token"], name: "index_customers_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_customers_on_invitations_count"
     t.index ["invited_by_id"], name: "index_customers_on_invited_by_id"
@@ -401,7 +399,7 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "feedbacks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "feedbacks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "star"
     t.text "comment"
     t.integer "demand_id"
@@ -592,7 +590,7 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "premission_requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "premission_requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "sender_id"
     t.integer "receiver_id"
     t.integer "status", default: 2
@@ -651,7 +649,7 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
-  create_table "ranks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "ranks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.bigint "company_id"
     t.integer "yes_know"
     t.integer "not_know"
@@ -683,7 +681,7 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.string "flag_type", default: "Imp"
   end
 
-  create_table "reviews", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "reviews", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.boolean "know"
     t.boolean "trade"
     t.boolean "recommend"
@@ -975,7 +973,7 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.string "stone_starting_price_field"
   end
 
-  create_table "tiles_counts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "tiles_counts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.integer "smart_search", default: 0
     t.integer "sell", default: 0
     t.integer "inbox", default: 0
@@ -1081,6 +1079,7 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.boolean "paid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "buyer_confirmed", default: false
     t.text "reject_reason"
     t.datetime "reject_date"
     t.string "transaction_type"
@@ -1095,7 +1094,6 @@ ActiveRecord::Schema.define(version: 20190131170658) do
     t.boolean "cancel", default: false
     t.datetime "deleted_at"
     t.datetime "paid_at"
-    t.boolean "buyer_confirmed"
     t.index ["deleted_at"], name: "index_transactions_on_deleted_at"
   end
 
