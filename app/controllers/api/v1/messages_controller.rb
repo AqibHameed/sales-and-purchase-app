@@ -69,9 +69,11 @@ module Api
           messages.each do |proposal_id, messages|
             all_messages << messages.last
           end
-          security_requests = Message.customer_secuirty_data_messages(current_company.id).group_by(&:premission_request_id)
+          security_requests = Message.customer_secuirty_data_messages(current_company.id)
           security_requests.each do |message|
-            live_monitor_request_messages << message.last
+            if message.premission_request.status == 'pending'
+              live_monitor_request_messages << message
+            end
           end
 
           payment_message = Message.customer_payment_messages(current_company.id).group_by(&:partial_payment_id)
@@ -210,16 +212,16 @@ module Api
             @messages = negotiation_messages(messages)
           elsif status == 'new'
             @messages = new_messages_payment(messages, payment_messages, live_monitor_request_messages)
-          else  
-            @messages = @messages.map{ |m| m if m.proposal && m.proposal.status == status }.compact
+          else
+            @messages = @messages.map {|m| m if m.proposal && m.proposal.status == status}.compact
           end
         end
         if description.present?
-          @messages = @messages.map{ |m| m if m.proposal.present? && m.proposal.trading_parcel.present? && m.proposal.trading_parcel.description == description }.compact
+          @messages = @messages.map {|m| m if m.proposal.present? && m.proposal.trading_parcel.present? && m.proposal.trading_parcel.description == description}.compact
         end
         if company.present?
           c = Company.where(name: company).first
-          @messages = @messages.map{ |m| m if m.sender.present? && m.sender == c}.compact
+          @messages = @messages.map {|m| m if m.sender.present? && m.sender == c}.compact
         end
         @messages.each do |message|
           if (message.proposal.present? && message.proposal.trading_parcel.present?) || (message.partial_payment.present?)
@@ -233,29 +235,29 @@ module Api
                   message_type: message.message_type.downcase,
                   subject: message.subject,
                   created_at: message.created_at,
-                  description:"#{message.sender.name}send you payment request",
+                  description: "#{message.sender.name}send you payment request",
                   updated_at: message.updated_at,
                   date: message.created_at,
                   status: 'new',
                   payment_id: message.partial_payment.id
               }
             else
-                if message.proposal.status == 'accepted'
-                  status = 'accepted'
-                elsif message.proposal.status == 'rejected'
-                  status = 'rejected'
-                elsif message.proposal.negotiations.present?
-                  who =  (current_company == message.proposal.buyer) ? 'buyer' : 'seller'
-                  last_self_negotiation = message.proposal.negotiations.last
-                  if last_self_negotiation.present? && last_self_negotiation.from == who
-                    status = 'negotiated'
-                  else
-                    status = 'new'
-                  end
+              if message.proposal.status == 'accepted'
+                status = 'accepted'
+              elsif message.proposal.status == 'rejected'
+                status = 'rejected'
+              elsif message.proposal.negotiations.present?
+                who = (current_company == message.proposal.buyer) ? 'buyer' : 'seller'
+                last_self_negotiation = message.proposal.negotiations.last
+                if last_self_negotiation.present? && last_self_negotiation.from == who
+                  status = 'negotiated'
                 else
                   status = 'new'
                 end
-                data = {
+              else
+                status = 'new'
+              end
+              data = {
                   id: message.id,
                   proposal_id: message.proposal_id,
                   sender: message.sender.name,
@@ -268,32 +270,30 @@ module Api
                   date: message.created_at,
                   description: message.proposal.present? ? (message.proposal.trading_parcel.present? ? message.proposal.trading_parcel.description : 'N/A') : 'N/A',
                   status: status
-                }
-                if message.proposal.present? && message.proposal.trading_parcel.present?
-                  offered_price = message.proposal.price.to_f
-                  offered_percent = ((offered_price.to_f/message.proposal.trading_parcel.price.to_f)-1).to_f*100
-                  data.merge!(calculation: offered_percent.round(2))
-                end
+              }
+              if message.proposal.present? && message.proposal.trading_parcel.present?
+                offered_price = message.proposal.price.to_f
+                offered_percent = ((offered_price.to_f / message.proposal.trading_parcel.price.to_f) - 1).to_f * 100
+                data.merge!(calculation: offered_percent.round(2))
+              end
             end
           else
             unless message.premission_request.blank?
-              if message.premission_request.status == 'pending'
-                data ={
-                    id: message.id,
-                    request_id: message.premission_request.id,
-                    sender: message.premission_request.sender.name,
-                    receiver: current_company.name,
-                    message_type: 'security_data',
-                    subject: message.subject,
-                    message: message.message,
-                    description: "#{message.premission_request.sender.name} send you security data request",
-                    created_at: message.created_at,
-                    updated_at: message.updated_at,
-                    date: message.created_at,
-                    permission_status: message.premission_request.status,
-                    status: status
-                }
-              end
+              data = {
+                  id: message.id,
+                  request_id: message.premission_request.id,
+                  sender: message.premission_request.sender.name,
+                  receiver: current_company.name,
+                  message_type: 'security_data',
+                  subject: message.subject,
+                  message: message.message,
+                  description: "#{message.premission_request.sender.name} send you security data request",
+                  created_at: message.created_at,
+                  updated_at: message.updated_at,
+                  date: message.created_at,
+                  permission_status: message.premission_request.status,
+                  status: status
+              }
             end
           end
           @data << data
