@@ -100,7 +100,7 @@ module Api
               if (current_customer.has_role?("Trader") || @transaction.seller_id == current_company.id ) && @transaction.remaining_amount == 0
                 unless @transaction.partial_payment.where(payment_status: [0, 2]).present?
                   @transaction.paid = true
-                  @transaction.paid_at = DateTime.now
+                  @transaction.paid_at = DateTime.current
                   @transaction.save
                 end
               end
@@ -173,11 +173,11 @@ module Api
             if (current_customer.has_role?("Buyer") || @transaction.buyer_id == current_company.id ) && @transaction.remaining_amount == 0
               unless @transaction.partial_payment.where(payment_status: [0, 2]).present?
                   @transaction.paid = true
-                  @transaction.paid_at = DateTime.now
+                  @transaction.paid_at =DateTime.current
               end
             else
               @transaction.paid = true
-              @transaction.paid_at = DateTime.now
+              @transaction.paid_at = DateTime.current
             end
             @transaction.save
             if current_customer.has_role?("Buyer")

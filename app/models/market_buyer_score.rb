@@ -26,9 +26,7 @@ class MarketBuyerScore < ApplicationRecord
           buyer_network: (result.buyer_network/buyers_count).round(2),
           due_date: (result.due_date/buyers_count).round(2),
           credit_used: (result.credit_used/buyers_count).round(2),
-          count_of_credit_given: (result.count_of_credit_given/buyers_count).round(2),
-          created_at: Time.current,
-          updated_at: Time.current
+          count_of_credit_given: (result.count_of_credit_given/buyers_count).round(2)
       )
     else
       actual_score = self.get_scores
@@ -40,8 +38,7 @@ class MarketBuyerScore < ApplicationRecord
             buyer_network: (result.buyer_network/buyers_count).round(2),
             due_date: (result.due_date/buyers_count).round(2),
             credit_used: (result.credit_used/buyers_count).round(2),
-            count_of_credit_given: (result.count_of_credit_given/buyers_count).round(2),
-            updated_at: Time.current
+            count_of_credit_given: (result.count_of_credit_given/buyers_count).round(2)
         )
         avg_scores = actual_score
       end
@@ -62,8 +59,6 @@ class MarketBuyerScore < ApplicationRecord
       scores.due_date = 0
       scores.credit_used = 0
       scores.count_of_credit_given = 0
-      scores.created_at = Time.current
-      scores.updated_at = Time.current
       scores.save
     end
     return scores

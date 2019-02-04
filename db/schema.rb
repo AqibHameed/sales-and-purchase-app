@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190128090253) do
+ActiveRecord::Schema.define(version: 20190131170658) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -128,6 +128,20 @@ ActiveRecord::Schema.define(version: 20190128090253) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "actual", default: false, null: false
+    t.string "late_payment_rank"
+    t.string "current_risk_rank"
+    t.string "network_diversity_rank"
+    t.string "buyer_network_rank"
+    t.string "due_date_rank"
+    t.string "credit_used_rank"
+    t.string "count_of_credit_given_rank"
+    t.float "late_payment_comparison", limit: 24, default: 0.0, null: false
+    t.float "current_risk_comparison", limit: 24, default: 0.0, null: false
+    t.float "network_diversity_comparison", limit: 24, default: 0.0, null: false
+    t.float "buyer_network_comparison", limit: 24, default: 0.0, null: false
+    t.float "due_date_comparison", limit: 24, default: 0.0, null: false
+    t.float "credit_used_comparison", limit: 24, default: 0.0, null: false
+    t.float "count_of_credit_given_comparison", limit: 24, default: 0.0, null: false
     t.index ["company_id"], name: "index_buyer_scores_on_company_id"
   end
 
@@ -732,6 +746,18 @@ ActiveRecord::Schema.define(version: 20190128090253) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "actual", default: false, null: false
+    t.string "seller_late_payment_rank"
+    t.string "seller_current_risk_rank"
+    t.string "seller_network_diversity_rank"
+    t.string "seller_network_rank"
+    t.string "seller_due_date_rank"
+    t.string "seller_credit_used_rank"
+    t.float "seller_late_payment_comparison", limit: 24, default: 0.0, null: false
+    t.float "seller_current_risk_comparison", limit: 24, default: 0.0, null: false
+    t.float "seller_network_diversity_comparison", limit: 24, default: 0.0, null: false
+    t.float "seller_network_comparison", limit: 24, default: 0.0, null: false
+    t.float "seller_due_date_comparison", limit: 24, default: 0.0, null: false
+    t.float "seller_credit_used_comparison", limit: 24, default: 0.0, null: false
     t.index ["company_id"], name: "index_seller_scores_on_company_id"
   end
 

@@ -13,9 +13,14 @@ class Transaction < ApplicationRecord
   validate :validate_invoice_date
   after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
-  after_save :secure_center
+  after_save :secure_center, :update_score
+
 
   attr_accessor :weight
+
+  def update_score
+    UpdateScoreJob.perform_now
+  end
 
   def self.direct_sell_confirm
     puts "********* Confirm Transactions created before 7 days *****************"

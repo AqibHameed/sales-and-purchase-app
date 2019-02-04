@@ -10,6 +10,8 @@ RSpec.describe Api::V1::CompaniesController do
                     secure_center: true,
                     seller_score: true}
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
+    create(:days_limit, days_limit:20 ,seller_id:@customer.company.id,  buyer_id:@buyer.company.id )
+
   end
 
   before(:each) do
@@ -447,7 +449,7 @@ RSpec.describe Api::V1::CompaniesController do
         create_review(@buyer.id, @customer.company_id)
         create_review(@buyer.id, @customer.company_id)
         create_review(@customer.id, @buyer.company_id)
-        request.headers.merge!(authorization: @buyer.authentication_token)
+        request.headers.merge!(authorization: @customer.authentication_token)
         get :count_companies_review
         rank = Rank.find_by(company_id: @customer.company_id)
         expect(JSON.parse(response.body)['success']).to be true
@@ -456,4 +458,81 @@ RSpec.describe Api::V1::CompaniesController do
     end
   end
 
+
+
+  describe '#seller_companies' do
+
+    context 'when unknown user wants to access api' do
+      it 'does show message not authenticated user' do
+        request.headers.merge!(authorization: 'not_authorized_token ')
+        get :seller_companies
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+
+    context 'when unknown user wants to access api' do
+      it 'does show check id of the selected company against current customer' do
+        companies = Company.select(" companies.id,count(companies.id) as transaction_count,companies.name,sum(t.remaining_amount) as remaining_amount").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{@customer.company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )").group(:id).order(:id)
+        get :seller_companies, params: {receiver_id: @buyer.company_id}
+        expect(JSON.parse(response.body)['companies'].first['id']).to eq(companies.first.id)
+        expect(JSON.parse(response.body)['companies'].first['name']).to eq(companies.first.name)
+        expect(JSON.parse(response.body)['companies'].first['transaction_count']).to eq(companies.first.transaction_count )
+        expect(JSON.parse(response.body)['companies'].first['remaining_amount'].to_f).to eq(companies.first.remaining_amount.to_f)
+      end
+    end
+
+
+
+
+    context 'when unknown user wants to access api' do
+      it 'does show check amount_due  of the selected company against current customer' do
+        companies = Company.select(" companies.id,count(companies.id) as transaction_count,companies.name,sum(t.remaining_amount) as remaining_amount").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{@customer.company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )").group(:id).order(:id)
+        company_transactions = companies.first.buyer_transactions
+        company_transactions_with_current_seller = company_transactions.where(seller_id: @customer.company.id)
+        amount_due = company_transactions_with_current_seller.present? ? company_transactions_with_current_seller.where("paid = ? AND buyer_confirmed = ?", false, true).sum(:remaining_amount).round(2) : 0.0
+        get :seller_companies, params: {receiver_id: @buyer.company_id}
+        expect(JSON.parse(response.body)['companies'].first['amount_due'].to_f).to eq(amount_due.to_f)
+      end
+    end
+
+
+    context 'when unknown user wants to access api' do
+      it 'does show check  overdue_status gets false  of the selected company against current customer' do
+       create(:transaction, buyer_id:@customer.company_id,
+               seller_id:  @buyer.company_id,
+               trading_parcel_id: @parcel.id,
+               due_date: Date.current + 30,
+               created_at: 10.days.ago,
+               paid: false,
+               credit: 20
+        )
+        companies = Company.select(" companies.id,count(companies.id) as transaction_count,companies.name,sum(t.remaining_amount) as remaining_amount").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{@customer.company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )").group(:id).order(:id)
+        transaction = Transaction.where("seller_id = ? AND buyer_id = ? AND paid = ?", @customer.company.id, companies.first.id, false)
+        overdue_days = (Date.current - transaction.first.due_date.to_date).to_i
+        get :seller_companies, params: {receiver_id: @buyer.company_id}
+        expect(JSON.parse(response.body)['companies'].first['overdue_status']).to eq(false)
+      end
+    end
+
+
+    context 'when unknown user wants to access api' do
+      it 'does show check  overdue_status gets true  of the selected company against current customer' do
+        create(:transaction, buyer_id:  @buyer.company_id,
+               seller_id:@customer.company_id,
+               trading_parcel_id: @parcel.id,
+               due_date: Date.current - 30,
+               created_at: 10.days.ago,
+               paid: false,
+               credit: 20
+        )
+        companies = Company.select(" companies.id,count(companies.id) as transaction_count,companies.name,sum(t.remaining_amount) as remaining_amount").joins("inner join transactions t on (companies.id = t.buyer_id and t.seller_id = #{@customer.company.id} and t.buyer_confirmed = true and t.paid = 0 and t.due_date != #{Date.current} )").group(:id).order(:id)
+        transaction = Transaction.where("seller_id = ? AND buyer_id = ? AND paid = ?", @customer.company.id, companies.first.id, false)
+        overdue_days = (Date.current - transaction.first.due_date.to_date).to_i
+        get :seller_companies, params: {receiver_id: @buyer.company_id}
+        expect(JSON.parse(response.body)['companies'].first['overdue_status']).to eq(true)
+      end
+    end
+
+  end
 end
