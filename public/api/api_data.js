@@ -1729,7 +1729,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"message\": 'Image successfully uploaded.',\n    \"response_code\": 200\n}",
+          "content": "{\n   \"success\": true,\n   \"message\": \"Image successfully uploaded.\",\n   \"images\": [\n       \"http://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/002/original/third_section_pic.png?1549279213\",\n       \"http://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/003/original/third_section_pic.png?1549279452\",\n       \"http://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/005/original/create_parcel.png?1549280387\"\n   ],\n   \"response_code\": 200\n}",
           "type": "json"
         }
       ]
