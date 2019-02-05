@@ -56,10 +56,6 @@ RSpec.describe Api::V1::TendersController do
   end
 
 
-
-
-
-
   describe '#tender_upcomming' do
     context 'when authorized  tender access the api' do
       it 'does show the upcoming tenders' do
@@ -165,8 +161,8 @@ RSpec.describe Api::V1::TendersController do
         get :tender_parcel, params: {tender_id: @tender.id}
         expect(JSON.parse(response.body)['tender_parcels'].first['stone_type']).to eq(@stone.stone_type)
         expect(JSON.parse(response.body)['tender_parcels'].first['no_of_stones']).to eq(@stone.no_of_stones)
-        expect(JSON.parse(response.body)['tender_parcels'].first['weight']).to eq( @stone.weight)
-        expect(JSON.parse(response.body)['tender_parcels'].first['deec_no']).to eq( @stone.deec_no)
+        expect(JSON.parse(response.body)['tender_parcels'].first['weight']).to eq(@stone.weight)
+        expect(JSON.parse(response.body)['tender_parcels'].first['deec_no']).to eq(@stone.deec_no)
         expect(JSON.parse(response.body)['response_code']).to eq(200)
       end
     end
@@ -197,13 +193,51 @@ RSpec.describe Api::V1::TendersController do
         expect(JSON.parse(response.body)['tender_parcels'].first['comments']).to eq(@stone.comments)
         expect(JSON.parse(response.body)['tender_parcels'].first['valuation']).to eq(@stone.valuation)
 
-
       end
     end
 
 
+  end
 
 
+  describe '#find_active_parcels' do
+
+
+    context 'when user access find_active_parcels api' do
+      it 'does show  the invalid params when  params are invalid' do
+        get :find_active_parcels, params: {tender_id: nil}
+        response.body.should have_content('Invalid Parameters')
+
+      end
+    end
+    context 'when user access find_active_parcels api' do
+      it 'does match the record' do
+        @tender = create(:tender, supplier: @supplier, open_date: DateTime.now - 1, close_date: DateTime.now + 2)
+        @stone = create(:stone, tender: @tender)
+        @stone_rating = create(:stone_rating, stone: @stone)
+
+        get :find_active_parcels, params: {term: @stone.weight}
+        expect(JSON.parse(response.body)["parcels"].first["id"]).to eq(@stone.id)
+        expect(JSON.parse(response.body)["parcels"].first["description"]).to eq(@stone.description)
+        expect(JSON.parse(response.body)["parcels"].first["created_at"].to_time).to eq(@stone.created_at.to_time)
+        expect(JSON.parse(response.body)["parcels"].first["updated_at"].to_time).to eq(@stone.updated_at.to_time)
+        expect(JSON.parse(response.body)["parcels"].first["stone_type"]).to eq(@stone.stone_type)
+        expect(JSON.parse(response.body)["parcels"].first["no_of_stones"]).to eq(@stone.no_of_stones)
+        expect(JSON.parse(response.body)["parcels"].first["size"]).to eq(@stone.size)
+        expect(JSON.parse(response.body)["parcels"].first["weight"]).to eq(@stone.weight)
+        expect(JSON.parse(response.body)["parcels"].first["purity"]).to eq(@stone.purity)
+        expect(JSON.parse(response.body)["parcels"].first["color"]).to eq(@stone.color)
+        expect(JSON.parse(response.body)["parcels"].first["polished"]).to eq(@stone.polished)
+        expect(JSON.parse(response.body)["parcels"].first["deec_no"]).to eq(@stone.deec_no)
+        expect(JSON.parse(response.body)["parcels"].first["lot_no"]).to eq(@stone.lot_no)
+        expect(JSON.parse(response.body)["parcels"].first['comments']).to eq(@stone.comments)
+        expect(JSON.parse(response.body)["parcels"].first['valuation']).to eq(@stone.valuation)
+        expect(JSON.parse(response.body)["parcels"].first['parcel_rating']).to eq(@stone.parcel_rating)
+        # expect(JSON.parse(response.body)["parcels"].first["tender_name"]).to eq(@stone.name)
+
+      end
+
+    end
   end
 end
 
