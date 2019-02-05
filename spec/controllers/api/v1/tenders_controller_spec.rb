@@ -170,6 +170,40 @@ RSpec.describe Api::V1::TendersController do
         expect(JSON.parse(response.body)['response_code']).to eq(200)
       end
     end
+
+
+    # context 'when user access tender_parcel if stone is found' do
+    #   it 'does match the historical_winning record' do
+    #     @supplier_mine = create(:supplier_mine, supplier:@supplier)
+    #     @tender = create(:tender, supplier: @supplier, supplier_mine_id:@supplier_mine.id, open_date: DateTime.now - 20, close_date: DateTime.now - 19)
+    #     @customer_tender= create(:customers_tender,  tender_id:@tender.id, customer_id:@customer.id )
+    #     @stone = create(:stone, tender_id: @tender.id)
+    #     @stone_rating = create(:stone_rating, stone_id:@stone.id)
+    #     @tender_winner = create(:tender_winner, tender: @tender, description:@stone.description)
+    #
+    #
+    #
+    #     get :tender_parcel, params: {tender_id: @tender.id}
+    #     expect(JSON.parse(response.body)['tender_parcels'].first['winners_data']["tender_id"]).to eq(@tender_winner.tender_id)
+    #
+    #
+    #   end
+    # end
+    context 'when user access tender_parcel if stone is found' do
+      it 'does match stone_rating comment and valuation' do
+        @stone = create(:stone, tender_id: @tender.id)
+        @stone_rating = create(:stone_rating, stone: @stone)
+        get :tender_parcel, params: {tender_id: @tender.id}
+        expect(JSON.parse(response.body)['tender_parcels'].first['comments']).to eq(@stone.comments)
+        expect(JSON.parse(response.body)['tender_parcels'].first['valuation']).to eq(@stone.valuation)
+
+
+      end
+    end
+
+
+
+
   end
 end
 
