@@ -249,66 +249,42 @@ class BuyerScore < ApplicationRecord
     companies_total_scores = []
     comapnies = Company.joins(:buyer_transactions).uniq
     comapnies.each do |company|
-      companies_total_scores << calculate_score(company)
+      companies_total_scores << company.get_buyer_score
     end
-    late_payment = companies_total_scores.sort_by {|k| k[:late_payment]}
-    current_risk = companies_total_scores.sort_by {|k| k[:current_risk]}
-    network_diversity = companies_total_scores.sort_by {|k| k[:network_diversity]}
-    buyer_network = companies_total_scores.sort_by {|k| k[:buyer_network]}
-    due_date = companies_total_scores.sort_by {|k| k[:due_date]}
-    credit_used = companies_total_scores.sort_by {|k| k[:credit_used]}
-    count_of_credit_given = companies_total_scores.sort_by {|k| k[:count_of_credit_given]}.reverse
+    late_payment = companies_total_scores.map{|company_score| company_score if company_score.late_payment_comparison != 0.0}.compact.sort_by(&:late_payment_comparison)
+    current_risk = companies_total_scores.map{|company_score| company_score if company_score.current_risk_comparison != 0.0}.compact.sort_by(&:current_risk_comparison)
+    network_diversity = companies_total_scores.map{|company_score| company_score if company_score.network_diversity_comparison != 0.0}.compact.sort_by(&:network_diversity_comparison)
+    buyer_network = companies_total_scores.map{|company_score| company_score if company_score.buyer_network_comparison != 0.0}.compact.sort_by(&:buyer_network_comparison)
+    due_date = companies_total_scores.map{|company_score| company_score if company_score.due_date_comparison != 0.0}.compact.sort_by(&:due_date_comparison)
+    credit_used = companies_total_scores.map{|company_score| company_score if company_score.credit_used_comparison != 0.0}.compact.sort_by(&:credit_used_comparison)
+    count_of_credit_given = companies_total_scores.map{|company_score| company_score if company_score.count_of_credit_given_comparison != 0.0}.compact.sort_by(&:count_of_credit_given_comparison).reverse
 
     total_companies = companies_total_scores.count
+    ten_percent = ((total_companies / 100.to_f) * 10)
     twenty_percent = ((total_companies / 100.to_f) * 20)
-    fifty_percent = ((total_companies / 100.to_f) * 50)
-    seventy_percent = ((total_companies / 100.to_f) * 70)
+    fourty_percent = ((total_companies / 100.to_f) * 40)
     hundred_percent = ((total_companies / 100.to_f) * 100)
 
-    percentile_rank(late_payment, 'late_payment_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
-    percentile_rank(current_risk, 'current_risk_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
-    percentile_rank(network_diversity, 'network_diversity_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
-    percentile_rank(buyer_network, 'buyer_network_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
-    percentile_rank(due_date, 'due_date_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
-    percentile_rank(credit_used, 'credit_used_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
-    percentile_rank(count_of_credit_given, 'count_of_credit_given_rank', twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+    percentile_rank(late_payment, 'late_payment_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+    percentile_rank(current_risk, 'current_risk_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+    percentile_rank(network_diversity, 'network_diversity_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+    percentile_rank(buyer_network, 'buyer_network_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+    percentile_rank(due_date, 'due_date_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+    percentile_rank(credit_used, 'credit_used_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+    percentile_rank(count_of_credit_given, 'count_of_credit_given_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
   end
 
-  def self.calculate_score(company)
-    buyer_score = company.get_buyer_score
-
-    late_payment = buyer_score.late_payment_comparison
-    current_risk = buyer_score.current_risk_comparison
-    network_diversity = buyer_score.network_diversity_comparison
-    buyer_network = buyer_score.buyer_network_comparison
-    due_date = buyer_score.due_date_comparison
-    credit_used = buyer_score.credit_used_comparison
-    count_of_credit_given = buyer_score.count_of_credit_given_comparison
-
-    company_data = {
-        company_id: company.id,
-        late_payment: late_payment,
-        current_risk: current_risk,
-        network_diversity: network_diversity,
-        buyer_network: buyer_network,
-        due_date: due_date,
-        credit_used: credit_used,
-        count_of_credit_given: count_of_credit_given
-    }
-    return company_data
-  end
-
-  def self.percentile_rank(buyer_score_vs_market_score, rank_attribute, twenty_percent, fifty_percent, seventy_percent, hundred_percent)
+  def self.percentile_rank(buyer_score_vs_market_score, rank_attribute, ten_percent, twenty_percent, fourty_percent, hundred_percent)
     rank = ''
     buyer_score_vs_market_score.each do |percentage|
-      if buyer_score_vs_market_score.index(percentage) <= twenty_percent
-        rank = 'top 20'
-      elsif buyer_score_vs_market_score.index(percentage) > twenty_percent && buyer_score_vs_market_score.index(percentage) <= fifty_percent
-        rank = '21 to 50'
-      elsif buyer_score_vs_market_score.index(percentage) > fifty_percent && buyer_score_vs_market_score.index(percentage) <= seventy_percent
-        rank = '51 to 70'
-      elsif buyer_score_vs_market_score.index(percentage) > seventy_percent && buyer_score_vs_market_score.index(percentage) <= hundred_percent
-        rank = '71 to 100'
+      if buyer_score_vs_market_score.index(percentage) <= ten_percent
+        rank = 10
+      elsif buyer_score_vs_market_score.index(percentage) > ten_percent && buyer_score_vs_market_score.index(percentage) <= twenty_percent
+        rank = 20
+      elsif buyer_score_vs_market_score.index(percentage) > twenty_percent && buyer_score_vs_market_score.index(percentage) <= fourty_percent
+        rank = 40
+      elsif buyer_score_vs_market_score.index(percentage) > fourty_percent && buyer_score_vs_market_score.index(percentage) <= hundred_percent
+        rank = nil
       end
       buyer_score = BuyerScore.find_by(company_id: percentage[:company_id])
       if buyer_score.present?
