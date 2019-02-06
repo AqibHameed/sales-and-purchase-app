@@ -363,10 +363,14 @@ module Api
               stone_rating.parcel_rating = params[:parcel_rating] unless params[:parcel_rating].blank?
               stone_rating.valuation = params[:valuation] unless params[:valuation].blank?
             end
-            if stone_rating.save
-              render :json => {stone_parcel: rating_stone_parcel(stone_rating), response_code: 200}
+            if stone_rating.comments.present? || stone_rating.parcel_rating.present? || stone_rating.valuation.present?
+              if stone_rating.save
+                render :json => {stone_parcel: rating_stone_parcel(stone_rating), response_code: 200}
+              else
+                render :json => {:errors => stone_rating.errors.full_messages, response_code: 201}
+              end
             else
-              render :json => {:errors => stone_rating.errors.full_messages, response_code: 201}
+              render json: {errors: "please send the rating", response_code: 201}
             end
           end
         else
