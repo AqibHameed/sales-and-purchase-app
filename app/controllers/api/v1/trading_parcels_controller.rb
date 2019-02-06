@@ -101,30 +101,267 @@ module Api
 {
     "success": true,
     "parcel": {
-        "id": "3",
-        "description": null,
+        "id": "57",
+        "description": "+9 SAWABLES LIGHT",
         "lot_no": null,
-        "no_of_stones": 0,
-        "carats": 10,
-        "credit_period": 30,
-        "avg_price": 10,
-        "company": "3D DIAMONDS Nv",
-        "cost": 10,
-        "discount_per_month": "0",
-        "sight": null,
-        "source": "POLISHED",
-        "uid": "f5f41260",
-        "percent": 0,
-        "comment": "This is Dummy Polished Parcel",
-        "total_value": 240,
-        "no_of_demands": 0,
+        "no_of_stones": 1,
+        "carats": 1,
+        "credit_period": 15,
+        "avg_price": 1.01,
+        "company": "Seller B",
+        "cost": 1,
+        "discount_per_month": null,
+        "sight": "12/2018",
+        "source": "RUSSIAN",
+        "uid": "8cb06e17",
+        "percent": 1,
+        "comment": "",
+        "total_value": 1.01,
+        "no_of_demands": 4,
         "size_info": [],
         "vital_sales_data": {
-            "demanded_clients": []
+            "demanded_clients": [
+                {
+                    "id": 1,
+                    "name": "Buyer A",
+                    "city": null,
+                    "country": "India",
+                    "created_at": "2018-12-02T08:04:34.000Z",
+                    "updated_at": "2018-12-26T13:54:45.000Z",
+                    "is_anonymous": false,
+                    "add_polished": false,
+                    "is_broker": true,
+                    "users": [
+                        {
+                            "user_id": 22,
+                            "first_name": "aqib",
+                            "last_name": null
+                        },
+                        {
+                            "user_id": 11,
+                            "first_name": "az",
+                            "last_name": "za"
+                        },
+                        {
+                            "user_id": 29,
+                            "first_name": "rizwan",
+                            "last_name": "ali"
+                        },
+                        {
+                            "user_id": 30,
+                            "first_name": "rizwan",
+                            "last_name": "ali"
+                        },
+                        {
+                            "user_id": 10,
+                            "first_name": "Buyer",
+                            "last_name": "B"
+                        },
+                        {
+                            "user_id": 4,
+                            "first_name": "he",
+                            "last_name": "she"
+                        },
+                        {
+                            "user_id": 14,
+                            "first_name": "Dummy",
+                            "last_name": "Buyer 1"
+                        },
+                        {
+                            "user_id": 19,
+                            "first_name": "niraj",
+                            "last_name": "patel"
+                        },
+                        {
+                            "user_id": 20,
+                            "first_name": "niraj s",
+                            "last_name": "patel"
+                        }
+                    ],
+                    "rank": null
+                },
+                {
+                    "id": 2,
+                    "name": "Buyer B",
+                    "city": null,
+                    "country": "India",
+                    "created_at": "2018-12-02T08:04:34.000Z",
+                    "updated_at": "2018-12-02T08:04:34.000Z",
+                    "is_anonymous": false,
+                    "add_polished": false,
+                    "is_broker": false,
+                    "users": [
+                        {
+                            "user_id": 22,
+                            "first_name": "aqib",
+                            "last_name": null
+                        },
+                        {
+                            "user_id": 11,
+                            "first_name": "az",
+                            "last_name": "za"
+                        },
+                        {
+                            "user_id": 29,
+                            "first_name": "rizwan",
+                            "last_name": "ali"
+                        },
+                        {
+                            "user_id": 30,
+                            "first_name": "rizwan",
+                            "last_name": "ali"
+                        },
+                        {
+                            "user_id": 10,
+                            "first_name": "Buyer",
+                            "last_name": "B"
+                        },
+                        {
+                            "user_id": 4,
+                            "first_name": "he",
+                            "last_name": "she"
+                        },
+                        {
+                            "user_id": 14,
+                            "first_name": "Dummy",
+                            "last_name": "Buyer 1"
+                        },
+                        {
+                            "user_id": 19,
+                            "first_name": "niraj",
+                            "last_name": "patel"
+                        },
+                        {
+                            "user_id": 20,
+                            "first_name": "niraj s",
+                            "last_name": "patel"
+                        }
+                    ],
+                    "rank": 10
+                },
+                {
+                    "id": 3,
+                    "name": "Buyer C",
+                    "city": null,
+                    "country": "India",
+                    "created_at": "2018-12-02T08:04:34.000Z",
+                    "updated_at": "2018-12-02T08:04:34.000Z",
+                    "is_anonymous": false,
+                    "add_polished": false,
+                    "is_broker": false,
+                    "users": [
+                        {
+                            "user_id": 22,
+                            "first_name": "aqib",
+                            "last_name": null
+                        },
+                        {
+                            "user_id": 11,
+                            "first_name": "az",
+                            "last_name": "za"
+                        },
+                        {
+                            "user_id": 29,
+                            "first_name": "rizwan",
+                            "last_name": "ali"
+                        },
+                        {
+                            "user_id": 30,
+                            "first_name": "rizwan",
+                            "last_name": "ali"
+                        },
+                        {
+                            "user_id": 10,
+                            "first_name": "Buyer",
+                            "last_name": "B"
+                        },
+                        {
+                            "user_id": 4,
+                            "first_name": "he",
+                            "last_name": "she"
+                        },
+                        {
+                            "user_id": 14,
+                            "first_name": "Dummy",
+                            "last_name": "Buyer 1"
+                        },
+                        {
+                            "user_id": 19,
+                            "first_name": "niraj",
+                            "last_name": "patel"
+                        },
+                        {
+                            "user_id": 20,
+                            "first_name": "niraj s",
+                            "last_name": "patel"
+                        }
+                    ],
+                    "rank": null
+                },
+                {
+                    "id": 7,
+                    "name": "Dummy Buyer 1",
+                    "city": "",
+                    "country": "India",
+                    "created_at": "2018-12-06T09:12:48.000Z",
+                    "updated_at": "2018-12-06T09:12:48.000Z",
+                    "is_anonymous": false,
+                    "add_polished": false,
+                    "is_broker": false,
+                    "users": [
+                        {
+                            "user_id": 22,
+                            "first_name": "aqib",
+                            "last_name": null
+                        },
+                        {
+                            "user_id": 11,
+                            "first_name": "az",
+                            "last_name": "za"
+                        },
+                        {
+                            "user_id": 29,
+                            "first_name": "rizwan",
+                            "last_name": "ali"
+                        },
+                        {
+                            "user_id": 30,
+                            "first_name": "rizwan",
+                            "last_name": "ali"
+                        },
+                        {
+                            "user_id": 10,
+                            "first_name": "Buyer",
+                            "last_name": "B"
+                        },
+                        {
+                            "user_id": 4,
+                            "first_name": "he",
+                            "last_name": "she"
+                        },
+                        {
+                            "user_id": 14,
+                            "first_name": "Dummy",
+                            "last_name": "Buyer 1"
+                        },
+                        {
+                            "user_id": 19,
+                            "first_name": "niraj",
+                            "last_name": "patel"
+                        },
+                        {
+                            "user_id": 20,
+                            "first_name": "niraj s",
+                            "last_name": "patel"
+                        }
+                    ],
+                    "rank": 40
+                }
+            ]
         }
     },
     "response_code": 200
-}
+  }
 =end
 
       def show
@@ -583,6 +820,10 @@ module Api
         demanded_clients = []
         users = []
         all_demanded_clients = get_demanded_clients(parcel, current_company)
+        all_demanded_clients.each do |company|
+          companies_total_scores << company.get_buyer_score
+        end
+        update_buyer_rank(companies_total_scores)
         all_demanded_clients.each do |client|
           client.customers.each do |customer|
             details = {
@@ -592,8 +833,6 @@ module Api
             }
             users << details
           end
-          companies_total_scores << client.get_buyer_score
-          update_buyer_rank(companies_total_scores)
           buyer_score = BuyerScore.find_by(company_id: client.id)
           @data = {
               id: client.id,
@@ -606,7 +845,7 @@ module Api
               add_polished: client.add_polished,
               is_broker: client.is_broker,
               users: users,
-              rank: buyer_score
+              rank: buyer_score.rank
           }
           demanded_clients << @data
         end
@@ -642,13 +881,7 @@ module Api
       end
 
       def update_buyer_rank(companies_total_scores)
-        late_payment = companies_total_scores.map{|company_score| company_score if company_score.late_payment_comparison != 0.0}.compact.sort_by(&:late_payment_comparison)
-        current_risk = companies_total_scores.map{|company_score| company_score if company_score.current_risk_comparison != 0.0}.compact.sort_by(&:current_risk_comparison)
-        network_diversity = companies_total_scores.map{|company_score| company_score if company_score.network_diversity_comparison != 0.0}.compact.sort_by(&:network_diversity_comparison)
-        buyer_network = companies_total_scores.map{|company_score| company_score if company_score.buyer_network_comparison != 0.0}.compact.sort_by(&:buyer_network_comparison)
-        due_date = companies_total_scores.map{|company_score| company_score if company_score.due_date_comparison != 0.0}.compact.sort_by(&:due_date_comparison)
-        credit_used = companies_total_scores.map{|company_score| company_score if company_score.credit_used_comparison != 0.0}.compact.sort_by(&:credit_used_comparison)
-        count_of_credit_given = companies_total_scores.map{|company_score| company_score if company_score.count_of_credit_given_comparison != 0.0}.compact.sort_by(&:count_of_credit_given_comparison).reverse
+        final_score = companies_total_scores.map{|company_score| company_score if company_score.total != 0.0}.compact.sort_by(&:total)
 
         total_companies = companies_total_scores.count
         ten_percent = ((total_companies / 100.to_f) * 10)
@@ -656,30 +889,25 @@ module Api
         fourty_percent = ((total_companies / 100.to_f) * 40)
         hundred_percent = ((total_companies / 100.to_f) * 100)
 
-        percentile_rank(late_payment, 'late_payment_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-        percentile_rank(current_risk, 'current_risk_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-        percentile_rank(network_diversity, 'network_diversity_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-        percentile_rank(buyer_network, 'buyer_network_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-        percentile_rank(due_date, 'due_date_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-        percentile_rank(credit_used, 'credit_used_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-        percentile_rank(count_of_credit_given, 'count_of_credit_given_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        percentile_rank(final_score, ten_percent, twenty_percent, fourty_percent, hundred_percent)
+
       end
 
-      def self.percentile_rank(buyer_score_vs_market_score, rank_attribute, ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      def percentile_rank(final_score, ten_percent, twenty_percent, fourty_percent, hundred_percent)
         rank = ''
-        buyer_score_vs_market_score.each do |percentage|
-          if buyer_score_vs_market_score.index(percentage) <= ten_percent
+        final_score.each do |percentage|
+          if final_score.index(percentage) <= ten_percent
             rank = 10
-          elsif buyer_score_vs_market_score.index(percentage) > ten_percent && buyer_score_vs_market_score.index(percentage) <= twenty_percent
+          elsif final_score.index(percentage) > ten_percent && final_score.index(percentage) <= twenty_percent
             rank = 20
-          elsif buyer_score_vs_market_score.index(percentage) > twenty_percent && buyer_score_vs_market_score.index(percentage) <= fourty_percent
+          elsif final_score.index(percentage) > twenty_percent && final_score.index(percentage) <= fourty_percent
             rank = 40
-          elsif buyer_score_vs_market_score.index(percentage) > fourty_percent && buyer_score_vs_market_score.index(percentage) <= hundred_percent
+          elsif final_score.index(percentage) > fourty_percent && final_score.index(percentage) <= hundred_percent
             rank = nil
           end
           buyer_score = BuyerScore.find_by(company_id: percentage[:company_id])
           if buyer_score.present?
-            buyer_score.update_attribute(rank_attribute, rank)
+            buyer_score.update(rank: rank)
           end
         end
       end

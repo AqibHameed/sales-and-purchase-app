@@ -277,60 +277,62 @@ nothing only params in url
     },
     "parcels": [
         {
-            "proposal_send": true,
-            "proposal_id": 18,
+            "proposal_send": false,
+            "proposal_id": null,
             "is_mine": false,
-            "is_overdue": false,
-            "id": "10754",
-            "description": "+100 CT",
+            "is_overdue": true,
+            "id": "147",
+            "description": "Collection 5-10 ct",
             "lot_no": null,
-            "no_of_stones": 100,
-            "carats": 100,
-            "credit_period": 50,
-            "avg_price": 110,
-            "company": "SafeTrade",
-            "cost": 100,
+            "no_of_stones": 10,
+            "carats": 1,
+            "credit_period": 15,
+            "avg_price": 3000,
+            "company": "Seller B",
+            "rank": null,
+            "cost": null,
             "discount_per_month": null,
-            "sight": null,
-            "source": "SPECIAL",
-            "uid": "527566f4",
+            "sight": "12/2018",
+            "source": "DTC",
+            "uid": "7acec9df",
             "percent": 10,
             "comment": "",
-            "total_value": 11000,
+            "total_value": 3000,
             "size_info": [],
-            "proposal_status": "rejected",
+            "proposal_status": "no",
             "my_offer": null,
-            "demand_id": 10753
+            "demand_id": 61
         },
         {
             "proposal_send": false,
             "proposal_id": null,
-            "is_mine": false,
-            "is_overdue": false,
-            "id": "10757",
-            "description": "PINK COLOR",
+            "is_mine": true,
+            "is_overdue": true,
+            "id": "155",
+            "description": "Collection 5-10 ct",
             "lot_no": null,
             "no_of_stones": 10,
-            "carats": 100,
-            "credit_period": 100,
-            "avg_price": 110,
-            "company": "SafeTrade",
-            "cost": 100,
+            "carats": 1,
+            "credit_period": 3000,
+            "avg_price": 3000,
+            "company": "Dummy Seller 1",
+            "rank": null,
+            "cost": null,
             "discount_per_month": "0",
-            "sight": "",
-            "source": "SPECIAL",
-            "uid": "1dee48ab",
-            "percent": 10,
+            "sight": "12/18",
+            "source": "DTC",
+            "uid": "a98d1901",
+            "percent": 0,
             "comment": "",
-            "total_value": 11000,
+            "total_value": 3000,
             "size_info": [],
             "proposal_status": "no",
             "my_offer": null,
-            "demand_id": 10819
+            "demand_id": 61
         }
     ],
     "response_code": 200
-}
+  }
 =end
 
       def parcels_list
@@ -340,10 +342,12 @@ nothing only params in url
           source = DemandSupplier.where(id: params[:demand_supplier_id]).first.name if params[:demand_supplier_id].present?
           parcels = get_trading_pracels(source, params[:description], params[:parcel_id])
           parcels.each do |parcel|
+            companies_total_scores << parcel.try(:company).get_seller_score
+          end
+          update_seller_score_rank(companies_total_scores)
+          parcels.each do |parcel|
             if check_parcel_visibility(parcel, current_company)
               if parcel_demanded(parcel, current_company)
-                companies_total_scores << parcel.try(:company).get_seller_score
-                update_seller_score_rank(companies_total_scores)
                 @demanded << parcel_data(parcel, 'demanded')
               end
             end
@@ -356,7 +360,7 @@ nothing only params in url
       end
 
       def parcel_data(parcel, category)
-        seller_score = SellerScore.find_by(company_id: client.id)
+        seller_score = SellerScore.find_by(company_id: parcel.try(:company).id)
         if parcel.company_id == current_company.id
           is_mine = true
         else
@@ -414,7 +418,7 @@ nothing only params in url
             credit_period: parcel.credit_period,
             avg_price: parcel.try(:price).to_f,
             company: parcel.try(:company).try(:name),
-            rank: seller_score,
+            rank: seller_score.rank,
             cost: parcel.cost,
             discount_per_month: parcel.box_value,
             sight: parcel.sight,
@@ -439,12 +443,7 @@ nothing only params in url
       end
 
       def update_seller_score_rank(companies_total_scores)
-      late_payment = companies_total_scores.map{|company_score| company_score if company_score.seller_late_payment_comparison != 0.0}.compact.sort_by(&:seller_late_payment_comparison)
-      current_risk = companies_total_scores.map{|company_score| company_score if company_score.seller_current_risk_comparison != 0.0}.compact.sort_by(&:seller_current_risk_comparison)
-      network_diversity = companies_total_scores.map{|company_score| company_score if company_score.seller_network_diversity_comparison != 0.0}.compact.sort_by(&:seller_network_diversity_comparison)
-      seller_network = companies_total_scores.map{|company_score| company_score if company_score.seller_network_comparison != 0.0}.compact.sort_by(&:seller_network_comparison)
-      due_date = companies_total_scores.map{|company_score| company_score if company_score.seller_due_date_comparison != 0.0}.compact.sort_by(&:seller_due_date_comparison)
-      credit_used = companies_total_scores.map{|company_score| company_score if company_score.seller_credit_used_comparison != 0.0}.compact.sort_by(&:seller_credit_used_comparison)
+      final_score = companies_total_scores.map{|company_score| company_score if company_score.total != 0.0}.compact.sort_by(&:total)
 
       total_companies = companies_total_scores.count
       ten_percent = ((total_companies / 100.to_f) * 10)
@@ -452,29 +451,24 @@ nothing only params in url
       fourty_percent = ((total_companies / 100.to_f) * 40)
       hundred_percent = ((total_companies / 100.to_f) * 100)
 
-      percentile_rank(late_payment, 'seller_late_payment_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-      percentile_rank(current_risk, 'seller_current_risk_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-      percentile_rank(network_diversity, 'seller_network_diversity_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-      percentile_rank(seller_network, 'seller_network_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-      percentile_rank(due_date, 'seller_due_date_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
-      percentile_rank(credit_used, 'seller_credit_used_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      percentile_rank(final_score, ten_percent, twenty_percent, fourty_percent, hundred_percent)
       end
 
-      def self.percentile_rank(seller_score_vs_market_score, rank_attribute, ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      def percentile_rank(final_score, ten_percent, twenty_percent, fourty_percent, hundred_percent)
         rank = ''
-        seller_score_vs_market_score.each do |percentage|
-          if seller_score_vs_market_score.index(percentage) <= ten_percent
+        final_score.each do |percentage|
+          if final_score.index(percentage) <= ten_percent
             rank = 10
-          elsif seller_score_vs_market_score.index(percentage) > ten_percent && seller_score_vs_market_score.index(percentage) <= twenty_percent
+          elsif final_score.index(percentage) > ten_percent && final_score.index(percentage) <= twenty_percent
             rank = 10
-          elsif seller_score_vs_market_score.index(percentage) > twenty_percent && seller_score_vs_market_score.index(percentage) <= fourty_percent
+          elsif final_score.index(percentage) > twenty_percent && final_score.index(percentage) <= fourty_percent
             rank =  10
-          elsif seller_score_vs_market_score.index(percentage) > fourty_percent && seller_score_vs_market_score.index(percentage) <= hundred_percent
+          elsif final_score.index(percentage) > fourty_percent && final_score.index(percentage) <= hundred_percent
             rank = 10
           end
           seller_score = SellerScore.find_by(company_id: percentage[:company_id])
           if seller_score.present?
-            seller_score.update_attribute(rank_attribute, rank)
+            seller_score.update_attribute(rank: rank)
           end
         end
       end
