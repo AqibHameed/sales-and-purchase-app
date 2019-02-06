@@ -52,6 +52,29 @@ module Api
         end
       end
 
+
+      def stone_details
+        if current_customer
+          stone_details = StoneDetail.new(stone_details_params)
+          if stone_details.save
+            render json: {success: true, message: "data successfully uploaded", response_code: 200}
+          else
+            render json: {success: false, message: "Some error in upload. Please try again", response_code: 201}
+          end
+        else
+          render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
+        end
+      end
+
+
+      def stone_details_params
+        params.permit(:stone_id,:tender_id, :description, :weight, :color_mechine, :color_eye, :fluorescence,:tention,:image,:file).merge(customer_id: current_user.id)
+      end
+
+
+
+
+
 =begin
  @apiVersion 1.0.0
  @api {get} /api/v1/bid_history?parcel_id=1

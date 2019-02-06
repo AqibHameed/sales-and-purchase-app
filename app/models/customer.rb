@@ -17,6 +17,7 @@ class Customer < ApplicationRecord
            'current_tenders', 'upcoming_tenders', 'protection', 'record_sale', 'past_tenders'].freeze
 
   has_one  :sub_company_credit_limit, :foreign_key => "sub_company_id"
+  has_many :stone_details
 
   has_many :bids
   has_many :devices

@@ -16,7 +16,7 @@ class Tender < ApplicationRecord
 
   attr_accessor :delete_stones, :delete_winner_list, :total_carat_value
 
-
+  has_many :stone_details
   has_many :customers_tenders
   has_many :customers, :through => :customers_tenders
   has_many :bids, :dependent => :destroy
