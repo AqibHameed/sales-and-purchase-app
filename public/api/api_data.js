@@ -639,7 +639,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "  {\n    \"success\": true,\n    \"companies_rated_count\": {\n        \"know\": {\n            \"yes\": 9,\n            \"no\": 0\n        },\n        \"trade\": {\n            \"yes\": 5,\n            \"no\": 4\n        },\n        \"recommend\": {\n            \"yes\": 6,\n            \"no\": 0\n        },\n        \"experience\": {\n            \"yes\": 5,\n            \"no\": 0\n        },\n        \"total_number_of_comapnies_rated\": 9,\n        \"rank\": \"top 20\"\n    }\n}",
+          "content": "  {\n    \"success\": true,\n    \"companies_rated_count\": {\n        \"know\": {\n            \"yes\": 1,\n            \"no\": 0\n        },\n        \"trade\": {\n            \"yes\": 0,\n            \"no\": 1\n        },\n        \"recommend\": {\n            \"yes\": 0,\n            \"no\": 0\n        },\n        \"experience\": {\n            \"yes\": 0,\n            \"no\": 0\n        },\n        \"total_number_of_comapnies_rated\": 1,\n        \"rank\": 10\n    }\n  }\n}",
           "type": "json"
         }
       ]

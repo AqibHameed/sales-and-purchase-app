@@ -309,24 +309,25 @@ class Api::V1::CompaniesController < ApplicationController
     "success": true,
     "companies_rated_count": {
         "know": {
-            "yes": 9,
+            "yes": 1,
             "no": 0
         },
         "trade": {
-            "yes": 5,
-            "no": 4
+            "yes": 0,
+            "no": 1
         },
         "recommend": {
-            "yes": 6,
+            "yes": 0,
             "no": 0
         },
         "experience": {
-            "yes": 5,
+            "yes": 0,
             "no": 0
         },
-        "total_number_of_comapnies_rated": 9,
-        "rank": "top 20"
+        "total_number_of_comapnies_rated": 1,
+        "rank": 10
     }
+  }
 }
 =end
 
