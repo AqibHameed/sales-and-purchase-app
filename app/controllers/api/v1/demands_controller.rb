@@ -277,67 +277,74 @@ nothing only params in url
     },
     "parcels": [
         {
-            "proposal_send": true,
-            "proposal_id": 18,
+            "proposal_send": false,
+            "proposal_id": null,
             "is_mine": false,
-            "is_overdue": false,
-            "id": "10754",
-            "description": "+100 CT",
+            "is_overdue": true,
+            "id": "147",
+            "description": "Collection 5-10 ct",
             "lot_no": null,
-            "no_of_stones": 100,
-            "carats": 100,
-            "credit_period": 50,
-            "avg_price": 110,
-            "company": "SafeTrade",
-            "cost": 100,
+            "no_of_stones": 10,
+            "carats": 1,
+            "credit_period": 15,
+            "avg_price": 3000,
+            "company": "Seller B",
+            "rank": null,
+            "cost": null,
             "discount_per_month": null,
-            "sight": null,
-            "source": "SPECIAL",
-            "uid": "527566f4",
+            "sight": "12/2018",
+            "source": "DTC",
+            "uid": "7acec9df",
             "percent": 10,
             "comment": "",
-            "total_value": 11000,
+            "total_value": 3000,
             "size_info": [],
-            "proposal_status": "rejected",
+            "proposal_status": "no",
             "my_offer": null,
-            "demand_id": 10753
+            "demand_id": 61
         },
         {
             "proposal_send": false,
             "proposal_id": null,
-            "is_mine": false,
-            "is_overdue": false,
-            "id": "10757",
-            "description": "PINK COLOR",
+            "is_mine": true,
+            "is_overdue": true,
+            "id": "155",
+            "description": "Collection 5-10 ct",
             "lot_no": null,
             "no_of_stones": 10,
-            "carats": 100,
-            "credit_period": 100,
-            "avg_price": 110,
-            "company": "SafeTrade",
-            "cost": 100,
+            "carats": 1,
+            "credit_period": 3000,
+            "avg_price": 3000,
+            "company": "Dummy Seller 1",
+            "rank": null,
+            "cost": null,
             "discount_per_month": "0",
-            "sight": "",
-            "source": "SPECIAL",
-            "uid": "1dee48ab",
-            "percent": 10,
+            "sight": "12/18",
+            "source": "DTC",
+            "uid": "a98d1901",
+            "percent": 0,
             "comment": "",
-            "total_value": 11000,
+            "total_value": 3000,
             "size_info": [],
             "proposal_status": "no",
             "my_offer": null,
-            "demand_id": 10819
+            "demand_id": 61
         }
     ],
     "response_code": 200
-}
+  }
 =end
 
       def parcels_list
         if current_company
           @demanded = []
+          companies_total_scores = []
           source = DemandSupplier.where(id: params[:demand_supplier_id]).first.name if params[:demand_supplier_id].present?
           parcels = get_trading_pracels(source, params[:description], params[:parcel_id])
+          parcels.each do |parcel|
+            companies_total_scores << parcel.try(:company).get_seller_score
+          end
+          update_seller_score_rank(companies_total_scores)
           parcels.each do |parcel|
             if check_parcel_visibility(parcel, current_company)
               if parcel_demanded(parcel, current_company)
@@ -353,6 +360,7 @@ nothing only params in url
       end
 
       def parcel_data(parcel, category)
+        seller_score = SellerScore.find_by(company_id: parcel.try(:company).id)
         if parcel.company_id == current_company.id
           is_mine = true
         else
@@ -410,6 +418,7 @@ nothing only params in url
             credit_period: parcel.credit_period,
             avg_price: parcel.try(:price).to_f,
             company: parcel.try(:company).try(:name),
+            rank: seller_score.rank,
             cost: parcel.cost,
             discount_per_month: parcel.box_value,
             sight: parcel.sight,
@@ -430,6 +439,37 @@ nothing only params in url
           respose_hash.merge(demand_id: demand.id)
         else
           respose_hash
+        end
+      end
+
+      def update_seller_score_rank(companies_total_scores)
+      final_score = companies_total_scores.map{|company_score| company_score if company_score.total != 0.0}.compact.sort_by(&:total)
+
+      total_companies = companies_total_scores.count
+      ten_percent = ((total_companies / 100.to_f) * 10)
+      twenty_percent = ((total_companies / 100.to_f) * 20)
+      fourty_percent = ((total_companies / 100.to_f) * 40)
+      hundred_percent = ((total_companies / 100.to_f) * 100)
+
+      percentile_rank(final_score, ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      end
+
+      def percentile_rank(final_score, ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        rank = ''
+        final_score.each do |percentage|
+          if final_score.index(percentage) <= ten_percent
+            rank = 10
+          elsif final_score.index(percentage) > ten_percent && final_score.index(percentage) <= twenty_percent
+            rank = 10
+          elsif final_score.index(percentage) > twenty_percent && final_score.index(percentage) <= fourty_percent
+            rank =  10
+          elsif final_score.index(percentage) > fourty_percent && final_score.index(percentage) <= hundred_percent
+            rank = 10
+          end
+          seller_score = SellerScore.find_by(company_id: percentage[:company_id])
+          if seller_score.present?
+            seller_score.update_attribute(rank: rank)
+          end
         end
       end
 
