@@ -468,7 +468,7 @@ nothing only params in url
           end
           seller_score = SellerScore.find_by(company_id: percentage[:company_id])
           if seller_score.present?
-            seller_score.update_attribute(rank: rank)
+            seller_score.update(rank: rank)
           end
         end
       end

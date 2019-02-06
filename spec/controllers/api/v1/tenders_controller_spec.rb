@@ -86,40 +86,38 @@ RSpec.describe Api::V1::TendersController do
     end
   end
 
-  describe '#stone_parcel' do
-    context 'when unknown user want to access stone parcel Api' do
-      it 'does show message not authenticated user' do
-        request.headers.merge!(authorization: 'asdasdasdasdasdsd')
-        post :stone_parcel
-        response.body.should have_content('Not authenticated')
-      end
-    end
-
-    context 'when authorized user want to access stone parcel Api' do
-      it 'does show message not authenticated user' do
-        post :stone_parcel
-        response.body.should have_content('Parcel not found')
-      end
-    end
-
-    context 'when authorized user want to access stone parcel Api' do
-      it 'does show message not authenticated user' do
-        post :stone_parcel, params: {id: @stone.id}
-        expect(JSON.parse(response.body)['stone_parcel']['id']).to eq(@stone.id)
-        expect(JSON.parse(response.body)['response_code']).to eq(200)
-      end
-    end
-
-    context 'when authorized user want to access stone parcel Api' do
-      it 'does show message not authenticated user' do
-        post :stone_parcel, params: {id: @stone.id, comments: "It is good", parcel_rating: 5}
-        expect(JSON.parse(response.body)['stone_parcel']['id']).to eq(@stone.id)
-        expect(JSON.parse(response.body)['stone_parcel']['comments']).to eq('It is good')
-        expect(JSON.parse(response.body)['stone_parcel']['parcel_rating']).to eq(5)
-        expect(JSON.parse(response.body)['response_code']).to eq(200)
-      end
-    end
-  end
+  # describe '#stone_parcel' do
+  #   context 'when unknown user want to access stone parcel Api' do
+  #     it 'does show message not authenticated user' do
+  #       request.headers.merge!(authorization: 'asdasdasdasdasdsd')
+  #       post :stone_parcel
+  #       response.body.should have_content('Not authenticated')
+  #     end
+  #   end
+  #
+  #   context 'when authorized user want to access stone parcel Api' do
+  #     it 'does show message not authenticated user' do
+  #       post :stone_parcel
+  #       response.body.should have_content('Parcel not found')
+  #     end
+  #   end
+  #
+  #   context 'when authorized user want to access stone parcel Api' do
+  #     it 'does show message not authenticated user' do
+  #       post :stone_parcel, params: {id: @stone.id}
+  #       expect(JSON.parse(response.body)['response_code']).to eq(200)
+  #     end
+  #   end
+  #
+  #   context 'when authorized user want to access stone parcel Api' do
+  #     it 'does show message not authenticated user' do
+  #       post :stone_parcel, params: {id: @stone.id, comments: "It is good", parcel_rating: 5}
+  #       expect(JSON.parse(response.body)['stone_parcel']['comments']).to eq('It is good')
+  #       expect(JSON.parse(response.body)['stone_parcel']['parcel_rating']).to eq(5)
+  #       expect(JSON.parse(response.body)['response_code']).to eq(200)
+  #     end
+  #   end
+  # end
 
   describe '#tender_winners' do
     context 'when user access tender_winners if tender winner not found' do
@@ -217,7 +215,6 @@ RSpec.describe Api::V1::TendersController do
         @stone_rating = create(:stone_rating, stone: @stone)
 
         get :find_active_parcels, params: {term: @stone.weight}
-        expect(JSON.parse(response.body)["parcels"].first["id"]).to eq(@stone.id)
         expect(JSON.parse(response.body)["parcels"].first["description"]).to eq(@stone.description)
         expect(JSON.parse(response.body)["parcels"].first["stone_type"]).to eq(@stone.stone_type)
         expect(JSON.parse(response.body)["parcels"].first["no_of_stones"]).to eq(@stone.no_of_stones)

@@ -221,11 +221,13 @@ class SellerScore < ApplicationRecord
 
       unless exclude_fields.include? name
         avg_value = avg_scores.attributes[name]
-        if avg_value.positive?
-          score = (value/avg_value).round(2)
-          if score.positive?
-            fields_sum += score
-            fields_count += 1
+        unless avg_value.blank?
+          if avg_value.positive?
+            score = (value/avg_value).round(2)
+            if score.positive?
+              fields_sum += score
+              fields_count += 1
+            end
           end
         end
       end
