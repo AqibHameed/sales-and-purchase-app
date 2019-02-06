@@ -219,8 +219,6 @@ RSpec.describe Api::V1::TendersController do
         get :find_active_parcels, params: {term: @stone.weight}
         expect(JSON.parse(response.body)["parcels"].first["id"]).to eq(@stone.id)
         expect(JSON.parse(response.body)["parcels"].first["description"]).to eq(@stone.description)
-        expect(JSON.parse(response.body)["parcels"].first["created_at"].to_time).to eq(@stone.created_at.to_time)
-        expect(JSON.parse(response.body)["parcels"].first["updated_at"].to_time).to eq(@stone.updated_at.to_time)
         expect(JSON.parse(response.body)["parcels"].first["stone_type"]).to eq(@stone.stone_type)
         expect(JSON.parse(response.body)["parcels"].first["no_of_stones"]).to eq(@stone.no_of_stones)
         expect(JSON.parse(response.body)["parcels"].first["size"]).to eq(@stone.size)
@@ -233,8 +231,6 @@ RSpec.describe Api::V1::TendersController do
         expect(JSON.parse(response.body)["parcels"].first['comments']).to eq(@stone.comments)
         expect(JSON.parse(response.body)["parcels"].first['valuation']).to eq(@stone.valuation)
         expect(JSON.parse(response.body)["parcels"].first['parcel_rating']).to eq(@stone.parcel_rating)
-        # expect(JSON.parse(response.body)["parcels"].first["tender_name"]).to eq(@stone.name)
-
       end
 
     end
