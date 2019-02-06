@@ -16,11 +16,16 @@ module Api
 "image": <image_object>
 }
  @apiSuccessExample {json} SuccessResponse:
-{
+ {
     "success": true,
-    "message": 'Image successfully uploaded.',
+    "message": "Image successfully uploaded.",
+    "images": [
+        "https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/002/original/third_section_pic.png?1549279213",
+        "https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/003/original/third_section_pic.png?1549279452",
+        "https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/005/original/create_parcel.png?1549280387"
+    ],
     "response_code": 200
-}
+ }
 =end
 
       def upload
@@ -32,8 +37,8 @@ module Api
             if stone.nil?
               render json: { errors: "Parcel not found.", response_code: 201 }
             else
-              upload = Cloudinary::Uploader.upload(params[:image])
-              parcel_image = ParcelImage.new(parcel_id: stone.id, customer_id: current_customer.id, image_url: upload["secure_url"])
+              #upload = Cloudinary::Uploader.upload(params[:image])
+              parcel_image = ParcelImage.new(parcel_id: stone.id, customer_id: current_customer.id, image: params[:image])
               if parcel_image.save
                 images = stone.parcel_images.where(customer_id: current_customer.id).map { |e| e.try(:image_url)}.compact
                 render json: { success: true, message: "Image successfully uploaded.", images: images, response_code: 200 }

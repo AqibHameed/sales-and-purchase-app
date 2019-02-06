@@ -106,56 +106,56 @@ module Api
  @apiSuccessExample {json} SuccessResponse3:
  {
     "success": true,
-    "buyer_score": 0.78,
+    "buyer_score": 0.39,
     "scores": [
         {
             "name": "Late Payment",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Current Risk Score",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Buyer Network Score",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Due Date Score",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Credit Used Score",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Number Of Suppliers Giving You Credit",
-            "user_score": 2,
+            "user_score": 1,
             "market_average": 2.57,
-            "user_score_vs_market_score": 0.78,
-            "rank": "51 to 70"
+            "user_score_vs_market_score": 0.39,
+            "rank": 10
         }
     ],
     "response_code": 200
@@ -214,42 +214,42 @@ module Api
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Current Risk Score",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Seller Network Score",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Due Date Score",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": null
         },
         {
             "name": "Credit Used Score",
             "user_score": 0,
             "market_average": 0,
             "user_score_vs_market_score": 0,
-            "rank": "top 20"
+            "rank": 10
         }
     ],
     "response_code": 200
