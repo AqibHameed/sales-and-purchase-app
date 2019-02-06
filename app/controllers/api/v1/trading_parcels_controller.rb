@@ -576,6 +576,7 @@ module Api
       end
 
       def parcel_data(parcel)
+        companies_total_scores = []
         # available_customers = get_available_buyers(parcel, current_customer)
         # not_enough_available_customers = get_unavailable_buyers(parcel, current_customer)
         # demanded_but_not_available = get_demanded_but_not_available_buyers(parcel, current_customer)
@@ -591,6 +592,9 @@ module Api
             }
             users << details
           end
+          companies_total_scores << client.get_buyer_score
+          update_buyer_rank(companies_total_scores)
+          buyer_score = BuyerScore.find_by(company_id: client.id)
           @data = {
               id: client.id,
               name: client.name,
@@ -601,7 +605,8 @@ module Api
               is_anonymous: client.is_anonymous,
               add_polished: client.add_polished,
               is_broker: client.is_broker,
-              users: users
+              users: users,
+              rank: buyer_score
           }
           demanded_clients << @data
         end
@@ -634,6 +639,49 @@ module Api
                 demanded_clients: demanded_clients
             }
         }
+      end
+
+      def update_buyer_rank(companies_total_scores)
+        late_payment = companies_total_scores.map{|company_score| company_score if company_score.late_payment_comparison != 0.0}.compact.sort_by(&:late_payment_comparison)
+        current_risk = companies_total_scores.map{|company_score| company_score if company_score.current_risk_comparison != 0.0}.compact.sort_by(&:current_risk_comparison)
+        network_diversity = companies_total_scores.map{|company_score| company_score if company_score.network_diversity_comparison != 0.0}.compact.sort_by(&:network_diversity_comparison)
+        buyer_network = companies_total_scores.map{|company_score| company_score if company_score.buyer_network_comparison != 0.0}.compact.sort_by(&:buyer_network_comparison)
+        due_date = companies_total_scores.map{|company_score| company_score if company_score.due_date_comparison != 0.0}.compact.sort_by(&:due_date_comparison)
+        credit_used = companies_total_scores.map{|company_score| company_score if company_score.credit_used_comparison != 0.0}.compact.sort_by(&:credit_used_comparison)
+        count_of_credit_given = companies_total_scores.map{|company_score| company_score if company_score.count_of_credit_given_comparison != 0.0}.compact.sort_by(&:count_of_credit_given_comparison).reverse
+
+        total_companies = companies_total_scores.count
+        ten_percent = ((total_companies / 100.to_f) * 10)
+        twenty_percent = ((total_companies / 100.to_f) * 20)
+        fourty_percent = ((total_companies / 100.to_f) * 40)
+        hundred_percent = ((total_companies / 100.to_f) * 100)
+
+        percentile_rank(late_payment, 'late_payment_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        percentile_rank(current_risk, 'current_risk_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        percentile_rank(network_diversity, 'network_diversity_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        percentile_rank(buyer_network, 'buyer_network_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        percentile_rank(due_date, 'due_date_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        percentile_rank(credit_used, 'credit_used_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        percentile_rank(count_of_credit_given, 'count_of_credit_given_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      end
+
+      def self.percentile_rank(buyer_score_vs_market_score, rank_attribute, ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        rank = ''
+        buyer_score_vs_market_score.each do |percentage|
+          if buyer_score_vs_market_score.index(percentage) <= ten_percent
+            rank = 10
+          elsif buyer_score_vs_market_score.index(percentage) > ten_percent && buyer_score_vs_market_score.index(percentage) <= twenty_percent
+            rank = 20
+          elsif buyer_score_vs_market_score.index(percentage) > twenty_percent && buyer_score_vs_market_score.index(percentage) <= fourty_percent
+            rank = 40
+          elsif buyer_score_vs_market_score.index(percentage) > fourty_percent && buyer_score_vs_market_score.index(percentage) <= hundred_percent
+            rank = nil
+          end
+          buyer_score = BuyerScore.find_by(company_id: percentage[:company_id])
+          if buyer_score.present?
+            buyer_score.update_attribute(rank_attribute, rank)
+          end
+        end
       end
 
       def customers_data(customers)

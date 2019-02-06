@@ -336,11 +336,14 @@ nothing only params in url
       def parcels_list
         if current_company
           @demanded = []
+          companies_total_scores = []
           source = DemandSupplier.where(id: params[:demand_supplier_id]).first.name if params[:demand_supplier_id].present?
           parcels = get_trading_pracels(source, params[:description], params[:parcel_id])
           parcels.each do |parcel|
             if check_parcel_visibility(parcel, current_company)
               if parcel_demanded(parcel, current_company)
+                companies_total_scores << parcel.try(:company).get_seller_score
+                update_seller_score_rank(companies_total_scores)
                 @demanded << parcel_data(parcel, 'demanded')
               end
             end
@@ -353,6 +356,7 @@ nothing only params in url
       end
 
       def parcel_data(parcel, category)
+        seller_score = SellerScore.find_by(company_id: client.id)
         if parcel.company_id == current_company.id
           is_mine = true
         else
@@ -410,6 +414,7 @@ nothing only params in url
             credit_period: parcel.credit_period,
             avg_price: parcel.try(:price).to_f,
             company: parcel.try(:company).try(:name),
+            rank: seller_score,
             cost: parcel.cost,
             discount_per_month: parcel.box_value,
             sight: parcel.sight,
@@ -430,6 +435,47 @@ nothing only params in url
           respose_hash.merge(demand_id: demand.id)
         else
           respose_hash
+        end
+      end
+
+      def update_seller_score_rank(companies_total_scores)
+      late_payment = companies_total_scores.map{|company_score| company_score if company_score.seller_late_payment_comparison != 0.0}.compact.sort_by(&:seller_late_payment_comparison)
+      current_risk = companies_total_scores.map{|company_score| company_score if company_score.seller_current_risk_comparison != 0.0}.compact.sort_by(&:seller_current_risk_comparison)
+      network_diversity = companies_total_scores.map{|company_score| company_score if company_score.seller_network_diversity_comparison != 0.0}.compact.sort_by(&:seller_network_diversity_comparison)
+      seller_network = companies_total_scores.map{|company_score| company_score if company_score.seller_network_comparison != 0.0}.compact.sort_by(&:seller_network_comparison)
+      due_date = companies_total_scores.map{|company_score| company_score if company_score.seller_due_date_comparison != 0.0}.compact.sort_by(&:seller_due_date_comparison)
+      credit_used = companies_total_scores.map{|company_score| company_score if company_score.seller_credit_used_comparison != 0.0}.compact.sort_by(&:seller_credit_used_comparison)
+
+      total_companies = companies_total_scores.count
+      ten_percent = ((total_companies / 100.to_f) * 10)
+      twenty_percent = ((total_companies / 100.to_f) * 20)
+      fourty_percent = ((total_companies / 100.to_f) * 40)
+      hundred_percent = ((total_companies / 100.to_f) * 100)
+
+      percentile_rank(late_payment, 'seller_late_payment_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      percentile_rank(current_risk, 'seller_current_risk_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      percentile_rank(network_diversity, 'seller_network_diversity_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      percentile_rank(seller_network, 'seller_network_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      percentile_rank(due_date, 'seller_due_date_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      percentile_rank(credit_used, 'seller_credit_used_rank', ten_percent, twenty_percent, fourty_percent, hundred_percent)
+      end
+
+      def self.percentile_rank(seller_score_vs_market_score, rank_attribute, ten_percent, twenty_percent, fourty_percent, hundred_percent)
+        rank = ''
+        seller_score_vs_market_score.each do |percentage|
+          if seller_score_vs_market_score.index(percentage) <= ten_percent
+            rank = 10
+          elsif seller_score_vs_market_score.index(percentage) > ten_percent && seller_score_vs_market_score.index(percentage) <= twenty_percent
+            rank = 10
+          elsif seller_score_vs_market_score.index(percentage) > twenty_percent && seller_score_vs_market_score.index(percentage) <= fourty_percent
+            rank =  10
+          elsif seller_score_vs_market_score.index(percentage) > fourty_percent && seller_score_vs_market_score.index(percentage) <= hundred_percent
+            rank = 10
+          end
+          seller_score = SellerScore.find_by(company_id: percentage[:company_id])
+          if seller_score.present?
+            seller_score.update_attribute(rank_attribute, rank)
+          end
         end
       end
 
