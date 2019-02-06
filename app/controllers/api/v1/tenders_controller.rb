@@ -333,17 +333,52 @@ module Api
  @apiGroup Tenders
  @apiDescription Tender's Stone parcel
  @apiParamExample {json} Request-Example:
- {
-"id": 1 ,
-"comments": "",
- "valuation": "",
- "parcel_rating": 4
+{
+	"comments": "this is comment",
+	"valuation": "",
+	"parcel_rating": "",
+	"id": 4546
 }
  @apiSuccessExample {json} SuccessResponse:
 {
-    "errors": [
-        "Parcel not found"
-    ],
+    "stone_parcel": {
+        "id": 4546,
+        "comments": "this is comment",
+        "valuation": "",
+        "parcel_rating": null,
+        "lot_no": 6,
+        "tender_id": 1216,
+        "description": "-9+1 R.O.M",
+        "no_of_stones": 1,
+        "weight": 327.46,
+        "carat": null,
+        "stone_type": "Parcel",
+        "size": null,
+        "purity": null,
+        "color": null,
+        "polished": null,
+        "created_at": "2019-01-24T10:09:25.000Z",
+        "updated_at": "2019-01-24T10:09:25.000Z",
+        "deec_no": 6,
+        "system_price": null,
+        "lot_permission": null,
+        "reserved_price": null,
+        "yes_no_system_price": null,
+        "stone_winning_price": null
+    },
+    "response_code": 200
+}
+
+@apiParamExample {json} Request-Example:
+{
+	"comments": "",
+	"valuation": "",
+	"parcel_rating": "",
+	"id": 4545
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "errors": "please send the rating",
     "response_code": 201
 }
 =end

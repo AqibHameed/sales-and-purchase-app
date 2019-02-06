@@ -1898,7 +1898,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-Example:",
-          "content": " {\n\"id\": 1 ,\n\"comments\": \"\",\n \"valuation\": \"\",\n \"parcel_rating\": 4\n}",
+          "content": "{\n\t\"comments\": \"this is comment\",\n\t\"valuation\": \"\",\n\t\"parcel_rating\": \"\",\n\t\"id\": 4546\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"comments\": \"\",\n\t\"valuation\": \"\",\n\t\"parcel_rating\": \"\",\n\t\"id\": 4545\n}",
           "type": "json"
         }
       ]
@@ -1907,7 +1912,12 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"errors\": [\n        \"Parcel not found\"\n    ],\n    \"response_code\": 201\n}",
+          "content": "{\n    \"stone_parcel\": {\n        \"id\": 4546,\n        \"comments\": \"this is comment\",\n        \"valuation\": \"\",\n        \"parcel_rating\": null,\n        \"lot_no\": 6,\n        \"tender_id\": 1216,\n        \"description\": \"-9+1 R.O.M\",\n        \"no_of_stones\": 1,\n        \"weight\": 327.46,\n        \"carat\": null,\n        \"stone_type\": \"Parcel\",\n        \"size\": null,\n        \"purity\": null,\n        \"color\": null,\n        \"polished\": null,\n        \"created_at\": \"2019-01-24T10:09:25.000Z\",\n        \"updated_at\": \"2019-01-24T10:09:25.000Z\",\n        \"deec_no\": 6,\n        \"system_price\": null,\n        \"lot_permission\": null,\n        \"reserved_price\": null,\n        \"yes_no_system_price\": null,\n        \"stone_winning_price\": null\n    },\n    \"response_code\": 200\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"errors\": \"please send the rating\",\n    \"response_code\": 201\n}",
           "type": "json"
         }
       ]
