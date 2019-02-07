@@ -54,14 +54,13 @@ module Api
 
 =begin
  @apiVersion 1.0.0
- @api {post} /api/v1/parcels/stone_details?parcel_id=167
+ @api {post} /api/v1/parcels/stone_details
  @apiSampleRequest off
  @apiName stone_details
  @apiGroup Stones
  @apiDescription saving stone_details
  @apiParamExample {json} Request-Example:
 {
-"parcel_id": 167 ,
 "image": <image_object>
 "file" : <file_object>
 "stone_id" :4546
@@ -103,14 +102,13 @@ module Api
 
 =begin
  @apiVersion 1.0.0
- @api {post} /api/v1/parcels/stone_update?parcel_id=167
+ @api {post} /api/v1/parcels/stone_update
  @apiSampleRequest off
  @apiName stone_update
  @apiGroup Stones
  @apiDescription update stones data
  @apiParamExample {json} Request-Example:
 {
-"parcel_id": 167 ,
 "image": <image_object>
 "file" : <file_object>
 "stone_id" :4545
@@ -133,17 +131,12 @@ module Api
 =end
 
 
-
-
-
       def stone_update
         if current_customer
-
           stone_data = StoneDetail.find_by(stone_id: params[:stone_id], tender_id: params[:tender_id], customer_id: current_customer.id)
           if stone_data.present?
 
             if stone_data.update_attributes(stone_details_params)
-            binding.pry
               render json: {success: true, message: "data successfully updated", response_code: 200}
             else
               render json: {error: false, message: "data doesn't updated", response_code: 200}
@@ -157,18 +150,79 @@ module Api
       end
 
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/parcels/stone_stone
+ @apiSampleRequest off
+ @apiName stone_show
+ @apiGroup Stones
+ @apiDescription show customer data of stone_id
+ @apiParamExample {json} Request-Example:
+{
 
+"stone_id" :3
 
+}
+ @apiSuccessExample {json} SuccessResponse:
+ {
+    {
+    " "success": true,
+    "customer": [
+        {
+            "id": 21,
+            "email": "umair.raza101@gmail.com",
+            "created_at": "2018-12-07T15:00:19.000Z",
+            "updated_at": "2019-01-26T08:59:27.000Z",
+            "first_name": "Umair",
+            "last_name": "Raza",
+            "city": "",
+            "address": "",
+            "postal_code": null,
+            "phone": "",
+            "status": null,
+            "company_id": 8,
+            "company_address": "",
+            "phone_2": "",
+            "mobile_no": "+1",
+            "authentication_token": "XwHsMFNtQAy6aFpttQek",
+            "verified": false,
+            "certificate_file_name": "logs.png",
+            "certificate_content_type": "image/png",
+            "certificate_file_size": 80312,
+            "certificate_updated_at": "2018-12-21T12:52:41.000Z",
+            "invitation_token": null,
+            "invitation_created_at": null,
+            "invitation_sent_at": null,
+            "invitation_accepted_at": null,
+            "invitation_limit": null,
+            "invited_by_type": null,
+            "invited_by_id": null,
+            "invitations_count": 0,
+            "chat_id": "-1",
+            "firebase_uid": null,
+            "parent_id": null,
+            "is_requested": false,
+            "deleted_at": null
+        }]
+}
+ }
+=end
 
-
-
-
-      def stone_details_params
-        params.permit(:stone_id,:tender_id, :description, :weight, :color_mechine, :color_eye, :fluorescence,:tention,:image,:file).merge(customer_id: current_user.id)
+      def stone_show
+        if params[:stone_id].blank?
+          render json: {error: "invalid parameter ,Enter stone_id"}
+        else
+          stone_details = StoneDetail.where(stone_id: params[:stone_id])
+          stone_customer_details = stone_details.includes(:customer).map(&:customer).uniq
+          render json: {success:true , customer: stone_customer_details ,response_code: 200}
+        end
       end
 
 
 
+      def stone_details_params
+        params.permit(:stone_id, :tender_id, :description, :weight, :color_mechine, :color_eye, :fluorescence, :tention, :image, :file).merge(customer_id: current_user.id)
+      end
 
 
 =begin
