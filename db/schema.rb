@@ -798,6 +798,28 @@ ActiveRecord::Schema.define(version: 20190206172242) do
     t.float "starting_price", limit: 24
   end
 
+  create_table "stone_details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "stone_id"
+    t.integer "tender_id"
+    t.integer "customer_id"
+    t.text "description"
+    t.decimal "weight", precision: 16, scale: 2
+    t.string "color_mechine"
+    t.string "color_eye"
+    t.string "fluorescence"
+    t.string "tention"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "image_file_name"
+    t.string "image_content_type"
+    t.integer "image_file_size"
+    t.datetime "image_updated_at"
+    t.string "file_file_name"
+    t.string "file_content_type"
+    t.integer "file_file_size"
+    t.datetime "file_updated_at"
+  end
+
   create_table "stone_ratings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "stone_id"
     t.integer "customer_id"

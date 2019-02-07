@@ -6,6 +6,7 @@ class Stone < ApplicationRecord
   # attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
   #                 :deec_no, :lot_no, :description, :tender_id
 
+  has_many :stone_details
   has_many :bids
   has_many :parcel_images, :foreign_key => "parcel_id", :class_name => "ParcelImage"
   has_many :stone_ratings
