@@ -8,21 +8,21 @@ class Rank < ApplicationRecord
     comapnies.each do |company|
       companies_total_average << count_average(company)
     end
-    sorted_average = companies_total_average.sort_by {|k| k[:total_average]}.reverse
+    sorted_average =  companies_total_average.map{|company_average| company_average if company_average[:total_average] != 0}.compact.sort_by {|k| k[:total_average]}.reverse
     total_companies = companies_total_average.count
+    ten_percent = ((total_companies / 100.to_f) * 10)
     twenty_percent = ((total_companies / 100.to_f) * 20)
-    fifty_percent = ((total_companies / 100.to_f) * 50)
-    seventy_percent = ((total_companies / 100.to_f) * 70)
+    fourty_percent = ((total_companies / 100.to_f) * 40)
     hundred_percent = ((total_companies / 100.to_f) * 100)
     sorted_average.each do |percentage|
-      if sorted_average.index(percentage) <= twenty_percent
-        rank = 'top 20'
-      elsif sorted_average.index(percentage) > twenty_percent && sorted_average.index(percentage) <= fifty_percent
-        rank = '21 to 50'
-      elsif sorted_average.index(percentage) > fifty_percent && sorted_average.index(percentage) <= seventy_percent
-        rank = '51 to 70'
-      elsif sorted_average.index(percentage) > seventy_percent && sorted_average.index(percentage) <= hundred_percent
-        rank = '71 to 100'
+      if sorted_average.index(percentage) <= ten_percent
+        rank = 10
+      elsif sorted_average.index(percentage) > ten_percent && sorted_average.index(percentage) <= twenty_percent
+        rank = 20
+      elsif sorted_average.index(percentage) > twenty_percent && sorted_average.index(percentage) <= fourty_percent
+        rank = 40
+      elsif sorted_average.index(percentage) > fourty_percent && sorted_average.index(percentage) <= hundred_percent
+        rank = nil
       end
       rank_data = Rank.find_by(company_id: percentage[:company_id])
       if rank_data.present?
