@@ -52,19 +52,115 @@ module Api
         end
       end
 
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/parcels/stone_details?parcel_id=167
+ @apiSampleRequest off
+ @apiName stone_details
+ @apiGroup Stones
+ @apiDescription saving stone_details
+ @apiParamExample {json} Request-Example:
+{
+"parcel_id": 167 ,
+"image": <image_object>
+"file" : <file_object>
+"stone_id" :4546
+"tender_id" :1216
+"description" : stone_image
+"weight" : 22
+"color_mechine" : image
+"color_eye" : image
+"fluorescence" : image
+"tention" : image
+}
+ @apiSuccessExample {json} SuccessResponse:
+ {
+    {
+    "success": true,
+    "message": "data successfully uploaded",
+    "response_code": 200
+}
+ }
+=end
 
       def stone_details
         if current_customer
-          stone_details = StoneDetail.new(stone_details_params)
-          if stone_details.save
-            render json: {success: true, message: "data successfully uploaded", response_code: 200}
+          stone_data = StoneDetail.where(stone_id: params[:stone_id], tender_id: params[:tender_id], customer_id: current_customer.id)
+          if stone_data.present?
+            render json: {message: "Stone_data exists against this stone"}
           else
-            render json: {success: false, message: "Some error in upload. Please try again", response_code: 201}
+            stone_details = StoneDetail.new(stone_details_params)
+            if stone_details.save
+              render json: {success: true, message: "data successfully uploaded", response_code: 200}
+            else
+              render json: {success: false, errors: stone_details.errors.full_messages, response_code: 201}
+            end
           end
         else
           render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/parcels/stone_update?parcel_id=167
+ @apiSampleRequest off
+ @apiName stone_update
+ @apiGroup Stones
+ @apiDescription update stones data
+ @apiParamExample {json} Request-Example:
+{
+"parcel_id": 167 ,
+"image": <image_object>
+"file" : <file_object>
+"stone_id" :4545
+"tender_id" :1215
+"description" : upadating_data
+"weight" : 24
+"color_mechine" : image_mechine
+"color_eye" : image_eye
+"fluorescence" : image_fluorescence
+"tention" : image_tention
+}
+ @apiSuccessExample {json} SuccessResponse:
+ {
+    {
+    "success": true,
+    "message": "data successfully updated",
+    "response_code": 200
+}
+ }
+=end
+
+
+
+
+
+      def stone_update
+        if current_customer
+
+          stone_data = StoneDetail.find_by(stone_id: params[:stone_id], tender_id: params[:tender_id], customer_id: current_customer.id)
+          if stone_data.present?
+
+            if stone_data.update_attributes(stone_details_params)
+            binding.pry
+              render json: {success: true, message: "data successfully updated", response_code: 200}
+            else
+              render json: {error: false, message: "data doesn't updated", response_code: 200}
+            end
+          else
+            render json: {message: "Stone_data doesn't exists against this stone"}
+          end
+        else
+          render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
+        end
+      end
+
+
+
+
+
+
 
 
       def stone_details_params
