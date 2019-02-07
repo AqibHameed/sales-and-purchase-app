@@ -527,7 +527,9 @@ RSpec.describe Api::V1::CustomersController do
   describe "#seller_scores" do
     context 'when authenticated user want to see his own seller score'do
       it 'does show his seller score' do
-        get :seller_scores, params: {receiver_id: @customer.company_id}
+        @permission_request = create_permission_request(@permissions)
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        get :seller_scores, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['success']).to be true
         JSON.parse(response.body)['scores'].present?
         JSON.parse(response.body)['scores'].last['seller_score'].present?
@@ -544,6 +546,7 @@ RSpec.describe Api::V1::CustomersController do
     context 'when authenticated user want to other buyers seller score with permission'do
       it 'does show his seller score' do
         @permission_request = create_permission_request(@permissions)
+        request.headers.merge!(authorization: @buyer.authentication_token)
         get :seller_scores, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['success']).to be true
         JSON.parse(response.body)['scores'].present?
@@ -564,7 +567,9 @@ RSpec.describe Api::V1::CustomersController do
   describe "#buyer_scores" do
     context 'when authenticated user want to see his own buyer score'do
       it 'does show his seller score' do
-        get :buyer_scores, params: {receiver_id: @customer.company_id}
+        @permission_request = create_permission_request(@permissions)
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        get :buyer_scores, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['success']).to be true
         JSON.parse(response.body)['scores'].present?
         JSON.parse(response.body)['scores'].last['buyer_score'].present?
@@ -581,6 +586,7 @@ RSpec.describe Api::V1::CustomersController do
     context 'when authenticated user want to other buyers buyer score with permission'do
       it 'does show his seller score' do
         @permission_request = create_permission_request(@permissions)
+        request.headers.merge!(authorization: @buyer.authentication_token)
         get :buyer_scores, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['success']).to be true
         JSON.parse(response.body)['scores'].present?
