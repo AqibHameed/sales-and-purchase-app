@@ -167,9 +167,14 @@ module Api
         if current_company
           buyer_score = current_company.get_buyer_score
           market_buyer_score = MarketBuyerScore.get_scores
+          if current_customer.has_role?(Role::BROKER) || current_customer.has_role?(Role::TRADER)
+            scores = nil
+          elsif current_customer.has_role?(Role::BUYER)
+            scores = get_scores(buyer_score, market_buyer_score)
+          end
           render json: {success: true,
                         buyer_score: buyer_score.total,
-                        scores: get_scores(buyer_score, market_buyer_score),
+                        scores: scores,
                         response_code: 200}
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -261,8 +266,13 @@ module Api
         if current_company
           seller_score = current_company.get_seller_score
           market_seller_score = MarketSellerScore.get_scores
+          if current_customer.has_role?(Role::BROKER) || current_customer.has_role?(Role::TRADER)
+            scores = nil
+          elsif current_customer.has_role?(Role::BUYER)
+            scores = get_seller_scores(seller_score, market_seller_score)
+          end
           render json: {success: true, seller_score: seller_score.total,
-                        scores: get_seller_scores(seller_score, market_seller_score),
+                        scores: scores,
                         response_code: 200}
         else
           render json: { errors: "Not authenticated", response_code: 201 }
