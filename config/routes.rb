@@ -328,6 +328,7 @@ Rails.application.routes.draw do
           post :upload
           post :stone_details
           post :stone_update
+          post :stone_show
         end
       end
       resources :transactions do
