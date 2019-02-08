@@ -42,7 +42,26 @@ module Api
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
-    "tenders": [],
+    "pagination": {
+        "total_pages": 2,
+        "prev_page": null,
+        "next_page": "http://localhost:3000/api/v1/tenders?page=2&month=1",
+        "current_page": 1
+    },
+
+    "tenders": [
+{
+            "id": 383,
+            "name": "Transhex 229A January 2016",
+            "start_date": "2016-01-25T05:05:00.000Z",
+            "end_date": "2016-02-08T07:05:00.000Z",
+            "company_name": "Trans-hex",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "South Africa",
+            "notification": false
+        },
+],
     "response_code": 200
 }
 =end
@@ -278,6 +297,12 @@ module Api
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
+"pagination": {
+        "total_pages": 2,
+        "prev_page": null,
+        "next_page": "http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115",
+        "current_page": 1
+    },
     "tender_parcels": [
         {
             "id": 1270,
