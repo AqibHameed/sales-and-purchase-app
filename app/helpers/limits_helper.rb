@@ -20,7 +20,7 @@ module LimitsHelper
     #
     # else
 
-      credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+      credit_limit = CreditLimit.find_by(buyer_id: transaction.buyer_id, seller_id: current_company.id)
 
       if credit_limit.nil?
         credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price, market_limit: total_price)

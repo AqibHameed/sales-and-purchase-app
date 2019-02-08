@@ -691,7 +691,7 @@ module ApplicationHelper
   end
 
   def check_for_group_overdue_limit(buyer, seller)
-    @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).last
+    @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").find_by(seller_id: seller.id)
     if @group.present?
       days_limit = @group.group_overdue_limit
       date = Date.current - days_limit.days
