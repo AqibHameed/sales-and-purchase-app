@@ -167,7 +167,7 @@ module Api
  {
     {
     " "success": true,
-    "customer": [
+    "stone_details": [
         {
              "id": 1,
             "stone_id": 3,
@@ -201,7 +201,7 @@ module Api
           stone_details = StoneDetail.where(stone_id: params[:stone_id])
           # stone_customer_details = stone_details.includes(:customer).map(&:customer).uniq
           render json: {success: true,
-                        customer: stone_details,
+                        stone_details: stone_details,
                         response_code: 200}
         end
       end
