@@ -214,7 +214,9 @@ module Api
         else
           stone_details = StoneDetail.where(stone_id: params[:stone_id])
           stone_customer_details = stone_details.includes(:customer).map(&:customer).uniq
-          render json: {success:true , customer: stone_customer_details ,response_code: 200}
+          render json: {success: true,
+                        customer: stone_customer_details,
+                        response_code: 200}
         end
       end
 
