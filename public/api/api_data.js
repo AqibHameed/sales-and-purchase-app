@@ -1711,6 +1711,93 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
+    "url": "/api/v1/parcels/stone_details",
+    "title": "",
+    "name": "stone_details",
+    "group": "Stones",
+    "description": "<p>saving stone_details</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4546\n\"tender_id\" :1216\n\"description\" : stone_image\n\"weight\" : 22\n\"color_mechine\" : image\n\"color_eye\" : image\n\"fluorescence\" : image\n\"tention\" : image\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n    {\n    \"success\": true,\n    \"message\": \"data successfully uploaded\",\n    \"response_code\": 200\n}\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/parcels/stone_stone",
+    "title": "",
+    "name": "stone_show",
+    "group": "Stones",
+    "description": "<p>show customer data of stone_id</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\n\"stone_id\" :3\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n    {\n    \" \"success\": true,\n    \"stone_details\": [\n        {\n             \"id\": 1,\n            \"stone_id\": 3,\n            \"tender_id\": 392,\n            \"customer_id\": 21,\n            \"description\": \"usman\",\n            \"weight\": null,\n            \"color_mechine\": null,\n            \"color_eye\": null,\n            \"fluorescence\": null,\n            \"tention\": null,\n            \"created_at\": \"2019-02-07T14:28:21.000Z\",\n            \"updated_at\": \"2019-02-07T14:28:21.000Z\",\n            \"image_file_name\": \"1\",\n            \"image_content_type\": \"image/png\",\n            \"image_file_size\": 98341,\n            \"image_updated_at\": \"2019-02-07T14:28:20.000Z\",\n            \"file_file_name\": \"testccases\",\n            \"file_content_type\": \"text/x-ruby\",\n            \"file_file_size\": 8589,\n            \"file_updated_at\": \"2019-02-07T14:28:21.000Z\"\n        }]\n}\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/parcels/stone_update",
+    "title": "",
+    "name": "stone_update",
+    "group": "Stones",
+    "description": "<p>update stones data</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4545\n\"tender_id\" :1215\n\"description\" : upadating_data\n\"weight\" : 24\n\"color_mechine\" : image_mechine\n\"color_eye\" : image_eye\n\"fluorescence\" : image_fluorescence\n\"tention\" : image_tention\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n    {\n    \"success\": true,\n    \"message\": \"data successfully updated\",\n    \"response_code\": 200\n}\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
     "url": "/api/v1/parcels/upload",
     "title": "",
     "name": "upload",
@@ -1968,11 +2055,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders",
+    "url": "/api/v1/tenders?supplier=11",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>tenders according to supplier</p>",
     "success": {
       "examples": [
         {
@@ -1988,11 +2075,11 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
+    "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
+    "description": "<p>With Authentication token and withou authentication token</p>",
     "success": {
       "examples": [
         {

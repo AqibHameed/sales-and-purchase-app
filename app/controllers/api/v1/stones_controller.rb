@@ -167,42 +167,28 @@ module Api
  {
     {
     " "success": true,
-    "customer": [
+    "stone_details": [
         {
-            "id": 21,
-            "email": "umair.raza101@gmail.com",
-            "created_at": "2018-12-07T15:00:19.000Z",
-            "updated_at": "2019-01-26T08:59:27.000Z",
-            "first_name": "Umair",
-            "last_name": "Raza",
-            "city": "",
-            "address": "",
-            "postal_code": null,
-            "phone": "",
-            "status": null,
-            "company_id": 8,
-            "company_address": "",
-            "phone_2": "",
-            "mobile_no": "+1",
-            "authentication_token": "XwHsMFNtQAy6aFpttQek",
-            "verified": false,
-            "certificate_file_name": "logs.png",
-            "certificate_content_type": "image/png",
-            "certificate_file_size": 80312,
-            "certificate_updated_at": "2018-12-21T12:52:41.000Z",
-            "invitation_token": null,
-            "invitation_created_at": null,
-            "invitation_sent_at": null,
-            "invitation_accepted_at": null,
-            "invitation_limit": null,
-            "invited_by_type": null,
-            "invited_by_id": null,
-            "invitations_count": 0,
-            "chat_id": "-1",
-            "firebase_uid": null,
-            "parent_id": null,
-            "is_requested": false,
-            "deleted_at": null
+             "id": 1,
+            "stone_id": 3,
+            "tender_id": 392,
+            "customer_id": 21,
+            "description": "usman",
+            "weight": null,
+            "color_mechine": null,
+            "color_eye": null,
+            "fluorescence": null,
+            "tention": null,
+            "created_at": "2019-02-07T14:28:21.000Z",
+            "updated_at": "2019-02-07T14:28:21.000Z",
+            "image_file_name": "1",
+            "image_content_type": "image/png",
+            "image_file_size": 98341,
+            "image_updated_at": "2019-02-07T14:28:20.000Z",
+            "file_file_name": "testccases",
+            "file_content_type": "text/x-ruby",
+            "file_file_size": 8589,
+            "file_updated_at": "2019-02-07T14:28:21.000Z"
         }]
 }
  }
@@ -213,17 +199,12 @@ module Api
           render json: {error: "invalid parameter ,Enter stone_id"}
         else
           stone_details = StoneDetail.where(stone_id: params[:stone_id])
-          stone_customer_details = stone_details.includes(:customer).map(&:customer).uniq
-          render json: {success:true , customer: stone_customer_details ,response_code: 200}
+          # stone_customer_details = stone_details.includes(:customer).map(&:customer).uniq
+          render json: {success: true,
+                        stone_details: stone_details,
+                        response_code: 200}
         end
       end
-
-
-
-      def stone_details_params
-        params.permit(:stone_id, :tender_id, :description, :weight, :color_mechine, :color_eye, :fluorescence, :tention, :image, :file).merge(customer_id: current_user.id)
-      end
-
 
 =begin
  @apiVersion 1.0.0
@@ -251,6 +232,10 @@ module Api
         else
           render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
         end
+      end
+      private
+      def stone_details_params
+        params.permit(:stone_id, :tender_id, :description, :weight, :color_mechine, :color_eye, :fluorescence, :tention, :image, :file).merge(customer_id: current_user.id)
       end
     end
   end

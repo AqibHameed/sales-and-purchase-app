@@ -69,11 +69,13 @@ module Api
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
-        @tenders = Tender.includes(:supplier).tenders_state(params[:state]).where(col_str).order("open_date")
+        tenders = Tender.includes(:supplier).tenders_state(params[:state]).where(col_str).order("open_date")
         # @tenders = tender.page(params[:page]).pcoer(params[:count])
-        #render json: { success: true, pagination: set_pagination(:tenders), tenders: tender_data(@tenders), response_code: 200 }
-        render json: {success: true, tenders: tender_data(@tenders), response_code: 200}
+
+        @tenders = tenders.page(params[:page]).per(params[:count])
+        render json: {success: true, pagination: set_pagination(:tenders), tenders: tender_data(@tenders), response_code: 200}
       end
+
 
       def upcoming
         col_str = "open_date > '#{Time.zone.now}'"
@@ -322,8 +324,11 @@ module Api
 
       def tender_parcel
         stones = Stone.includes(:stone_ratings).where(tender_id: params[:tender_id])
-        render json: {success: true, tender_parcels: stone_data(stones), response_code: 200}
+        @stones = stones.page(params[:page]).per(params[:count])
+        render json: {success: true, pagination: set_pagination(:stones), tender_parcels: stone_data(@stones), response_code: 200}
       end
+
+
 
 =begin
  @apiVersion 1.0.0
