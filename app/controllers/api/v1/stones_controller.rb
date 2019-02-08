@@ -220,13 +220,6 @@ module Api
         end
       end
 
-
-
-      def stone_details_params
-        params.permit(:stone_id, :tender_id, :description, :weight, :color_mechine, :color_eye, :fluorescence, :tention, :image, :file).merge(customer_id: current_user.id)
-      end
-
-
 =begin
  @apiVersion 1.0.0
  @api {get} /api/v1/bid_history?parcel_id=1
@@ -253,6 +246,10 @@ module Api
         else
           render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
         end
+      end
+      private
+      def stone_details_params
+        params.permit(:stone_id, :tender_id, :description, :weight, :color_mechine, :color_eye, :fluorescence, :tention, :image, :file).merge(customer_id: current_user.id)
       end
     end
   end
