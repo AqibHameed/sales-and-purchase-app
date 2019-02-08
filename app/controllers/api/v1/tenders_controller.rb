@@ -325,7 +325,7 @@ module Api
       def tender_parcel
         stones = Stone.includes(:stone_ratings).where(tender_id: params[:tender_id])
         @stones = stones.page(params[:page]).per(params[:count])
-        render json: {success: true, pagination: set_pagination(:stones), tender_parcel: stone_data(@stones), response_code: 200}
+        render json: {success: true, pagination: set_pagination(:stones), tender_parcels: stone_data(@stones), response_code: 200}
       end
 
 
