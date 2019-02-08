@@ -1,4 +1,5 @@
 class Stone < ApplicationRecord
+  paginates_per 25
 
   attr_accessible :stone_type, :no_of_stones, :weight, :carat, :purity, :color, :polished, :size,
                   :deec_no, :lot_no, :description, :tender_id, :reserved_price, :system_price, :yes_no_system_price, :stone_winning_price, :interest,
