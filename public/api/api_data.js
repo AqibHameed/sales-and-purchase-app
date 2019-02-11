@@ -2024,7 +2024,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 2,\n        \"prev_page\": null,\n        \"next_page\": \"http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115\",\n        \"current_page\": 1\n    },\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]
@@ -2063,8 +2063,8 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse4:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": null,\n   \"tenders\": [],\n   \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -2079,12 +2079,12 @@ define({ "api": [
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>list of all tenders</p>",
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse1:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 8,\n       \"prev_page\": null,\n       \"next_page\": \"http://localhost:3000/api/v1/tenders?page=2\",\n       \"current_page\": 1\n   },\n   \"tenders\": [\n       {\n           \"id\": 1003,\n           \"name\": \"Cullinan Jan-Feb 2018\",\n           \"start_date\": \"2013-10-19T00:00:00.000Z\",\n           \"end_date\": \"2018-02-07T03:30:00.000Z\",\n           \"company_name\": \"Petra Diamonds\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"\",\n           \"notification\": false\n       },\n       {\n           \"id\": 383,\n           \"name\": \"Transhex 229A January 2016\",\n           \"start_date\": \"2016-01-25T05:05:00.000Z\",\n           \"end_date\": \"2016-02-08T07:05:00.000Z\",\n           \"company_name\": \"Trans-hex\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"South Africa\",\n           \"notification\": false\n       }\n   ],\n   \"response_code\": 200\n }",
           "type": "json"
         }
       ]
@@ -2103,8 +2103,8 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse3:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 2,\n       \"prev_page\": null,\n       \"next_page\": \"http://localhost:3000/api/v1/tenders?page=2&month=1\",\n       \"current_page\": 1\n   },\n\n   \"tenders\": [\n       {\n           \"id\": 383,\n           \"name\": \"Transhex 229A January 2016\",\n           \"start_date\": \"2016-01-25T05:05:00.000Z\",\n           \"end_date\": \"2016-02-08T07:05:00.000Z\",\n           \"company_name\": \"Trans-hex\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"South Africa\",\n           \"notification\": false\n       },\n   ],\n   \"response_code\": 200\n }",
           "type": "json"
         }
       ]
@@ -2123,8 +2123,8 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse2:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 1,\n       \"prev_page\": null,\n       \"next_page\": null,\n       \"current_page\": 1\n   },\n   \"tenders\": [\n       {\n           \"id\": 383,\n           \"name\": \"Transhex 229A January 2016\",\n           \"start_date\": \"2016-01-25T05:05:00.000Z\",\n           \"end_date\": \"2016-02-08T07:05:00.000Z\",\n           \"company_name\": \"Trans-hex\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"South Africa\",\n           \"notification\": false\n       }\n   ],\n   \"response_code\": 200\n }",
           "type": "json"
         }
       ]
