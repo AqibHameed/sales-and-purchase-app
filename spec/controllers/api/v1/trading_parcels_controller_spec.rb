@@ -292,7 +292,7 @@ RSpec.describe Api::V1::TradingParcelsController do
         post :direct_sell, params: {
             trading_parcel: {
                 description: 'Z -7+5T',
-                activity: 'sell',
+                activity: 'buy',
                 my_transaction_attributes: {
                     company_id: "#{@unregister_company.id}",
                     paid: false
@@ -311,7 +311,7 @@ RSpec.describe Api::V1::TradingParcelsController do
                 check_transactions: true
             }
         }
-        #response.body.should have_content('No Information Available about this Company. Do you want to continue ?')
+        response.body.should have_content('No Information Available about this Company. Do you want to continue ?')
       end
     end
 
