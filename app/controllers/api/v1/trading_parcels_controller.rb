@@ -734,15 +734,8 @@ module Api
         #buyer = Company.where(id: transaction.buyer_id).first
         #available_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
         if transaction.save
-          if transaction.buyer.customers.count < 1
-            CustomerMailer.unregistered_users_mail_to_company(current_customer, current_company.name, transaction).deliver_later rescue logger.info "Error sending email"
-          else
-            CustomerMailer.mail_to_registered_users(current_customer, current_company.name, transaction).deliver_later rescue logger.info "Error sending email"
-          end
-          all_user_ids = transaction.buyer.customers.map {|c| c.id}.uniq
-          current_company.send_notification('New Direct Sell', all_user_ids)
-          transaction.set_due_date
-          transaction.generate_and_add_uid
+
+          SendNotificationJob.perform_now(transaction, current_company)
 
           create_or_update_limits(transaction, parcel) if transaction.paid == false
 
