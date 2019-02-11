@@ -327,8 +327,8 @@ Rails.application.routes.draw do
         collection do
           post :upload
           post :stone_details
-          post :stone_update
-          post :stone_show
+          put :stone_update
+          get :stone_show
         end
       end
       resources :transactions do
