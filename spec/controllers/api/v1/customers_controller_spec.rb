@@ -549,6 +549,7 @@ RSpec.describe Api::V1::CustomersController do
         request.headers.merge!(authorization: @buyer.authentication_token)
         get :seller_scores, params: {receiver_id: @buyer.company_id}
         expect(JSON.parse(response.body)['success']).to be true
+        JSON.parse(response.body)['scores'].second["rank"].present?
         JSON.parse(response.body)['scores'].present?
         JSON.parse(response.body)['scores'].last['seller_score'].present?
       end
@@ -591,6 +592,7 @@ RSpec.describe Api::V1::CustomersController do
         expect(JSON.parse(response.body)['success']).to be true
         JSON.parse(response.body)['scores'].present?
         JSON.parse(response.body)['scores'].last['buyer_score'].present?
+        JSON.parse(response.body)['scores'].second["rank"].present?
       end
     end
 

@@ -658,16 +658,16 @@ module Api
           if company.nil?
             render json: {success: false, message: "Customer does not present"}
           else
+            @parcel.weight = params[:trading_parcel][:carats]
+            @parcel.box_value = params[:trading_parcel][:discount]
+            @parcel.sold = true
             if current_customer.has_role?(Role::BUYER)
               @parcel.company_id = company_id
-              @parcel.weight = params[:trading_parcel][:carats]
-              @parcel.box_value = params[:trading_parcel][:discount]
-              @parcel.sold = true
               if @parcel.save
                 transaction = Transaction.new(buyer_id: current_company.id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
                                               price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                               created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
-                buyer = Company.where(id: @parcel.company_id).first
+                buyer = @parcel.company
                 registered_users = buyer.customers.count
               else
                 render json: {success: false, errors: @parcel.errors.full_messages}
@@ -676,28 +676,22 @@ module Api
               if params[:trading_parcel][:activity] == 'sell'
                 @parcel.company_id = current_company.id
                 @parcel.customer_id = current_customer.id
-                @parcel.weight = params[:trading_parcel][:carats]
-                @parcel.box_value = params[:trading_parcel][:discount]
-                @parcel.sold = true
                 if @parcel.save
                   transaction = Transaction.new(buyer_id: company_id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
                                                 price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                                 created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
-                  buyer = Company.find_by(id: company_id)
+                  buyer = @parcel.company
                   registered_users = buyer.customers.count
                 else
                   render json: {success: false, errors: @parcel.errors.full_messages}
                 end
               elsif params[:trading_parcel][:activity] == 'buy'
                 @parcel.company_id = company_id
-                @parcel.weight = params[:trading_parcel][:carats]
-                @parcel.box_value = params[:trading_parcel][:discount]
-                @parcel.sold = true
                 if @parcel.save
                   transaction = Transaction.new(buyer_id: current_company.id, seller_id: @parcel.try(:company_id), trading_parcel_id: @parcel.id, paid: params[:trading_parcel][:my_transaction_attributes][:paid],
                                                 price: @parcel.try(:price), credit: @parcel.try(:credit_period), diamond_type: @parcel.try(:diamond_type), transaction_type: 'manual',
                                                 created_at: params[:trading_parcel][:my_transaction_attributes][:created_at])
-                  buyer = Company.where(id: @parcel.company_id).first
+                  buyer = @parcel.company
                   registered_users = buyer.customers.count
                 else
                   render json: {success: false, errors: @parcel.errors.full_messages}
@@ -740,15 +734,8 @@ module Api
         #buyer = Company.where(id: transaction.buyer_id).first
         #available_limit = get_available_credit_limit(transaction.buyer, current_company).to_f
         if transaction.save
-          if transaction.buyer.customers.count < 1
-            CustomerMailer.unregistered_users_mail_to_company(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
-          else
-            CustomerMailer.mail_to_registered_users(current_customer, current_company.name, transaction).deliver rescue logger.info "Error sending email"
-          end
-          all_user_ids = transaction.buyer.customers.map {|c| c.id}.uniq
-          current_company.send_notification('New Direct Sell', all_user_ids)
-          transaction.set_due_date
-          transaction.generate_and_add_uid
+
+          SendNotificationJob.perform_now(transaction, current_company)
 
           create_or_update_limits(transaction, parcel) if transaction.paid == false
 
@@ -940,9 +927,9 @@ module Api
 
       def check_credit_limit(transaction, parcel)
         alert = []
-        buyer = Company.where(id: transaction.buyer_id).first
+        buyer = transaction.buyer
         available_credit_limit = get_available_credit_limit(buyer, current_company).to_f
-        @company_group = CompaniesGroup.where("company_id like '%#{transaction.buyer_id}%'").where(seller_id: current_company.id).first
+        @company_group = CompaniesGroup.where("company_id like '%#{transaction.buyer_id}%'").find_by(seller_id: current_company.id)
         if available_credit_limit < parcel.total_value.to_f
           @credit_limit = true
           alert << @credit_limit
@@ -950,7 +937,14 @@ module Api
           @credit_limit = false
         end
 
-        if @company_group.present?
+        if @company_group.blank?
+          if current_company.has_overdue_seller_setlimit(transaction.buyer_id)
+            @days_limit = true
+            alert << @days_limit
+          else
+            @days_limit = false
+          end
+        else
           if check_for_group_overdue_limit(current_company, transaction.buyer)
             @days_limit = true
             alert << @days_limit
@@ -958,21 +952,12 @@ module Api
             @days_limit = false
           end
         end
-
-        if !@company_group.present?
-          if current_company.has_overdue_seller_setlimit(transaction.buyer_id)
-            @days_limit = true
-            alert << @days_limit
-          else
-            @days_limit = false
-          end
-        end
-        if alert.present?
-          parcel.destroy
-          secure_center_record(current_company, transaction.buyer_id)
+        if alert.blank?
+          save_transaction(transaction, parcel)
           #render json: { sucess: false, message: "You have set a credit limit of #{existing_limit}. This transaction will increase it to #{new_limit}. Do you wish to continue?" }
         else
-          save_transaction(transaction, parcel)
+          parcel.destroy
+          secure_center_record(current_company, transaction.buyer_id)
         end
 
       end

@@ -10,13 +10,42 @@ module Api
  @apiSampleRequest off
  @apiName tenders
  @apiGroup Tenders
- @apiDescription With Authentication token and withou authentication token
- @apiSuccessExample {json} SuccessResponse:
-{
+ @apiDescription list of all tenders
+ @apiSuccessExample {json} SuccessResponse1:
+ {
     "success": true,
-    "tenders": [],
+    "pagination": {
+        "total_pages": 8,
+        "prev_page": null,
+        "next_page": "http://localhost:3000/api/v1/tenders?page=2",
+        "current_page": 1
+    },
+    "tenders": [
+        {
+            "id": 1003,
+            "name": "Cullinan Jan-Feb 2018",
+            "start_date": "2013-10-19T00:00:00.000Z",
+            "end_date": "2018-02-07T03:30:00.000Z",
+            "company_name": "Petra Diamonds",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "",
+            "notification": false
+        },
+        {
+            "id": 383,
+            "name": "Transhex 229A January 2016",
+            "start_date": "2016-01-25T05:05:00.000Z",
+            "end_date": "2016-02-08T07:05:00.000Z",
+            "company_name": "Trans-hex",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "South Africa",
+            "notification": false
+        }
+    ],
     "response_code": 200
-}
+  }
 =end
 =begin
  @apiVersion 1.0.0
@@ -25,12 +54,30 @@ module Api
  @apiName tenders month
  @apiGroup Tenders
  @apiDescription tenders according to month
- @apiSuccessExample {json} SuccessResponse:
-{
+ @apiSuccessExample {json} SuccessResponse2:
+ {
     "success": true,
-    "tenders": [],
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "tenders": [
+        {
+            "id": 383,
+            "name": "Transhex 229A January 2016",
+            "start_date": "2016-01-25T05:05:00.000Z",
+            "end_date": "2016-02-08T07:05:00.000Z",
+            "company_name": "Trans-hex",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "South Africa",
+            "notification": false
+        }
+    ],
     "response_code": 200
-}
+  }
 =end
 =begin
  @apiVersion 1.0.0
@@ -39,12 +86,31 @@ module Api
  @apiName tenders location
  @apiGroup Tenders
  @apiDescription tenders according to Location
- @apiSuccessExample {json} SuccessResponse:
-{
+ @apiSuccessExample {json} SuccessResponse3:
+ {
     "success": true,
-    "tenders": [],
+    "pagination": {
+        "total_pages": 2,
+        "prev_page": null,
+        "next_page": "http://localhost:3000/api/v1/tenders?page=2&month=1",
+        "current_page": 1
+    },
+
+    "tenders": [
+        {
+            "id": 383,
+            "name": "Transhex 229A January 2016",
+            "start_date": "2016-01-25T05:05:00.000Z",
+            "end_date": "2016-02-08T07:05:00.000Z",
+            "company_name": "Trans-hex",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "South Africa",
+            "notification": false
+        },
+    ],
     "response_code": 200
-}
+  }
 =end
 =begin
  @apiVersion 1.0.0
@@ -53,12 +119,13 @@ module Api
  @apiName tenders
  @apiGroup Tenders
  @apiDescription tenders according to supplier
- @apiSuccessExample {json} SuccessResponse:
-{
+ @apiSuccessExample {json} SuccessResponse4:
+ {
     "success": true,
+    "pagination": null,
     "tenders": [],
     "response_code": 200
-}
+ }
 =end
 
 
@@ -278,6 +345,12 @@ module Api
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
+    "pagination": {
+        "total_pages": 2,
+        "prev_page": null,
+        "next_page": "http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115",
+        "current_page": 1
+    },
     "tender_parcels": [
         {
             "id": 1270,

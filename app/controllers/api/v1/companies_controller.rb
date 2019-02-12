@@ -991,7 +991,7 @@ class Api::V1::CompaniesController < ApplicationController
             no: rank.present? ? rank.not_experience : 0
         },
         total_number_of_comapnies_rated: rank.present? ? rank.total_number_of_comapnies_rated : 0,
-        rank: rank.present? ? rank.rank : 'N/A  '
+        rank: rank.present? ? rank.rank : nil
     }
   end
 

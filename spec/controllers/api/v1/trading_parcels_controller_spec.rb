@@ -5,8 +5,10 @@ RSpec.describe Api::V1::TradingParcelsController do
     @unregister_company = Company.create(name: Faker::Name.name)
     @customer = create_customer
     @buyer = create_buyer
+
     @parcel = create(:trading_parcel, customer: @customer, company: @customer.company)
     @demand_supplier = create(:demand_supplier)
+    @demand = create(:demand, description:@parcel.description, company_id: @buyer.company.id)
   end
 
   before(:each) do
@@ -129,8 +131,10 @@ RSpec.describe Api::V1::TradingParcelsController do
   describe '#show' do
     context 'when seller want to see any single trading parcel' do
       it 'does show the related parcel' do
+        @buyer_score = BuyerScore.create(company_id:@buyer.company.id ,rank:5)
         get :show, params: {id: @parcel.id}
         response.body.should have_content(@parcel.id)
+        JSON.parse(response.body)["parcel"]["vital_sales_data"]["demanded_clients"].first["rank"].present?
         expect(response.status).to eq(200)
         expect(response.message).to eq("OK")
         expect(response.success?).to eq(true)
@@ -288,7 +292,7 @@ RSpec.describe Api::V1::TradingParcelsController do
         post :direct_sell, params: {
             trading_parcel: {
                 description: 'Z -7+5T',
-                activity: 'sell',
+                activity: 'buy',
                 my_transaction_attributes: {
                     company_id: "#{@unregister_company.id}",
                     paid: false
