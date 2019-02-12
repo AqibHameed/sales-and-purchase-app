@@ -326,9 +326,9 @@ Rails.application.routes.draw do
       resources :stones, path: '/parcels' do
         collection do
           post :upload
-          post :stone_details
+          post :create_stone_details
           put :stone_update
-          get :stone_show
+          get :show_stone_details
         end
       end
       resources :transactions do
