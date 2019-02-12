@@ -54,23 +54,23 @@ module Api
 
 =begin
  @apiVersion 1.0.0
- @api {post} /api/v1/parcels/stone_details
+ @api {post} /api/v1/parcels/create_stone_details
  @apiSampleRequest off
- @apiName stone_details
+ @apiName create_stone_details
  @apiGroup Stones
- @apiDescription saving stone_details
+ @apiDescription create stone details
  @apiParamExample {json} Request-Example:
 {
 "image": <image_object>
 "file" : <file_object>
 "stone_id" :4546
 "tender_id" :1216
-"description" : stone_image
+"description" : description
 "weight" : 22
-"color_mechine" : image
-"color_eye" : image
-"fluorescence" : image
-"tention" : image
+"color_mechine" : color_mechine
+"color_eye" : color_eye
+"fluorescence" : fluorescence
+"tention" : tention
 }
  @apiSuccessExample {json} SuccessResponse:
  {
@@ -82,7 +82,7 @@ module Api
  }
 =end
 
-      def stone_details
+      def create_stone_details
         if current_customer
           stone_data = StoneDetail.where(stone_id: params[:stone_id], tender_id: params[:tender_id], customer_id: current_customer.id)
           if stone_data.present?
@@ -100,35 +100,35 @@ module Api
         end
       end
 
-=begin
- @apiVersion 1.0.0
- @api {post} /api/v1/parcels/stone_update
- @apiSampleRequest off
- @apiName stone_update
- @apiGroup Stones
- @apiDescription update stones data
- @apiParamExample {json} Request-Example:
-{
-"image": <image_object>
-"file" : <file_object>
-"stone_id" :4545
-"tender_id" :1215
-"description" : upadating_data
-"weight" : 24
-"color_mechine" : image_mechine
-"color_eye" : image_eye
-"fluorescence" : image_fluorescence
-"tention" : image_tention
-}
- @apiSuccessExample {json} SuccessResponse:
- {
-    {
-    "success": true,
-    "message": "data successfully updated",
-    "response_code": 200
-}
- }
-=end
+# =begin
+#  @apiVersion 1.0.0
+#  @api {post} /api/v1/parcels/stone_update
+#  @apiSampleRequest off
+#  @apiName stone_update
+#  @apiGroup Stones
+#  @apiDescription update stones data
+#  @apiParamExample {json} Request-Example:
+# {
+# "image": <image_object>
+# "file" : <file_object>
+# "stone_id" :4545
+# "tender_id" :1215
+# "description" : upadating_data
+# "weight" : 24
+# "color_mechine" : mechine
+# "color_eye" : eye
+# "fluorescence" : fluorescence
+# "tention" : tention
+# }
+#  @apiSuccessExample {json} SuccessResponse:
+#  {
+#     {
+#     "success": true,
+#     "message": "data successfully updated",
+#     "response_code": 200
+# }
+#  }
+# =end
 
 
       def stone_update
@@ -152,11 +152,11 @@ module Api
 
 =begin
  @apiVersion 1.0.0
- @api {post} /api/v1/parcels/stone_stone
+ @api {get} /api/v1/parcels/show_stone_details
  @apiSampleRequest off
- @apiName stone_show
+ @apiName show_stone_details
  @apiGroup Stones
- @apiDescription show customer data of stone_id
+ @apiDescription show stone details
  @apiParamExample {json} Request-Example:
 {
 
@@ -194,7 +194,7 @@ module Api
  }
 =end
 
-      def stone_show
+      def show_stone_details
         if params[:stone_id].blank?
           render json: {error: "invalid parameter ,Enter stone_id"}
         else
