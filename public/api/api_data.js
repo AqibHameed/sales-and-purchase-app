@@ -1690,6 +1690,35 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/parcels/create_stone_details",
+    "title": "",
+    "name": "create_stone_details",
+    "group": "Stones",
+    "description": "<p>create stone details</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4546\n\"tender_id\" :1216\n\"description\" : description\n\"weight\" : 22\n\"color_mechine\" : color_mechine\n\"color_eye\" : color_eye\n\"fluorescence\" : fluorescence\n\"tention\" : tention\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n    {\n    \"success\": true,\n    \"message\": \"data successfully uploaded\",\n    \"response_code\": 200\n}\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
     "type": "get",
     "url": "/api/v1/bid_history?parcel_id=1",
     "title": "",
@@ -1710,41 +1739,12 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
-    "type": "post",
-    "url": "/api/v1/parcels/stone_details",
+    "type": "get",
+    "url": "/api/v1/parcels/show_stone_details",
     "title": "",
-    "name": "stone_details",
+    "name": "show_stone_details",
     "group": "Stones",
-    "description": "<p>saving stone_details</p>",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Request-Example:",
-          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4546\n\"tender_id\" :1216\n\"description\" : stone_image\n\"weight\" : 22\n\"color_mechine\" : image\n\"color_eye\" : image\n\"fluorescence\" : image\n\"tention\" : image\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": " {\n    {\n    \"success\": true,\n    \"message\": \"data successfully uploaded\",\n    \"response_code\": 200\n}\n }",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/stones_controller.rb",
-    "groupTitle": "Stones"
-  },
-  {
-    "version": "1.0.0",
-    "type": "post",
-    "url": "/api/v1/parcels/stone_stone",
-    "title": "",
-    "name": "stone_show",
-    "group": "Stones",
-    "description": "<p>show customer data of stone_id</p>",
+    "description": "<p>show stone details</p>",
     "parameter": {
       "examples": [
         {
@@ -1778,7 +1778,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4545\n\"tender_id\" :1215\n\"description\" : upadating_data\n\"weight\" : 24\n\"color_mechine\" : image_mechine\n\"color_eye\" : image_eye\n\"fluorescence\" : image_fluorescence\n\"tention\" : image_tention\n}",
+          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4545\n\"tender_id\" :1215\n\"description\" : upadating_data\n\"weight\" : 24\n\"color_mechine\" : mechine\n\"color_eye\" : eye\n\"fluorescence\" : fluorescence\n\"tention\" : tention\n}",
           "type": "json"
         }
       ]
