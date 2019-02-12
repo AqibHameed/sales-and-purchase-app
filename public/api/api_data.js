@@ -743,7 +743,7 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
-    "type": "get",
+    "type": "put",
     "url": "/api/v1/companies/remove_permission",
     "title": "",
     "name": "remove_permission",
