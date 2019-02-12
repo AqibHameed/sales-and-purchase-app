@@ -318,7 +318,7 @@ Rails.application.routes.draw do
           post :accept_secuirty_data_request
           post :reject_secuirty_data_request
           get :list_permission_companies
-          get :remove_permission
+          put :remove_permission
           get :count_companies_review
           get :show_review
         end

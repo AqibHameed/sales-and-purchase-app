@@ -799,7 +799,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
   @apiVersion 1.0.0
-  @api {get} /api/v1/companies/remove_permission
+  @api {put} /api/v1/companies/remove_permission
   @apiSampleRequest off
   @apiName remove_permission
   @apiGroup Companies
@@ -823,9 +823,18 @@ class Api::V1::CompaniesController < ApplicationController
 
   def remove_permission
     if current_company
-        premission_request = PremissionRequest.where(sender_id: params[:company_id], receiver_id: current_company.id, status: 1)
+        premission_request = PremissionRequest.find_by(sender_id: params[:company_id], receiver_id: current_company.id, status: 1)
         if premission_request.present?
+          binding.pry
           premission_request.update_attributes(permission_params)
+          unless premission_request.live_monitor ||
+              premission_request.secure_center ||
+              premission_request.buyer_score ||
+              premission_request.seller_score ||
+              premission_request.customer_info
+
+            premission_request.update_attributes(status: 'rejected')
+          end
           render json: {success: true,
                         message: "Request is removed successfully.",
                         response_code: 200}
