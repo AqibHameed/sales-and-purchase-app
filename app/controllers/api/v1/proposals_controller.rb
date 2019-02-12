@@ -57,7 +57,7 @@ module Api
       def create
         existing_proposal = Proposal.where(id: params[:id]).first
         if existing_proposal.present?
-          existing_proposal.update_attributes(proposal_params)
+          existing_proposal.update(proposal_params)
           render json: {success: true, message: 'Proposal Updated Successfully'}
         else
           parcel = TradingParcel.where(id: params[:trading_parcel_id]).first
