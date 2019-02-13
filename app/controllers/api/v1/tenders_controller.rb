@@ -385,6 +385,7 @@ module Api
             "description": "+10.8CT BROWN MIX",
             "comments": null,
             "valuation": null,
+            "wish_list_status": true,
             "parcel_rating": null,
             "images": [],
             "winners_data": [],
