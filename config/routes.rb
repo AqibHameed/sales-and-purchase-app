@@ -329,6 +329,7 @@ Rails.application.routes.draw do
           post :create_stone_details
           put :stone_update
           get :show_stone_details
+          post :wish_list_record
         end
       end
       resources :transactions do
