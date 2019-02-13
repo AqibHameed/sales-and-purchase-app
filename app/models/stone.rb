@@ -8,6 +8,7 @@ class Stone < ApplicationRecord
   #                 :deec_no, :lot_no, :description, :tender_id
 
   has_many :stone_details
+  has_many :wish_lists
   has_many :bids
   has_many :parcel_images, :foreign_key => "parcel_id", :class_name => "ParcelImage"
   has_many :stone_ratings

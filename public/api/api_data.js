@@ -1827,6 +1827,45 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
+    "url": "/api/v1/parcels/wish_list_record?stone_id=3",
+    "title": "",
+    "name": "wish_list_record",
+    "group": "Stones",
+    "description": "<p>create/update wish_list record of stone</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n\n\"stone_id\" :3\n\"wish_status\" :true\n\n\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n\n\"stone_id\" :3\n\"wish_status\" :true\n\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "\n{\n \"success\": true,\n \"message\": \"data successfully created\",\n \"response_code\": 200\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "\n{\n \"success\": true,\n \"message\": \"data successfully updated\",\n \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
     "url": "/api/v1/tender_notifications",
     "title": "",
     "name": "create",
@@ -2024,7 +2063,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 2,\n        \"prev_page\": null,\n        \"next_page\": \"http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115\",\n        \"current_page\": 1\n    },\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 2,\n        \"prev_page\": null,\n        \"next_page\": \"http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115\",\n        \"current_page\": 1\n    },\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"wish_list_status\": true,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]

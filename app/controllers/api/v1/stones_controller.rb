@@ -128,10 +128,86 @@ module Api
           render json: { errors: "Not authenticated", response_code: 201 }, status: :unauthorized
         end
       end
+
+=begin
+ @apiVersion 1.0.0
+ @api {post} /api/v1/parcels/wish_list_record?stone_id=3
+ @apiSampleRequest off
+ @apiName wish_list_record
+ @apiGroup Stones
+ @apiDescription  create/update wish_list record of stone
+ @apiParamExample {json} Request-Example1:
+{
+
+"stone_id" :3
+"wish_status" :true
+
+
+}
+ @apiSuccessExample {json} SuccessResponse1:
+
+   {
+    "success": true,
+    "message": "data successfully created",
+    "response_code": 200
+   }
+ @apiParamExample {json} Request-Example2:
+{
+
+"stone_id" :3
+"wish_status" :true
+
+
+}
+ @apiSuccessExample {json} SuccessResponse2:
+
+   {
+    "success": true,
+    "message": "data successfully updated",
+    "response_code": 200
+   }
+
+
+=end
+
+      def wish_list_record
+        if current_customer
+          stone_wishlist = Stone.find_by(id: params[:stone_id])
+          if stone_wishlist.nil?
+            render json: {errors: 'Parcel not found', response_code: 201}
+          else
+            wish_list_status = WishList.find_by(stone_id: stone_wishlist.id)
+            if wish_list_status.nil?
+              wish_list_status = WishList.new(wish_list_params)
+              wish_list_status.save
+              render json: {success: true, message: "data successfully created", response_code: 200}
+            else
+              wish_list_status.update_attributes(wish_list_params)
+              render json: {success: true, message: "data successfully updated", response_code: 200}
+            end
+          end
+        else
+          render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
+        end
+      end
+
+
+
+
+
       private
+
       def stone_details_params
         params.permit(:stone_id, :tender_id, :description, :weight, :color_mechine, :color_eye, :fluorescence, :tention, :image, :file).merge(customer_id: current_user.id)
       end
+
+      def wish_list_params
+        params.permit(:stone_id, :wish_status)
+      end
+
+
     end
   end
 end
+
+
