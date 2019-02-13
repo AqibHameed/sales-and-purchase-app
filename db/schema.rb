@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190207170523) do
+ActiveRecord::Schema.define(version: 20190213074341) do
 
   create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
     t.string "email", default: "", null: false
@@ -1147,6 +1147,14 @@ ActiveRecord::Schema.define(version: 20190207170523) do
     t.index ["customer_id"], name: "index_winners_on_customer_id"
     t.index ["stone_id"], name: "index_winners_on_stone_id"
     t.index ["tender_id"], name: "index_winners_on_tender_id"
+  end
+
+  create_table "wish_lists", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.boolean "wish_status", default: false
+    t.integer "stone_id"
+    t.integer "customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "yes_no_buyer_interests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|
