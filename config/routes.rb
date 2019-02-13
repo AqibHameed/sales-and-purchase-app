@@ -413,6 +413,8 @@ Rails.application.routes.draw do
         get :info
       end
 
+      resources :stone_details
+
 
       get '/profile', to: 'customers#profile'
       patch '/update_profile', to: 'customers#update_profile'

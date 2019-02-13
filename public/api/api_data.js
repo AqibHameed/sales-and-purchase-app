@@ -1691,16 +1691,16 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "/api/v1/parcels/create_stone_details",
+    "url": "/api/v1/stone_details",
     "title": "",
-    "name": "create_stone_details",
-    "group": "Stones",
+    "name": "create",
+    "group": "StoneDetails",
     "description": "<p>create stone details</p>",
     "parameter": {
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4546\n\"tender_id\" :1216\n\"description\" : description\n\"weight\" : 22\n\"color_mechine\" : color_mechine\n\"color_eye\" : color_eye\n\"fluorescence\" : fluorescence\n\"tention\" : tention\n}",
+          "content": "    {\n       \"image\": <image_object>\n       \"file\" : <file_object>\n       \"stone_id\" :4546\n      \"tender_id\" :1216\n      \"description\" : description\n      \"weight\" : 22\n      \"color_mechine\" : color_mechine\n      \"color_eye\" : color_eye\n      \"fluorescence\" : fluorescence\n      \"tention\" : tention\n}",
           "type": "json"
         }
       ]
@@ -1709,13 +1709,42 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": " {\n    {\n    \"success\": true,\n    \"message\": \"data successfully uploaded\",\n    \"response_code\": 200\n}\n }",
+          "content": "{\n    {\n        \"success\": true,\n        \"message\": \"data successfully uploaded\",\n        \"response_code\": 200\n    }\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "app/controllers/api/v1/stones_controller.rb",
-    "groupTitle": "Stones"
+    "filename": "app/controllers/api/v1/stone_details_controller.rb",
+    "groupTitle": "StoneDetails"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/stone_details",
+    "title": "",
+    "name": "index",
+    "group": "StoneDetails",
+    "description": "<p>show stone details</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\n    \"stone_id\" :3\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n   {\n      \"success\": true,\n       \"stone_details\": [\n           {\n                \"id\": 1,\n               \"stone_id\": 3,\n               \"tender_id\": 392,\n               \"customer_id\": 21,\n               \"description\": \"usman\",\n               \"weight\": null,\n               \"color_mechine\": null,\n               \"color_eye\": null,\n               \"fluorescence\": null,\n               \"tention\": null,\n               \"created_at\": \"2019-02-07T14:28:21.000Z\",\n               \"updated_at\": \"2019-02-07T14:28:21.000Z\",\n               \"image_file_name\": \"1\",\n               \"image_content_type\": \"image/png\",\n               \"image_file_size\": 98341,\n               \"image_updated_at\": \"2019-02-07T14:28:20.000Z\",\n               \"file_file_name\": \"testccases\",\n               \"file_content_type\": \"text/x-ruby\",\n               \"file_file_size\": 8589,\n               \"file_updated_at\": \"2019-02-07T14:28:21.000Z\"\n           }\n         ]\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stone_details_controller.rb",
+    "groupTitle": "StoneDetails"
   },
   {
     "version": "1.0.0",
@@ -1730,35 +1759,6 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n    \"errors\": \"Parcel not found\",\n    \"response_code\": 201\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/stones_controller.rb",
-    "groupTitle": "Stones"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/parcels/show_stone_details",
-    "title": "",
-    "name": "show_stone_details",
-    "group": "Stones",
-    "description": "<p>show stone details</p>",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Request-Example:",
-          "content": "{\n\n\"stone_id\" :3\n\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": " {\n    {\n    \" \"success\": true,\n    \"stone_details\": [\n        {\n             \"id\": 1,\n            \"stone_id\": 3,\n            \"tender_id\": 392,\n            \"customer_id\": 21,\n            \"description\": \"usman\",\n            \"weight\": null,\n            \"color_mechine\": null,\n            \"color_eye\": null,\n            \"fluorescence\": null,\n            \"tention\": null,\n            \"created_at\": \"2019-02-07T14:28:21.000Z\",\n            \"updated_at\": \"2019-02-07T14:28:21.000Z\",\n            \"image_file_name\": \"1\",\n            \"image_content_type\": \"image/png\",\n            \"image_file_size\": 98341,\n            \"image_updated_at\": \"2019-02-07T14:28:20.000Z\",\n            \"file_file_name\": \"testccases\",\n            \"file_content_type\": \"text/x-ruby\",\n            \"file_file_size\": 8589,\n            \"file_updated_at\": \"2019-02-07T14:28:21.000Z\"\n        }]\n}\n }",
           "type": "json"
         }
       ]
