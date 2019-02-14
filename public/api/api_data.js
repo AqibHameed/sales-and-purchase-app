@@ -890,15 +890,6 @@ define({ "api": [
     "name": "approve_access",
     "group": "Customers",
     "description": "<p>Show customer_list to approve or access</p>",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Request-Example:",
-          "content": "{\n\n}",
-          "type": "json"
-        }
-      ]
-    },
     "success": {
       "examples": [
         {
@@ -928,12 +919,12 @@ define({ "api": [
         },
         {
           "title": "Request-Example2:",
-          "content": "{\n\"request\": \"remove\"\n}",
+          "content": "{\n\"request\": \"approve\"\n}",
           "type": "json"
         },
         {
           "title": "Request-Example3:",
-          "content": "{\n\"request\": \"denied'\n}",
+          "content": "{\n\"request\": \"denied\"\n}",
           "type": "json"
         }
       ]

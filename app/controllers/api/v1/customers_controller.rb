@@ -656,10 +656,7 @@ module Api
  @apiName approve_access
  @apiGroup Customers
  @apiDescription Show customer_list to approve or access
-@apiParamExample {json} Request-Example:
-{
-
-}
+  
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
@@ -731,7 +728,7 @@ module Api
 }
 @apiParamExample {json} Request-Example2:
 {
-"request": "remove"
+"request": "approve"
 }
  @apiSuccessExample {json} SuccessResponse2:
 {
@@ -744,7 +741,7 @@ module Api
 
 @apiParamExample {json} Request-Example3:
 {
-"request": "denied'
+"request": "denied"
 }
  @apiSuccessExample {json} SuccessResponse3:
 {
