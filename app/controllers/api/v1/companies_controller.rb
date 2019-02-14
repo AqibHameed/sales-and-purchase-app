@@ -826,7 +826,6 @@ class Api::V1::CompaniesController < ApplicationController
     if current_company
         premission_request = PremissionRequest.find_by(sender_id: params[:company_id], receiver_id: current_company.id, status: 1)
         if premission_request.present?
-          binding.pry
           premission_request.update_attributes(permission_params)
           unless premission_request.live_monitor ||
               premission_request.secure_center ||
