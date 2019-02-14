@@ -921,11 +921,6 @@
           "title": "Request-Example2:",
           "content": "{\n\"request\": \"approve\"\n}",
           "type": "json"
-        },
-        {
-          "title": "Request-Example3:",
-          "content": "{\n\"request\": \"denied\"\n}",
-          "type": "json"
         }
       ]
     },
@@ -939,11 +934,6 @@
         {
           "title": "SuccessResponse2:",
           "content": "{\n\n    \"success\": true,\n    \"message\": \"Admin Accept your request!!\",\n    \"response_code\": 200\n\n}",
-          "type": "json"
-        },
-        {
-          "title": "SuccessResponse3:",
-          "content": "{\n    \"message\": \"Wrong Request\"\n}",
           "type": "json"
         }
       ]
