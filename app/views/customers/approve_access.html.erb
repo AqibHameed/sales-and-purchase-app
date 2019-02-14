@@ -17,7 +17,7 @@
         <% if customer.is_requested == true %>
           <%= link_to "Approve", approve_customers_path(cu: customer.id), class: 'btn btn-success btn-xs', method: :post %>&nbsp;&nbsp;&nbsp;&nbsp;
         <% else %>
-          <%= link_to "Reject", remove_customers_path(cu: customer.id), class: 'btn btn-danger btn-xs', method: :post %></td>
+          <%= link_to "Remove", remove_customers_path(cu: customer.id), class: 'btn btn-danger btn-xs', method: :post %></td>
         <% end %>
       </tr>
     <% end %>

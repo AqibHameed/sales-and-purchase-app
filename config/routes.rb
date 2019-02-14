@@ -412,6 +412,8 @@ Rails.application.routes.draw do
         get :purchases
         get :feedback_rating
         get :info
+        get :approve_access
+        put :approve_remove_request
       end
 
 

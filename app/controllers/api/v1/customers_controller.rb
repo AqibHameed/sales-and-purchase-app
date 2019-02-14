@@ -1,11 +1,12 @@
 module Api
   module V1
     class CustomersController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request, :buyer_scores, :seller_scores]
+      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request, :buyer_scores, :seller_scores, :approve_remove_request]
       before_action :current_customer
       before_action :info_permission, only: [:info]
       before_action :buyer_score_permission, only: [:buyer_scores]
       before_action :seller_scores_permission, only: [:seller_scores]
+      before_action :can_approve_access, only: [:approve_remove, :approve_access]
       MOBILE_TILES_SHOW = {
           0 => 'Smart Search',
           1 => 'Sell',
@@ -648,6 +649,135 @@ module Api
           render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
         end
       end
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/approve_access
+ @apiSampleRequest off
+ @apiName approve_access
+ @apiGroup Customers
+ @apiDescription Show customer_list to approve or access
+@apiParamExample {json} Request-Example:
+{
+
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "customers": [
+        {
+            "id": 21,
+            "email": "umair.raza101@gmail.com",
+            "created_at": "2018-12-07T15:00:19.000Z",
+            "updated_at": "2019-02-14T09:31:46.000Z",
+            "first_name": "Umair",
+            "last_name": "Raza",
+            "city": "",
+            "address": "",
+            "postal_code": null,
+            "phone": "",
+            "status": null,
+            "company_id": 8,
+            "company_address": "",
+            "phone_2": "",
+            "mobile_no": "+1",
+            "authentication_token": "XwHsMFNtQAy6aFpttQek",
+            "verified": false,
+            "certificate_file_name": "logs.png",
+            "certificate_content_type": "image/png",
+            "certificate_file_size": 80312,
+            "certificate_updated_at": "2018-12-21T12:52:41.000Z",
+            "invitation_token": null,
+            "invitation_created_at": null,
+            "invitation_sent_at": null,
+            "invitation_accepted_at": null,
+            "invitation_limit": null,
+            "invited_by_type": null,
+            "invited_by_id": null,
+            "invitations_count": 0,
+            "chat_id": "-1",
+            "firebase_uid": null,
+            "parent_id": null,
+            "is_requested": true,
+            "deleted_at": null
+        }
+    ],
+    "response_code": 200
+}
+=end
+
+      def approve_access
+        @customers = current_company.customers.where.not(id: current_customer.id)
+         render json: {success: true, customers: @customers, response_code: 200}
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {put} /api/v1/approve_remove_request
+ @apiSampleRequest off
+ @apiName approve_remove_request
+ @apiGroup Customers
+ @apiDescription Approve or Remove customer request from Admin
+@apiParamExample {json} Request-Example1:
+{
+"request": "remove"
+}
+ @apiSuccessExample {json} SuccessResponse1:
+{
+
+    "success": true,
+    "message": "Admin Reject your request!!",
+    "response_code": 200
+
+}
+@apiParamExample {json} Request-Example2:
+{
+"request": "remove"
+}
+ @apiSuccessExample {json} SuccessResponse2:
+{
+
+    "success": true,
+    "message": "Admin Accept your request!!",
+    "response_code": 200
+
+}
+
+@apiParamExample {json} Request-Example3:
+{
+"request": "denied'
+}
+ @apiSuccessExample {json} SuccessResponse3:
+{
+    "message": "Wrong Request"
+}
+
+=end
+
+      def approve_remove_request
+
+        customer = Customer.find(params[:id])
+        if params[:request] == 'remove'
+          if customer.update_attributes(is_requested: true)
+            CustomerMailer.approve_access(customer).deliver
+            render json: {success: true, message: 'Admin Reject your request!! ', response_code: 200}
+          else
+            render json: {message: customer.errors.full_messages}
+          end
+
+        elsif params[:request] == "approve"
+          if customer.update_attributes(is_requested: false)
+            CustomerMailer.remove_access(customer).deliver
+            render json: {success: true, message: 'Admin Accept your request!!', response_code: 200}
+          else
+            render json: {message: customer.errors.full_messages}
+          end
+
+        else
+          render json: {message: 'Wrong Request'}
+        end
+      end
+
+
 
       private
 
@@ -756,7 +886,7 @@ module Api
       end
 
       def customer_params
-        params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate)
+        params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate,:approve)
       end
 
       def password_params
@@ -789,6 +919,14 @@ module Api
             params_attribute => model_id
         }
       end
+
+      def can_approve_access
+        first_customer = current_company.get_owner
+        unless first_customer == current_customer
+        render json: {errors: "You are not authorized"}
+        end
+      end
+
     end
   end
 end
