@@ -1691,16 +1691,16 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "post",
-    "url": "/api/v1/parcels/create_stone_details",
+    "url": "/api/v1/stone_details",
     "title": "",
-    "name": "create_stone_details",
-    "group": "Stones",
+    "name": "create",
+    "group": "StoneDetails",
     "description": "<p>create stone details</p>",
     "parameter": {
       "examples": [
         {
           "title": "Request-Example:",
-          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4546\n\"tender_id\" :1216\n\"description\" : description\n\"weight\" : 22\n\"color_mechine\" : color_mechine\n\"color_eye\" : color_eye\n\"fluorescence\" : fluorescence\n\"tention\" : tention\n}",
+          "content": "    {\n       \"image\": <image_object>\n       \"file\" : <file_object>\n       \"stone_id\" :4546\n      \"tender_id\" :1216\n      \"description\" : description\n      \"weight\" : 22\n      \"color_mechine\" : color_mechine\n      \"color_eye\" : color_eye\n      \"fluorescence\" : fluorescence\n      \"tention\" : tention\n}",
           "type": "json"
         }
       ]
@@ -1709,13 +1709,42 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": " {\n    {\n    \"success\": true,\n    \"message\": \"data successfully uploaded\",\n    \"response_code\": 200\n}\n }",
+          "content": "{\n    {\n        \"success\": true,\n        \"message\": \"data successfully uploaded\",\n        \"response_code\": 200\n    }\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "app/controllers/api/v1/stones_controller.rb",
-    "groupTitle": "Stones"
+    "filename": "app/controllers/api/v1/stone_details_controller.rb",
+    "groupTitle": "StoneDetails"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/stone_details",
+    "title": "",
+    "name": "index",
+    "group": "StoneDetails",
+    "description": "<p>show stone details</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\n    \"stone_id\" :3\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n   {\n      \"success\": true,\n       \"stone_details\": [\n           {\n                \"id\": 1,\n               \"stone_id\": 3,\n               \"tender_id\": 392,\n               \"customer_id\": 21,\n               \"description\": \"usman\",\n               \"weight\": null,\n               \"color_mechine\": null,\n               \"color_eye\": null,\n               \"fluorescence\": null,\n               \"tention\": null,\n               \"created_at\": \"2019-02-07T14:28:21.000Z\",\n               \"updated_at\": \"2019-02-07T14:28:21.000Z\",\n               \"image_file_name\": \"1\",\n               \"image_content_type\": \"image/png\",\n               \"image_file_size\": 98341,\n               \"image_updated_at\": \"2019-02-07T14:28:20.000Z\",\n               \"file_file_name\": \"testccases\",\n               \"file_content_type\": \"text/x-ruby\",\n               \"file_file_size\": 8589,\n               \"file_updated_at\": \"2019-02-07T14:28:21.000Z\"\n           }\n         ]\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stone_details_controller.rb",
+    "groupTitle": "StoneDetails"
   },
   {
     "version": "1.0.0",
@@ -1730,35 +1759,6 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n    \"errors\": \"Parcel not found\",\n    \"response_code\": 201\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/stones_controller.rb",
-    "groupTitle": "Stones"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/parcels/show_stone_details",
-    "title": "",
-    "name": "show_stone_details",
-    "group": "Stones",
-    "description": "<p>show stone details</p>",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Request-Example:",
-          "content": "{\n\n\"stone_id\" :3\n\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": " {\n    {\n    \" \"success\": true,\n    \"stone_details\": [\n        {\n             \"id\": 1,\n            \"stone_id\": 3,\n            \"tender_id\": 392,\n            \"customer_id\": 21,\n            \"description\": \"usman\",\n            \"weight\": null,\n            \"color_mechine\": null,\n            \"color_eye\": null,\n            \"fluorescence\": null,\n            \"tention\": null,\n            \"created_at\": \"2019-02-07T14:28:21.000Z\",\n            \"updated_at\": \"2019-02-07T14:28:21.000Z\",\n            \"image_file_name\": \"1\",\n            \"image_content_type\": \"image/png\",\n            \"image_file_size\": 98341,\n            \"image_updated_at\": \"2019-02-07T14:28:20.000Z\",\n            \"file_file_name\": \"testccases\",\n            \"file_content_type\": \"text/x-ruby\",\n            \"file_file_size\": 8589,\n            \"file_updated_at\": \"2019-02-07T14:28:21.000Z\"\n        }]\n}\n }",
           "type": "json"
         }
       ]
@@ -1817,6 +1817,45 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n   \"success\": true,\n   \"message\": \"Image successfully uploaded.\",\n   \"images\": [\n       \"https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/002/original/third_section_pic.png?1549279213\",\n       \"https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/003/original/third_section_pic.png?1549279452\",\n       \"https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/005/original/create_parcel.png?1549280387\"\n   ],\n   \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/parcels/wish_list_record?stone_id=3",
+    "title": "",
+    "name": "wish_list_record",
+    "group": "Stones",
+    "description": "<p>create/update wish_list record of stone</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n\n\"stone_id\" :3\n\"wish_status\" :true\n\n\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n\n\"stone_id\" :3\n\"wish_status\" :true\n\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "\n{\n \"success\": true,\n \"message\": \"data successfully created\",\n \"response_code\": 200\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "\n{\n \"success\": true,\n \"message\": \"data successfully updated\",\n \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -2024,7 +2063,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 2,\n        \"prev_page\": null,\n        \"next_page\": \"http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115\",\n        \"current_page\": 1\n    },\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 2,\n        \"prev_page\": null,\n        \"next_page\": \"http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115\",\n        \"current_page\": 1\n    },\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"wish_list_status\": true,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"wish_list_status\": false,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]

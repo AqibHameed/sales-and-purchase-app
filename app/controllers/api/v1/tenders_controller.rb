@@ -366,6 +366,7 @@ module Api
             "description": "+10.8CT CLIVAGE",
             "comments": null,
             "valuation": null,
+            "wish_list_status": true,
             "parcel_rating": null,
             "images": [],
             "winners_data": [],
@@ -385,6 +386,7 @@ module Api
             "description": "+10.8CT BROWN MIX",
             "comments": null,
             "valuation": null,
+            "wish_list_status": false,
             "parcel_rating": null,
             "images": [],
             "winners_data": [],
@@ -674,8 +676,6 @@ module Api
               highlight_parcel: stone_rating.present? || stone_image.present?
           }
         end
-      binding.pry
-        # @stones.sort_by {|k| k[:wish_list_status]}
         @stones.sort_by{|e| e[:wish_list_status] ? 0 : 1}
 
       end

@@ -417,6 +417,7 @@ class Api::V1::CompaniesController < ApplicationController
       @all_transactions = Kaminari.paginate_array(transactions.flatten).page(params[:page]).per(params[:count])
       render json: { success: true, pagination: set_pagination(:all_transactions), transactions: @all_transactions }
     else
+      render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
     end
   end
 
@@ -825,7 +826,6 @@ class Api::V1::CompaniesController < ApplicationController
     if current_company
         premission_request = PremissionRequest.find_by(sender_id: params[:company_id], receiver_id: current_company.id, status: 1)
         if premission_request.present?
-          binding.pry
           premission_request.update_attributes(permission_params)
           unless premission_request.live_monitor ||
               premission_request.secure_center ||

@@ -416,6 +416,8 @@ Rails.application.routes.draw do
         put :approve_remove_request
       end
 
+      resources :stone_details
+
 
       get '/profile', to: 'customers#profile'
       patch '/update_profile', to: 'customers#update_profile'
