@@ -301,6 +301,12 @@ nothing only params in url
             "size_info": [],
             "proposal_status": "no",
             "my_offer": null,
+            "parcel_proposal": {
+                            "percent": 0,
+                            "avrage_price": 5000,
+                            "total": 1009800,
+                            "credit": 30
+                        },
             "demand_id": 61
         },
         {
@@ -328,6 +334,7 @@ nothing only params in url
             "size_info": [],
             "proposal_status": "no",
             "my_offer": null,
+            "parcel_proposal": null,
             "demand_id": 61
         }
     ],
@@ -401,9 +408,18 @@ nothing only params in url
               }
             end
           end
+
+          parcel_proposal = {
+              percent:proposal.percent.to_f ,
+              avrage_price:  proposal.price.to_f,
+              total: proposal.total_value.to_f,
+              credit: proposal.credit,
+          }
+
         else
           proposal_send = false
           proposal_status = 'no'
+          parcel_proposal = nil
         end
         respose_hash = {
             proposal_send: proposal_send,
@@ -431,7 +447,7 @@ nothing only params in url
             proposal_status: proposal_status
         }
 
-        respose_hash.merge!(my_offer: my_offer)
+        respose_hash.merge!(my_offer: my_offer, parcel_proposal: parcel_proposal)
 
         if category == "demanded"
           #demand = Demand.where(description: parcel.description, company_id: current_company.id).first
