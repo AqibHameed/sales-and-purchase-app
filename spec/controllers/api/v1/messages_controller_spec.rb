@@ -11,6 +11,11 @@ RSpec.describe Api::V1::MessagesController do
            price: "4000", credit: "1500")
     @message = create(:message, proposal_id: @proposal.id, receiver_id: @customer.company.id, sender_id: @buyer.company.id)
     @proposal_message = Message.create_new(@proposal)
+    @permissions = {sender_id: @customer.company_id,
+                    receiver_id: @buyer.company_id,
+                    secure_center: true,
+                    seller_score: true,
+                    buyer_score: true}
     @negotiation = create(:negotiation, proposal: @proposal)
   end
   before(:each) do
@@ -79,6 +84,30 @@ RSpec.describe Api::V1::MessagesController do
         get :index
         expect(buyer_reject_proposal.subject).to eq('Buyer rejected your negotiated proposal.')
         expect(response.success?).to eq(true)
+      end
+    end
+
+    context 'when authorized user to access the message' do
+      it 'does show the message security center request messages' do
+        permission_request = create_permission_request(@permissions)
+        request.headers.merge!(authorization: @buyer.authentication_token)
+        message = Message.send_request_for_live_monitoring(permission_request)
+        get :index, params: {status: 'new'}
+        response.body.should have_content(message.subject)
+        expect(JSON.parse(response.body)['messages'].first['sender']).to eq(@customer.company.name)
+      end
+    end
+
+    context 'when authorized user to access the message' do
+      it 'does show the message Buyer payment messages' do
+        transaction = create_transaction(@buyer, @customer, @parcel)
+        payment = create(:partial_payment, company_id:@buyer.company_id, transaction_id: transaction.id)
+        message = Message.buyer_payment_confirmation_message(@customer.company, transaction, payment)
+        get :index, params: {status: 'new'}
+        response.body.should have_content('Your Payment is confirmed.')
+        expect(JSON.parse(response.body)['messages'].last['id']).to eq(message.id)
+        expect(JSON.parse(response.body)['messages'].last['sender']).to eq(message.sender.name)
+        expect(JSON.parse(response.body)['messages'].last['receiver']).to eq(message.receiver.name)
       end
     end
   end

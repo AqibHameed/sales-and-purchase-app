@@ -128,4 +128,66 @@ RSpec.describe Api::V1::LimitsController do
     end
 
   end
-end
+
+    describe '#block' do
+      context 'when unauthorized user to access the block Api' do
+        it 'does show error un authorized user' do
+          request.headers.merge!(authorization: 'wetasdetoken')
+          post :block
+          response.body.should have_content('Not authenticated')
+        end
+      end
+
+      context 'when unauthorized user to access the block Api' do
+        it 'does show error un authorized user' do
+          create(:block_user, block_company_ids: @company.id, company_id: @customer.company_id)
+          post :block, params: {company_id: @company.id}
+          expect(JSON.parse(response.body)['success']).to eq(true)
+        end
+      end
+    end
+
+  describe '#block' do
+    context 'when unauthorized user to access the block Api' do
+      it 'does show error un authorized user' do
+        request.headers.merge!(authorization: 'wetasdetoken')
+        post :block
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when unauthorized user to access the block Api' do
+      it 'does show error un authorized user' do
+        create(:block_user, block_company_ids: @company.id, company_id: @customer.company_id)
+        post :block, params: {company_id: @company.id}
+        expect(JSON.parse(response.body)['success']).to eq(true)
+      end
+    end
+  end
+
+  describe '#unblock' do
+    context 'when unauthorized user to access the unblock Api' do
+      it 'does show error un authorized user' do
+        request.headers.merge!(authorization: 'wetasdetoken')
+        post :unblock
+        response.body.should have_content('Not authenticated')
+      end
+    end
+
+    context 'when authorized user to access the unblock Api' do
+      it 'does match the message Company already unblocked or not found' do
+        post :unblock, params: {company_id: 'ul'}
+        response.body.should have_content('Company already unblocked or not found')
+      end
+    end
+
+    context 'when authorized user to access the unblock Api' do
+      it 'does show error un authorized user' do
+        create(:block_user, block_company_ids: @company.id, company_id: @customer.company_id)
+        post :unblock, params: {company_id: @company.id}
+        expect(JSON.parse(response.body)['success']).to eq(true)
+      end
+    end
+  end
+
+  end

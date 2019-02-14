@@ -10,13 +10,42 @@ module Api
  @apiSampleRequest off
  @apiName tenders
  @apiGroup Tenders
- @apiDescription With Authentication token and withou authentication token
- @apiSuccessExample {json} SuccessResponse:
-{
+ @apiDescription list of all tenders
+ @apiSuccessExample {json} SuccessResponse1:
+ {
     "success": true,
-    "tenders": [],
+    "pagination": {
+        "total_pages": 8,
+        "prev_page": null,
+        "next_page": "http://localhost:3000/api/v1/tenders?page=2",
+        "current_page": 1
+    },
+    "tenders": [
+        {
+            "id": 1003,
+            "name": "Cullinan Jan-Feb 2018",
+            "start_date": "2013-10-19T00:00:00.000Z",
+            "end_date": "2018-02-07T03:30:00.000Z",
+            "company_name": "Petra Diamonds",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "",
+            "notification": false
+        },
+        {
+            "id": 383,
+            "name": "Transhex 229A January 2016",
+            "start_date": "2016-01-25T05:05:00.000Z",
+            "end_date": "2016-02-08T07:05:00.000Z",
+            "company_name": "Trans-hex",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "South Africa",
+            "notification": false
+        }
+    ],
     "response_code": 200
-}
+  }
 =end
 =begin
  @apiVersion 1.0.0
@@ -25,12 +54,30 @@ module Api
  @apiName tenders month
  @apiGroup Tenders
  @apiDescription tenders according to month
- @apiSuccessExample {json} SuccessResponse:
-{
+ @apiSuccessExample {json} SuccessResponse2:
+ {
     "success": true,
-    "tenders": [],
+    "pagination": {
+        "total_pages": 1,
+        "prev_page": null,
+        "next_page": null,
+        "current_page": 1
+    },
+    "tenders": [
+        {
+            "id": 383,
+            "name": "Transhex 229A January 2016",
+            "start_date": "2016-01-25T05:05:00.000Z",
+            "end_date": "2016-02-08T07:05:00.000Z",
+            "company_name": "Trans-hex",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "South Africa",
+            "notification": false
+        }
+    ],
     "response_code": 200
-}
+  }
 =end
 =begin
  @apiVersion 1.0.0
@@ -39,12 +86,31 @@ module Api
  @apiName tenders location
  @apiGroup Tenders
  @apiDescription tenders according to Location
- @apiSuccessExample {json} SuccessResponse:
-{
+ @apiSuccessExample {json} SuccessResponse3:
+ {
     "success": true,
-    "tenders": [],
+    "pagination": {
+        "total_pages": 2,
+        "prev_page": null,
+        "next_page": "http://localhost:3000/api/v1/tenders?page=2&month=1",
+        "current_page": 1
+    },
+
+    "tenders": [
+        {
+            "id": 383,
+            "name": "Transhex 229A January 2016",
+            "start_date": "2016-01-25T05:05:00.000Z",
+            "end_date": "2016-02-08T07:05:00.000Z",
+            "company_name": "Trans-hex",
+            "company_logo": null,
+            "city": "Johannesburg",
+            "country": "South Africa",
+            "notification": false
+        },
+    ],
     "response_code": 200
-}
+  }
 =end
 =begin
  @apiVersion 1.0.0
@@ -53,12 +119,13 @@ module Api
  @apiName tenders
  @apiGroup Tenders
  @apiDescription tenders according to supplier
- @apiSuccessExample {json} SuccessResponse:
-{
+ @apiSuccessExample {json} SuccessResponse4:
+ {
     "success": true,
+    "pagination": null,
     "tenders": [],
     "response_code": 200
-}
+ }
 =end
 
 
@@ -69,11 +136,13 @@ module Api
           col_str += (col_str.blank?) ? "extract(month from open_date) = #{params[:month]}" : " AND extract(month from open_date) = #{params[:month]}" unless params[:month].blank?
           col_str += (col_str.blank?) ? "tenders.supplier_id =  #{params[:supplier]}" : " AND tenders.supplier_id = #{params[:supplier]}" unless params[:supplier].blank?
         end
-        @tenders = Tender.includes(:supplier).tenders_state(params[:state]).where(col_str).order("open_date")
+        tenders = Tender.includes(:supplier).tenders_state(params[:state]).where(col_str).order("open_date")
         # @tenders = tender.page(params[:page]).pcoer(params[:count])
-        #render json: { success: true, pagination: set_pagination(:tenders), tenders: tender_data(@tenders), response_code: 200 }
-        render json: {success: true, tenders: tender_data(@tenders), response_code: 200}
+
+        @tenders = tenders.page(params[:page]).per(params[:count])
+        render json: {success: true, pagination: set_pagination(:tenders), tenders: tender_data(@tenders), response_code: 200}
       end
+
 
       def upcoming
         col_str = "open_date > '#{Time.zone.now}'"
@@ -276,6 +345,12 @@ module Api
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
+    "pagination": {
+        "total_pages": 2,
+        "prev_page": null,
+        "next_page": "http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115",
+        "current_page": 1
+    },
     "tender_parcels": [
         {
             "id": 1270,
@@ -291,6 +366,7 @@ module Api
             "description": "+10.8CT CLIVAGE",
             "comments": null,
             "valuation": null,
+            "wish_list_status": true,
             "parcel_rating": null,
             "images": [],
             "winners_data": [],
@@ -310,6 +386,7 @@ module Api
             "description": "+10.8CT BROWN MIX",
             "comments": null,
             "valuation": null,
+            "wish_list_status": false,
             "parcel_rating": null,
             "images": [],
             "winners_data": [],
@@ -322,8 +399,11 @@ module Api
 
       def tender_parcel
         stones = Stone.includes(:stone_ratings).where(tender_id: params[:tender_id])
-        render json: {success: true, tender_parcels: stone_data(stones), response_code: 200}
+        @stones = stones.page(params[:page]).per(params[:count])
+        render json: {success: true, pagination: set_pagination(:stones), tender_parcels: stone_data(@stones), response_code: 200}
       end
+
+
 
 =begin
  @apiVersion 1.0.0
@@ -333,17 +413,52 @@ module Api
  @apiGroup Tenders
  @apiDescription Tender's Stone parcel
  @apiParamExample {json} Request-Example:
- {
-"id": 1 ,
-"comments": "",
- "valuation": "",
- "parcel_rating": 4
+{
+	"comments": "this is comment",
+	"valuation": "",
+	"parcel_rating": "",
+	"id": 4546
 }
  @apiSuccessExample {json} SuccessResponse:
 {
-    "errors": [
-        "Parcel not found"
-    ],
+    "stone_parcel": {
+        "id": 4546,
+        "comments": "this is comment",
+        "valuation": "",
+        "parcel_rating": null,
+        "lot_no": 6,
+        "tender_id": 1216,
+        "description": "-9+1 R.O.M",
+        "no_of_stones": 1,
+        "weight": 327.46,
+        "carat": null,
+        "stone_type": "Parcel",
+        "size": null,
+        "purity": null,
+        "color": null,
+        "polished": null,
+        "created_at": "2019-01-24T10:09:25.000Z",
+        "updated_at": "2019-01-24T10:09:25.000Z",
+        "deec_no": 6,
+        "system_price": null,
+        "lot_permission": null,
+        "reserved_price": null,
+        "yes_no_system_price": null,
+        "stone_winning_price": null
+    },
+    "response_code": 200
+}
+
+@apiParamExample {json} Request-Example:
+{
+	"comments": "",
+	"valuation": "",
+	"parcel_rating": "",
+	"id": 4545
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "errors": "please send the rating",
     "response_code": 201
 }
 =end
@@ -363,10 +478,14 @@ module Api
               stone_rating.parcel_rating = params[:parcel_rating] unless params[:parcel_rating].blank?
               stone_rating.valuation = params[:valuation] unless params[:valuation].blank?
             end
-            if stone_rating.save
-              render :json => {stone_parcel: rating_stone_parcel(stone_rating), response_code: 200}
+            if stone_rating.comments.present? || stone_rating.parcel_rating.present? || stone_rating.valuation.present?
+              if stone_rating.save
+                render :json => {stone_parcel: rating_stone_parcel(stone_rating), response_code: 200}
+              else
+                render :json => {:errors => stone_rating.errors.full_messages, response_code: 201}
+              end
             else
-              render :json => {:errors => stone_rating.errors.full_messages, response_code: 201}
+              render json: {errors: "please send the rating", response_code: 201}
             end
           end
         else
@@ -534,7 +653,9 @@ module Api
         stones.each do |stone|
           stone_rating = stone.stone_ratings.where(customer_id: current_customer.try(&:id)).last
           stone_image = stone.parcel_images.where(customer_id: current_customer.try(&:id)).last
-          @stones << {
+          @stone_wish_list = stone.wish_lists.where(customer_id: current_customer.try(&:id)).last
+
+            @stones << {
               id: stone.id,
               stone_type: stone.stone_type,
               no_of_stones: stone.no_of_stones,
@@ -548,13 +669,15 @@ module Api
               description: stone.description,
               comments: stone_rating.try(:comments),
               valuation: stone_rating.try(:valuation),
+              wish_list_status: @stone_wish_list.present? ? @stone_wish_list.try(:wish_status): false,
               parcel_rating: stone_rating.try(:parcel_rating),
               images: parcel_images(stone),
               winners_data: historical_data(stone.try(:tender).try(:id), stone),
               highlight_parcel: stone_rating.present? || stone_image.present?
           }
         end
-        @stones
+        @stones.sort_by{|e| e[:wish_list_status] ? 0 : 1}
+
       end
 
       def historical_data(id, stone)

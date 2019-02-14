@@ -57,8 +57,11 @@ module Api
       def create
         existing_proposal = Proposal.where(id: params[:id]).first
         if existing_proposal.present?
-          existing_proposal.update_attributes(proposal_params)
-          render json: {success: true, message: 'Proposal Updated Successfully'}
+          if  existing_proposal.update(proposal_params)
+            render json: {success: true, message: 'Proposal Updated Successfully'}
+          else
+            render json: {success: true, message: 'Proposal not Updated'}
+          end
         else
           parcel = TradingParcel.where(id: params[:trading_parcel_id]).first
           if parcel.present?
@@ -589,6 +592,7 @@ module Api
         proposal.action_for = parcel.company_id
         proposal.buyer_comment = params[:comment]
         if proposal.save
+          proposal.negotiations.create(price: parcel.price, percent: parcel.percent, credit: parcel.credit_period, total_value: parcel.total_value, description: parcel.description, source: parcel.source)
           proposal.negotiations.create(price: proposal.price, percent: proposal.percent, credit: proposal.credit, total_value: proposal.total_value, comment: proposal.buyer_comment, from: 'buyer')
           CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
           Message.create_new(proposal)

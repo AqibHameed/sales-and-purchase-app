@@ -19,42 +19,49 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def info_permission
-    if params[:receiver_id].present?
-      unless  params[:receiver_id].to_i  == current_company.id
-        permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], customer_info: true)
-        if permission.nil?
-          render json: { errors: "permission Access denied", response_code: 201 }
+    if current_company
+      if params[:receiver_id].present?
+        unless  params[:receiver_id].to_i  == current_company.id
+          permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], customer_info: true)
+          if permission.nil?
+            render json: { errors: "permission Access denied", response_code: 201 }
+          end
         end
+      else
+        render json: { errors: "company id not exist", response_code: 201 }
       end
-    else
-      render json: { errors: "company id not exist", response_code: 201 }
     end
   end
 
   def buyer_score_permission
-    if params[:receiver_id].present?
-      unless  params[:receiver_id].to_i  == current_company.id
-        permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], buyer_score: true)
-        if permission.nil?
-          render json: { errors: "permission Access denied", response_code: 201 }
+    if current_company
+      if params[:receiver_id].present?
+        unless  params[:receiver_id].to_i  == current_company.id
+          permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], buyer_score: true)
+          if permission.nil?
+            render json: { errors: "permission Access denied", response_code: 201 }
+          end
         end
+      else
+        render json: { errors: "company id not exist", response_code: 201 }
       end
-    else
-      render json: { errors: "company id not exist", response_code: 201 }
     end
   end
 
   def seller_scores_permission
-    if params[:receiver_id].present?
-      unless  params[:receiver_id].to_i  == current_company.id
-        permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], seller_score: true)
-        if permission.nil?
-          render json: { errors: "permission Access denied", response_code: 201 }
+    if current_company
+      if params[:receiver_id].present?
+        unless  params[:receiver_id].to_i  == current_company.id
+          permission = PremissionRequest.find_by(sender_id: current_company.id, receiver_id: params[:receiver_id], seller_score: true)
+          if permission.nil?
+            render json: { errors: "permission Access denied", response_code: 201 }
+          end
         end
+      else
+        render json: { errors: "company id not exist", response_code: 201 }
       end
-    else
-      render json: { errors: "company id not exist", response_code: 201 }
     end
+
   end
 
   # def seller_companies_permission

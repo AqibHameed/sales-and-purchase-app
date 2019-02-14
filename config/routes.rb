@@ -297,7 +297,7 @@ Rails.application.routes.draw do
       post '/feedback', to: 'companies#send_feedback'
       get '/history', to: 'companies#history'
       get '/seller_companies', to: 'companies#seller_companies'
-      get '/companies_review', to: 'companies#companies_review'
+      post '/companies_review', to: 'companies#companies_review'
       get '/secure_center', to: 'companies#live_monitoring'
       get '/download_secure_center', to: 'companies#download_secure_center'
       resources :tenders do
@@ -318,12 +318,18 @@ Rails.application.routes.draw do
           post :accept_secuirty_data_request
           post :reject_secuirty_data_request
           get :list_permission_companies
-          get :remove_permission
+          put :remove_permission
+          get :count_companies_review
+          get :show_review
         end
       end
       resources :stones, path: '/parcels' do
         collection do
           post :upload
+          post :create_stone_details
+          put :stone_update
+          get :show_stone_details
+          post :wish_list_record
         end
       end
       resources :transactions do
@@ -406,7 +412,11 @@ Rails.application.routes.draw do
         get :purchases
         get :feedback_rating
         get :info
+        get :approve_access
+        put :approve_remove_request
       end
+
+      resources :stone_details
 
 
       get '/profile', to: 'customers#profile'

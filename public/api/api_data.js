@@ -600,7 +600,7 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
-    "type": "get",
+    "type": "post",
     "url": "/api/v1/companies_review",
     "title": "",
     "name": "companies_review",
@@ -620,6 +620,26 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n  \"review\": {\n      \"id\": 1,\n      \"know\": true,\n      \"trade\": false,\n      \"recommend\": true,\n      \"experience\": true\n  },\n  \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/count_companies_review",
+    "title": "",
+    "name": "count_companies_review",
+    "group": "Companies",
+    "description": "<p>count the companies review questions</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "  {\n    \"success\": true,\n    \"companies_rated_count\": {\n        \"know\": {\n            \"yes\": 1,\n            \"no\": 0\n        },\n        \"trade\": {\n            \"yes\": 0,\n            \"no\": 1\n        },\n        \"recommend\": {\n            \"yes\": 0,\n            \"no\": 0\n        },\n        \"experience\": {\n            \"yes\": 0,\n            \"no\": 0\n        },\n        \"total_number_of_comapnies_rated\": 1,\n        \"rank\": 10\n    }\n  }\n}",
           "type": "json"
         }
       ]
@@ -713,7 +733,7 @@ define({ "api": [
         },
         {
           "title": "SuccessResponse2:",
-          "content": "{\n    \"success\": true,\n    \"details\": {\n        \"id\": 263,\n        \"buyer_id\": 1,\n        \"seller_id\": 4,\n        \"supplier_connected\": 10,\n        \"overdue_amount\": 0,\n        \"invoices_overdue\": 11,\n        \"outstandings\": 0,\n        \"last_bought_on\": \"2019-01-22\",\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 30.61,\n        \"balance_credit_limit\": 7000,\n        \"permitted\": true,\n        \"number_of_seller_offer_credit\": 2,\n        \"collection_ratio_days\": {\n            \"zero_percent\": 0,\n            \"less_fifteen\": 1,\n            \"less_thirty\": 0,\n            \"less_fourty_five\": 0,\n            \"greater_fourty_five\": 0\n        },\n        \"buyer_score\": 0,\n        \"seller_score\": 0,\n        \"paid_date\": null\n    }\n}",
+          "content": "{\n    \"success\": true,\n    \"details\": {\n        \"id\": 263,\n        \"buyer_id\": 1,\n        \"seller_id\": 4,\n        \"supplier_connected\": 10,\n        \"overdue_amount\": 0,\n        \"invoices_overdue\": 11,\n        \"outstandings\": 0,\n        \"last_bought_on\": \"2019-01-22\",\n        \"buyer_percentage\": 0,\n        \"system_percentage\": 30.61,\n        \"balance_credit_limit\": 7000,\n        \"permitted\": true,\n        \"number_of_seller_offer_credit\": 2,\n        \"collection_ratio_days\": {\n            \"zero_percent\": 0,\n            \"less_fifteen\": 1,\n            \"less_thirty\": 0,\n            \"less_fourty_five\": 0,\n            \"greater_fourty_five\": 0\n        },\n        \"buyer_score\": 0,\n        \"paid_date\": null\n    }\n}",
           "type": "json"
         }
       ]
@@ -723,7 +743,7 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
-    "type": "get",
+    "type": "put",
     "url": "/api/v1/companies/remove_permission",
     "title": "",
     "name": "remove_permission",
@@ -807,6 +827,35 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
+    "url": "/api/v1/companies/show_review",
+    "title": "",
+    "name": "show_review",
+    "group": "Companies",
+    "description": "<p>Show reviews  of the company.</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n    \"company_id\": 4,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "  {\n\"review\": {\n    \"id\": 7,\n    \"know\": true,\n    \"trade\": false,\n    \"recommend\": true,\n    \"experience\": false\n},\n\"response_code\": 200",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/companies_controller.rb",
+    "groupTitle": "Companies"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
     "url": "/api/v1/access_tiles?tab=inbox",
     "title": "",
     "name": "access_tiles",
@@ -826,6 +875,84 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n {\n   \"success\": true,\n   \"messages\": [\n       {\n           \"Inbox\": true,\n           \"count\": 5\n       },\n       {\n           \"History\": true,\n           \"count\": 0\n       },\n       {\n           \"Smart Search\": true,\n           \"count\": 0\n       }\n   ]\n }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/approve_access",
+    "title": "",
+    "name": "approve_access",
+    "group": "Customers",
+    "description": "<p>Show customer_list to approve or access</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"customers\": [\n        {\n            \"id\": 21,\n            \"email\": \"umair.raza101@gmail.com\",\n            \"created_at\": \"2018-12-07T15:00:19.000Z\",\n            \"updated_at\": \"2019-02-14T09:31:46.000Z\",\n            \"first_name\": \"Umair\",\n            \"last_name\": \"Raza\",\n            \"city\": \"\",\n            \"address\": \"\",\n            \"postal_code\": null,\n            \"phone\": \"\",\n            \"status\": null,\n            \"company_id\": 8,\n            \"company_address\": \"\",\n            \"phone_2\": \"\",\n            \"mobile_no\": \"+1\",\n            \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n            \"verified\": false,\n            \"certificate_file_name\": \"logs.png\",\n            \"certificate_content_type\": \"image/png\",\n            \"certificate_file_size\": 80312,\n            \"certificate_updated_at\": \"2018-12-21T12:52:41.000Z\",\n            \"invitation_token\": null,\n            \"invitation_created_at\": null,\n            \"invitation_sent_at\": null,\n            \"invitation_accepted_at\": null,\n            \"invitation_limit\": null,\n            \"invited_by_type\": null,\n            \"invited_by_id\": null,\n            \"invitations_count\": 0,\n            \"chat_id\": \"-1\",\n            \"firebase_uid\": null,\n            \"parent_id\": null,\n            \"is_requested\": true,\n            \"deleted_at\": null\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "put",
+    "url": "/api/v1/approve_remove_request",
+    "title": "",
+    "name": "approve_remove_request",
+    "group": "Customers",
+    "description": "<p>Approve or Remove customer request from Admin</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n\"request\": \"remove\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n\"request\": \"remove\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example3:",
+          "content": "{\n\"request\": \"denied'\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n\n    \"success\": true,\n    \"message\": \"Admin Reject your request!!\",\n    \"response_code\": 200\n\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "{\n\n    \"success\": true,\n    \"message\": \"Admin Accept your request!!\",\n    \"response_code\": 200\n\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse3:",
+          "content": "{\n    \"message\": \"Wrong Request\"\n}",
           "type": "json"
         }
       ]
@@ -874,7 +1001,7 @@ define({ "api": [
         },
         {
           "title": "SuccessResponse3:",
-          "content": " {\n    \"success\": true,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Buyer Network Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Number Of Suppliers Giving You Credit\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        }\n    ],\n    \"response_code\": 200\n}",
+          "content": "{\n   \"success\": true,\n   \"buyer_score\": 0.39,\n   \"scores\": [\n       {\n           \"name\": \"Late Payment\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Current Risk Score\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Network Diversity\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Buyer Network Score\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Due Date Score\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Credit Used Score\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Number Of Suppliers Giving You Credit\",\n           \"user_score\": 1,\n           \"market_average\": 2.57,\n           \"user_score_vs_market_score\": 0.39,\n           \"rank\": 10\n       }\n   ],\n   \"response_code\": 200\n }",
           "type": "json"
         }
       ]
@@ -886,66 +1013,6 @@ define({ "api": [
         "url": "https://safetrade.ai/api/v1/customers/buyer_scores"
       }
     ]
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/customers/purchases",
-    "title": "",
-    "name": "customer_purchases",
-    "group": "Customers",
-    "description": "<p>to get customer purchasings info</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"credit_recieved_count\": 1,\n    \"total_credit_received\": \"$0.00\",\n    \"purchases\": [\n        {\n      \"term\": \"cash\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"1<=30\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"31<=60\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"total\",\n      \"percent\": \"0\",\n      \"pending_transaction\": \"$0.00\",\n      \"overdue_transaction\": \"$0.00\",\n      \"complete_transaction\": \"$0.00\"\n      }\n    ],\n    \"response_code\": 200\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "api/v1/customers/sales",
-    "title": "",
-    "name": "customer_sale",
-    "group": "Customers",
-    "description": "<p>permission the tiles and sorting the record on the basis of count</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "   {\n    \"success\": true,\n    \"credit_given_to\": 5,\n    \"total_given_credit\": \"129823.00\",\n    \"total_used_credit\": \"229022.89\",\n    \"total_available_credit\": \"-$99,199.89\",\n    \"sales\": [\n        {\n      \"term\": \"cash\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"1<=30\",\n      \"percent\": \"6(46%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$40,000.00(100%)\",\n      \"complete_transaction\": \"$269,400.00(85%)\"\n      },\n        {\n      \"term\": \"61<=90\",\n      \"percent\": \"3(23%)\",\n      \"pending_transaction\": \"$46,200.00(100%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$21,890.00(6%)\"\n      },\n        {\n      \"term\": \"91\",\n      \"percent\": \"0(0%)\",\n      \"pending_transaction\": \"$0.00(0%)\",\n      \"overdue_transaction\": \"$0.00(0%)\",\n      \"complete_transaction\": \"$0.00(0%)\"\n      },\n        {\n      \"term\": \"total\",\n      \"percent\": \"13\",\n      \"pending_transaction\": \"$46,200.00\",\n      \"overdue_transaction\": \"$40,000.00\",\n      \"complete_transaction\": \"$315,040.00\"\n      }\n],\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
-    "url": "api/v1/customers/transactions",
-    "title": "",
-    "name": "customer_transactions",
-    "group": "Customers",
-    "description": "<p>permission the tiles and sorting the record on the basis of count</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse:",
-          "content": "  {\n    \"success\": true,\n    \"transactions\": {\n    \"total\": 11,\n    \"pending\": 2,\n    \"completed\": 8,\n    \"overdue\": 1\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/customers_controller.rb",
-    "groupTitle": "Customers"
   },
   {
     "version": "1.0.0",
@@ -1066,7 +1133,7 @@ define({ "api": [
         },
         {
           "title": "SuccessResponse3:",
-          "content": " {\n    \"success\": true,\n    \"scores\": [\n        {\n            \"name\": \"Late Payment\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Current Risk Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Network Diversity\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Seller Network Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Due Date Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        },\n        {\n            \"name\": \"Credit Used Score\",\n            \"user_score\": 0,\n            \"market_average\": 0,\n            \"user_score_vs_market_score\": 0\n        }\n    ],\n    \"response_code\": 200\n}",
+          "content": "{\n   \"success\": true,\n   \"seller_score\": 0,\n   \"scores\": [\n       {\n           \"name\": \"Late Payment\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Current Risk Score\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Network Diversity\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Seller Network Score\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Due Date Score\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": null\n       },\n       {\n           \"name\": \"Credit Used Score\",\n           \"user_score\": 0,\n           \"market_average\": 0,\n           \"user_score_vs_market_score\": 0,\n           \"rank\": 10\n       }\n   ],\n   \"response_code\": 200\n }",
           "type": "json"
         }
       ]
@@ -1220,7 +1287,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"parcels\": [\n        {\n            \"proposal_send\": true,\n            \"proposal_id\": 18,\n            \"is_mine\": false,\n            \"is_overdue\": false,\n            \"id\": \"10754\",\n            \"description\": \"+100 CT\",\n            \"lot_no\": null,\n            \"no_of_stones\": 100,\n            \"carats\": 100,\n            \"credit_period\": 50,\n            \"avg_price\": 110,\n            \"company\": \"SafeTrade\",\n            \"cost\": 100,\n            \"discount_per_month\": null,\n            \"sight\": null,\n            \"source\": \"SPECIAL\",\n            \"uid\": \"527566f4\",\n            \"percent\": 10,\n            \"comment\": \"\",\n            \"total_value\": 11000,\n            \"size_info\": [],\n            \"proposal_status\": \"rejected\",\n            \"my_offer\": null,\n            \"demand_id\": 10753\n        },\n        {\n            \"proposal_send\": false,\n            \"proposal_id\": null,\n            \"is_mine\": false,\n            \"is_overdue\": false,\n            \"id\": \"10757\",\n            \"description\": \"PINK COLOR\",\n            \"lot_no\": null,\n            \"no_of_stones\": 10,\n            \"carats\": 100,\n            \"credit_period\": 100,\n            \"avg_price\": 110,\n            \"company\": \"SafeTrade\",\n            \"cost\": 100,\n            \"discount_per_month\": \"0\",\n            \"sight\": \"\",\n            \"source\": \"SPECIAL\",\n            \"uid\": \"1dee48ab\",\n            \"percent\": 10,\n            \"comment\": \"\",\n            \"total_value\": 11000,\n            \"size_info\": [],\n            \"proposal_status\": \"no\",\n            \"my_offer\": null,\n            \"demand_id\": 10819\n        }\n    ],\n    \"response_code\": 200\n}",
+          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"parcels\": [\n        {\n            \"proposal_send\": false,\n            \"proposal_id\": null,\n            \"is_mine\": false,\n            \"is_overdue\": true,\n            \"id\": \"147\",\n            \"description\": \"Collection 5-10 ct\",\n            \"lot_no\": null,\n            \"no_of_stones\": 10,\n            \"carats\": 1,\n            \"credit_period\": 15,\n            \"avg_price\": 3000,\n            \"company\": \"Seller B\",\n            \"rank\": null,\n            \"cost\": null,\n            \"discount_per_month\": null,\n            \"sight\": \"12/2018\",\n            \"source\": \"DTC\",\n            \"uid\": \"7acec9df\",\n            \"percent\": 10,\n            \"comment\": \"\",\n            \"total_value\": 3000,\n            \"size_info\": [],\n            \"proposal_status\": \"no\",\n            \"my_offer\": null,\n            \"demand_id\": 61\n        },\n        {\n            \"proposal_send\": false,\n            \"proposal_id\": null,\n            \"is_mine\": true,\n            \"is_overdue\": true,\n            \"id\": \"155\",\n            \"description\": \"Collection 5-10 ct\",\n            \"lot_no\": null,\n            \"no_of_stones\": 10,\n            \"carats\": 1,\n            \"credit_period\": 3000,\n            \"avg_price\": 3000,\n            \"company\": \"Dummy Seller 1\",\n            \"rank\": null,\n            \"cost\": null,\n            \"discount_per_month\": \"0\",\n            \"sight\": \"12/18\",\n            \"source\": \"DTC\",\n            \"uid\": \"a98d1901\",\n            \"percent\": 0,\n            \"comment\": \"\",\n            \"total_value\": 3000,\n            \"size_info\": [],\n            \"proposal_status\": \"no\",\n            \"my_offer\": null,\n            \"demand_id\": 61\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]
@@ -1405,7 +1472,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"id\": 2,\n            \"proposal_id\": 2,\n            \"sender\": \"SafeTrade\",\n            \"receiver\": \"OnGraph\",\n            \"message\": \" </br>For more Details about proposal, <a href=\\\"/proposals/2\\\">Click Here</a>\",\n            \"message_type\": \"Proposal\",\n            \"subject\": \"Seller sent a new proposal.\",\n            \"created_at\": \"2018-10-25T12:44:44.000Z\",\n            \"updated_at\": \"2018-10-25T12:44:44.000Z\",\n            \"date\": \"2018-10-25T12:44:44.000Z\",\n            \"description\": \"+100 CT\",\n            \"status\": \"accepted\",\n            \"calculation\": -9.09\n        },\n        {\n            \"request_id\": 9,\n            \"sender\": \"Seller A\",\n            \"message\": \"You have a new live monitoring request from seller\"\n        }\n    ],\n    \"response_code\": 200\n}",
+          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"messages\": [\n        {\n            \"id\": 2,\n            \"proposal_id\": 2,\n            \"sender\": \"SafeTrade\",\n            \"receiver\": \"OnGraph\",\n            \"message\": \" </br>For more Details about proposal, <a href=\\\"/proposals/2\\\">Click Here</a>\",\n            \"message_type\": \"proposal\",\n            \"subject\": \"Seller sent a new proposal.\",\n            \"created_at\": \"2018-10-25T12:44:44.000Z\",\n            \"updated_at\": \"2018-10-25T12:44:44.000Z\",\n            \"date\": \"2018-10-25T12:44:44.000Z\",\n             \"description\":\"SafeTrade send you payment request\",\n            \"description\": \"+100 CT\",\n            \"status\": \"accepted\",\n            \"calculation\": -9.09,\n            \"payment_id\": 50\n        },\n          {\n            \"id\": 134,\n            \"request_id\": 4,\n            \"sender\": \"Buyer B\",\n            \"receiver\": \"Buyer A\",\n            \"message_type\": \"security_data\",\n            \"subject\": \"You have a new live monitoring request from seller\",\n            \"message\": \"A new seller sent you a request to show live monitoring data.\",\n            \"description\":\"Buyer B send you security data request\",\n            \"created_at\": \"2019-01-26T08:42:14.000Z\",\n            \"updated_at\": \"2019-01-26T08:42:14.000Z\",\n            \"date\": \"2019-01-26T08:42:14.000Z\",\n            \"permission_status\": \"pending\",\n            \"status\": \"new\"\n        }\n    ],\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1642,7 +1709,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"customer\": {\n        \"id\": 5,\n        \"email\": \"testing@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-10-30T07:26:20.000Z\",\n        \"updated_at\": \"2018-11-01T11:19:12.000Z\",\n        \"first_name\": \"abc\",\n        \"last_name\": \"def\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company\": \"Dummy co. 3\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+971 551114466\",\n        \"authentication_token\": \"hGazWDBk_Pkh8wn2jA\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"customer\": {\n        \"id\": 5,\n        \"email\": \"testing@gmail.com\",\n        \"designation\": \"Trader\",\n        \"created_at\": \"2018-10-30T07:26:20.000Z\",\n        \"updated_at\": \"2018-11-01T11:19:12.000Z\",\n        \"first_name\": \"abc\",\n        \"last_name\": \"def\",\n        \"city\": null,\n        \"address\": null,\n        \"postal_code\": null,\n        \"phone\": null,\n        \"status\": null,\n        \"company_id\": \"7\",\n        \"company\": \"Dummy co. 3\",\n        \"company_email\": null,\n        \"company_country\":  \"India\",\n        \"company_address\": null,\n        \"phone_2\": null,\n        \"mobile_no\": \"+971 551114466\",\n        \"authentication_token\": \"hGazWDBk_Pkh8wn2jA\",\n        \"chat_id\": \"-1\",\n        \"token\": null\n    },\n    \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1701,6 +1768,64 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/stone_details",
+    "title": "",
+    "name": "create",
+    "group": "StoneDetails",
+    "description": "<p>create stone details</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "    {\n       \"image\": <image_object>\n       \"file\" : <file_object>\n       \"stone_id\" :4546\n      \"tender_id\" :1216\n      \"description\" : description\n      \"weight\" : 22\n      \"color_mechine\" : color_mechine\n      \"color_eye\" : color_eye\n      \"fluorescence\" : fluorescence\n      \"tention\" : tention\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    {\n        \"success\": true,\n        \"message\": \"data successfully uploaded\",\n        \"response_code\": 200\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stone_details_controller.rb",
+    "groupTitle": "StoneDetails"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/stone_details",
+    "title": "",
+    "name": "index",
+    "group": "StoneDetails",
+    "description": "<p>show stone details</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\n    \"stone_id\" :3\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n   {\n      \"success\": true,\n       \"stone_details\": [\n           {\n                \"id\": 1,\n               \"stone_id\": 3,\n               \"tender_id\": 392,\n               \"customer_id\": 21,\n               \"description\": \"usman\",\n               \"weight\": null,\n               \"color_mechine\": null,\n               \"color_eye\": null,\n               \"fluorescence\": null,\n               \"tention\": null,\n               \"created_at\": \"2019-02-07T14:28:21.000Z\",\n               \"updated_at\": \"2019-02-07T14:28:21.000Z\",\n               \"image_file_name\": \"1\",\n               \"image_content_type\": \"image/png\",\n               \"image_file_size\": 98341,\n               \"image_updated_at\": \"2019-02-07T14:28:20.000Z\",\n               \"file_file_name\": \"testccases\",\n               \"file_content_type\": \"text/x-ruby\",\n               \"file_file_size\": 8589,\n               \"file_updated_at\": \"2019-02-07T14:28:21.000Z\"\n           }\n         ]\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stone_details_controller.rb",
+    "groupTitle": "StoneDetails"
+  },
+  {
+    "version": "1.0.0",
     "type": "get",
     "url": "/api/v1/bid_history?parcel_id=1",
     "title": "",
@@ -1712,6 +1837,35 @@ define({ "api": [
         {
           "title": "SuccessResponse:",
           "content": "{\n    \"errors\": \"Parcel not found\",\n    \"response_code\": 201\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/parcels/stone_update",
+    "title": "",
+    "name": "stone_update",
+    "group": "Stones",
+    "description": "<p>update stones data</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n\"image\": <image_object>\n\"file\" : <file_object>\n\"stone_id\" :4545\n\"tender_id\" :1215\n\"description\" : upadating_data\n\"weight\" : 24\n\"color_mechine\" : mechine\n\"color_eye\" : eye\n\"fluorescence\" : fluorescence\n\"tention\" : tention\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": " {\n    {\n    \"success\": true,\n    \"message\": \"data successfully updated\",\n    \"response_code\": 200\n}\n }",
           "type": "json"
         }
       ]
@@ -1740,7 +1894,46 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"message\": 'Image successfully uploaded.',\n    \"response_code\": 200\n}",
+          "content": "{\n   \"success\": true,\n   \"message\": \"Image successfully uploaded.\",\n   \"images\": [\n       \"https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/002/original/third_section_pic.png?1549279213\",\n       \"https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/003/original/third_section_pic.png?1549279452\",\n       \"https://s3.ap-south-1.amazonaws.com/idt-production/parcel_images/images/000/000/005/original/create_parcel.png?1549280387\"\n   ],\n   \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/stones_controller.rb",
+    "groupTitle": "Stones"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/v1/parcels/wish_list_record?stone_id=3",
+    "title": "",
+    "name": "wish_list_record",
+    "group": "Stones",
+    "description": "<p>create/update wish_list record of stone</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n\n\"stone_id\" :3\n\"wish_status\" :true\n\n\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n\n\"stone_id\" :3\n\"wish_status\" :true\n\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "\n{\n \"success\": true,\n \"message\": \"data successfully created\",\n \"response_code\": 200\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "\n{\n \"success\": true,\n \"message\": \"data successfully updated\",\n \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -1909,7 +2102,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-Example:",
-          "content": " {\n\"id\": 1 ,\n\"comments\": \"\",\n \"valuation\": \"\",\n \"parcel_rating\": 4\n}",
+          "content": "{\n\t\"comments\": \"this is comment\",\n\t\"valuation\": \"\",\n\t\"parcel_rating\": \"\",\n\t\"id\": 4546\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example:",
+          "content": "{\n\t\"comments\": \"\",\n\t\"valuation\": \"\",\n\t\"parcel_rating\": \"\",\n\t\"id\": 4545\n}",
           "type": "json"
         }
       ]
@@ -1918,7 +2116,12 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"errors\": [\n        \"Parcel not found\"\n    ],\n    \"response_code\": 201\n}",
+          "content": "{\n    \"stone_parcel\": {\n        \"id\": 4546,\n        \"comments\": \"this is comment\",\n        \"valuation\": \"\",\n        \"parcel_rating\": null,\n        \"lot_no\": 6,\n        \"tender_id\": 1216,\n        \"description\": \"-9+1 R.O.M\",\n        \"no_of_stones\": 1,\n        \"weight\": 327.46,\n        \"carat\": null,\n        \"stone_type\": \"Parcel\",\n        \"size\": null,\n        \"purity\": null,\n        \"color\": null,\n        \"polished\": null,\n        \"created_at\": \"2019-01-24T10:09:25.000Z\",\n        \"updated_at\": \"2019-01-24T10:09:25.000Z\",\n        \"deec_no\": 6,\n        \"system_price\": null,\n        \"lot_permission\": null,\n        \"reserved_price\": null,\n        \"yes_no_system_price\": null,\n        \"stone_winning_price\": null\n    },\n    \"response_code\": 200\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"errors\": \"please send the rating\",\n    \"response_code\": 201\n}",
           "type": "json"
         }
       ]
@@ -1938,7 +2141,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
+          "content": "{\n    \"success\": true,\n    \"pagination\": {\n        \"total_pages\": 2,\n        \"prev_page\": null,\n        \"next_page\": \"http://localhost:3000/api/v1/tender_parcel?page=2&tender_id=1115\",\n        \"current_page\": 1\n    },\n    \"tender_parcels\": [\n        {\n            \"id\": 1270,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 14,\n            \"size\": null,\n            \"weight\": 206.61,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 1,\n            \"lot_no\": 1,\n            \"description\": \"+10.8CT CLIVAGE\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"wish_list_status\": true,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        },\n        {\n            \"id\": 1271,\n            \"stone_type\": \"Parcel\",\n            \"no_of_stones\": 2,\n            \"size\": null,\n            \"weight\": 24.6,\n            \"purity\": null,\n            \"color\": null,\n            \"polished\": null,\n            \"deec_no\": 2,\n            \"lot_no\": 2,\n            \"description\": \"+10.8CT BROWN MIX\",\n            \"comments\": null,\n            \"valuation\": null,\n            \"wish_list_status\": false,\n            \"parcel_rating\": null,\n            \"images\": [],\n            \"winners_data\": [],\n            \"highlight_parcel\": false\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]
@@ -1973,12 +2176,12 @@ define({ "api": [
     "title": "",
     "name": "tenders",
     "group": "Tenders",
-    "description": "<p>With Authentication token and withou authentication token</p>",
+    "description": "<p>list of all tenders</p>",
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse1:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 8,\n       \"prev_page\": null,\n       \"next_page\": \"http://localhost:3000/api/v1/tenders?page=2\",\n       \"current_page\": 1\n   },\n   \"tenders\": [\n       {\n           \"id\": 1003,\n           \"name\": \"Cullinan Jan-Feb 2018\",\n           \"start_date\": \"2013-10-19T00:00:00.000Z\",\n           \"end_date\": \"2018-02-07T03:30:00.000Z\",\n           \"company_name\": \"Petra Diamonds\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"\",\n           \"notification\": false\n       },\n       {\n           \"id\": 383,\n           \"name\": \"Transhex 229A January 2016\",\n           \"start_date\": \"2016-01-25T05:05:00.000Z\",\n           \"end_date\": \"2016-02-08T07:05:00.000Z\",\n           \"company_name\": \"Trans-hex\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"South Africa\",\n           \"notification\": false\n       }\n   ],\n   \"response_code\": 200\n }",
           "type": "json"
         }
       ]
@@ -1997,8 +2200,8 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse4:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": null,\n   \"tenders\": [],\n   \"response_code\": 200\n}",
           "type": "json"
         }
       ]
@@ -2017,8 +2220,8 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse3:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 2,\n       \"prev_page\": null,\n       \"next_page\": \"http://localhost:3000/api/v1/tenders?page=2&month=1\",\n       \"current_page\": 1\n   },\n\n   \"tenders\": [\n       {\n           \"id\": 383,\n           \"name\": \"Transhex 229A January 2016\",\n           \"start_date\": \"2016-01-25T05:05:00.000Z\",\n           \"end_date\": \"2016-02-08T07:05:00.000Z\",\n           \"company_name\": \"Trans-hex\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"South Africa\",\n           \"notification\": false\n       },\n   ],\n   \"response_code\": 200\n }",
           "type": "json"
         }
       ]
@@ -2037,8 +2240,8 @@ define({ "api": [
     "success": {
       "examples": [
         {
-          "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"tenders\": [],\n    \"response_code\": 200\n}",
+          "title": "SuccessResponse2:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 1,\n       \"prev_page\": null,\n       \"next_page\": null,\n       \"current_page\": 1\n   },\n   \"tenders\": [\n       {\n           \"id\": 383,\n           \"name\": \"Transhex 229A January 2016\",\n           \"start_date\": \"2016-01-25T05:05:00.000Z\",\n           \"end_date\": \"2016-02-08T07:05:00.000Z\",\n           \"company_name\": \"Trans-hex\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"South Africa\",\n           \"notification\": false\n       }\n   ],\n   \"response_code\": 200\n }",
           "type": "json"
         }
       ]
@@ -2186,7 +2389,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"success\": true,\n    \"parcel\": {\n        \"id\": \"3\",\n        \"description\": null,\n        \"lot_no\": null,\n        \"no_of_stones\": 0,\n        \"carats\": 10,\n        \"credit_period\": 30,\n        \"avg_price\": 10,\n        \"company\": \"3D DIAMONDS Nv\",\n        \"cost\": 10,\n        \"discount_per_month\": \"0\",\n        \"sight\": null,\n        \"source\": \"POLISHED\",\n        \"uid\": \"f5f41260\",\n        \"percent\": 0,\n        \"comment\": \"This is Dummy Polished Parcel\",\n        \"total_value\": 240,\n        \"no_of_demands\": 0,\n        \"size_info\": [],\n        \"vital_sales_data\": {\n            \"demanded_clients\": []\n        }\n    },\n    \"response_code\": 200\n}",
+          "content": "{\n    \"success\": true,\n    \"parcel\": {\n        \"id\": \"57\",\n        \"description\": \"+9 SAWABLES LIGHT\",\n        \"lot_no\": null,\n        \"no_of_stones\": 1,\n        \"carats\": 1,\n        \"credit_period\": 15,\n        \"avg_price\": 1.01,\n        \"company\": \"Seller B\",\n        \"cost\": 1,\n        \"discount_per_month\": null,\n        \"sight\": \"12/2018\",\n        \"source\": \"RUSSIAN\",\n        \"uid\": \"8cb06e17\",\n        \"percent\": 1,\n        \"comment\": \"\",\n        \"total_value\": 1.01,\n        \"no_of_demands\": 4,\n        \"size_info\": [],\n        \"vital_sales_data\": {\n            \"demanded_clients\": [\n                {\n                    \"id\": 1,\n                    \"name\": \"Buyer A\",\n                    \"city\": null,\n                    \"country\": \"India\",\n                    \"created_at\": \"2018-12-02T08:04:34.000Z\",\n                    \"updated_at\": \"2018-12-26T13:54:45.000Z\",\n                    \"is_anonymous\": false,\n                    \"add_polished\": false,\n                    \"is_broker\": true,\n                    \"users\": [\n                        {\n                            \"user_id\": 22,\n                            \"first_name\": \"aqib\",\n                            \"last_name\": null\n                        },\n                        {\n                            \"user_id\": 11,\n                            \"first_name\": \"az\",\n                            \"last_name\": \"za\"\n                        },\n                        {\n                            \"user_id\": 29,\n                            \"first_name\": \"rizwan\",\n                            \"last_name\": \"ali\"\n                        },\n                        {\n                            \"user_id\": 30,\n                            \"first_name\": \"rizwan\",\n                            \"last_name\": \"ali\"\n                        },\n                        {\n                            \"user_id\": 10,\n                            \"first_name\": \"Buyer\",\n                            \"last_name\": \"B\"\n                        },\n                        {\n                            \"user_id\": 4,\n                            \"first_name\": \"he\",\n                            \"last_name\": \"she\"\n                        },\n                        {\n                            \"user_id\": 14,\n                            \"first_name\": \"Dummy\",\n                            \"last_name\": \"Buyer 1\"\n                        },\n                        {\n                            \"user_id\": 19,\n                            \"first_name\": \"niraj\",\n                            \"last_name\": \"patel\"\n                        },\n                        {\n                            \"user_id\": 20,\n                            \"first_name\": \"niraj s\",\n                            \"last_name\": \"patel\"\n                        }\n                    ],\n                    \"rank\": null\n                },\n                {\n                    \"id\": 2,\n                    \"name\": \"Buyer B\",\n                    \"city\": null,\n                    \"country\": \"India\",\n                    \"created_at\": \"2018-12-02T08:04:34.000Z\",\n                    \"updated_at\": \"2018-12-02T08:04:34.000Z\",\n                    \"is_anonymous\": false,\n                    \"add_polished\": false,\n                    \"is_broker\": false,\n                    \"users\": [\n                        {\n                            \"user_id\": 22,\n                            \"first_name\": \"aqib\",\n                            \"last_name\": null\n                        },\n                        {\n                            \"user_id\": 11,\n                            \"first_name\": \"az\",\n                            \"last_name\": \"za\"\n                        },\n                        {\n                            \"user_id\": 29,\n                            \"first_name\": \"rizwan\",\n                            \"last_name\": \"ali\"\n                        },\n                        {\n                            \"user_id\": 30,\n                            \"first_name\": \"rizwan\",\n                            \"last_name\": \"ali\"\n                        },\n                        {\n                            \"user_id\": 10,\n                            \"first_name\": \"Buyer\",\n                            \"last_name\": \"B\"\n                        },\n                        {\n                            \"user_id\": 4,\n                            \"first_name\": \"he\",\n                            \"last_name\": \"she\"\n                        },\n                        {\n                            \"user_id\": 14,\n                            \"first_name\": \"Dummy\",\n                            \"last_name\": \"Buyer 1\"\n                        },\n                        {\n                            \"user_id\": 19,\n                            \"first_name\": \"niraj\",\n                            \"last_name\": \"patel\"\n                        },\n                        {\n                            \"user_id\": 20,\n                            \"first_name\": \"niraj s\",\n                            \"last_name\": \"patel\"\n                        }\n                    ],\n                    \"rank\": 10\n                },\n                {\n                    \"id\": 3,\n                    \"name\": \"Buyer C\",\n                    \"city\": null,\n                    \"country\": \"India\",\n                    \"created_at\": \"2018-12-02T08:04:34.000Z\",\n                    \"updated_at\": \"2018-12-02T08:04:34.000Z\",\n                    \"is_anonymous\": false,\n                    \"add_polished\": false,\n                    \"is_broker\": false,\n                    \"users\": [\n                        {\n                            \"user_id\": 22,\n                            \"first_name\": \"aqib\",\n                            \"last_name\": null\n                        },\n                        {\n                            \"user_id\": 11,\n                            \"first_name\": \"az\",\n                            \"last_name\": \"za\"\n                        },\n                        {\n                            \"user_id\": 29,\n                            \"first_name\": \"rizwan\",\n                            \"last_name\": \"ali\"\n                        },\n                        {\n                            \"user_id\": 30,\n                            \"first_name\": \"rizwan\",\n                            \"last_name\": \"ali\"\n                        },\n                        {\n                            \"user_id\": 10,\n                            \"first_name\": \"Buyer\",\n                            \"last_name\": \"B\"\n                        },\n                        {\n                            \"user_id\": 4,\n                            \"first_name\": \"he\",\n                            \"last_name\": \"she\"\n                        },\n                        {\n                            \"user_id\": 14,\n                            \"first_name\": \"Dummy\",\n                            \"last_name\": \"Buyer 1\"\n                        },\n                        {\n                            \"user_id\": 19,\n                            \"first_name\": \"niraj\",\n                            \"last_name\": \"patel\"\n                        },\n                        {\n                            \"user_id\": 20,\n                            \"first_name\": \"niraj s\",\n                            \"last_name\": \"patel\"\n                        }\n                    ],\n                    \"rank\": null\n                },\n                {\n                    \"id\": 7,\n                    \"name\": \"Dummy Buyer 1\",\n                    \"city\": \"\",\n                    \"country\": \"India\",\n                    \"created_at\": \"2018-12-06T09:12:48.000Z\",\n                    \"updated_at\": \"2018-12-06T09:12:48.000Z\",\n                    \"is_anonymous\": false,\n                    \"add_polished\": false,\n                    \"is_broker\": false,\n                    \"users\": [\n                        {\n                            \"user_id\": 22,\n                            \"first_name\": \"aqib\",\n                            \"last_name\": null\n                        },\n                        {\n                            \"user_id\": 11,\n                            \"first_name\": \"az\",\n                            \"last_name\": \"za\"\n                        },\n                        {\n                            \"user_id\": 29,\n                            \"first_name\": \"rizwan\",\n                            \"last_name\": \"ali\"\n                        },\n                        {\n                            \"user_id\": 30,\n                            \"first_name\": \"rizwan\",\n                            \"last_name\": \"ali\"\n                        },\n                        {\n                            \"user_id\": 10,\n                            \"first_name\": \"Buyer\",\n                            \"last_name\": \"B\"\n                        },\n                        {\n                            \"user_id\": 4,\n                            \"first_name\": \"he\",\n                            \"last_name\": \"she\"\n                        },\n                        {\n                            \"user_id\": 14,\n                            \"first_name\": \"Dummy\",\n                            \"last_name\": \"Buyer 1\"\n                        },\n                        {\n                            \"user_id\": 19,\n                            \"first_name\": \"niraj\",\n                            \"last_name\": \"patel\"\n                        },\n                        {\n                            \"user_id\": 20,\n                            \"first_name\": \"niraj s\",\n                            \"last_name\": \"patel\"\n                        }\n                    ],\n                    \"rank\": 40\n                }\n            ]\n        }\n    },\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]
@@ -2245,12 +2448,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Request-Example1:",
-          "content": "{\n  \"id\": 17,\n  \"seller_confirm\": \"true\"\n}",
+          "content": "{\n  \"payment_id\": 17,\n  \"seller_confirm\": \"true\"\n}",
           "type": "json"
         },
         {
           "title": "Request-Example2:",
-          "content": "{\n  \"id\": 17,\n  \"seller_reject\": \"true\"\n}",
+          "content": "{\n  \"payment_id\": 17,\n  \"seller_reject\": \"true\"\n}",
           "type": "json"
         }
       ]
@@ -2259,12 +2462,12 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse1:",
-          "content": "{\n  \"success\": true,\n    \"message\": \"Transaction confirm successfully\"\n}",
+          "content": "{\n  \"success\": true,\n    \"message\": \"Payment confirm successfully\"\n}",
           "type": "json"
         },
         {
           "title": "SuccessResponse2:",
-          "content": "{\n  \"success\": true,\n  \"message\": \"Transaction rejected successfully\"\n}",
+          "content": "{\n  \"success\": true,\n  \"message\": \"Payment rejected successfully\"\n}",
           "type": "json"
         }
       ]

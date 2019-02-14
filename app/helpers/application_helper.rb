@@ -100,7 +100,7 @@ module ApplicationHelper
     elsif condition =='less_30'
       transactions = Transaction.where('credit >= ? and credit <= ? and buyer_id =?',1, 30, customer.id)
       count = transactions.count
-      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.current, false, true, 1, 0).sum(:total_amount)
+      pending = Transaction.where("buyer_id = ? AND due_date >= ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.current, false, true, 1, 30).sum(:total_amount)
       overdue = Transaction.includes(:trading_parcel).where("buyer_id = ? AND due_date < ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, Date.current, false, true, 1, 30).sum(:total_amount)
       complete = Transaction.includes(:trading_parcel).where("buyer_id = ? AND paid = ? AND buyer_confirmed = ? AND credit >= ? and credit <= ?", customer.id, true, true, 1, 30).sum(:total_amount)
     elsif condition =='60'
@@ -632,6 +632,9 @@ module ApplicationHelper
 
     BuyerScore.calculate_scores_second_step
     SellerScore.calculate_scores_second_step
+
+    UpdatePercentileRankJob.perform_now
+    UpdateSellerPercentileRankJob.perform_now
   end
 
   def self.safe_divide_float(numerator, denominator, precision = 2)
@@ -688,7 +691,7 @@ module ApplicationHelper
   end
 
   def check_for_group_overdue_limit(buyer, seller)
-    @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").where(seller_id: seller.id).last
+    @group = CompaniesGroup.where("company_id like '%#{buyer.id}%'").find_by(seller_id: seller.id)
     if @group.present?
       days_limit = @group.group_overdue_limit
       date = Date.current - days_limit.days

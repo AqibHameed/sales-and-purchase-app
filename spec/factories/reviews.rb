@@ -1,8 +1,10 @@
 FactoryBot.define do
   factory :review do
-    know { false }
-    traded { false }
-    recommend { false }
+    know { true }
+    trade { false }
+    recommend { true }
     experience { false }
+    company
+    customer
   end
 end

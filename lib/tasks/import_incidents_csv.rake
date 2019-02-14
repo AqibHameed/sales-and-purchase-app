@@ -38,3 +38,13 @@ namespace :import_special_csv do
     end
   end
 end
+
+namespace :import_catoca_csv do
+  task :upload => :environment do
+    catoca = DemandSupplier.find_by(name: "Catoca")
+    csv = CSV.foreach(Rails.root.join('lib/tasks/catoca.csv')).map { |row| row[0] }
+    csv.each do |row|
+      DemandList.find_or_create_by(demand_supplier_id:  catoca.id, description: row)
+    end
+  end
+end

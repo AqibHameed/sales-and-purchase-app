@@ -2,8 +2,7 @@ module LimitsHelper
 
   def create_or_update_limits(transaction, parcel)
     #companies_group = CompaniesGroup.find_by(company_id: [transaction.buyer_id], seller_id: current_company.id)
-    total_price = parcel.total_value
-
+      total_price = Transaction.where(seller_id: transaction.seller_id, buyer_id: transaction.buyer_id, paid: false, transaction_type: 'manual').collect(&:remaining_amount).sum.to_f
     # if companies_group.present?
     #
     #   available_market_limit = get_available_market_limit_companies_group(companies_group.company_id, companies_group).to_f
@@ -20,7 +19,7 @@ module LimitsHelper
     #
     # else
 
-      credit_limit = CreditLimit.where(buyer_id: transaction.buyer_id, seller_id: current_company.id).first
+      credit_limit = CreditLimit.find_by(buyer_id: transaction.buyer_id, seller_id: current_company.id)
 
       if credit_limit.nil?
         credit_limit = CreditLimit.create(buyer_id: transaction.buyer_id, seller_id: current_company.id, credit_limit: total_price, market_limit: total_price)

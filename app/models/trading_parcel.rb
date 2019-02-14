@@ -63,7 +63,7 @@ class TradingParcel < ApplicationRecord
   def generate_and_add_uid
     uid = SecureRandom.hex(4)
     self.uid = uid
-    diamond_type = ((source == DemandSupplier::DTC || source == DemandSupplier::RUSSIAN) ? 'Sight' : ((source == DemandSupplier::SPECIAL || source == DemandSupplier::OUTSIDE) ? 'Rough' : ((source == DemandSupplier::POLISHED) ? 'Polished' : 'N/A')))
+    diamond_type = ((source == DemandSupplier::DTC || source == DemandSupplier::RUSSIAN || DemandSupplier::CATOCA) ? 'Sight' : ((source == DemandSupplier::SPECIAL || source == DemandSupplier::OUTSIDE) ? 'Rough' : ((source == DemandSupplier::POLISHED) ? 'Polished' : 'N/A')))
     self.diamond_type = diamond_type
     self.save(validate: false)
   end

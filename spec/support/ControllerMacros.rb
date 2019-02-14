@@ -15,8 +15,8 @@ module ControllerMacros
     login_user @customer
   end
 
-  def create_permission_request(sender_id, receiver_id, secure_center)
-    create(:premission_request, sender_id: sender_id, receiver_id: receiver_id, secure_center: secure_center)
+  def create_permission_request(permission)
+    create(:premission_request, permission)
   end
 
   def create_buyer
@@ -66,6 +66,12 @@ module ControllerMacros
     roles.each do |role|
       create(:role, name: role)
     end
+  end
+
+
+  def create_review(buyer_id, company_id)
+    create(:review, customer_id: buyer_id, company_id: company_id)
+    Rank.update_rank
   end
 
   def create_sources(source, seller, buyer)

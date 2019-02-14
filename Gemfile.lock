@@ -152,8 +152,6 @@ GEM
     commander (4.4.3)
       highline (~> 1.7.2)
     concurrent-ruby (1.1.4)
-    countdown (0.1.0)
-      json
     countries (2.1.4)
       i18n_data (~> 0.8.0)
       money (~> 6.9)
@@ -394,6 +392,7 @@ GEM
     rack (2.0.6)
     rack-contrib (2.1.0)
       rack (~> 2.0)
+    rack-cors (1.0.2)
     rack-pjax (1.0.0)
       nokogiri (~> 1.5)
       rack (>= 1.1)
@@ -632,7 +631,6 @@ DEPENDENCIES
   chromedriver-helper
   cloudinary
   coffee-rails
-  countdown
   country_select
   database_cleaner
   delayed_job_active_record
@@ -671,6 +669,7 @@ DEPENDENCIES
   pry-byebug
   puma (= 3.8.1)
   puma_worker_killer
+  rack-cors
   rails (= 5.1.0)
   rails-controller-testing
   rails_admin

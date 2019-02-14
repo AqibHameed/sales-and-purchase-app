@@ -13,9 +13,14 @@ class Transaction < ApplicationRecord
   validate :validate_invoice_date
   after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
-  after_save :secure_center
+  after_save :secure_center, :update_score
+
 
   attr_accessor :weight
+
+  def update_score
+    UpdateScoreJob.perform_now
+  end
 
   def self.direct_sell_confirm
     puts "********* Confirm Transactions created before 7 days *****************"
@@ -24,9 +29,9 @@ class Transaction < ApplicationRecord
   end
 
   def self.sell_confirm_auto
-    puts "********* Confirm Transactions created before 7 days *****************"
-    paid_transactions = Transaction.where('buyer_confirmed = ? AND created_at < ? AND transaction_type!= ?', false, 7.days.ago, nil)
-    paid_transactions.update(buyer_confirmed: true) unless paid_transactions.empty?
+    puts "********* Confirm Pyament created before 7 days *****************"
+    partial_payments = PartialPayment.where('payment_status IN (?) AND created_at < ?', [0, 2], 7.days.ago)
+    partial_payments.update(payment_status: 1) unless partial_payments.empty?
   end
 
 

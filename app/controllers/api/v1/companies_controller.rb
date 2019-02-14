@@ -252,7 +252,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
   @apiVersion 1.0.0
-  @api {get} /api/v1/companies_review
+  @api {post} /api/v1/companies_review
   @apiSampleRequest off
   @apiName companies_review
   @apiGroup Companies
@@ -283,7 +283,7 @@ class Api::V1::CompaniesController < ApplicationController
       review = Review.find_by(company_id: params[:company_id], customer_id: current_customer.id)
       if review.present?
         review.update_attributes(review_params)
-        render :json => {review: review(review), response_code: 200}
+        render :json => {review: review(review), response_code: 201}
       else
         review_company = Review.new(review_params)
         if review_company.save
@@ -293,10 +293,52 @@ class Api::V1::CompaniesController < ApplicationController
         end
       end
     else
-      render json: {errors: "Not authenticated", response_code: 201}
+      render json: {errors: "Not authenticated", response_code: 401}
     end
   end
 
+=begin
+  @apiVersion 1.0.0
+  @api {get} /api/v1/count_companies_review
+  @apiSampleRequest off
+  @apiName count_companies_review
+  @apiGroup Companies
+  @apiDescription count the companies review questions
+  @apiParamExample {json} Request-Example:
+  {
+    "success": true,
+    "companies_rated_count": {
+        "know": {
+            "yes": 1,
+            "no": 0
+        },
+        "trade": {
+            "yes": 0,
+            "no": 1
+        },
+        "recommend": {
+            "yes": 0,
+            "no": 0
+        },
+        "experience": {
+            "yes": 0,
+            "no": 0
+        },
+        "total_number_of_comapnies_rated": 1,
+        "rank": 10
+    }
+  }
+}
+=end
+
+  def count_companies_review
+    if current_company
+      rank = Rank.find_by(company_id: current_company.id)
+      render json: {success: true, companies_rated_count: companies_rated_count(rank)}
+    else
+      render json: {errors: "Not authenticated", response_code: 201}
+    end
+  end
 
 
 =begin
@@ -375,6 +417,7 @@ class Api::V1::CompaniesController < ApplicationController
       @all_transactions = Kaminari.paginate_array(transactions.flatten).page(params[:page]).per(params[:count])
       render json: { success: true, pagination: set_pagination(:all_transactions), transactions: @all_transactions }
     else
+      render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
     end
   end
 
@@ -685,7 +728,6 @@ class Api::V1::CompaniesController < ApplicationController
             "greater_fourty_five": 0
         },
         "buyer_score": 0,
-        "seller_score": 0,
         "paid_date": null
     }
 }
@@ -758,7 +800,7 @@ class Api::V1::CompaniesController < ApplicationController
 
 =begin
   @apiVersion 1.0.0
-  @api {get} /api/v1/companies/remove_permission
+  @api {put} /api/v1/companies/remove_permission
   @apiSampleRequest off
   @apiName remove_permission
   @apiGroup Companies
@@ -782,9 +824,17 @@ class Api::V1::CompaniesController < ApplicationController
 
   def remove_permission
     if current_company
-        premission_request = PremissionRequest.where(sender_id: params[:company_id], receiver_id: current_company.id, status: 1)
+        premission_request = PremissionRequest.find_by(sender_id: params[:company_id], receiver_id: current_company.id, status: 1)
         if premission_request.present?
           premission_request.update_attributes(permission_params)
+          unless premission_request.live_monitor ||
+              premission_request.secure_center ||
+              premission_request.buyer_score ||
+              premission_request.seller_score ||
+              premission_request.customer_info
+
+            premission_request.update_attributes(status: 'rejected')
+          end
           render json: {success: true,
                         message: "Request is removed successfully.",
                         response_code: 200}
@@ -795,7 +845,50 @@ class Api::V1::CompaniesController < ApplicationController
       render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
     end
   end
-  
+
+
+=begin
+    @apiVersion 1.0.0
+    @api {get} /api/v1/companies/show_review
+    @apiSampleRequest off
+    @apiName show_review
+    @apiGroup Companies
+    @apiDescription Show reviews  of the company.
+        @apiParamExample {json} Request-Example:
+        {
+            "company_id": 4,
+        }
+    @apiSuccessExample {json} SuccessResponse:
+      {
+    "review": {
+        "id": 7,
+        "know": true,
+        "trade": false,
+        "recommend": true,
+        "experience": false
+    },
+    "response_code": 200
+
+=end
+
+
+
+
+
+  def show_review
+    if current_customer
+      companies_review = Review.find_by(company_id: params[:company_id], customer_id: current_customer.id)
+      if companies_review.present?
+        render :json => {review: review(companies_review), response_code: 200}
+      else
+        render json: {errors: "Record not Found", response_code: 404}
+      end
+    else
+      render json: {errors: "Not authenticated", response_code: 201}
+    end
+  end
+
+
   protected
   def current_company
     @company ||= current_customer.company unless current_customer.nil?
@@ -878,6 +971,31 @@ class Api::V1::CompaniesController < ApplicationController
         experience: review_company.experience
     }
   end
+
+  def companies_rated_count(rank)
+    {
+        know:{
+            yes: rank.present? ? rank.yes_know : 0,
+            no: rank.present? ? rank.not_know : 0
+        },
+        trade:{
+            yes: rank.present? ? rank.yes_trade : 0,
+            no: rank.present? ? rank.not_trade : 0
+        },
+        recommend:{
+            yes: rank.present? ? rank.yes_recommend : 0,
+            no: rank.present? ? rank.not_recommend : 0
+        },
+        experience:{
+            yes: rank.present? ? rank.yes_experience : 0,
+            no: rank.present? ? rank.not_experience : 0
+        },
+        total_number_of_comapnies_rated: rank.present? ? rank.total_number_of_comapnies_rated : 0,
+        rank: rank.present? ? rank.rank : nil
+    }
+  end
+
+
 
 
 

@@ -1,11 +1,12 @@
 module Api
   module V1
     class CustomersController < ApiController
-      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request, :buyer_scores, :seller_scores]
+      skip_before_action :verify_authenticity_token, only: [:update_profile, :update_password, :approve_reject_customer_request, :buyer_scores, :seller_scores, :approve_remove_request]
       before_action :current_customer
       before_action :info_permission, only: [:info]
       before_action :buyer_score_permission, only: [:buyer_scores]
       before_action :seller_scores_permission, only: [:seller_scores]
+      before_action :can_approve_access, only: [:approve_remove, :approve_access]
       MOBILE_TILES_SHOW = {
           0 => 'Smart Search',
           1 => 'Sell',
@@ -106,52 +107,60 @@ module Api
  @apiSuccessExample {json} SuccessResponse3:
  {
     "success": true,
+    "buyer_score": 0.39,
     "scores": [
         {
             "name": "Late Payment",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Current Risk Score",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Buyer Network Score",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Due Date Score",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Credit Used Score",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Number Of Suppliers Giving You Credit",
-            "user_score": 0,
-            "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score": 1,
+            "market_average": 2.57,
+            "user_score_vs_market_score": 0.39,
+            "rank": 10
         }
     ],
     "response_code": 200
-}
+  }
 =end
 
       def buyer_scores
@@ -159,8 +168,14 @@ module Api
         if current_company
           buyer_score = current_company.get_buyer_score
           market_buyer_score = MarketBuyerScore.get_scores
+          if current_customer.has_role?(Role::BROKER) || current_customer.has_role?(Role::TRADER)
+            scores = nil
+          elsif current_customer.has_role?(Role::BUYER)
+            scores = get_scores(buyer_score, market_buyer_score)
+          end
           render json: {success: true,
-                        scores: get_scores(buyer_score, market_buyer_score),
+                        buyer_score: buyer_score.total,
+                        scores: scores,
                         response_code: 200}
         else
           render json: { errors: "Not authenticated", response_code: 201 }
@@ -198,46 +213,53 @@ module Api
  @apiSuccessExample {json} SuccessResponse3:
  {
     "success": true,
+    "seller_score": 0,
     "scores": [
         {
             "name": "Late Payment",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Current Risk Score",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Network Diversity",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Seller Network Score",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Due Date Score",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": null
         },
         {
             "name": "Credit Used Score",
             "user_score": 0,
             "market_average": 0,
-            "user_score_vs_market_score": 0
+            "user_score_vs_market_score": 0,
+            "rank": 10
         }
     ],
     "response_code": 200
-}
+  }
 =end
 
       def seller_scores
@@ -245,13 +267,14 @@ module Api
         if current_company
           seller_score = current_company.get_seller_score
           market_seller_score = MarketSellerScore.get_scores
-          render json: {success: true,
-                        scores: get_seller_scores(seller_score, market_seller_score),
+          if current_customer.has_role?(Role::BROKER) || current_customer.has_role?(Role::TRADER)
+            scores = nil
+          elsif current_customer.has_role?(Role::BUYER)
+            scores = get_seller_scores(seller_score, market_seller_score)
+          end
+          render json: {success: true, seller_score: seller_score.total,
+                        scores: scores,
                         response_code: 200}
-        else
-          render json: { errors: "Not authenticated", response_code: 201 }
-        end
-        if current_company
         else
           render json: { errors: "Not authenticated", response_code: 201 }
         end
@@ -382,184 +405,6 @@ module Api
         end
       end
 
-=begin
- @apiVersion 1.0.0
- @api {get} api/v1/customers/transactions
- @apiSampleRequest off
- @apiName customer_transactions
- @apiGroup Customers
- @apiDescription permission the tiles and sorting the record on the basis of count
- @apiSuccessExample {json} SuccessResponse:
-  {
-    "success": true,
-    "transactions": {
-    "total": 11,
-    "pending": 2,
-    "completed": 8,
-    "overdue": 1
-  }
-}
-=end
-
-      def transactions
-        if current_customer
-          total = Transaction.where('(buyer_id = ? or seller_id = ?) and buyer_confirmed = ?', current_company.id, current_company.id, true).count
-          pending = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date >= ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
-          overdue = Transaction.where("(buyer_id = ? or seller_id = ?) AND due_date < ? AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, Date.current, false, true).count
-          completed = Transaction.where("(buyer_id = ? or seller_id = ?) AND paid = ? AND buyer_confirmed = ?", current_company.id, current_company.id, true, true).count
-          render json: {success: true, transactions: {total: total, pending: pending,
-                                                      completed: completed, overdue: overdue}}
-        else
-          render json: {errors: "Not authenticated", response_code: 201}
-        end
-      end
-
-=begin
- @apiVersion 1.0.0
- @api {get} api/v1/customers/sales
- @apiSampleRequest off
- @apiName customer_sale
- @apiGroup Customers
- @apiDescription permission the tiles and sorting the record on the basis of count
- @apiSuccessExample {json} SuccessResponse:
-   {
-    "success": true,
-    "credit_given_to": 5,
-    "total_given_credit": "129823.00",
-    "total_used_credit": "229022.89",
-    "total_available_credit": "-$99,199.89",
-    "sales": [
-        {
-      "term": "cash",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "1<=30",
-      "percent": "6(46%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$40,000.00(100%)",
-      "complete_transaction": "$269,400.00(85%)"
-      },
-        {
-      "term": "61<=90",
-      "percent": "3(23%)",
-      "pending_transaction": "$46,200.00(100%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$21,890.00(6%)"
-      },
-        {
-      "term": "91",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "total",
-      "percent": "13",
-      "pending_transaction": "$46,200.00",
-      "overdue_transaction": "$40,000.00",
-      "complete_transaction": "$315,040.00"
-      }
-],
-}
-=end
-
-      def sales
-        if current_customer
-          @credit_given = CreditLimit.where('seller_id =?', current_company.id)
-          credit_given_to = @credit_given.count
-          total_credit_given = overall_credit_given(current_company)
-          total_used_credit = overall_credit_spent_by_customer(current_company)
-          total_available_credit = credit_available(current_company)
-          @total_pending_sent = Transaction.pending_sent_transaction(current_company.id).sum(:total_amount)
-          @total_overdue_sent = Transaction.overdue_sent_transaction(current_company.id).sum(:total_amount)
-          @total_complete_sent = Transaction.complete_sent_transaction(current_company.id).sum(:total_amount)
-          @credit_given_transaction = Transaction.where('seller_id =?', current_company.id)
-          render json: {success: true, credit_given_to: credit_given_to, total_given_credit: total_credit_given,
-                        total_used_credit: total_used_credit, total_available_credit: total_available_credit, sales: calculate_sales}
-        else
-          render json: {errors: "Not authenticated", response_code: 201}
-        end
-
-      end
-
-
-=begin
- @apiVersion 1.0.0
- @api {get} /api/v1/customers/purchases
- @apiSampleRequest off
- @apiName customer_purchases
- @apiGroup Customers
- @apiDescription to get customer purchasings info
- @apiSuccessExample {json} SuccessResponse:
-{
-    "success": true,
-    "credit_recieved_count": 1,
-    "total_credit_received": "$0.00",
-    "purchases": [
-        {
-      "term": "cash",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "1<=30",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "31<=60",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "61<=90",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "61<=90",
-      "percent": "0(0%)",
-      "pending_transaction": "$0.00(0%)",
-      "overdue_transaction": "$0.00(0%)",
-      "complete_transaction": "$0.00(0%)"
-      },
-        {
-      "term": "total",
-      "percent": "0",
-      "pending_transaction": "$0.00",
-      "overdue_transaction": "$0.00",
-      "complete_transaction": "$0.00"
-      }
-    ],
-    "response_code": 200
-}
-=end
-      def purchases
-        if current_customer
-          @credit_recieved_transaction = Transaction.where('buyer_id =?', current_company.id)
-          @total_pending_received = Transaction.pending_received_transaction(current_company.id).sum(:total_amount)
-          @total_overdue_received = Transaction.overdue_received_transaction(current_company.id).sum(:total_amount)
-          @total_complete_received = Transaction.complete_received_transaction(current_company.id).sum(:total_amount)
-          @credit_recieved = CreditLimit.where('buyer_id =?', current_company.id)
-
-          render json: {success: true, credit_recieved_count: @credit_recieved.count, total_credit_received: number_to_currency(overall_credit_received(current_company)), purchases: cutomer_puchase, response_code: 200}
-        else
-          render json: {errors: "Not authenticated", response_code: 201}
-        end
-      end
 
 =begin
   @apiVersion 1.0.0
@@ -789,7 +634,7 @@ module Api
           else
             feedback_rating = Feedback.find_by(params_attribute => feedback_on_model.id, customer_id: current_customer.id)
             if feedback_rating.nil?
-              feedback_rating = Feedback.new(comment: params[:comments], star: params[:rating], params_attribute => feedback_on_model.id, customer_id: current_customer.id)
+              feedback_rating = Feedback.new(comment: params[:comment], star: params[:rating], params_attribute => feedback_on_model.id, customer_id: current_customer.id)
             else
               feedback_rating.comment = params[:comment] unless params[:comment].blank?
               feedback_rating.star = params[:rating] unless params[:rating].blank?
@@ -804,6 +649,135 @@ module Api
           render json: {errors: "Not authenticated", response_code: 201}, status: :unauthorized
         end
       end
+=begin
+ @apiVersion 1.0.0
+ @api {get} /api/v1/approve_access
+ @apiSampleRequest off
+ @apiName approve_access
+ @apiGroup Customers
+ @apiDescription Show customer_list to approve or access
+@apiParamExample {json} Request-Example:
+{
+
+}
+ @apiSuccessExample {json} SuccessResponse:
+{
+    "success": true,
+    "customers": [
+        {
+            "id": 21,
+            "email": "umair.raza101@gmail.com",
+            "created_at": "2018-12-07T15:00:19.000Z",
+            "updated_at": "2019-02-14T09:31:46.000Z",
+            "first_name": "Umair",
+            "last_name": "Raza",
+            "city": "",
+            "address": "",
+            "postal_code": null,
+            "phone": "",
+            "status": null,
+            "company_id": 8,
+            "company_address": "",
+            "phone_2": "",
+            "mobile_no": "+1",
+            "authentication_token": "XwHsMFNtQAy6aFpttQek",
+            "verified": false,
+            "certificate_file_name": "logs.png",
+            "certificate_content_type": "image/png",
+            "certificate_file_size": 80312,
+            "certificate_updated_at": "2018-12-21T12:52:41.000Z",
+            "invitation_token": null,
+            "invitation_created_at": null,
+            "invitation_sent_at": null,
+            "invitation_accepted_at": null,
+            "invitation_limit": null,
+            "invited_by_type": null,
+            "invited_by_id": null,
+            "invitations_count": 0,
+            "chat_id": "-1",
+            "firebase_uid": null,
+            "parent_id": null,
+            "is_requested": true,
+            "deleted_at": null
+        }
+    ],
+    "response_code": 200
+}
+=end
+
+      def approve_access
+        @customers = current_company.customers.where.not(id: current_customer.id)
+         render json: {success: true, customers: @customers, response_code: 200}
+      end
+
+=begin
+ @apiVersion 1.0.0
+ @api {put} /api/v1/approve_remove_request
+ @apiSampleRequest off
+ @apiName approve_remove_request
+ @apiGroup Customers
+ @apiDescription Approve or Remove customer request from Admin
+@apiParamExample {json} Request-Example1:
+{
+"request": "remove"
+}
+ @apiSuccessExample {json} SuccessResponse1:
+{
+
+    "success": true,
+    "message": "Admin Reject your request!!",
+    "response_code": 200
+
+}
+@apiParamExample {json} Request-Example2:
+{
+"request": "remove"
+}
+ @apiSuccessExample {json} SuccessResponse2:
+{
+
+    "success": true,
+    "message": "Admin Accept your request!!",
+    "response_code": 200
+
+}
+
+@apiParamExample {json} Request-Example3:
+{
+"request": "denied'
+}
+ @apiSuccessExample {json} SuccessResponse3:
+{
+    "message": "Wrong Request"
+}
+
+=end
+
+      def approve_remove_request
+
+        customer = Customer.find(params[:id])
+        if params[:request] == 'remove'
+          if customer.update_attributes(is_requested: true)
+            CustomerMailer.approve_access(customer).deliver
+            render json: {success: true, message: 'Admin Reject your request!! ', response_code: 200}
+          else
+            render json: {message: customer.errors.full_messages}
+          end
+
+        elsif params[:request] == "approve"
+          if customer.update_attributes(is_requested: false)
+            CustomerMailer.remove_access(customer).deliver
+            render json: {success: true, message: 'Admin Accept your request!!', response_code: 200}
+          else
+            render json: {message: customer.errors.full_messages}
+          end
+
+        else
+          render json: {message: 'Wrong Request'}
+        end
+      end
+
+
 
       private
 
@@ -813,43 +787,50 @@ module Api
                 name: 'Late Payment',
                 user_score: score.late_payment,
                 market_average: market_score.late_payment,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment),
+                rank: score.late_payment_rank
             },
             {
                 name: 'Current Risk Score',
                 user_score: score.current_risk,
                 market_average: market_score.current_risk,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk),
+                rank: score.current_risk_rank
             },
             {
                 name: 'Network Diversity',
                 user_score: score.network_diversity,
                 market_average: market_score.network_diversity,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity),
+                rank: score.network_diversity_rank
             },
             {
                 name: 'Buyer Network Score',
                 user_score: score.buyer_network,
                 market_average: market_score.buyer_network,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.buyer_network, market_score.buyer_network)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.buyer_network, market_score.buyer_network),
+                rank: score.buyer_network_rank
             },
             {
                 name: 'Due Date Score',
                 user_score: score.due_date,
                 market_average: market_score.due_date,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date),
+                rank: score.due_date_rank
             },
             {
                 name: 'Credit Used Score',
                 user_score: score.credit_used,
                 market_average: market_score.credit_used,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used),
+                rank: score.credit_used_rank
             },
             {
                 name: 'Number Of Suppliers Giving You Credit',
                 user_score:  score.count_of_credit_given,
                 market_average: market_score.count_of_credit_given,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given),
+                rank: score.count_of_credit_given_rank
             }
         ]
       end
@@ -860,37 +841,43 @@ module Api
                 name: 'Late Payment',
                 user_score: score.late_payment,
                 market_average: market_score.late_payment,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.late_payment, market_score.late_payment),
+                rank: score.seller_late_payment_rank
             },
             {
                 name: 'Current Risk Score',
                 user_score: score.current_risk,
                 market_average: market_score.current_risk,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.current_risk, market_score.current_risk),
+                rank: score.seller_current_risk_rank
             },
             {
                 name: 'Network Diversity',
                 user_score: score.network_diversity,
                 market_average: market_score.network_diversity,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.network_diversity, market_score.network_diversity),
+                rank: score.seller_network_diversity_rank
             },
             {
                 name: 'Seller Network Score',
                 user_score: score.seller_network,
                 market_average: market_score.seller_network,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.seller_network, market_score.seller_network)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.seller_network, market_score.seller_network),
+                rank: score.seller_network_rank
             },
             {
                 name: 'Due Date Score',
                 user_score: score.due_date,
                 market_average: market_score.due_date,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.due_date, market_score.due_date),
+                rank: score.seller_due_date_rank
             },
             {
                 name: 'Credit Used Score',
                 user_score: score.credit_used,
                 market_average: market_score.credit_used,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used)
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.credit_used, market_score.credit_used),
+                rank: score.seller_credit_used_rank
             }
         ]
       end
@@ -899,7 +886,7 @@ module Api
       end
 
       def customer_params
-        params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate)
+        params.require(:customer).permit(:first_name, :last_name, :email, :mobile_no, :phone_2, :phone, :address, :city, :company, :company_address, :certificate,:approve)
       end
 
       def password_params
@@ -932,6 +919,14 @@ module Api
             params_attribute => model_id
         }
       end
+
+      def can_approve_access
+        first_customer = current_company.get_owner
+        unless first_customer == current_customer
+        render json: {errors: "You are not authorized"}
+        end
+      end
+
     end
   end
 end
