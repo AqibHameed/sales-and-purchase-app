@@ -656,7 +656,7 @@ module Api
  @apiName approve_access
  @apiGroup Customers
  @apiDescription Show customer_list to approve or access
-  
+
  @apiSuccessExample {json} SuccessResponse:
 {
     "success": true,
@@ -737,15 +737,6 @@ module Api
     "message": "Admin Accept your request!!",
     "response_code": 200
 
-}
-
-@apiParamExample {json} Request-Example3:
-{
-"request": "denied"
-}
- @apiSuccessExample {json} SuccessResponse3:
-{
-    "message": "Wrong Request"
 }
 
 =end
