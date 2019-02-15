@@ -553,8 +553,21 @@ module Api
           @data.merge!(negotiated: negotiated)
           @data.merge!(total_negotiations: proposal.negotiations.count)
           @data.merge!(negotiations: negotiations)
-        else
-          @data.merge!(negotiated: nil)
+        elsif proposal.negotiations.present? && proposal.status == 'new_proposal'
+          negotiations = []
+          proposal.negotiations.each do |negotiation|
+            negotiations << {
+                id: negotiation.id,
+                offered_percent: negotiation.percent.to_f,
+                offered_credit: negotiation.credit,
+                offered_price: negotiation.price.to_f,
+                offered_total_value: negotiation.total_value.to_f,
+                offered_comment: negotiation.comment,
+                offered_from: negotiation.from == 'seller' ? proposal.seller.name + '(seller)' : proposal.buyer.name + '(buyer)',
+                is_mine: last_negotiation.whose == current_company
+            }
+          end
+          @data.merge!(negotiated: negotiations)
         end
       end
 
@@ -592,8 +605,8 @@ module Api
         proposal.action_for = parcel.company_id
         proposal.buyer_comment = params[:comment]
         if proposal.save
-          proposal.negotiations.create(price: parcel.price, percent: parcel.percent, credit: parcel.credit_period, total_value: parcel.total_value, description: parcel.description, source: parcel.source)
           proposal.negotiations.create(price: proposal.price, percent: proposal.percent, credit: proposal.credit, total_value: proposal.total_value, comment: proposal.buyer_comment, from: 'buyer')
+          proposal.negotiations.create(price: parcel.price, percent: parcel.percent, credit: parcel.credit_period, total_value: parcel.total_value, comment: parcel.comment, description: parcel.description, source: parcel.source, from: 'seller')
           CustomerMailer.send_proposal(proposal, current_customer, current_company.name).deliver rescue logger.info "Error sending email"
           Message.create_new(proposal)
           Message.create_negotiate(proposal, current_company)
