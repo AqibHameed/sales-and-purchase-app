@@ -11,7 +11,7 @@ class Transaction < ApplicationRecord
   has_many :partial_payment, class_name: 'PartialPayment', foreign_key: 'transaction_id'
 
   validate :validate_invoice_date
-  validates_uniqueness_of :trading_parcel_id
+  #validates_uniqueness_of :trading_parcel_id
   after_create :generate_and_add_uid, :generate_and_add_amount
   after_save :calculate_amount
   after_save :secure_center, :update_score
