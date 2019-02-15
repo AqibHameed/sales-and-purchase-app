@@ -567,7 +567,7 @@ module Api
                 is_mine: last_negotiation.whose == current_company
             }
           end
-          @data.merge!(negotiated: negotiations)
+          @data.merge!(negotiations: negotiations)
         end
       end
 
