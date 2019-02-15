@@ -885,6 +885,65 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
+    "url": "/api/v1/approve_access",
+    "title": "",
+    "name": "approve_access",
+    "group": "Customers",
+    "description": "<p>Show customer_list to approve or access</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse:",
+          "content": "{\n    \"success\": true,\n    \"customers\": [\n        {\n            \"id\": 21,\n            \"email\": \"umair.raza101@gmail.com\",\n            \"created_at\": \"2018-12-07T15:00:19.000Z\",\n            \"updated_at\": \"2019-02-14T09:31:46.000Z\",\n            \"first_name\": \"Umair\",\n            \"last_name\": \"Raza\",\n            \"city\": \"\",\n            \"address\": \"\",\n            \"postal_code\": null,\n            \"phone\": \"\",\n            \"status\": null,\n            \"company_id\": 8,\n            \"company_address\": \"\",\n            \"phone_2\": \"\",\n            \"mobile_no\": \"+1\",\n            \"authentication_token\": \"XwHsMFNtQAy6aFpttQek\",\n            \"verified\": false,\n            \"certificate_file_name\": \"logs.png\",\n            \"certificate_content_type\": \"image/png\",\n            \"certificate_file_size\": 80312,\n            \"certificate_updated_at\": \"2018-12-21T12:52:41.000Z\",\n            \"invitation_token\": null,\n            \"invitation_created_at\": null,\n            \"invitation_sent_at\": null,\n            \"invitation_accepted_at\": null,\n            \"invitation_limit\": null,\n            \"invited_by_type\": null,\n            \"invited_by_id\": null,\n            \"invitations_count\": 0,\n            \"chat_id\": \"-1\",\n            \"firebase_uid\": null,\n            \"parent_id\": null,\n            \"is_requested\": true,\n            \"deleted_at\": null\n        }\n    ],\n    \"response_code\": 200\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "put",
+    "url": "/api/v1/approve_remove_request",
+    "title": "",
+    "name": "approve_remove_request",
+    "group": "Customers",
+    "description": "<p>Approve or Remove customer request from Admin</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example1:",
+          "content": "{\n\"request\": \"remove\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Request-Example2:",
+          "content": "{\n\"request\": \"approve\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse1:",
+          "content": "{\n\n    \"success\": true,\n    \"message\": \"Admin Reject your request!!\",\n    \"response_code\": 200\n\n}",
+          "type": "json"
+        },
+        {
+          "title": "SuccessResponse2:",
+          "content": "{\n\n    \"success\": true,\n    \"message\": \"Admin Accept your request!!\",\n    \"response_code\": 200\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/customers_controller.rb",
+    "groupTitle": "Customers"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
     "url": "/api/v1/customers/buyer_scores",
     "title": "",
     "name": "buyer_scores",
@@ -1209,7 +1268,7 @@ define({ "api": [
       "examples": [
         {
           "title": "SuccessResponse:",
-          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"parcels\": [\n        {\n            \"proposal_send\": false,\n            \"proposal_id\": null,\n            \"is_mine\": false,\n            \"is_overdue\": true,\n            \"id\": \"147\",\n            \"description\": \"Collection 5-10 ct\",\n            \"lot_no\": null,\n            \"no_of_stones\": 10,\n            \"carats\": 1,\n            \"credit_period\": 15,\n            \"avg_price\": 3000,\n            \"company\": \"Seller B\",\n            \"rank\": null,\n            \"cost\": null,\n            \"discount_per_month\": null,\n            \"sight\": \"12/2018\",\n            \"source\": \"DTC\",\n            \"uid\": \"7acec9df\",\n            \"percent\": 10,\n            \"comment\": \"\",\n            \"total_value\": 3000,\n            \"size_info\": [],\n            \"proposal_status\": \"no\",\n            \"my_offer\": null,\n            \"demand_id\": 61\n        },\n        {\n            \"proposal_send\": false,\n            \"proposal_id\": null,\n            \"is_mine\": true,\n            \"is_overdue\": true,\n            \"id\": \"155\",\n            \"description\": \"Collection 5-10 ct\",\n            \"lot_no\": null,\n            \"no_of_stones\": 10,\n            \"carats\": 1,\n            \"credit_period\": 3000,\n            \"avg_price\": 3000,\n            \"company\": \"Dummy Seller 1\",\n            \"rank\": null,\n            \"cost\": null,\n            \"discount_per_month\": \"0\",\n            \"sight\": \"12/18\",\n            \"source\": \"DTC\",\n            \"uid\": \"a98d1901\",\n            \"percent\": 0,\n            \"comment\": \"\",\n            \"total_value\": 3000,\n            \"size_info\": [],\n            \"proposal_status\": \"no\",\n            \"my_offer\": null,\n            \"demand_id\": 61\n        }\n    ],\n    \"response_code\": 200\n  }",
+          "content": "{\n    \"pagination\": {\n        \"total_pages\": 1,\n        \"prev_page\": null,\n        \"next_page\": null,\n        \"current_page\": 1\n    },\n    \"parcels\": [\n        {\n            \"proposal_send\": false,\n            \"proposal_id\": null,\n            \"is_mine\": false,\n            \"is_overdue\": true,\n            \"id\": \"147\",\n            \"description\": \"Collection 5-10 ct\",\n            \"lot_no\": null,\n            \"no_of_stones\": 10,\n            \"carats\": 1,\n            \"credit_period\": 15,\n            \"avg_price\": 3000,\n            \"company\": \"Seller B\",\n            \"rank\": null,\n            \"cost\": null,\n            \"discount_per_month\": null,\n            \"sight\": \"12/2018\",\n            \"source\": \"DTC\",\n            \"uid\": \"7acec9df\",\n            \"percent\": 10,\n            \"comment\": \"\",\n            \"total_value\": 3000,\n            \"size_info\": [],\n            \"proposal_status\": \"no\",\n            \"my_offer\": null,\n            \"parcel_proposal\": {\n                            \"percent\": 0,\n                            \"avrage_price\": 5000,\n                            \"total\": 1009800,\n                            \"credit\": 30\n                        },\n            \"demand_id\": 61\n        },\n        {\n            \"proposal_send\": false,\n            \"proposal_id\": null,\n            \"is_mine\": true,\n            \"is_overdue\": true,\n            \"id\": \"155\",\n            \"description\": \"Collection 5-10 ct\",\n            \"lot_no\": null,\n            \"no_of_stones\": 10,\n            \"carats\": 1,\n            \"credit_period\": 3000,\n            \"avg_price\": 3000,\n            \"company\": \"Dummy Seller 1\",\n            \"rank\": null,\n            \"cost\": null,\n            \"discount_per_month\": \"0\",\n            \"sight\": \"12/18\",\n            \"source\": \"DTC\",\n            \"uid\": \"a98d1901\",\n            \"percent\": 0,\n            \"comment\": \"\",\n            \"total_value\": 3000,\n            \"size_info\": [],\n            \"proposal_status\": \"no\",\n            \"my_offer\": null,\n            \"parcel_proposal\": null,\n            \"demand_id\": 61\n        }\n    ],\n    \"response_code\": 200\n  }",
           "type": "json"
         }
       ]
@@ -2094,26 +2153,6 @@ define({ "api": [
   {
     "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/tenders?supplier=11",
-    "title": "",
-    "name": "tenders",
-    "group": "Tenders",
-    "description": "<p>tenders according to supplier</p>",
-    "success": {
-      "examples": [
-        {
-          "title": "SuccessResponse4:",
-          "content": "{\n   \"success\": true,\n   \"pagination\": null,\n   \"tenders\": [],\n   \"response_code\": 200\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/controllers/api/v1/tenders_controller.rb",
-    "groupTitle": "Tenders"
-  },
-  {
-    "version": "1.0.0",
-    "type": "get",
     "url": "/api/v1/tenders",
     "title": "",
     "name": "tenders",
@@ -2124,6 +2163,26 @@ define({ "api": [
         {
           "title": "SuccessResponse1:",
           "content": "{\n   \"success\": true,\n   \"pagination\": {\n       \"total_pages\": 8,\n       \"prev_page\": null,\n       \"next_page\": \"http://localhost:3000/api/v1/tenders?page=2\",\n       \"current_page\": 1\n   },\n   \"tenders\": [\n       {\n           \"id\": 1003,\n           \"name\": \"Cullinan Jan-Feb 2018\",\n           \"start_date\": \"2013-10-19T00:00:00.000Z\",\n           \"end_date\": \"2018-02-07T03:30:00.000Z\",\n           \"company_name\": \"Petra Diamonds\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"\",\n           \"notification\": false\n       },\n       {\n           \"id\": 383,\n           \"name\": \"Transhex 229A January 2016\",\n           \"start_date\": \"2016-01-25T05:05:00.000Z\",\n           \"end_date\": \"2016-02-08T07:05:00.000Z\",\n           \"company_name\": \"Trans-hex\",\n           \"company_logo\": null,\n           \"city\": \"Johannesburg\",\n           \"country\": \"South Africa\",\n           \"notification\": false\n       }\n   ],\n   \"response_code\": 200\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/api/v1/tenders_controller.rb",
+    "groupTitle": "Tenders"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/v1/tenders?supplier=11",
+    "title": "",
+    "name": "tenders",
+    "group": "Tenders",
+    "description": "<p>tenders according to supplier</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "SuccessResponse4:",
+          "content": "{\n   \"success\": true,\n   \"pagination\": null,\n   \"tenders\": [],\n   \"response_code\": 200\n}",
           "type": "json"
         }
       ]
