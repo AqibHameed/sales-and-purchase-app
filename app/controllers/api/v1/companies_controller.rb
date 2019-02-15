@@ -75,31 +75,45 @@ class Api::V1::CompaniesController < ApplicationController
  @apiName reset limits
  @apiGroup Companies
  @apiDescription reset limit against compnay
- @apiParamExample {json} Request-Example:
+ @apiParamExample {json} Request-Example1:
 {
 "company_id": 1
 }
- @apiSuccessExample {json} SuccessResponse:
+ @apiSuccessExample {json} SuccessResponse1:
 {
     "success": true,
     "message": "Limits are reset successfully",
     "response_code": 200
+}
+ @apiParamExample {json} Request-Example2:
+{
+"company_id": 1
+}
+ @apiSuccessExample {json} SuccessResponse2:
+{
+    "errors": "You are not able to delete limit because used limit is not zero",
+    "response_code": 201
 }
 =end
 
   def reset_limits
     if current_company
       company = Company.where(id: params[:company_id]).first
-      if company.present?
-        credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
-        days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
-        credit_limit.credit_limit = 0
-        credit_limit.save
-        days_limit.days_limit = 30
-        days_limit.save
-        render json: { success: true, message: "Limits are reset successfully", response_code: 200 }
+      used_limit = get_used_credit_limit(company, current_company)
+      if used_limit > 0
+        render json: { errors: "You are not able to delete limit because used limit is not zero", response_code: 201 }
       else
-        render json: { errors: "Company does not exist for this id.", response_code: 201 }
+        if company.present?
+          credit_limit = CreditLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
+          days_limit = DaysLimit.where(buyer_id: company.id, seller_id: current_company.id).first_or_create
+          credit_limit.credit_limit = 0
+          credit_limit.save
+          days_limit.days_limit = 30
+          days_limit.save
+          render json: { success: true, message: "Limits are reset successfully", response_code: 200 }
+        else
+          render json: { errors: "Company does not exist for this id.", response_code: 201 }
+        end
       end
     else
       render json: { errors: "Not authenticated", response_code: 201 }

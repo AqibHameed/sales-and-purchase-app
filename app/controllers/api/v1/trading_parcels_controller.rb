@@ -737,7 +737,6 @@ module Api
 
           SendNotificationJob.perform_now(transaction, current_company)
           create_or_update_limits(transaction, parcel) if transaction.paid == false
-
           parcel.update_attributes(sold: true)
           render json: {success: true, notice: 'Transaction added successfully'}
         else
