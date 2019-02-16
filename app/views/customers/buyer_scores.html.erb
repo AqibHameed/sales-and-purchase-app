@@ -64,7 +64,7 @@
           <td>Number of Suppliers Giving You Credit</td>
           <td><%= buyer_score.count_of_credit_given %></td>
           <td><%= market_buyer_score.count_of_credit_given %></td>
-          <td><%= ApplicationHelper.safe_divide_float(buyer_score.count_of_credit_given, market_buyer_score.count_of_credit_given) %></td>
+          <td><%= ApplicationHelper.safe_divide_float(market_buyer_score.count_of_credit_given, buyer_score.count_of_credit_given) %></td>
         </tr>
       </table>
     <%else %>

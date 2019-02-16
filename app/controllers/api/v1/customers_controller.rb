@@ -817,7 +817,7 @@ module Api
                 name: 'Number Of Suppliers Giving You Credit',
                 user_score:  score.count_of_credit_given,
                 market_average: market_score.count_of_credit_given,
-                user_score_vs_market_score: ApplicationHelper.safe_divide_float(score.count_of_credit_given, market_score.count_of_credit_given),
+                user_score_vs_market_score: ApplicationHelper.safe_divide_float(market_score.count_of_credit_given, score.count_of_credit_given),
                 rank: score.count_of_credit_given_rank
             }
         ]

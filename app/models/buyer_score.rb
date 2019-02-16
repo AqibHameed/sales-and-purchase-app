@@ -72,7 +72,7 @@ class BuyerScore < ApplicationRecord
     buyer_network = ApplicationHelper.safe_divide_float(buyer_score.buyer_network, market_buyer_scores.buyer_network)
     due_date = ApplicationHelper.safe_divide_float(buyer_score.due_date, market_buyer_scores.due_date)
     credit_used = ApplicationHelper.safe_divide_float(buyer_score.credit_used, market_buyer_scores.credit_used)
-    count_of_credit_given = ApplicationHelper.safe_divide_float(buyer_score.count_of_credit_given, market_buyer_scores.count_of_credit_given)
+    count_of_credit_given = ApplicationHelper.safe_divide_float(market_buyer_scores.count_of_credit_given, buyer_score.count_of_credit_given)
     buyer_score.update_attributes(late_payment_comparison: late_payment, current_risk_comparison: current_risk, network_diversity_comparison: network_diversity,
                                   buyer_network_comparison: buyer_network, due_date_comparison: due_date, credit_used_comparison: credit_used,
                                   count_of_credit_given_comparison: count_of_credit_given)
