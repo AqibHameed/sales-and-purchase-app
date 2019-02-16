@@ -567,8 +567,9 @@ module Api
                 is_mine: last_negotiation.whose == current_company
             }
           end
+
           @data.merge!(total_negotiations: proposal.negotiations.count)
-          @data.merge!(negotiations: negotiations)
+          @data.merge!(negotiations: negotiations.reverse)
         end
       end
 
