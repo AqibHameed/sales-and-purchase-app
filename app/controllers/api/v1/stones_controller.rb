@@ -202,7 +202,7 @@ module Api
       end
 
       def wish_list_params
-        params.permit(:stone_id, :wish_status)
+        params.permit(:stone_id, :wish_status).merge(customer_id: current_user.id)
       end
 
 
